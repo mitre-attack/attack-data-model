@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["external_references"],
+  "properties": {
+    "external_references": {
+      "type": "array",
+      "description": "A list of external references (e.g., URLs or other reference material) that provide more information about the technique.",
+      "items": {
+        "type": "object",
+        "required": ["source_name", "url"],
+        "properties": {
+          "source_name": {
+            "$ref": "sub-schemas/source-name.schema.json"
+          },
+          "url": {
+            "$ref": "sub-schemas/url.schema.json"
+          }
+        }
+      }
+    }
+  }
+}
