@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9-]+$",
+      "description": "A unique identifier for the intrusion set."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "intrusion-set"
+      ],
+      "description": "The type of object, always 'intrusion-set' for a MITRE ATT&CK intrusion set."
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the intrusion set was created."
+    },
+    "modified": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time the intrusion set was last modified."
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the intrusion set."
+    },
+    "description": {
+      "type": "string",
+      "description": "A brief description of the intrusion set and what it entails."
+    }
+  },
+  "required": [
+    "id",
+    "type",
+    "created",
+    "modified",
+    "name",
+    "description"
+  ]
+}
