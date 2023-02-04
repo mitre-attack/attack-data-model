@@ -10,10 +10,10 @@
         "required": ["kill_chain_name", "phase_name"],
         "properties": {
           "kill_chain_name": {
-            "$ref": "properties/kill_chain_name.schema.json"
+            "$ref": "sub-schemas/kill_chain_name.schema.json"
           },
           "phase_name": {
-            "$ref": "properties/phase-name.schema.json"
+            "$ref": "sub-schemas/phase-name.schema.json"
           }
         }
       }
