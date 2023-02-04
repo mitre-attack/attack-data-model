@@ -19,6 +19,11 @@
       "format": "date-time",
       "description": "The date and time the technique was created."
     },
+    "created_by_ref": {
+      // TODO: This field attributes 100% coverage to the same identify (identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5). Discuss with team on whether this field should be converted to a static or enum.
+      "type": "string",
+      "description": "A unique identifier for the MITRE ATT&CK object that originated this object"
+    },
     "modified": {
       "type": "string",
       "format": "date-time",
@@ -32,27 +37,12 @@
       "type": "string",
       "description": "A brief description of the technique and what it entails."
     },
+    "revoked": {
+      "type": "boolean",
+      "description": "Specifies whether the technique is revoked or not."
+    },
     "external_references": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "source_name": {
-            "type": "string",
-            "description": "The name of the external source."
-          },
-          "url": {
-            "type": "string",
-            "format": "uri",
-            "description": "The URL of the external source."
-          }
-        },
-        "required": [
-          "source_name",
-          "url"
-        ]
-      },
-      "description": "A list of external references (e.g., URLs or other reference material) that provide more information about the technique."
+      "$ref": "sub-schemas/external-references/external-references.schema.json",
     },
     "kill_chain_phases": {
       "type": "array",
@@ -127,13 +117,18 @@
     }
   },
   "required": [
-    "id",
-    "type",
     "created",
+    "created_by_ref",
+    "description",
+    "external_references",
+    "id",
+    "kill_chain_phases",
     "modified",
     "name",
-    "description",
-    "kill_chain_phases"
+    "object_marking_refs",
+    "spec_version",
+    "type",
+    "x_mitre_version"
   ]
 }
 
