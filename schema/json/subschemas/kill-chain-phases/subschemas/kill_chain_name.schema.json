@@ -4,6 +4,7 @@
   "required": ["kill_chain_name"],
   "properties": {
     "kill_chain_name": {
+      "description": "The name of the kill chain phase.",
       "type": "string",
       "enum": [
         "mitre-attack",

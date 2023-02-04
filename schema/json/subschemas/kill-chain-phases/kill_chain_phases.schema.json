@@ -5,15 +5,16 @@
   "properties": {
     "kill_chain_phases": {
       "type": "array",
+      "description": "The tactics (e.g., Initial Access, Execution, Persistence, etc.) that the technique belongs to, represented as kill chain phases.",
       "items": {
         "type": "object",
         "required": ["kill_chain_name", "phase_name"],
         "properties": {
           "kill_chain_name": {
-            "$ref": "sub-schemas/kill_chain_name.schema.json"
+            "$ref": "subschemas/kill_chain_name.schema.json"
           },
           "phase_name": {
-            "$ref": "sub-schemas/phase-name.schema.json"
+            "$ref": "subschemas/phase-name.schema.json"
           }
         }
       }

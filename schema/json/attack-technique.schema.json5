@@ -42,28 +42,10 @@
       "description": "Specifies whether the technique is revoked or not."
     },
     "external_references": {
-      "$ref": "sub-schemas/external-references/external-references.schema.json",
+      "$ref": "subschemas/external-references/external-references.schema.json",
     },
     "kill_chain_phases": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "phase_name": {
-            "type": "string",
-            "description": "The name of the kill chain phase."
-          },
-          "phase_order": {
-            "type": "integer",
-            "description": "The order of the kill chain phase."
-          }
-        },
-        "required": [
-          "phase_name",
-          "phase_order"
-        ]
-      },
-      "description": "The tactics (e.g., Initial Access, Execution, Persistence, etc.) that the technique belongs to, represented as kill chain phases."
+      "$ref": "subschemas/kill-chain-phases/kill_chain_phases.schema.json",
     },
     "x_mitre_version": {
       "type": "string",

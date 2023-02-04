@@ -11,10 +11,10 @@
         "required": ["source_name", "url"],
         "properties": {
           "source_name": {
-            "$ref": "sub-schemas/source-name.schema.json"
+            "$ref": "subschemas/source-name.schema.json"
           },
           "url": {
-            "$ref": "sub-schemas/url.schema.json"
+            "$ref": "subschemas/url.schema.json"
           }
         }
       }
