@@ -1,0 +1,5 @@
+black
+jsonschema
+isort
+mitreattack-python
+ruff
