@@ -53,6 +53,9 @@
           },
           "type": {
             "type": "string",
+            "enum": [
+              "attack-pattern"
+            ],
             "description": "Type of this objet."
           },
           "created": {
