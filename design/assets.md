@@ -26,7 +26,7 @@ An Asset is a custom STIX object, with a `type` of "x-mitre-asset".
 
 | name                        | type             |
 |-----------------------------|------------------|
-| x_mitre_sector              | string           |
+| x_mitre_sectors             | string[]           |
 | x_mitre_related_assets      | [related_assets] |
 | x_mitre_platforms           | [string]         |
 | x_mitre_deprecated          | boolean          |
@@ -38,11 +38,11 @@ An Asset is a custom STIX object, with a `type` of "x-mitre-asset".
 
 The related_assets subtype is an object with the properties:
 
-| name        | type    |
-|-------------|---------|
-| name        | string  |
-| sector      | string  |
-| description | string  |
+| name                    | type     |
+|-------------------------|----------|
+| `name`                  | string   |
+| `related_asset_sectors` | string[] |
+| `description`           | string   |
 
 ### Data Design Notes
 
