@@ -1,0 +1,156 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Schema for ATT&CK Groups - Course of Action",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type",
+    "spec_version",
+    "objects"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9-]+$",
+      "description": "(STIX v2.0 required common property) A unique identifier for the course of action."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "bundle"
+      ],
+      "description": "(STIX v2.0 required) The type of object, 'course-of-action' is type 'bundle'"
+    },
+    "spec_version": {
+      "type": "string",
+      "enum": [
+        "2.0"
+      ],
+      "description": "The version of the STIX specification used to represent the content in this Bundle."
+    },
+    "objects": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "type",
+            "created",
+            "created_by_ref",
+            "external_references",
+            "modified",
+            "name",
+            "description",
+            "x_mitre_domains",
+            "object_marking_refs",
+            "x_mitre_version",
+            "x_mitre_modified_by_ref"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9-]+$",
+              "description": "A unique identifier for the course of action."
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "course-of-action"
+              ],
+              "description": "Type of this object"
+            },
+            "created": {
+              "type": "string",
+              "description": "(STIX v2.0 optional common property) The date and time the course of action was first created."
+            },
+            "created_by_ref": {
+              "type": "string",
+              "description": "(STIX v2.0 optional common property) specifies the ID of the Identity object that describes the entity that created this object."
+            },
+            "external_references": {
+              "type": "array",
+              "description": "A list of external references (e.g., URLs or other reference material) that provide more information about the software.",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "source_name": {
+                      "type": "string",
+                      "description": "The name of the external source."
+                    },
+                    "external_id": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "The URL of the external source."
+                    }
+                  },
+                  "required": [
+                    "source_name",
+                    "external_id",
+                    "url"
+                  ]
+                }
+              ]
+            },
+            "modified": {
+              "type": "string",
+              "description": "(STIX v2.0 optional common property) The date and time this version of the course of action was last modified."
+            },
+            "name": {
+              "type": "string",
+              "description": "(STIX v2.0 required) A string identifying the course of action."
+            },
+            "description": {
+              "type": "string",
+              "description": "A description that provides more details and context about the Course of Action, potentially including its purpose and its key characteristics."
+            },
+            "x_mitre_domains": {
+              "type": "array",
+              "description": "The domains the object is found in.",
+              "items": [
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "object_marking_refs": {
+              "type": "array",
+              "description": "(STIX v2.0 optional)",
+              "items": [
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "revoked": {
+              "type": "boolean",
+              "description": "(STIX v2.0 optional common property) Whether the object has been revoked."
+            },
+            "x_mitre_version": {
+              "type": "string",
+              "description": "The version of the object in format major.minor"
+            },
+            "x_mitre_modified_by_ref": {
+              "type": "string",
+              "description": "The identity of the individual or organization which created the current version of the object."
+            },
+            "x_mitre_deprecated": {
+              "type": "boolean",
+              "description": "Optional: Whether the object has been deprecated"
+            },
+            "x_mitre_attack_spec_version": {
+              "type": "string",
+              "description": "Optional: This field tracks the version of the ATT&CK Spec used by the object."
+            }
+          }
+        }
+      ]
+    }
+  }
+}

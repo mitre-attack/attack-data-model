@@ -1,0 +1,94 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Schema for ATT&CK Groups - Marking Definition",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "type",
+      "id",
+      "spec_version",
+      "objects"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9-]+$",
+        "description": "(STIX v2.0 required common property) A unique identifier for the marking definition."
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "bundle"
+        ],
+        "description": "(STIX v2.0 required) The type of object, 'marking-definition' is type 'bundle'"
+      },
+      "spec_version": {
+        "type": "string",
+        "enum": [
+          "2.0"
+        ],
+        "description": "The version of the STIX specification used to represent the content in this Bundle."
+      },
+      "objects": {
+        "type": "array",
+        "items": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "definition",
+              "definition_type",
+              "id",
+              "type",
+              "created"
+            ],
+            "properties": {
+              "definition": {
+                "type": "object",
+                "properties": {
+                  "statement": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "statement"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9-]+$",
+                "description": "A unique identifier for the marking definition."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "marking-definition"
+                ],
+                "description": "Type of this object"
+              },
+              "created": {
+                "type": "string",
+                "description": "(STIX v2.0 optional common property) The date and time the marking definition was first created."
+              },
+              "created_by_ref": {
+                "type": "string",
+                "description": "(STIX v2.0 optional common property) specifies the ID of the Identity object that describes the entity that created this object."
+              },
+              "definition_type": {
+                "type": "string",
+                "description": "(STIX v2.0 required) identifies the type of Marking Definition.",
+                "enum": [
+                    "statement",
+                    "tlp"
+                ]
+              },
+              "x_mitre_attack_spec_version": {
+                "type": "string",
+                "description": "Optional: This field tracks the version of the ATT&CK Spec used by the object."
+              }
+            }
+          }
+        ]
+      }
+    }
+  }

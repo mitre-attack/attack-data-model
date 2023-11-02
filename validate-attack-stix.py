@@ -28,7 +28,7 @@ def main():
             jsonschema.validate(
                 instance=attack_bundle,
                 # schema={"$ref": "schema/json/attack-group.schema.json"},
-                schema={"$ref": "schema/json/attack-domain-bundle.schema.json"},
+                schema={"$ref": "attack-data-model/schema/json/attack-intrusion-set.schema.json"},
                 resolver=resolver,
             )
         except jsonschema.exceptions.ValidationError as exc:

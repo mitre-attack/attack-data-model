@@ -1,0 +1,250 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Schema for ATT&CK Groups - Intrusion Set",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "type",
+        "id",
+        "spec_version",
+        "objects"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9-]+$",
+        "description": "(STIX v2.0 required common property) A unique identifier for the intrusion set."
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "bundle"
+        ],
+        "description": "(STIX v2.0 required) The type of object, 'intrusion-set' is type 'bundle'"
+      },
+      "spec_version": {
+        "type": "string",
+        "enum": [
+          "2.0"
+        ],
+        "description": "The version of the STIX specification used to represent the content in this Bundle."
+      },
+      "objects": {
+        "type": "array",
+        "items": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "type",
+              "created",
+              "external_references",
+              "modified",
+              "name",
+              "x_mitre_version",
+              "x_mitre_domains"
+            ],
+            "properties": {
+             
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9-]+$",
+                "description": "A unique identifier for the attack pattern."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "intrusion-set"
+                ],
+                "description": "Type of this object."
+              },
+              "name": {
+                "type": "string",
+                "description": "A name used to identify this Intrusion Set."
+              },
+              "created": {
+                "type": "string",
+                "description": "(STIX v2.0 optional common property) The date and time the intrusion set was first created."
+              },
+              "created_by_ref": {
+                "type": "string",
+                "description": "(STIX v2.0 optional common property) specifies the ID of the Identity object that describes the entity that created this object."
+              },
+              "external_references": {
+                "type": "array",
+                "items": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "source_name": {
+                        "type": "string",
+                        "description": "The name of the external source."
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "The URL of the external source."
+                      },
+                      "external_id": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "source_name",
+                      "url",
+                      "external_id"
+                    ]
+                  }
+                ]
+              },
+              "modified": {
+                "type": "string",
+                "description": "(STIX v2.0 optional common property) The date and time this version of the intrusion set was last modified."
+              },
+              
+              "description": {
+                "type": "string"
+              },
+              "x_mitre_version": {
+                "type": "string"
+              },
+              "x_mitre_modified_by_ref": {
+                "type": "string"
+              },
+              "aliases": {
+                "type": "array",
+                "description": "(STIX v2.0 optional property) Alternative names used to identify this Intrusion Set.",
+                "items": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "first_seen": {
+                "type": "string",
+                "description": "(STIX v2.0 optional) The time this intrusion set was first seen."
+              },
+              "last_seen": {
+                "type": "string",
+                "description": "(STIX v2.0 optional) The time this intrusion set was last seen."
+              },
+              "goals": {
+                "type": "array",
+                "description": "(STIX v2.0 optional) The high level goals of this Intrusion Set, namely, what are they trying to do.",
+                "items": [
+                    {
+                      "type": "string"
+                    }
+                ]
+              },
+              "resource_level": {
+                "type": "string",
+                "description": "(STIX v2.0 optional) The organizational level at which this Intrusion Set typically works.",
+                "enum": [
+                    "individual",
+                    "club",
+                    "contest",
+                    "team",
+                    "organization",
+                    "government"
+                ]
+              },
+              "primary_motivation": {
+                "type": "string",
+                "description": "(STIX v2.0 optional) The primary reason, motivation, or purpose behind this Intrusion Set.",
+                "enum": [
+                    "accidental", 
+                    "coercion", 
+                    "dominance", 
+                    "ideology", 
+                    "notoriety", 
+                    "organizational-gain", 
+                    "personal-gain", 
+                    "personal-satisfaction", 
+                    "revenge", 
+                    "unpredictable"
+                ]
+              },
+              "secondary_motivation": {
+                "type": "string",
+                "description": "(STIX v2.0 optional) The secondary reasons, motivations, or purposes behind this Intrusion Set.",
+                "enum": [
+                    "accidental", 
+                    "coercion", 
+                    "dominance", 
+                    "ideology", 
+                    "notoriety", 
+                    "organizational-gain", 
+                    "personal-gain", 
+                    "personal-satisfaction", 
+                    "revenge", 
+                    "unpredictable"
+                ]
+              },
+              "x_mitre_domains": {
+                "type": "array",
+                "description": "The domains the object is found in.",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "x_mitre_contributors": {
+                "type": "array",
+                "description": "People and organizations who have contributed to the object.",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "object_marking_refs": {
+                "type": "array",
+                "description": "(STIX v2.0 optional)",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "revoked": {
+                "type": "boolean",
+                "description": "(STIX v2.0 optional common property) Whether the object has been revoked."
+              },
+              "x_mitre_attack_spec_version": {
+                "type": "string",
+                "description": "Optional: This field tracks the version of the ATT&CK Spec used by the object."
+              },
+              "x_mitre_deprecated": {
+                "type": "boolean",
+                "description": "Optional: Whether the object has been deprecated"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
