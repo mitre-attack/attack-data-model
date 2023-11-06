@@ -1,0 +1,152 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Schema for ATT&CK Groups - MITRE Matrix",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "id",
+      "type",
+      "spec_version",
+      "objects"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9-]+$",
+        "description": "A unique identifier for the matrix."
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "bundle"
+        ],
+        "description": "(STIX v2.0 required) The type of object, 'x-mitre-matrix' is type 'bundle'"
+      },
+      "spec_version": {
+        "type": "string",
+        "enum": [
+          "2.0"
+        ],
+        "description": "The version of the STIX specification used to represent the content in this Bundle."
+      },
+      "objects": {
+        "type": "array",
+        "items": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tactic_refs",
+              "object_marking_refs",
+              "id",
+              "type",
+              "created",
+              "created_by_ref",
+              "external_references",
+              "modified",
+              "name",
+              "description",
+              "x_mitre_version",
+              "x_mitre_attack_spec_version",
+              "x_mitre_modified_by_ref"
+            ],
+            "properties": {
+              "tactic_refs": {
+                "type": "array",
+                "description": "Contains an ordered list of x-mitre-tactic STIX IDs corresponding to the tactics of the matrix. The order of tactic_refs determines the order the tactics should appear within the matrix.",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "object_marking_refs": {
+                "type": "array",
+                "description": "(STIX v2.0 optional)",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9-]+$",
+                "description": "A unique identifier for the matrix."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "x-mitre-matrix"
+                ],
+                "description": "Type of this object"
+              },
+              "created": {
+                "type": "string",
+                "description": "(STIX v2.0 optional common property) The date and time the matrix was first created."
+              },
+              "created_by_ref": {
+                "type": "string",
+                "description": "(STIX v2.0 optional common property) specifies the ID of the Identity object that describes the entity that created this object."
+              },
+              "external_references": {
+                "type": "array",
+                "description": "A list of external references (e.g., URLs or other reference material) that provide more information about the software.",
+                "items": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "external_id": {
+                        "type": "string"
+                      },
+                      "source_name": {
+                        "type": "string",
+                        "description": "The name of the external source."
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "The URL of the external source."
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "source_name",
+                      "url"
+                    ]
+                  }
+                ]
+              },
+              "modified": {
+                "type": "string",
+                "description": "(STIX v2.0 optional common property) The date and time this version of the matrix was last modified."
+              },
+              "name": {
+                "type": "string",
+                "description": "(STIX v2.0 required) A string identifying the matrix."
+              },
+              "description": {
+                "type": "string",
+                "description": "A description that provides more details and context about the Matrix, potentially including its purpose and its key characteristics."
+              },
+              "x_mitre_version": {
+                "type": "string",
+                "description": "The version of the object in format major.minor"
+              },
+              "x_mitre_attack_spec_version": {
+                "type": "string",
+                "description": "Optional: This field tracks the version of the ATT&CK Spec used by the object."
+              },
+              "x_mitre_modified_by_ref": {
+                "type": "string",
+                "description": "The identity of the individual or organization which created the current version of the object."
+              }
+            }
+          }
+        ]
+      }
+    }
+  }

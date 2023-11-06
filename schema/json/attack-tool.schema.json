@@ -1,0 +1,210 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Schema for ATT&CK Groups - Tool",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "type",
+      "id",
+      "spec_version",
+      "objects"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9-]+$",
+        "description": "(STIX v2.0 required common property) A unique identifier for the tool."
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "bundle"
+        ],
+        "description": "(STIX v2.0 required) The type of object, 'tool' is type 'bundle'"
+      },
+      "spec_version": {
+        "type": "string",
+        "enum": [
+          "2.0"
+        ],
+        "description": "The version of the STIX specification used to represent the content in this Bundle."
+      },
+      "objects": {
+        "type": "array",
+        "items": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "description",
+              "type",
+              "id",
+              "labels",
+              "created",
+              "created_by_ref",
+              "modified",
+              "external_references",
+              "object_marking_refs"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "(STIX v2.0 required property) A name used to identify this Tool."
+              },
+              "description": {
+                "type": "string",
+                "description": "(STIX v2.0 optional property) Provides more details and context about the Tool"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "tool"
+                ],
+                "description": "(STIX v2.0 required property) Type of this object"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9-]+$",
+                "description": "(STIX v2.0 required common property) A unique identifier for the tool."
+              },
+              "labels": {
+                "type": "array",
+                "description": "(STIX v2.0 required property) The kind(s) of tool(s) being described.",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "created": {
+                "type": "string",
+                "description": "(STIX v2.0 optional common property) The date and time the tool was first created."
+              },
+              "created_by_ref": {
+                "type": "string",
+                "description": "(STIX v2.0 optional common property) specifies the ID of the Identity object that describes the entity that created this object."
+              },
+              "modified": {
+                "type": "string",
+                "description": "(STIX v2.0 optional common property) The date and time this version of the intrusion set was last modified."
+              },
+              "revoked": {
+                "type": "boolean",
+                "description": "(STIX v2.0 optional common property) Whether the object has been revoked."
+              },
+              "external_references": {
+                "type": "array",
+                "additionalProperties": false,
+                "items": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "source_name": {
+                        "type": "string",
+                        "description": "The name of the external source."
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "The URL of the external source."
+                      },
+                      "external_id": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "source_name",
+                      "external_id"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "source_name": {
+                        "type": "string",
+                        "description": "The name of the external source."
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "The URL of the external source."
+                      }
+                    },
+                    "required": [
+                      "source_name",
+                      "description"
+                    ]
+                  }
+                ]
+              },
+              "object_marking_refs": {
+                "type": "array",
+                "description": "(STIX v2.0 optional)",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "x_mitre_attack_spec_version": {
+                "type": "string",
+                "description": "Optional: This field tracks the version of the ATT&CK Spec used by the object."
+              },
+              "x_mitre_modified_by_ref": {
+                "type": "string"
+              },
+              "x_mitre_platforms": {
+                "type": "array",
+                "description": "List of platforms that apply to the technique.",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "x_mitre_deprecated": {
+                "type": "boolean",
+                "description": "Whether the object has been deprecated"
+              },
+              "x_mitre_domains": {
+                "type": "array",
+                "description": "The domains the object is found in.",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "x_mitre_version": {
+                "type": "string",
+                "description": "The version of the object in format major.minor"
+              },
+              "x_mitre_aliases": {
+                "type": "array",
+                "description": "A list of alternative names or titles for the software.",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "x_mitre_contributors": {
+                "type": "array",
+                "description": "People and organizations who have contributed to the object.",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  }

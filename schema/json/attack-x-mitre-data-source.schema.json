@@ -1,0 +1,189 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Schema for ATT&CK Groups - X MITRE Data Source",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "id",
+        "type",
+        "spec_version",
+        "objects"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9-]+$",
+        "description": "(STIX v2.0 required common property) A unique identifier for the data source."
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "bundle"
+        ],
+        "description": "(STIX v2.0 required) The type of object, 'x-mitre-data-source' is type 'bundle'"
+      },
+      "spec_version": {
+        "type": "string",
+        "enum": [
+          "2.0"
+        ],
+        "description": "The version of the STIX specification used to represent the content in this Bundle."
+      },
+      "objects": {
+        "type": "array",
+        "items": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "type",
+              "created",
+              "created_by_ref",
+              "external_references",
+              "modified",
+              "name",
+              "description",
+              "object_marking_refs",
+              "x_mitre_version",
+              "x_mitre_attack_spec_version",
+              "x_mitre_modified_by_ref",
+              "x_mitre_platforms",
+              "x_mitre_domains",
+              "x_mitre_collection_layers"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9-]+$",
+                "description": "A unique identifier for the data source."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "x-mitre-data-source"
+                ],
+                "description": "Type of this object"
+              },
+              "created": {
+                "type": "string",
+                "description": "The date and time the data source was first created."
+              },
+              "created_by_ref": {
+                "type": "string",
+                "description": "Specifies the ID of the Identity object that describes the entity that created this object."
+              },
+              "external_references": {
+                "type": "array",
+                "description": "A list of external references (e.g., URLs or other reference material) that provide more information about the software.",
+                "items": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "source_name": {
+                        "type": "string",
+                        "description": "The name of the external source."
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "The URL of the external source."
+                      },
+                      "external_id": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "source_name",
+                      "url"
+                    ]
+                  }
+                ]
+              },
+              "modified": {
+                "type": "string",
+                "description": "The date and time this version of the data source was last modified."
+              },
+              "name": {
+                "type": "string",
+                "description": "A string identifying the data source."
+              },
+              "description": {
+                "type": "string",
+                "description": "A description that provides more details and context about the Data Source, potentially including its purpose and its key characteristics."
+              },
+              "object_marking_refs": {
+                "type": "array",
+                "description": "(STIX v2.0 optional)",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "x_mitre_version": {
+                "type": "string",
+                "description": "The version of the object in format major.minor"
+              },
+              "x_mitre_attack_spec_version": {
+                "type": "string",
+                "description": "Optional: This field tracks the version of the ATT&CK Spec used by the object."
+              },
+              "x_mitre_modified_by_ref": {
+                "type": "string",
+                "description": "The identity of the individual or organization which created the current version of the object."
+              },
+              "x_mitre_platforms": {
+                "type": "array",
+                "description": "List of platforms that apply to the technique.",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "x_mitre_domains": {
+                "type": "array",
+                "description": "The domains the object is found in.",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "x_mitre_contributors": {
+                "type": "array",
+                "description": "People and organizations who have contributed to the object.",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "x_mitre_collection_layers": {
+                "type": "array",
+                "description": "List of places the data can be collected from.",
+                "items": [
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "x_mitre_deprecated": {
+                "type": "boolean",
+                "description": "Optional: Whether the object has been deprecated"
+              },
+              "revoked": {
+                "type": "boolean",
+                "description": "(STIX v2.0 optional common property) Whether the object has been revoked."
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
