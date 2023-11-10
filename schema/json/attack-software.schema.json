@@ -1,105 +1,15 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Schema for software STIX 'malware' and 'tool' objects",
   "type": "object",
-  "properties": {
-    "id": {
-      "type": "string",
-      "pattern": "^[a-zA-Z0-9-]+$",
-      "description": "A unique identifier for the software."
-    },
-    "type": {
-      "type": "string",
-      "enum": [
-        "malware"
-      ],
-      "description": "The type of object, always 'malware' for a MITRE ATT&CK software object."
-    },
-    "created": {
-      "type": "string",
-      "format": "date-time",
-      "description": "The date and time the software was created."
-    },
-    "modified": {
-      "type": "string",
-      "format": "date-time",
-      "description": "The date and time the software was last modified."
-    },
-    "name": {
-      "type": "string",
-      "description": "The name of the software."
-    },
-    "description": {
-      "type": "string",
-      "description": "A brief description of the software and what it does."
-    },
-    "external_references": {
+    "objects": {
       "type": "array",
+      "description": "List of ATT&CK STIX SDOs",
       "items": {
-        "type": "object",
-        "properties": {
-          "source_name": {
-            "type": "string",
-            "description": "The name of the external source."
-          },
-          "url": {
-            "type": "string",
-            "format": "uri",
-            "description": "The URL of the external source."
-          }
-        },
-        "required": [
-          "source_name",
-          "url"
+        "oneOf": [
+          {"$ref": "software-schema/attack-malware.schema.json"},
+          {"$ref": "software-schema/attack-tool.schema.json"}
         ]
-      },
-      "description": "A list of external references (e.g., URLs or other reference material) that provide more information about the software."
-    },
-    "x_mitre_version": {
-      "type": "string",
-      "description": "The version of MITRE ATT&CK that the software was added or updated in."
-    },
-    "x_mitre_deprecated": {
-      "type": "boolean",
-      "description": "Indicates whether the software has been deprecated and is no longer considered a valid entity."
-    },
-    "x_mitre_aliases": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "A list of alternative names or titles for the software."
-    },
-    "x_mitre_platforms": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "A list of platforms that the software is compatible with."
-    },
-    "x_mitre_permissions_required": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "A list of permissions required by the software."
-    },
-    "x_mitre_detection": {
-      "type": "string",
-      "description": "Information on how to detect the use of the software."
-    },
-    "x_mitre_data_sources": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "A list of data sources that can be used to detect the use of the software."
-    }
-  },
-  "required": [
-    "id",
-    "type",
-    "created",
-    "modified",
-    "name"
-  ]
+      }
+  }
 }

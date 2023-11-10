@@ -2,41 +2,27 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Schema for ATT&CK domain STIX bundles",
   "type": "object",
-  "properties": {
-    "type": {
-      "type": "string",
-      "enum": [
-        "bundle"
-      ],
-      "description": "The type property identifies the type of object. The value of this property MUST be bundle."
-    },
-    "id": {
-      "type": "string",
-      "pattern": "^[a-zA-Z0-9-]+$",
-      "description": "An identifier for this Bundle."
-    },
-    "spec_version": {
-      "type": "string",
-      "enum": [
-        "2.0"
-      ],
-      "description": "The version of the STIX specification used to represent the content in this Bundle."
-    },
     "objects": {
       "type": "array",
       "description": "List of ATT&CK STIX SDOs",
       "items": {
         "oneOf": [
           {"$ref": "attack-mitigation.schema.json"},
-          {"$ref": "attack-group.schema.json"}
+          {"$ref": "attack-group.schema.json"},
+          {"$ref": "attack-campaign.schema.json"},
+          {"$ref": "attack-course-of-action.schema.json"},
+          {"$ref": "attack-identity.schema.json"},
+          {"$ref": "attack-intrusion-set.schema.json"},
+          {"$ref": "attack-marking-definition.schema.json"},
+          {"$ref": "attack-pattern.schema.json"},
+          {"$ref": "attack-relationship.schema.json"},
+          {"$ref": "attack-software.schema.json"},
+          {"$ref": "attack-technique.schema.json"},
+          {"$ref": "attack-x-mitre-data-component.schema.json"},
+          {"$ref": "attack-x-mitre-matrix.schema.json"},
+          {"$ref": "attack-x-mitre-tactic.schema.json"}
         ]
       }
   }
-  },
-  "required": [
-    "type",
-    "id",
-    "spec_version",
-    "objects"
-  ]
+  
 }
