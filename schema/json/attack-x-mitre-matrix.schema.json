@@ -143,6 +143,18 @@
               "x_mitre_modified_by_ref": {
                 "type": "string",
                 "description": "The identity of the individual or organization which created the current version of the object."
+              },
+              "x_mitre_deprecated": {
+                "type": "boolean",
+                "description": "Optional: Whether the object has been deprecated"
+              },
+              "x_mitre_domains": {
+                "type": "array",
+                "description": "The domains the object is found in."
+              },
+              "revoked": {
+                "type": "boolean",
+                "description": "(STIX v2.0 optional common property) Whether the object has been revoked."
               }
             }
           }

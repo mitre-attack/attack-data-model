@@ -39,11 +39,8 @@
               "id",
               "type",
               "created",
-              "external_references",
               "modified",
-              "name",
-              "x_mitre_version",
-              "x_mitre_domains"
+              "name"
             ],
             "properties": {
              
@@ -119,24 +116,6 @@
                 "type": "array",
                 "description": "(STIX v2.0 optional property) Alternative names used to identify this Intrusion Set.",
                 "items": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "string"
-                  },
                   {
                     "type": "string"
                   }

@@ -42,12 +42,7 @@
                 "created_by_ref",
                 "modified",
                 "name",
-                "description",
-                "object_marking_refs",
-                "x_mitre_data_source_ref",
-                "x_mitre_version",
-                "x_mitre_attack_spec_version",
-                "x_mitre_modified_by_ref"
+                "description"
             ],
             "properties": {
               "id": {
@@ -109,6 +104,10 @@
               "x_mitre_deprecated": {
                 "type": "boolean",
                 "description": "Optional: Whether the object has been deprecated"
+              },
+              "x_mitre_domains": {
+                "type": "array",
+                "description": "The domains the object is found in."
               },
               "revoked": {
                 "type": "boolean",

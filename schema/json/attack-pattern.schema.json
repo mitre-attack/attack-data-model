@@ -165,6 +165,10 @@
           "x_mitre_network_requirements": {
             "type": "boolean",
             "description": "optional for attack-patterns, implies whether the network is needed for exfiltration, deprecated"
+          },
+          "x_mitre_tactic_type": {
+            "type": "array",
+            "description": "'Post-Adversary Device Access', 'Pre-Adversary Device Access', or 'Without Adversary Device Access'."
           }
         }
       }

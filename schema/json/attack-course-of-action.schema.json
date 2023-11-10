@@ -38,16 +38,8 @@
           "required": [
             "id",
             "type",
-            "created",
-            "created_by_ref",
-            "external_references",
-            "modified",
             "name",
-            "description",
-            "x_mitre_domains",
-            "object_marking_refs",
-            "x_mitre_version",
-            "x_mitre_modified_by_ref"
+            "description"
           ],
           "properties": {
             "id": {
@@ -127,6 +119,10 @@
                   "type": "string"
                 }
               ]
+            },
+            "labels": {
+              "type": "array",
+              "description": "(STIX v2.0 optional common property) specifies a set of classifications."
             },
             "revoked": {
               "type": "boolean",

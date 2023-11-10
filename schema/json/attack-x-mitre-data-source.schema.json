@@ -48,7 +48,6 @@
               "x_mitre_version",
               "x_mitre_attack_spec_version",
               "x_mitre_modified_by_ref",
-              "x_mitre_platforms",
               "x_mitre_domains",
               "x_mitre_collection_layers"
             ],
