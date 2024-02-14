@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Data Sources",
+    "description": "Sources of information that may be used to identify the action or result of the action being performed. Applies to the Enterprise and ICS domains. Prior to ATT&CK v10, data sources were stored in this field on techniques. This representation is still available for backwards-compatibility purposes and does properly reflect the current set of data sources. However, because information is lost in that representation, we advise against using it except in legacy applications. The ATT&CK for ICS domain still uses only the x_mitre_data_sources field.",
+    "type": "array",
+    "items": {
+        "type": "string"
+    },
+    "examples": [
+        [
+            "Process monitoring",
+            "File monitoring",
+            "Network traffic",
+            "Registry keys"
+        ]
+    ]
+}

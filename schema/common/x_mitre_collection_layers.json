@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Collection Layers",
+    "description": "List of places the data can be collected from.",
+    "type": "array",
+    "items": {
+        "type": "string"
+    },
+    "examples": [
+        [
+            "Cloud Control Plane",
+            "Host"
+        ]
+    ]
+}

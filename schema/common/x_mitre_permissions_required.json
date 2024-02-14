@@ -1,0 +1,30 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Permissions Required",
+    "description": "The lowest level of permissions the adversary is required to be operating within to perform the technique on a system. This property is applicable to Technique objects within the Enterprise domain, specifically those associated with the Privilege Escalation tactic.",
+    "type": "array",
+    "items": {
+        "type": "string",
+        "enum": [
+            "User",
+            "Administrator",
+            "SYSTEM",
+            "root"
+        ]
+    },
+    "examples": [
+        [
+            "User"
+        ],
+        [
+            "Administrator"
+        ],
+        [
+            "SYSTEM"
+        ],
+        [
+            "root"
+        ]
+    ],
+    "uniqueItems": true
+}

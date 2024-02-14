@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Last Seen Citation",
+    "description": "One to many citations for when the Campaign was last reported in the form “(Citation: <citation name>)” where <citation name> can be found as one of the source_name of one of the external_references.",
+    "type": "array",
+    "items": {
+        "type": "string",
+        "pattern": "^\\(Citation: .+\\)$"
+    },
+    "examples": [
+        [
+            "(Citation: Recent APT29 Activity)",
+            "(Citation: Election Interference)"
+        ]
+    ]
+}

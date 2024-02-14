@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Effective Permissions",
+    "description": "The level of permissions the adversary will attain by performing the technique. This property is applicable to Technique objects within the Enterprise domain, specifically those associated with the Privilege Escalation tactic.",
+    "type": "array",
+    "items": {
+        "type": "string"
+    },
+    "examples": [
+        [
+            "User",
+            "Administrator",
+            "SYSTEM",
+            "root"
+        ]
+    ],
+    "uniqueItems": true
+}

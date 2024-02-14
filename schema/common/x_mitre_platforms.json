@@ -1,0 +1,46 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Platforms",
+    "description": "List of platforms that apply to the technique. This property is applicable to all Technique objects across the ATT&CK framework, indicating the specific computing environments or ecosystems where the technique can be executed.",
+    "type": "array",
+    "items": {
+        "type": "string",
+        "enum": [
+            "Windows",
+            "Linux",
+            "macOS",
+            "Office 365",
+            "PRE",
+            "Network",
+            "GCP",
+            "SaaS",
+            "Google Workspace",
+            "Containers",
+            "IaaS",
+            "Azure",
+            "Human-Machine Interface",
+            "Data-Historian",
+            "Engineering Workstation",
+            "AWS",
+            "iOS",
+            "Azure AD"
+        ]
+    },
+    "examples": [
+        [
+            "Windows",
+            "Linux"
+        ],
+        [
+            "AWS",
+            "Azure",
+            "GCP"
+        ],
+        [
+            "Human-Machine Interface",
+            "Data-Historian",
+            "Engineering Workstation"
+        ]
+    ],
+    "uniqueItems": true
+}
