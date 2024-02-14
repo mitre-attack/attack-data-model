@@ -7,22 +7,22 @@
       "description": "List of ATT&CK STIX SDOs",
       "items": {
         "oneOf": [
-          {"$ref": "attack-mitigation.schema.json"},
-          {"$ref": "attack-group.schema.json"},
-          {"$ref": "attack-campaign.schema.json"},
-          {"$ref": "attack-course-of-action.schema.json"},
-          {"$ref": "attack-identity.schema.json"},
-          {"$ref": "attack-intrusion-set.schema.json"},
-          {"$ref": "attack-marking-definition.schema.json"},
-          {"$ref": "attack-pattern.schema.json"},
-          {"$ref": "attack-relationship.schema.json"},
-          {"$ref": "attack-software.schema.json"},
-          {"$ref": "attack-technique.schema.json"},
-          {"$ref": "attack-x-mitre-data-component.schema.json"},
-          {"$ref": "attack-x-mitre-matrix.schema.json"},
-          {"$ref": "attack-x-mitre-tactic.schema.json"}
+          {"$ref": "attack-objects/attack-mitigation.schema.json"},
+          {"$ref": "attack-objects/attack-group.schema.json"},
+          {"$ref": "attack-objects/attack-campaign.schema.json"},
+          {"$ref": "attack-objects/attack-course-of-action.schema.json"},
+          {"$ref": "attack-objects/attack-identity.schema.json"},
+          {"$ref": "attack-objects/attack-intrusion-set.schema.json"},
+          {"$ref": "attack-objects/attack-marking-definition.schema.json"},
+          {"$ref": "attack-objects/attack-pattern.schema.json"},
+          {"$ref": "attack-objects/attack-software.schema.json"},
+          {"$ref": "attack-objects/attack-technique.schema.json"},
+          {"$ref": "attack-objects/attack-x-mitre-data-component.schema.json"},
+          {"$ref": "attack-objects/attack-x-mitre-data-source.schema.json"},
+          {"$ref": "attack-objects/attack-x-mitre-matrix.schema.json"},
+          {"$ref": "attack-objects/attack-x-mitre-tactic.schema.json"},
+          {"$ref": "attack-relationship.schema.json"}
         ]
       }
   }
-  
 }
