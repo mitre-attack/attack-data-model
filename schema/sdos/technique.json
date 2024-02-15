@@ -1,0 +1,62 @@
+{
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/sdos/technique.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Technique",
+    "description": "Represents an ATT&CK Technique, extending the standard STIX attack-pattern object with custom ATT&CK properties.",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "http://raw.githubusercontent.com/oasis-open/cti-stix2-json-schemas/stix2.1/schemas/sdos/attack-pattern.json"
+        },
+        {
+            "properties": {
+                "x_mitre_detection": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_detection.json"
+                },
+                "x_mitre_platforms": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_platforms.json"
+                },
+                "x_mitre_data_sources": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_data_sources.json"
+                },
+                "x_mitre_is_subtechnique": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_is_subtechnique.json"
+                },
+                "x_mitre_system_requirements": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_system_requirements.json"
+                },
+                "x_mitre_tactic_type": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_tactic_type.json"
+                },
+                "x_mitre_permissions_required": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_permissions_required.json"
+                },
+                "x_mitre_effective_permissions": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_effective_permissions.json"
+                },
+                "x_mitre_defense_bypassed": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_defense_bypassed.json"
+                },
+                "x_mitre_remote_support": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_remote_support.json"
+                },
+                "x_mitre_impact_type": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_impact_type.json"
+                }
+            },
+            "required": [
+                "x_mitre_detection",
+                "x_mitre_platforms",
+                "x_mitre_data_sources",
+                "x_mitre_is_subtechnique",
+                "x_mitre_system_requirements",
+                "x_mitre_tactic_type",
+                "x_mitre_permissions_required",
+                "x_mitre_effective_permissions",
+                "x_mitre_defense_bypassed",
+                "x_mitre_remote_support",
+                "x_mitre_impact_type"
+            ]
+        }
+    ]
+}

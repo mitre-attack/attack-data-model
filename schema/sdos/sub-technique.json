@@ -1,0 +1,23 @@
+{
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/sdos/sub-technique.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Sub-Technique",
+    "description": "Defines a sub-technique within the ATT&CK framework.",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/sdos/technique.json"
+        },
+        {
+            "properties": {
+                "x_mitre_is_subtechnique": {
+                    "type": "boolean",
+                    "description": "Marks the object as a sub-technique. Must be true for sub-techniques."
+                }
+            },
+            "required": [
+                "x_mitre_is_subtechnique"
+            ]
+        }
+    ]
+}
