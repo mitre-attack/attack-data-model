@@ -1,0 +1,34 @@
+{
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/sdos/matrix.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "ATT&CK Matrix",
+    "description": "Defines the overall layout of an ATT&CK Matrix.",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "http://raw.githubusercontent.com/oasis-open/cti-stix2-json-schemas/stix2.1/schemas/common/core.json"
+        },
+        {
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "x-mitre-matrix"
+                    ]
+                },
+                "tactic_refs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "pattern": "^x-mitre-tactic--[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+                    },
+                    "description": "An ordered list of x-mitre-tactic STIX IDs corresponding to the tactics of the matrix. The order determines the appearance within the matrix."
+                }
+            },
+            "required": [
+                "type",
+                "tactic_refs"
+            ]
+        }
+    ]
+}
