@@ -1,0 +1,33 @@
+{
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/sdos/tool.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Software (Tool)",
+    "description": "Tool used within the ATT&CK framework.",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "http://raw.githubusercontent.com/oasis-open/cti-stix2-json-schemas/stix2.1/schemas/common/core.json"
+        },
+        {
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "tool"
+                    ]
+                },
+                "x_mitre_platforms": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_platforms.json"
+                },
+                "x_mitre_aliases": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_aliases.json"
+                }
+            },
+            "required": [
+                "type",
+                "x_mitre_platforms",
+                "x_mitre_aliases"
+            ]
+        }
+    ]
+}
