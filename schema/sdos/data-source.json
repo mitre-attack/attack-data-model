@@ -1,0 +1,34 @@
+{
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/sdos/data-source.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "ATT&CK Data Source",
+    "description": "Represents an ATT&CK Data Source as a custom STIX object.",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "http://raw.githubusercontent.com/oasis-open/cti-stix2-json-schemas/stix2.1/schemas/common/core.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": [
+                "x-mitre-data-source"
+            ]
+        },
+        "x_mitre_platforms": {
+            "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_platforms.json"
+        },
+        "x_mitre_collection_layers": {
+            "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_collection_layers.json"
+        }
+    },
+    "required": [
+        "type",
+        "id",
+        "created",
+        "modified",
+        "x_mitre_platforms",
+        "x_mitre_collection_layers"
+    ]
+}
