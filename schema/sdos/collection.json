@@ -1,0 +1,66 @@
+{
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/sdos/collection.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "ATT&CK Collection",
+    "description": "Represents a set of related ATT&CK objects within a collection.",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "http://raw.githubusercontent.com/oasis-open/cti-stix2-json-schemas/stix2.1/schemas/common/core.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": [
+                "x-mitre-collection"
+            ]
+        },
+        "x_mitre_version": {
+            "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_version.json"
+        },
+        "spec_version": {
+            "type": "string",
+            "enum": [
+                "2.1"
+            ],
+            "description": "The version of the STIX specification used to represent this object. For x-mitre-collection, the value MUST be 2.1."
+        },
+        "x_mitre_attack_spec_version": {
+            "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_attack_spec_version.json"
+        },
+        "x_mitre_contents": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "object_ref": {
+                        "type": "string",
+                        "description": "The id of the referenced object."
+                    },
+                    "object_modified": {
+                        "$ref": "http://raw.githubusercontent.com/oasis-open/cti-stix2-json-schemas/stix2.1/schemas/common/timestamp.json",
+                        "description": "The modified time of the referenced object. It MUST be an exact match for the modified time of the STIX object being referenced."
+                    }
+                },
+                "required": [
+                    "object_ref",
+                    "object_modified"
+                ]
+            }
+        }
+    },
+    "required": [
+        "type",
+        "id",
+        "name",
+        "created",
+        "modified",
+        "x_mitre_version",
+        "spec_version",
+        "x_mitre_attack_spec_version",
+        "created_by_ref",
+        "object_marking_refs",
+        "x_mitre_contents"
+    ]
+}
