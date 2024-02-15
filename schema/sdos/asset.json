@@ -1,0 +1,46 @@
+{
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/sdos/asset.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "x-mitre-asset",
+    "description": "Defines an Asset within the ATT&CK framework, representing a piece of technology, software, hardware, or other entity relevant to understanding adversary behavior and capabilities.",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "http://raw.githubusercontent.com/oasis-open/cti-stix2-json-schemas/stix2.1/schemas/common/core.json"
+        },
+        {
+            "properties": {
+                "x_mitre_sectors": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_sectors.json"
+                },
+                "x_mitre_related_assets": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_related_assets.json"
+                    },
+                    "description": "Related assets describe sector specific device names or aliases that may be commonly associated with the primary asset page name or functional description."
+                }
+            },
+            "required": [
+                "x_mitre_sectors",
+                "x_mitre_related_assets"
+            ]
+        }
+    ],
+    "required": [
+        "type",
+        "spec_version",
+        "id",
+        "created",
+        "modified",
+        "x_mitre_sectors",
+        "x_mitre_related_assets"
+    ],
+    "not": {
+        "properties": {
+            "type": {
+                "const": "x-mitre-asset"
+            }
+        }
+    }
+}

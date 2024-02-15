@@ -1,1 +1,12 @@
-// TODO Define this directly in the x-mitre-asset SDO/object schema
+{
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_sectors.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "x-mitre-sectors",
+    "description": "List of industry sector(s) an asset may be commonly observed in.",
+    "type": "array",
+    "items": {
+        "type": "string"
+    },
+    "minItems": 1,
+    "uniqueItems": true
+}
