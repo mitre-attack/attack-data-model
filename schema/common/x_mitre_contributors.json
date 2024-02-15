@@ -1,4 +1,5 @@
 {
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_contributors.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Contributors",
     "description": "People and organizations who have contributed to the object. Not found on relationship objects.",

@@ -1,4 +1,5 @@
 {
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_impact_type.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Impact Type",
     "description": "Denotes if the technique can be used for integrity or availability attacks. This property is applicable to Technique objects within the Enterprise domain, specifically those associated with the Impact tactic.",

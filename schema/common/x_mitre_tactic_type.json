@@ -1,4 +1,5 @@
 {
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_tactic_type.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Tactic Type",
     "description": "Categorizes mobile domain techniques based on the stage of adversary device access: before the adversary has access, after the adversary has gained access, or techniques that can be executed without the adversary having direct access to the device. This property is applicable to Technique objects within the Mobile domain.",

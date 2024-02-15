@@ -1,4 +1,5 @@
 {
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_platforms.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Platforms",
     "description": "List of platforms that apply to the technique. This property is applicable to all Technique objects across the ATT&CK framework, indicating the specific computing environments or ecosystems where the technique can be executed.",

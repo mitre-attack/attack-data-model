@@ -1,4 +1,5 @@
 {
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_defense_bypassed.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Defense Bypassed",
     "description": "List of defensive tools, methodologies, or processes the technique can bypass. This property is applicable to ATT&CK Technique objects within the Enterprise domain, specifically those associated with the Defense Evasion tactic.",
