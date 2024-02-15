@@ -10,6 +10,12 @@
         },
         {
             "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "x-mitre-asset"
+                    ]
+                },
                 "x_mitre_sectors": {
                     "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_sectors.json"
                 },
