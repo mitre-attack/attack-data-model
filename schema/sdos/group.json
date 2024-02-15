@@ -1,3 +1,12 @@
 {
-    "$ref": "http://raw.githubusercontent.com/oasis-open/cti-stix2-json-schemas/stix2.1/schemas/sdos/intrusion-set.json"
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/sdos/group.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Group",
+    "description": "A Group in ATT&CK is defined as an intrusion-set object. ATT&CK Groups do not depart from the STIX intrusion-set spec.",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "http://raw.githubusercontent.com/oasis-open/cti-stix2-json-schemas/stix2.1/schemas/sdos/intrusion-set.json"
+        }
+    ]
 }

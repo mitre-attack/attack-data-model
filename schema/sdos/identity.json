@@ -1,3 +1,12 @@
 {
-    "$ref": "http://raw.githubusercontent.com/oasis-open/cti-stix2-json-schemas/stix2.1/schemas/sdos/identify.json"
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/sdos/identify.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Identity",
+    "description": "Referenced by created_by_ref and x_mitre_modified_by_ref to convey the creator and most recent modifier of each object.",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "http://raw.githubusercontent.com/oasis-open/cti-stix2-json-schemas/stix2.1/schemas/sdos/identify.json"
+        }
+    ]
 }

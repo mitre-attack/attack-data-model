@@ -1,3 +1,12 @@
 {
-    "$ref": "http://raw.githubusercontent.com/oasis-open/cti-stix2-json-schemas/stix2.1/schemas/common/marking-definition.json"
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/sdos/marking-definition.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Marking Definition",
+    "description": "Referenced in the object_marking_refs of all objects to express the MITRE Corporation copyright",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "http://raw.githubusercontent.com/oasis-open/cti-stix2-json-schemas/stix2.1/schemas/common/marking-definition.json"
+        }
+    ]
 }
