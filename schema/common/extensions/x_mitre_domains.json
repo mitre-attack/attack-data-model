@@ -1,5 +1,5 @@
 {
-  "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_domains.json",
+  "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_domains.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "ATT&CK Domains",
   "description": "The technology domains an object belongs to within the ATT&CK framework. Most objects in ATT&CK belong to a single domain, but some objects can be included in multiple domains.",

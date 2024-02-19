@@ -1,0 +1,38 @@
+{
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/core.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "ATT&CK Base Object",
+    "description": "Base schema for all ATT&CK objects, extending OASIS STIX core.json with ATT&CK-specific properties.",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "http://raw.githubusercontent.com/oasis-open/cti-stix2-json-schemas/stix2.1/schemas/common/core.json"
+        },
+        {
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The name of the ATT&CK object."
+                },
+                "x_mitre_attack_spec_version": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_attack_spec_version"
+                },
+                "x_mitre_version": {
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_version"
+                }
+            },
+            "required": [
+                "name",
+                "x_mitre_attack_spec_version",
+                "x_mitre_version"
+            ]
+        }
+    ],
+    "required": [
+        "type",
+        "id",
+        "created",
+        "modified",
+        "spec_version"
+    ]
+}

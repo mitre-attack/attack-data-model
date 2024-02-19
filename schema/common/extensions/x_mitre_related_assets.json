@@ -1,5 +1,5 @@
 {
-    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_related_assets.json",
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_related_assets.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "x-mitre-related-assets",
     "description": "Related assets describe sector specific device names or alias that may be commonly associated with the primary asset page name or functional description.",
@@ -16,7 +16,7 @@
                 "description": "A description of how the related asset is associated with the page definition."
             },
             "sectors": {
-                "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_sectors.json",
+                "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_sectors.json",
                 "description": "List of industry sectors the related asset is commonly observed in."
             }
         },

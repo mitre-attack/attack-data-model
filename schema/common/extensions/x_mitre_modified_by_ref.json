@@ -1,5 +1,5 @@
 {
-    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_modified_by_ref.json",
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_modified_by_ref.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Modified By Reference",
     "description": "The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations. This identifier allows for the attribution of modifications and the tracking of contributions over time.",

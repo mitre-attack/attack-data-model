@@ -1,5 +1,5 @@
 {
-    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/sdos/sub-technique.json",
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/sdos/subtechnique.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Sub-Technique",
     "description": "Defines a sub-technique within the ATT&CK framework.",

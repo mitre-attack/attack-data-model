@@ -11,37 +11,37 @@
         {
             "properties": {
                 "x_mitre_detection": {
-                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_detection.json"
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_detection.json"
                 },
                 "x_mitre_platforms": {
-                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_platforms.json"
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_platforms.json"
                 },
                 "x_mitre_data_sources": {
-                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_data_sources.json"
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_data_sources.json"
                 },
                 "x_mitre_is_subtechnique": {
-                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_is_subtechnique.json"
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_is_subtechnique.json"
                 },
                 "x_mitre_system_requirements": {
-                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_system_requirements.json"
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_system_requirements.json"
                 },
                 "x_mitre_tactic_type": {
-                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_tactic_type.json"
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_tactic_type.json"
                 },
                 "x_mitre_permissions_required": {
-                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_permissions_required.json"
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_permissions_required.json"
                 },
                 "x_mitre_effective_permissions": {
-                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_effective_permissions.json"
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_effective_permissions.json"
                 },
                 "x_mitre_defense_bypassed": {
-                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_defense_bypassed.json"
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_defense_bypassed.json"
                 },
                 "x_mitre_remote_support": {
-                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_remote_support.json"
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_remote_support.json"
                 },
                 "x_mitre_impact_type": {
-                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_impact_type.json"
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_impact_type.json"
                 }
             },
             "required": [

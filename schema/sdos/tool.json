@@ -17,10 +17,10 @@
                     ]
                 },
                 "x_mitre_platforms": {
-                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_platforms.json"
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_platforms.json"
                 },
                 "x_mitre_aliases": {
-                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_aliases.json"
+                    "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_aliases.json"
                 }
             },
             "required": [

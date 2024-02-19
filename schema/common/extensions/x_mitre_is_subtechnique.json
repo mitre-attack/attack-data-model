@@ -1,5 +1,5 @@
 {
-    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_is_subtechnique.json",
+    "$id": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_is_subtechnique.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Is Sub-Technique",
     "description": "Indicates whether an attack-pattern object is a sub-technique. If true, this object is a sub-technique and has a 'subtechnique-of' relationship where the source_ref is the sub-technique and the target_ref is the parent technique. A sub-technique can only have one parent technique, but techniques can have multiple sub-techniques. This property is applicable to objects within the Enterprise domain.",

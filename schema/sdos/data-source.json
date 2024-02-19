@@ -6,7 +6,7 @@
     "type": "object",
     "allOf": [
         {
-            "$ref": "http://raw.githubusercontent.com/oasis-open/cti-stix2-json-schemas/stix2.1/schemas/common/core.json"
+            "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/attack-base-object.json"
         }
     ],
     "properties": {
@@ -17,10 +17,10 @@
             ]
         },
         "x_mitre_platforms": {
-            "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_platforms.json"
+            "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_platforms.json"
         },
         "x_mitre_collection_layers": {
-            "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/x_mitre_collection_layers.json"
+            "$ref": "https://raw.githubusercontent.com/mitre-attack/attack-data-model/main/schema/common/extensions/x_mitre_collection_layers.json"
         }
     },
     "required": [
