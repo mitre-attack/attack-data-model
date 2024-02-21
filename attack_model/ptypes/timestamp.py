@@ -1,8 +1,10 @@
 from typing import Annotated
 from pydantic import StringConstraints
 
-# Represents timestamps across the CTI specifications.
-# The format is an RFC3339 timestamp, with a required timezone specification of 'Z'.
+"""_summary_
+Represents timestamps across the CTI specifications.
+The format is an RFC3339 timestamp, with a required timezone specification of 'Z'.
+"""
 StixTimestamp = Annotated[
     str,
     StringConstraints(

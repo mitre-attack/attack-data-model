@@ -1,16 +1,18 @@
-from datetime import datetime
-from typing import Annotated, List, Optional
-from pydantic import BaseModel, Field, ConfigDict
+from typing import Annotated, Dict, List, Optional, get_type_hints
+from pydantic import BaseModel, Field, ConfigDict, root_validator
 
-# from types.type import StixType
-from ..ptypes import StixIdentifier, StixTimestamp, StixType, StixSpecVersion
+from ...ptypes import StixIdentifier, StixTimestamp, StixType, StixSpecVersion
+
+from .custom_properties import STIXCustomPropertiesValidator
 from .external_reference import ExternalReference
+from .granular_marking import GranularMarking
+from .extension import StixExtension
 
 
 # Define a base class for common STIX 2.1 and ATT&CK properties
 class STIXObject(BaseModel):
 
-    model_config = ConfigDict(strict=True)
+    model_config = ConfigDict(strict=True, exta="allow")
 
     id: StixIdentifier = Field(..., description="The id property universally and uniquely identifies this object.")
 
@@ -30,7 +32,7 @@ class STIXObject(BaseModel):
     )
 
     spec_version: StixSpecVersion = Field(
-        "2.2", description="The version of the STIX specification used to represent this object."
+        "2.1", description="The version of the STIX specification used to represent this object."
     )
 
     created_by_ref: StixIdentifier = Field(
@@ -60,16 +62,31 @@ class STIXObject(BaseModel):
         ..., min_items=1, description="A list of external references which refers to non-STIX information."
     )
 
-    # object_marking_refs: Optional[List[str]]
-    # granular_markings: Optional[List[dict]]
-    # extensions: Optional[dict]
+    object_marking_refs: List[StixIdentifier] = Field(
+        ..., description="The list of marking-definition objects to be applied to this object."
+    )
 
+    granular_markings: List[GranularMarking] = Field(
+        default_factory=list,  # Use default_factory for mutable defaults
+        description="The set of granular markings that apply to this object.",
+        min_items=1,
+    )
 
-#### TEST
-import json
+    extensions: Dict[str, StixExtension] = Field(
+        default_factory=dict, description="Specifies any extensions of the object, as a dictionary."
+    )
 
-schema = STIXObject.schema()
-
-schema_json = json.dumps(schema, indent=4)
-
-print(schema_json)
+    # Predefined STIX properties...
+    @root_validator(pre=True)
+    def validate_custom_properties(cls, values):
+        errors = []
+        predefined_fields = set(get_type_hints(cls).keys())
+        for field_name, field_value in values.items():
+            if field_name not in predefined_fields:
+                if not STIXCustomPropertiesValidator.validate_property_name(field_name):
+                    errors.append(f"Invalid custom property name '{field_name}'.")
+                if not STIXCustomPropertiesValidator.validate_property_value(field_value):
+                    errors.append(f"Invalid value for custom property '{field_name}'.")
+        if errors:
+            raise ValueError(" ; ".join(errors))
+        return values

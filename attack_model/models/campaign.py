@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional, Union
 from pydantic import HttpUrl
 
-from .base import STIXObject
+from .common.base import STIXObject
 
 
 # Define specific properties for MITRE ATT&CK Campaign
