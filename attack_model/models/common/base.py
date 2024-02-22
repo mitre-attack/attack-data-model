@@ -11,7 +11,7 @@ from .granular_marking import GranularMarking
 # Define a base class for common STIX 2.1 and ATT&CK properties
 class STIXObject(BaseModel):
 
-    model_config = ConfigDict(strict=True, exta="allow")
+    model_config = ConfigDict(strict=True, extra="allow")
 
     id: StixIdentifier = Field(..., description="The id property universally and uniquely identifies this object.")
 
