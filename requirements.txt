@@ -1,5 +1,6 @@
-black
-jsonschema
-isort
-mitreattack-python
-ruff
+# black
+# jsonschema
+# isort
+# mitreattack-python
+# ruff
+pandas==2.2.0

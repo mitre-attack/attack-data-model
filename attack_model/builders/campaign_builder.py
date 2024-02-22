@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Annotated, List, Optional, Union
 from pydantic import BaseModel, EmailStr, HttpUrl, StringConstraints, constr
 
-from models.campaign import AttackCampaign
+from ..models.campaign import AttackCampaign
 
 
 class AttackCampaignBuilder:

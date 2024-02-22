@@ -3,10 +3,9 @@ from pydantic import BaseModel, Field, ConfigDict, root_validator
 
 from ...ptypes import StixIdentifier, StixTimestamp, StixType, StixSpecVersion
 
-from .custom_properties import STIXCustomPropertiesValidator
 from .external_reference import ExternalReference
 from .granular_marking import GranularMarking
-from .extension import StixExtension
+# from .extension import StixExtension # TODO extensions are not working yet, need to figure out how to use RootModel
 
 
 # Define a base class for common STIX 2.1 and ATT&CK properties
@@ -72,21 +71,23 @@ class STIXObject(BaseModel):
         min_items=1,
     )
 
-    extensions: Dict[str, StixExtension] = Field(
-        default_factory=dict, description="Specifies any extensions of the object, as a dictionary."
-    )
+    # TODO extensions are not working yet, need to figure out how to use RootModel
+    # extensions: Dict[str, StixExtension] = Field(
+    #     default_factory=dict, description="Specifies any extensions of the object, as a dictionary."
+    # )
 
+    # TODO This needs further discussion. I think the STIXCustomPropertiesValidator would break/invalidate our objects.
     # Predefined STIX properties...
-    @root_validator(pre=True)
-    def validate_custom_properties(cls, values):
-        errors = []
-        predefined_fields = set(get_type_hints(cls).keys())
-        for field_name, field_value in values.items():
-            if field_name not in predefined_fields:
-                if not STIXCustomPropertiesValidator.validate_property_name(field_name):
-                    errors.append(f"Invalid custom property name '{field_name}'.")
-                if not STIXCustomPropertiesValidator.validate_property_value(field_value):
-                    errors.append(f"Invalid value for custom property '{field_name}'.")
-        if errors:
-            raise ValueError(" ; ".join(errors))
-        return values
+    # @root_validator(pre=True)
+    # def validate_custom_properties(cls, values):
+    #     errors = []
+    #     predefined_fields = set(get_type_hints(cls).keys())
+    #     for field_name, field_value in values.items():
+    #         if field_name not in predefined_fields:
+    #             if not STIXCustomPropertiesValidator.validate_property_name(field_name):
+    #                 errors.append(f"Invalid custom property name '{field_name}'.")
+    #             if not STIXCustomPropertiesValidator.validate_property_value(field_value):
+    #                 errors.append(f"Invalid value for custom property '{field_name}'.")
+    #     if errors:
+    #         raise ValueError(" ; ".join(errors))
+    #     return values
