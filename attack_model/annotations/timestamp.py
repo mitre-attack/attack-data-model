@@ -1,5 +1,5 @@
 from typing import Annotated
-from pydantic import StringConstraints
+from pydantic import Field, StringConstraints
 
 """_summary_
 Represents timestamps across the CTI specifications.
@@ -12,6 +12,6 @@ StixTimestamp = Annotated[
         to_upper=False,
         # Ensure the pattern matches the combined requirement:
         # RFC3339 with millisecond precision and 'Z' timezone.
-        pattern=r"^[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60)\.\d{3,}Z$",
-    )
+        pattern=r"^[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60)(\.[0-9]{3})?Z$",
+    ),
 ]

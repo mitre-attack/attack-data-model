@@ -1,5 +1,5 @@
 from typing import Annotated
-from pydantic import StringConstraints
+from pydantic import Field, StringConstraints
 
 
 # Define a custom type for the STIX type that matches the specified pattern and length constraints

@@ -10,14 +10,17 @@ MarkingRef = Annotated[str, StringConstraints(pattern=r"^marking-definition--")]
 
 
 class GranularMarking(BaseModel):
-
-    selectors: List[SelectorPattern] = Field(
-        ..., min_items=1, description="A list of selectors for content contained within the STIX object."
-    )
-
-    lang: Optional[str] = Field(None, description="Identifies the language of the text identified by this marking.")
-
-    marking_ref: MarkingRef = Field(
-        ...,
-        description="The marking_ref property specifies the ID of the marking-definition object that describes the marking.",
-    )
+    
+    selectors: Annotated[
+        List[SelectorPattern],
+        Field(min_items=1, description="A list of selectors for content contained within the STIX object."),
+    ]
+    
+    lang: Annotated[Optional[str], Field(description="Identifies the language of the text identified by this marking.")]
+    
+    marking_ref: Annotated[
+        MarkingRef,
+        Field(
+            description="The marking_ref property specifies the ID of the marking-definition object that describes the marking."
+        ),
+    ]

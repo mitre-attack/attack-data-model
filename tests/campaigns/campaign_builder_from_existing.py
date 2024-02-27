@@ -56,9 +56,11 @@ existing_campaign = {
     "x_mitre_last_seen_citation": "(Citation: ClearSky Lazarus Aug 2020)",
 }
 
+
 from attack_model.builders.campaign_builder import AttackCampaignBuilder
 
 builder = AttackCampaignBuilder().from_campaign(existing_campaign)
-modified_campaign = builder.set_name("Modified Campaign Name").build()
+# modified_campaign = builder.set_name("Modified Campaign Name").build()
+modified_campaign = builder.build()
 
-print(modified_campaign)
+print(modified_campaign.model_dump_json(indent=4, exclude_none=True))
