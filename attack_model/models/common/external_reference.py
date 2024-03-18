@@ -1,34 +1,26 @@
 from typing import Annotated, Optional
-from pydantic import BaseModel, Field, HttpUrl, root_validator
-
+from pydantic import BaseModel, Field, HttpUrl, model_validator
 
 class ExternalReference(BaseModel):
-
+    """
+    Model representing an external reference.
+    """
     source_name: Annotated[str, Field(description="The source within which the external-reference is defined")]
-
-    description: Annotated[Optional[str], Field(default=None, description="A human readable description")]
-
+    url: Annotated[Optional[HttpUrl], Field(default=None, description="A URL reference to an external resource.")]
     external_id: Annotated[
         Optional[str], Field(default=None, description="An identifier for the external reference content.")
     ]
+    description: Annotated[Optional[str], Field(default=None, description="A human-readable description")]
 
-    url: Annotated[Optional[HttpUrl], Field(default=None, description="A URL reference to an external resource.")]
-
-    @root_validator(pre=True)
-    def check_external_reference(cls, values):
-        source_name = values.get("source_name")
-        external_id = values.get("external_id")
-        description = values.get("description")
-        url = values.get("url")
-
-        # Implementing the conditional logic based on source_name and external_id patterns
-        if source_name in ["mitre-attack"]:
-            if not external_id:
-                raise ValueError(f"{source_name.upper()} references must include an 'external_id'.")
-        else:
-            # For other sources, at least one of external_id, description, or url must be provided
-            if not any([external_id, description, url]):
-                raise ValueError("Non-CVE/CAPEC references must include an 'external_id', 'description', or 'url'.")
-
-        # Additional pattern checks can be implemented as needed
-        return values
+    @model_validator(mode="after")
+    def validate_mitre_attack_reference(self):
+        if self.source_name == "mitre-attack":
+            if not self.url:
+                raise ValueError("URL is required when source_name is 'mitre-attack'")
+            if not self.external_id:
+                raise ValueError("external_id is required when source_name is 'mitre-attack'")
+            if not str(self.url).startswith("https://attack.mitre.org/"):
+                raise ValueError("URL must start with 'https://attack.mitre.org/' when source_name is 'mitre-attack'")
+            if not str(self.external_id).startswith(("T", "S", "G", "M", "C")):
+                raise ValueError("external_id must be a valid ATT&CK ID when source_name is 'mitre-attack'")
+        return self

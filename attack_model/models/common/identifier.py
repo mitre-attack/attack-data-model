@@ -1,9 +1,10 @@
-from pydantic import BaseModel, validator
 from uuid import UUID
 
+from pydantic import ValidationInfo
 
-# Define a list of valid suffixes for ATT&CK recognition
-VALID_SUFFIXES = [
+
+# Valid suffixes for ATT&CK recognition
+ATTACK_ID_SUFFIXES = [
     "attack-pattern",
     "campaign",
     "course-of-action",
@@ -23,23 +24,25 @@ VALID_SUFFIXES = [
 ]
 
 
-def validate_stix_id(v: str):
-    parts = v.split("--")
-    if len(parts) != 2:
-        raise ValueError("ID must contain a valid ATT&CK prefix and a UUIDv4")
-    prefix, uuid_str = parts
-    if prefix not in VALID_SUFFIXES:
-        raise ValueError(f"Invalid ATT&CK type prefix: {prefix}")
-    try:
-        UUID(uuid_str, version=4)
-    except ValueError:
-        raise ValueError(f"Invalid UUIDv4 format: {uuid_str}")
-    return v
+class STIXIdentifier(str):
+    """
+    Custom field representing a STIX identifier.
+    """
 
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
 
-class StixIdentifierModel(BaseModel):
-    id: str  # Keep it as a string to validate the full format including the prefix
-
-    @validator("id")
-    def validate_id(cls, v):
-        return validate_stix_id(v)
+    @classmethod
+    def validate(cls, value, field: ValidationInfo):
+        parts = value.split("--")
+        if len(parts) != 2:
+            raise ValueError("ID must contain a valid ATT&CK prefix and a UUIDv4")
+        prefix, uuid_str = parts
+        if prefix not in ATTACK_ID_SUFFIXES:
+            raise ValueError(f"Invalid ATT&CK type prefix: {prefix}")
+        try:
+            UUID(uuid_str, version=4)
+        except ValueError:
+            raise ValueError(f"Invalid UUIDv4 format: {uuid_str}")
+        return value
