@@ -12,6 +12,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "pydantic==2.6.1",
+        "pytest==8.0.2"
         # List other dependencies required by your package
     ],
     classifiers=[
