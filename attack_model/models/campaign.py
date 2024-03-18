@@ -1,25 +1,43 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Annotated, List, Optional
-from pydantic import Field, root_validator, validator
+from pydantic import Field, field_validator, model_validator
 
-from ..annotations.citation import Citation
-from .common.base import AttackBaseObject
-from .common.identifier import validate_stix_id
+from .common.base import AttackObject
+from .common.identifier import STIXIdentifier
 from .common.external_reference import ExternalReference
+from .common.timestamp import STIXTimestamp
+from .common.boolean import STIXBoolean
+from ..annotations.citation import Citation
 
 
-class AttackCampaign(AttackBaseObject):
-    # Inherited properties from AttackBaseObject and its superclasses are not redefined here.
+class AttackCampaign(AttackObject):
+
+    # Required fields
+    _required = [
+        "created_by_ref",
+        "revoked",
+        "external_references",
+        "object_marking_refs",
+        "description",
+        "aliases",
+        "first_seen",
+        "last_seen",
+        "x_mitre_first_seen_citation",
+        "x_mitre_last_seen_citation",
+        "x_mitre_modified_by_ref",
+        "x_mitre_deprecated",
+        "x_mitre_domains",
+    ]
 
     ############## REQUIRED PROPERTIES ##############
 
     created_by_ref: Annotated[
-        str,
+        STIXIdentifier,
         Field(description="The ID of the Source object that describes who created this object."),
     ]
 
     revoked: Annotated[
-        bool,
+        STIXBoolean,
         Field(description="The revoked property indicates whether the object has been revoked."),
     ]
 
@@ -29,7 +47,7 @@ class AttackCampaign(AttackBaseObject):
     ]
 
     object_marking_refs: Annotated[
-        List[str],
+        List[STIXIdentifier],
         Field(description="The list of marking-definition objects to be applied to this object."),
     ]
 
@@ -37,19 +55,19 @@ class AttackCampaign(AttackBaseObject):
 
     aliases: Annotated[List[str], Field(description="Aliases for the campaign.")]
 
-    first_seen: Annotated[datetime, Field(description="The date the campaign was first seen.")]
+    first_seen: Annotated[STIXTimestamp, Field(description="The date the campaign was first seen.")]
 
-    last_seen: Annotated[datetime, Field(description="The date the campaign was last seen.")]
+    last_seen: Annotated[STIXTimestamp, Field(description="The date the campaign was last seen.")]
 
     x_mitre_first_seen_citation: Citation
 
     x_mitre_last_seen_citation: Citation
 
     x_mitre_modified_by_ref: Annotated[
-        str, Field(description="Reference to the entity that last modified the campaign.")
+        STIXIdentifier, Field(description="Reference to the entity that last modified the campaign.")
     ]
 
-    x_mitre_deprecated: Annotated[bool, Field(description="Indicates if the campaign is deprecated.")]
+    x_mitre_deprecated: Annotated[STIXBoolean, Field(description="Indicates if the campaign is deprecated.")]
 
     x_mitre_domains: Annotated[
         List[str], Field(description="The domains that the campaign pertains to within the ATT&CK framework.")
@@ -57,50 +75,40 @@ class AttackCampaign(AttackBaseObject):
 
     ############## OPTIONAL PROPERTIES ##############
 
-    # Optional properties remain as initially defined, using Optional[] where necessary.
     x_mitre_contributors: Annotated[
         Optional[List[str]], Field(default=None, description="Contributors to the campaign.")
     ]
 
-    ############## VALIDATION METHODS ##############
+    ############## VALIDATORS ##############
 
-    @validator("created_by_ref")
-    def validate_created_by_ref(cls, v):
-        # Reuse StixIdentifierModel's validation logic
-        # Validate the single UUID string
-        return validate_stix_id(v)
-
-    @validator("object_marking_refs", each_item=True)
-    def validate_object_marking_refs(cls, v):
-        # Reuse StixIdentifierModel's validation logic
-        # Validate each UUID string in the list
-        return validate_stix_id(v)
-
-    @root_validator(pre=True)
-    def validate_external_references(cls, values):
-        external_references = values.get("external_references", [])
-        if not external_references:
-            raise ValueError("At least one external reference is required.")
-
-        # Check the first item for external_id
-        if "external_id" not in external_references[0]:
-            raise ValueError("The first external reference must include an 'external_id'.")
-
-        return values
-
-    @validator("created", "modified", "first_seen", "last_seen", pre=True)
-    def parse_datetime(cls, value):
-        if isinstance(value, str):
-            return datetime.fromisoformat(value.rstrip("Z"))
+    # TODO Consider using `FutureDate` instead. See: https://docs.pydantic.dev/2.0/usage/types/datetime/
+    @field_validator("first_seen", "last_seen", mode="after")
+    @classmethod
+    def validate_first_last_seen(cls, value):
+        # first_seen_dt = STIXTimestamp.stix_timestamp_str_to_datetime(value)
+        # if first_seen_dt > datetime.now(timezone.utc):
+        if value > datetime.now(timezone.utc):
+            raise ValueError("first_seen and last_seen cannot be in the future.")
         return value
 
-    @validator("x_mitre_deprecated", "revoked", pre=True)
-    def parse_str_to_bool(cls, v):
-        if isinstance(v, bool):
-            return v  # Return the value if it's already a bool
-        if isinstance(v, str):
-            if v.lower() == "true":
-                return True
-            elif v.lower() == "false":
-                return False
-        raise ValueError("Input should be a valid boolean")  # Raise an error for invalid inputs
+    @field_validator("x_mitre_domains")
+    @classmethod
+    def validate_x_mitre_domains(cls, value):
+        allowed_domains = ["enterprise-attack", "mobile-attack", "ics-attack"]
+        if not all(domain in allowed_domains for domain in value):
+            raise ValueError(f"x_mitre_domains must be one of: {', '.join(allowed_domains)}")
+        return value
+
+    @model_validator(mode="after")
+    @classmethod
+    def validate_first_before_last(cls, values):
+        fs = getattr(values, "first_seen", None)
+        ls = getattr(values, "last_seen", None)
+
+        if fs is None or ls is None:
+            raise ValueError("first_seen and last_seen are required.")
+
+        if fs > ls:
+            raise ValueError("first_seen cannot be after last_seen.")
+
+        return values
