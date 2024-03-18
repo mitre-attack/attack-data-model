@@ -60,7 +60,10 @@ existing_campaign = {
 from attack_model.builders.campaign_builder import AttackCampaignBuilder
 
 builder = AttackCampaignBuilder().from_campaign(existing_campaign)
+
+# ...modify some fields...
 # modified_campaign = builder.set_name("Modified Campaign Name").build()
+
 modified_campaign = builder.build()
 
-print(modified_campaign.model_dump_json(indent=4, exclude_none=True))
+print(modified_campaign.model_dump_json(indent=4, exclude_none=True, exclude="x_mitre_domains"))
