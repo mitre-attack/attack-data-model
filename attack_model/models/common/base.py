@@ -1,86 +1,34 @@
-from datetime import datetime
-from typing import Annotated, List, Optional
-from pydantic import BaseModel, Field, ConfigDict, validator, UUID4
+from typing import Annotated
+from pydantic import Field, validator
 
-from .granular_marking import GranularMarking
-
-from .identifier import StixIdentifierModel
-from .type import StixTypeModel
-from .spec_version import StixSpecVersionModel
-from .x_mitre_attack_spec_version import AttackSpecVersionModel
-from .x_mitre_version import MitreVersionModel
+from .core import STIXObject
 
 
-class CommonProperties(
-    StixIdentifierModel, StixTypeModel, StixSpecVersionModel, AttackSpecVersionModel, MitreVersionModel, BaseModel
-):
-    model_config = ConfigDict(
-        debug=True,
-        strict=True,
-        extra="allow",
-        # Custom JSON encoder for datetime objects to match the JavaScript toISOString() output
-        json_encoders={datetime: lambda dt: dt.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"},
-        arbitrary_types_allowed=True,
-    )
-
-    # Directly define common properties with appropriate metadata
+class AttackObject(STIXObject):
+    """
+    Model representing an ATT&CK object, which extends the base STIXObject with ATT&CK-specific fields.
+    """
 
     name: Annotated[str, Field(description="The name of the ATT&CK object.")]
-
-    created: Annotated[
-        datetime,
+    x_mitre_attack_spec_version: Annotated[
+        str,
         Field(
-            default_factory=datetime.utcnow,
-            description="The created property represents the time at which the first version of this object was created.",
+            default="2.0.0",
+            pattern=r"^\d+\.\d+\.\d+$",
+            description="The version of the ATT&CK spec used by the object. This field helps consuming software determine if the data format is supported. If the field is not present on an object, the spec version will be assumed to be 2.0.0. Refer to the ATT&CK CHANGELOG for all supported versions.",
+        ),
+    ]
+    x_mitre_version: Annotated[
+        str,
+        Field(
+            default="2.1",
+            pattern=r"^\d+\.\d+$",
+            description="Represents the version of the object in a 'major.minor' format, where both 'major' and 'minor' are integers. This versioning follows semantic versioning principles but excludes the patch number. The version number is incremented by ATT&CK when the content of the object is updated. This property does not apply to relationship objects.",
         ),
     ]
 
-    modified: Annotated[
-        datetime,
-        Field(
-            default_factory=datetime.utcnow,
-            description="The modified property represents the time that this particular version of the object was modified.",
-        ),
-    ]
-
-    # Custom validator to ensure datetime is in the correct format (if needed)
-    # Though primarily, we rely on serialization to handle the format
-
-    @validator("created", "modified", pre=True)
-    def check_datetime_format(cls, v):
-        # Verifies that all timestamp properties are valid Python datetime objects
-        if isinstance(v, datetime):
-            return v
-        raise ValueError("Invalid datetime format")
-
-
-# Define a base class for common STIX 2.1 and ATT&CK properties
-class AttackBaseObject(CommonProperties, BaseModel):
-
-    labels: Annotated[
-        Optional[List[str]],
-        Field(default=None, description="The labels property specifies a set of terms used to describe this object."),
-    ]
-
-    confidence: Annotated[
-        Optional[int],
-        Field(
-            default=None,
-            ge=0,
-            le=100,
-            description="Identifies the confidence that the creator has in the correctness of their data.",
-        ),
-    ]
-
-    lang: Annotated[
-        Optional[str], Field(default=None, description="Identifies the language of the text content in this object.")
-    ]
-
-    granular_markings: Annotated[
-        Optional[List[GranularMarking]],
-        Field(
-            default=None,
-            description="The set of granular markings that apply to this object.",
-            min_items=1,
-        ),
-    ]
+    @validator("external_references")
+    def validate_mitre_attack_reference(cls, v):
+        if not any(ref.source_name == "mitre-attack" for ref in v):
+            raise ValueError("At least one external reference with source_name 'mitre-attack' is required")
+        return v
