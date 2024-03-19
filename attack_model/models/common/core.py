@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, model_validator, validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import List, Literal, Optional, Union, Dict, Type, Annotated
 import re
 
@@ -84,11 +84,11 @@ class STIXObject(BaseModel):
     # Required fields
     _required = ["type", "spec_version", "id", "created", "modified"]
 
-    @validator("type")
+    @field_validator("type")
     def validate_type(cls, value):
         return STIXType.validate(value)
 
-    @validator("type")
+    @field_validator("type")
     def type_not_allowed(cls: Type["STIXObject"], value: str) -> str:
         """
         Validator to ensure the 'action' type is not allowed.
