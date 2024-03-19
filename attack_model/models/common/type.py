@@ -1,7 +1,15 @@
 from enum import Enum
 import re
 
-class STIXType(str, Enum):
+from typing import Annotated
+from typing_extensions import TypeAliasType
+
+from pydantic import PlainSerializer, ValidationInfo, AfterValidator
+from pydantic_core import core_schema
+from pydantic.json_schema import JsonSchemaValue
+
+
+class _STIXType(str, Enum):
     """
     Enumeration of supported STIX types in ATT&CK.
     """
@@ -20,16 +28,21 @@ class STIXType(str, Enum):
     IDENTITY = "identity"
 
     @classmethod
-    def validate(cls, value: str) -> "STIXType":
+    def __get_validators__(cls):
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, value: str, field: ValidationInfo = None) -> "STIXType":
         """
         Validate the input value against the enumeration and additional constraints.
-        
+
         Args:
             value (str): The value to validate.
-        
+            field (ValidationInfo, optional): Additional field validation information. Defaults to None.
+
         Returns:
             STIXType: The validated STIX type.
-        
+
         Raises:
             ValueError: If the input value is not a valid STIX type or fails the additional constraints.
         """
@@ -37,15 +50,30 @@ class STIXType(str, Enum):
             stix_type = cls(value)
         except ValueError:
             raise ValueError(f"Invalid STIX type: {value}")
-        
+
         if len(value) < 3:
             raise ValueError(f"STIX type must have a minimum length of 3: {value}")
-        
+
         if len(value) > 250:
             raise ValueError(f"STIX type must have a maximum length of 250: {value}")
-        
+
         pattern = r"^([a-z][a-z0-9]*)+(-[a-z0-9]+)*\-?$"
         if not re.match(pattern, value):
             raise ValueError(f"STIX type must match the pattern '{pattern}': {value}")
-        
+
         return stix_type
+
+    @classmethod
+    def __get_pydantic_json_schema__(cls, schema: core_schema.CoreSchema, handler) -> JsonSchemaValue:
+        json_schema = handler(schema)
+        json_schema["enum"] = [e.value for e in cls]
+        return json_schema
+
+    def __set__(self, instance, value):
+        self.validate(value)
+        instance.__dict__[self.name] = value
+
+
+STIXType = TypeAliasType(
+    "STIXType", Annotated[str, "some description", AfterValidator(lambda x: x in _STIXType.__members__.values())]
+)
