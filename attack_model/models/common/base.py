@@ -1,5 +1,5 @@
 from typing import Annotated
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .core import STIXObject
 
@@ -27,7 +27,7 @@ class AttackObject(STIXObject):
         ),
     ]
 
-    @validator("external_references")
+    @field_validator("external_references")
     def validate_mitre_attack_reference(cls, v):
         if not any(ref.source_name == "mitre-attack" for ref in v):
             raise ValueError("At least one external reference with source_name 'mitre-attack' is required")
