@@ -43,7 +43,7 @@ class AttackCampaign(AttackObject):
 
     external_references: Annotated[
         List[ExternalReference],
-        Field(min_items=1, description="A list of external references which refers to non-STIX information."),
+        Field(min_length=1, description="A list of external references which refers to non-STIX information."),
     ]
 
     object_marking_refs: Annotated[
