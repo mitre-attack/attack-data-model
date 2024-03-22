@@ -23,23 +23,20 @@
         ]
     },
     "required": [
-        "aliases": {
-            // OASIS campaign.json
-            "$comment": "Aliases are always included in ATT&CK Campaigns, but they are not explicitly required."
-        },
-        "created", // OASIS campaign.json (required)
-        "created_by_ref", // OASIS core.json 
-        "description", // OASIS campaign.json
-        "first_seen", // OASIS campaign.json 
-        "id", // OASIS campaign.json (required)
-        "last_seen", // OASIS campaign.json
-        "modified", // OASIS core.json (required)
-        "name", // OASIS campaign.json (required)
-        "object_marking_refs", // OASIS core.json
-        "revoked", // OASIS core.json
-        "spec_version", // OASIS core.json (required)
-        "type", // OASIS core.json (required)
-        "x_mitre_attack_spec_version", // ATT&CK core.json (required)
+        "aliases",
+        "created",
+        "created_by_ref",
+        "description",
+        "first_seen",
+        "id",
+        "last_seen",
+        "modified",
+        "name",
+        "object_marking_refs",
+        "revoked",
+        "spec_version",
+        "type",
+        "x_mitre_attack_spec_version",
         "x_mitre_deprecated",
         "x_mitre_domains",
         "x_mitre_first_seen_citation",
