@@ -11,6 +11,13 @@ from ..annotations.citation import Citation
 
 
 class __TEMPLATE__(AttackObject):
+    """
+    Template for creating ATT&CK objects. This class extends the AttackObject class
+    with specific fields and validations required for ATT&CK object types.
+    
+    Developers should use this class as a starting point for defining specific ATT&CK
+    object types and ensure all required fields and validations are properly implemented.
+    """
 
     # Required fields
     _required = [
