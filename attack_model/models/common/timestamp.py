@@ -58,7 +58,7 @@ class _STIXTimestamp(datetime):
         _source_type: Any,
         _handler: Callable[[Any], core_schema.CoreSchema],
     ) -> core_schema.CoreSchema:
-        
+
         def validate_from_str(input_value: str) -> datetime:
             return _STIXTimestamp.stix_timestamp_str_to_datetime(input_value)
 
@@ -76,16 +76,39 @@ class _STIXTimestamp(datetime):
         return handler(core_schema.str_schema())
 
     @classmethod
-    def __get_validators__(cls):
-        """
-        Get the validator functions for the _Timestamp class.
+    def __get_pydantic_core_schema__(
+        cls,
+        _source_type: Any,
+        _handler: Callable[[Any], core_schema.CoreSchema],
+    ) -> core_schema.CoreSchema:
 
-        This method is used by Pydantic to retrieve the validator functions for the _Timestamp class.
+        def validate_from_str(input_value: str) -> datetime:
+            return _STIXTimestamp.stix_timestamp_str_to_datetime(input_value)
 
-        Yields:
-            function: The validator function for the _Timestamp class.
-        """
-        yield cls.validate
+        return core_schema.union_schema(
+            [
+                # check if it's an instance first before doing any further work
+                core_schema.is_instance_schema(datetime),
+                core_schema.no_info_plain_validator_function(validate_from_str),
+            ],
+            serialization=core_schema.to_string_ser_schema(),
+        )
+
+    @classmethod
+    def __json_encoder__(self):
+        return self.datetime_to_stix_timestamp_str(self)
+
+    # @classmethod
+    # def __get_validators__(cls):
+    #     """
+    #     Get the validator functions for the _STIXTimestamp class.
+
+    #     This method is used by Pydantic to retrieve the validator functions for the _STIXTimestamp class.
+
+    #     Yields:
+    #         function: The validator function for the _STIXTimestamp class.
+    #     """
+    #     yield cls.validate
 
     @classmethod
     def validate(cls, value, field: ValidationInfo = None):
@@ -161,6 +184,7 @@ class _STIXTimestamp(datetime):
 
 STIXTimestamp = Annotated[
     _STIXTimestamp,
+    "Represents timestamps across the CTI specifications. The format is an RFC3339 timestamp, with a required timezone specification of 'Z'.",
     # PlainSerializer determines the shape of the output data when the model is dumped/exported to JSON
     PlainSerializer(lambda x: _STIXTimestamp.datetime_to_stix_timestamp_str(x), return_type=str),
 ]
