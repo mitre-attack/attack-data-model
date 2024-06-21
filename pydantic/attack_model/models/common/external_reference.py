@@ -1,15 +1,20 @@
 from typing import Annotated, Optional
 from pydantic import BaseModel, Field, HttpUrl, model_validator
 
+
 class ExternalReference(BaseModel):
     """
     Model representing an external reference.
     """
+
     source_name: Annotated[str, Field(description="The source within which the external-reference is defined")]
+
     url: Annotated[Optional[HttpUrl], Field(default=None, description="A URL reference to an external resource.")]
+
     external_id: Annotated[
         Optional[str], Field(default=None, description="An identifier for the external reference content.")
     ]
+
     description: Annotated[Optional[str], Field(default=None, description="A human-readable description")]
 
     @model_validator(mode="after")

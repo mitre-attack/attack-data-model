@@ -2,15 +2,15 @@ from datetime import datetime, timezone
 from typing import Annotated, List, Optional
 from pydantic import Field, field_validator, model_validator
 
-from .common.base import AttackObject
-from .common.identifier import STIXIdentifier
+from .common._attack_base import AttackBaseModel
+from ..annotations.identifier import _StixIdentifierCls
 from .common.external_reference import ExternalReference
 from .common.timestamp import STIXTimestamp
-from .common.boolean import STIXBoolean
+from ..annotations.stix_boolean import STIXBoolean
 from ..annotations.citation import Citation
 
 
-class __TEMPLATE__(AttackObject):
+class __TEMPLATE__(AttackBaseModel):
     """
     Template for creating ATT&CK objects. This class extends the AttackObject class
     with specific fields and validations required for ATT&CK object types.

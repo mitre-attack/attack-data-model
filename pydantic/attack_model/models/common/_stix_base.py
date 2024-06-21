@@ -2,38 +2,28 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import List, Literal, Optional, Union, Dict, Type, Annotated
 import re
 
-from .identifier import STIXIdentifier
-from .timestamp import STIXTimestamp
-from .type import STIXType
-from .boolean import STIXBoolean
+from ...annotations.identifier import StixIdentifier
+from ...annotations.stix.timestamp import STIXTimestamp
+from ...annotations.stix.type import StixType
+from ...annotations.stix.spec_version import StixSpecVersion
+from ...annotations.stix.boolean import STIXBoolean
+from ...annotations.stix.created_by_ref import StixCreatedByRef
+
 from .external_reference import ExternalReference
 from .granular_marking import GranularMarking
 from .extension import Extension
 
 
-class STIXObject(BaseModel):
+class StixBaseModel(BaseModel):
     """
     Model representing a STIX object, which is the base class for all STIX Domain Objects and STIX Relationship Objects.
     """
 
-    type: Annotated[
-        STIXType,
-        Field(
-            description="The type property identifies the type of STIX Object (SDO, Relationship Object, etc). The value of the type field MUST be one of the types defined by a STIX Object (e.g., indicator).",
-        ),
-    ]
-    spec_version: Annotated[
-        Literal["2.0", "2.1"],
-        Field(
-            default="2.1", 
-            description="The version of the STIX specification used to represent this object.", examples=["2.0", "2.1"]
-        ),
-    ]
-    id: Annotated[STIXIdentifier, Field(description="The id property universally and uniquely identifies this object.")]
-    created_by_ref: Annotated[
-        Optional[STIXIdentifier],
-        Field(default=None, description="The ID of the Source object that describes who created this object."),
-    ]
+    id: StixIdentifier
+    type: StixType
+    spec_version: StixSpecVersion
+    created_by_ref: StixCreatedByRef
+
     labels: Annotated[
         Optional[List[str]],
         Field(default=None, description="The labels property specifies a set of terms used to describe this object."),
@@ -70,7 +60,7 @@ class STIXObject(BaseModel):
         Field(default=None, description="A list of external references which refers to non-STIX information."),
     ]
     object_marking_refs: Annotated[
-        Optional[List[STIXIdentifier]],
+        Optional[List[StixIdentifier]],
         Field(default=None, description="The list of marking-definition objects to be applied to this object."),
     ]
     granular_markings: Annotated[
@@ -87,10 +77,10 @@ class STIXObject(BaseModel):
 
     @field_validator("type")
     def validate_type(cls, value):
-        return STIXType.validate(value)
+        return StixType.validate(value)
 
     @field_validator("type")
-    def type_not_allowed(cls: Type["STIXObject"], value: str) -> str:
+    def type_not_allowed(cls: Type["StixBaseModel"], value: str) -> str:
         """
         Validator to ensure the 'action' type is not allowed.
 

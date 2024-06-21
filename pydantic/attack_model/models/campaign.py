@@ -2,15 +2,15 @@ from datetime import datetime, timezone
 from typing import Annotated, List, Optional
 from pydantic import Field, field_validator, model_validator
 
-from .common.base import AttackObject
-from .common.identifier import STIXIdentifier
+from .common._attack_base import AttackBaseModel
+from ..annotations.identifier import _StixIdentifierCls
 from .common.external_reference import ExternalReference
-from .common.timestamp import STIXTimestamp
-from .common.boolean import STIXBoolean
+from ..annotations.stix_timestamp import STIXTimestamp
+from ..annotations.stix_boolean import STIXBoolean
 from ..annotations.citation import Citation
 
 
-class AttackCampaign(AttackObject):
+class AttackCampaign(AttackBaseModel):
 
     # Required fields
     _required = [
@@ -32,7 +32,7 @@ class AttackCampaign(AttackObject):
     ############## REQUIRED PROPERTIES ##############
 
     created_by_ref: Annotated[
-        STIXIdentifier,
+        _StixIdentifierCls,
         Field(description="The ID of the Source object that describes who created this object."),
     ]
 
@@ -47,7 +47,7 @@ class AttackCampaign(AttackObject):
     ]
 
     object_marking_refs: Annotated[
-        List[STIXIdentifier],
+        List[_StixIdentifierCls],
         Field(description="The list of marking-definition objects to be applied to this object."),
     ]
 
@@ -64,7 +64,7 @@ class AttackCampaign(AttackObject):
     x_mitre_last_seen_citation: Citation
 
     x_mitre_modified_by_ref: Annotated[
-        STIXIdentifier, Field(description="Reference to the entity that last modified the campaign.")
+        _StixIdentifierCls, Field(description="Reference to the entity that last modified the campaign.")
     ]
 
     x_mitre_deprecated: Annotated[STIXBoolean, Field(description="Indicates if the campaign is deprecated.")]

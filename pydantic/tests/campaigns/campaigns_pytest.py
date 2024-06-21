@@ -1,4 +1,6 @@
 import os
+import json
+from datetime import datetime, timedelta, timezone
 import pytest
 import pandas as pd
 from pydantic import ValidationError
@@ -55,6 +57,75 @@ def test_reset_method(builder):
     """
     builder.set_name("Test Campaign").reset()
     assert builder.campaign_info.get("name") == "", "The reset method should clear the campaign name"
+
+
+def test_campaign_model():
+    # Test case 1: Valid campaign data
+    valid_campaign_data = {
+        "type": "campaign",
+        "id": "campaign--0257b35b-93ef-4a70-80dd-ad5258e6045b",
+        "spec_version": "2.1",
+        "x_mitre_attack_spec_version": "3.2.0",
+        "name": "Operation Dream Job",
+        "x_mitre_version": "1.1",
+        "description": "Description of Operation Dream Job",
+        "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+        "created": "2023-03-17T13:37:42.596Z",
+        "modified": "2023-09-27T20:12:54.984Z",
+        "object_marking_refs": ["marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"],
+        "x_mitre_domains": ["enterprise-attack"],
+        "external_references": [
+            {"source_name": "mitre-attack", "url": "https://attack.mitre.org/campaigns/C0022", "external_id": "C0022"},
+        ],
+        "x_mitre_modified_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+        "x_mitre_deprecated": False,
+        "revoked": False,
+        "aliases": ["Operation Dream Job", "Operation North Star", "Operation Interception"],
+        "first_seen": "2019-09-01T04:00:00.000Z",
+        "last_seen": "2020-08-01T04:00:00.000Z",
+        "x_mitre_first_seen_citation": "(Citation: ESET Lazarus Jun 2020)",
+        "x_mitre_last_seen_citation": "(Citation: ClearSky Lazarus Aug 2020)",
+    }
+
+    builder = AttackCampaignBuilder().from_campaign(valid_campaign_data)
+    campaign = builder.build()
+
+    # Verify that the timestamp fields are correctly deserialized into datetime objects
+    assert isinstance(campaign.created, datetime)
+    assert isinstance(campaign.modified, datetime)
+    assert isinstance(campaign.first_seen, datetime)
+    assert isinstance(campaign.last_seen, datetime)
+
+    # Verify that the timestamp fields are correctly serialized back to their string format
+    assert json.loads(campaign.model_dump_json(include="created"))["created"] == "2023-03-17T13:37:42.596Z"
+    assert json.loads(campaign.model_dump_json(include="modified"))["modified"] == "2023-09-27T20:12:54.984Z"
+    assert json.loads(campaign.model_dump_json(include="first_seen"))["first_seen"] == "2019-09-01T04:00:00.000Z"
+    assert json.loads(campaign.model_dump_json(include="last_seen"))["last_seen"] == "2020-08-01T04:00:00.000Z"
+
+    # Test case 2: Invalid timestamp format
+    invalid_campaign_data = valid_campaign_data.copy()
+    invalid_campaign_data["created"] = "2023-03-17"  # Invalid timestamp format
+    with pytest.raises(ValidationError):
+        builder = AttackCampaignBuilder().from_campaign(invalid_campaign_data)
+        builder.build()
+
+    # Test case 3: Timestamp in the future
+    future_campaign_data = valid_campaign_data.copy()
+    future_campaign_data["first_seen"] = (datetime.now(timezone.utc) + timedelta(days=1)).isoformat(
+        timespec="milliseconds"
+    ) + "Z"
+    with pytest.raises(ValidationError) as exc_info:
+        builder = AttackCampaignBuilder().from_campaign(future_campaign_data)
+        builder.build()
+    assert "Invalid timestamp format" in str(exc_info.value)
+
+    # Test case 4: first_seen after last_seen
+    invalid_order_campaign_data = valid_campaign_data.copy()
+    invalid_order_campaign_data["first_seen"] = "2020-09-01T04:00:00.000Z"
+    invalid_order_campaign_data["last_seen"] = "2019-08-01T04:00:00.000Z"
+    with pytest.raises(ValidationError, match="first_seen cannot be after last_seen."):
+        builder = AttackCampaignBuilder().from_campaign(invalid_order_campaign_data)
+        builder.build()
 
 
 # Test to validate that the builder can correctly create campaign objects from a dataset.

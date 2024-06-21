@@ -1,0 +1,31 @@
+class _MITRECustomProperties:
+    Version = "x_mitre_version"
+    AttackSpecVersion = "x_mitre_attack_spec_version"
+    FirstSeenCitation = "x_mitre_first_seen_citation"
+    LastSeenCitation = "x_mitre_last_seen_citation"
+    ModifiedByRef = "x_mitre_modified_by_ref"
+    Deprecated = "x_mitre_deprecated"
+    Domains = "x_mitre_domains"
+    Contributors = "x_mitre_contributors"
+
+
+class AttackProperties:
+    MITRE = _MITRECustomProperties
+    Id = "id"
+    Type = "type"
+    Name = "name"
+    SpecVersion = "spec_version"
+    Created = "created"
+    Modified = "modified"
+    CreatedByRef = "created_by_ref"
+    Description = "description"
+    Revoked = "revoked"
+    ExternalReferences = "external_references"
+    ObjectMarkingRefs = "object_marking_refs"
+    Aliases = "aliases"
+    FirstSeen = "first_seen"
+    LastSeen = "last_seen"
+    Labels = "labels"
+    Confidence = "confidence"
+    Lang = "lang"
+    GranularMarkings = "grandular_markings"

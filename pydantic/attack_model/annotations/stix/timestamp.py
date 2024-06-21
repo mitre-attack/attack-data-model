@@ -6,7 +6,7 @@ from typing import Annotated, Any, Callable
 from pydantic.json_schema import JsonSchemaValue
 from pydantic_core import CoreSchema, core_schema
 
-class _STIXTimestamp(datetime):
+class _StixTimestamp(datetime):
     """
     Custom field representing a timestamp following the RFC3339 format with a required timezone specification of 'Z'.
 
@@ -60,7 +60,7 @@ class _STIXTimestamp(datetime):
     ) -> core_schema.CoreSchema:
 
         def validate_from_str(input_value: str) -> datetime:
-            return _STIXTimestamp.stix_timestamp_str_to_datetime(input_value)
+            return _StixTimestamp.stix_timestamp_str_to_datetime(input_value)
 
         return core_schema.union_schema(
             [
@@ -83,7 +83,7 @@ class _STIXTimestamp(datetime):
     ) -> core_schema.CoreSchema:
 
         def validate_from_str(input_value: str) -> datetime:
-            return _STIXTimestamp.stix_timestamp_str_to_datetime(input_value)
+            return _StixTimestamp.stix_timestamp_str_to_datetime(input_value)
 
         return core_schema.union_schema(
             [
@@ -182,9 +182,9 @@ class _STIXTimestamp(datetime):
         return value.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
 
-STIXTimestamp = Annotated[
-    _STIXTimestamp,
+StixTimestamp = Annotated[
+    _StixTimestamp,
     "Represents timestamps across the CTI specifications. The format is an RFC3339 timestamp, with a required timezone specification of 'Z'.",
     # PlainSerializer determines the shape of the output data when the model is dumped/exported to JSON
-    PlainSerializer(lambda x: _STIXTimestamp.datetime_to_stix_timestamp_str(x), return_type=str),
+    PlainSerializer(lambda x: _StixTimestamp.datetime_to_stix_timestamp_str(x), return_type=str),
 ]

@@ -1,7 +1,7 @@
 import json
 import pytest
 from pydantic import BaseModel, ValidationError
-from attack_model.models.common.boolean import STIXBoolean
+from attack_model.annotations.stix_boolean import STIXBoolean
 
 
 class TestModel(BaseModel):

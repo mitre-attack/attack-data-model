@@ -4,12 +4,12 @@ import re
 from typing import Annotated
 from typing_extensions import TypeAliasType
 
-from pydantic import PlainSerializer, ValidationInfo, AfterValidator
+from pydantic import Field, ValidationInfo, AfterValidator
 from pydantic_core import core_schema
 from pydantic.json_schema import JsonSchemaValue
 
 
-class _STIXType(str, Enum):
+class _StixTypeCls(str, Enum):
     """
     Enumeration of supported STIX types in ATT&CK.
     """
@@ -32,7 +32,7 @@ class _STIXType(str, Enum):
         yield cls.validate
 
     @classmethod
-    def validate(cls, value: str, field: ValidationInfo = None) -> "STIXType":
+    def validate(cls, value: str, field: ValidationInfo = None) -> "_StixTypeAnnotation":
         """
         Validate the input value against the enumeration and additional constraints.
 
@@ -74,6 +74,15 @@ class _STIXType(str, Enum):
         instance.__dict__[self.name] = value
 
 
-STIXType = TypeAliasType(
-    "STIXType", Annotated[str, "some description", AfterValidator(lambda x: x in _STIXType.__members__.values())]
+_StixTypeAnnotation = TypeAliasType(
+    "STIXType", Annotated[str, "some description", AfterValidator(lambda x: x in _StixTypeCls.__members__.values())]
 )
+
+StixType = Annotated[
+    _StixTypeAnnotation,
+    Field(
+        description="The type property identifies the type of STIX Object (SDO, Relationship Object, etc). The value of the type field MUST be one of the types defined by a STIX Object (e.g., indicator).",
+    ),
+]
+
+__all__ = ["StixType"]

@@ -1,10 +1,10 @@
 import pytest
 from pydantic import BaseModel, ValidationError
-from attack_model.models.common.type import STIXType
+from attack_model.annotations.stix_type import _StixTypeAnnotation
 
 
 class TestType(BaseModel):
-    type_field: STIXType
+    type_field: _StixTypeAnnotation
 
 
 def test_stix_type():

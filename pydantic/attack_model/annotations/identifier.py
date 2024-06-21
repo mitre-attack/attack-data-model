@@ -1,6 +1,7 @@
+from typing import Annotated
 from uuid import UUID
 
-from pydantic import ValidationInfo
+from pydantic import Field, ValidationInfo
 
 
 # Valid suffixes for ATT&CK recognition
@@ -24,7 +25,7 @@ ATTACK_ID_SUFFIXES = [
 ]
 
 
-class STIXIdentifier(str):
+class _StixIdentifierCls(str):
     """
     Custom field representing a STIX identifier.
     """
@@ -46,3 +47,10 @@ class STIXIdentifier(str):
         except ValueError:
             raise ValueError(f"Invalid UUIDv4 format: {uuid_str}")
         return value
+
+
+StixIdentifier = Annotated[
+    _StixIdentifierCls, Field(description="The id property universally and uniquely identifies this object.")
+]
+
+__all__ = ["StixIdentifier"]
