@@ -7,14 +7,14 @@ const parsedId: StixIdentifier = StixIdentifierSchema.parse(id);
 
 console.log(parsedId);
 // {
-//   type: 'attack-pattern',
-//   uuid: '00000000-0000-4000-8000-000000000000',
-//   toString: [Function: toString]
+//     type: 'attack-pattern',
+//     uuid: '00000000-0000-4000-8000-000000000000',
+//     toString: [Function: toString],
+//     [Symbol(Symbol.toPrimitive)]: [Function: [Symbol.toPrimitive]]
 // }
 
-console.log(parsedId.type); // attack-pattern
-console.log(parsedId.uuid); // 00000000-0000-4000-8000-000000000000
-
+console.log(parsedId.type);       // attack-pattern
+console.log(parsedId.uuid);       // 00000000-0000-4000-8000-000000000000
 console.log(String(parsedId));    // attack-pattern--00000000-0000-4000-8000-000000000000
 console.log(`${parsedId}`);       // attack-pattern--00000000-0000-4000-8000-000000000000
 console.log(parsedId.toString()); // attack-pattern--00000000-0000-4000-8000-000000000000
@@ -31,11 +31,11 @@ try {
 }
 // Throws:
 // [
-// {
-//     code: 'custom',
-//     message: 'Invalid STIX identifier: type must be a valid STIX type and UUID must be a valid v4 UUID',
-//     path: []
-// }
+//     {
+//       code: 'custom',
+//       message: 'Invalid STIX Type: type must be a valid STIX type',
+//       path: []
+//     }
 // ]
 
 
@@ -49,9 +49,9 @@ try {
 }
 // Throws:
 // [
-// {
-//     code: 'custom',
-//     message: 'Invalid STIX identifier: type must be a valid STIX type and UUID must be a valid v4 UUID',
-//     path: []
-// }
+//     {
+//       code: 'custom',
+//       message: 'Invalid STIX identifier format: must comply with regex: /^[a-z-]+--[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i',
+//       path: []
+//     }
 // ]
