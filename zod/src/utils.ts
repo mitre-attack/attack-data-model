@@ -27,3 +27,40 @@ export function createSchemaWithMethods<T extends z.ZodTypeAny>(schema: T) {
         }
     }));
 }
+
+// Enhanced robustToJSON function with flattening support
+export function robustToJSON(obj: any, flatten: string[] = []): any {
+    if (obj === null || obj === undefined) {
+        return obj;
+    }
+
+    if (typeof obj !== 'object') {
+        return obj;
+    }
+
+    if (obj instanceof Date) {
+        return obj.toISOString();
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map(item => robustToJSON(item, flatten));
+    }
+
+    const result: Record<string, any> = {};
+    for (const [key, value] of Object.entries(obj)) {
+        if (typeof value !== 'function' && key !== 'toJSON') {
+            if (flatten.includes(key) && typeof value === 'object' && value !== null) {
+                // Flatten the object to a string representation
+                if ('toString' in value && typeof value.toString === 'function') {
+                    result[key] = value.toString();
+                } else {
+                    // Default flattening behavior if toString is not available
+                    result[key] = JSON.stringify(robustToJSON(value));
+                }
+            } else {
+                result[key] = robustToJSON(value, flatten);
+            }
+        }
+    }
+    return result;
+}
