@@ -1,6 +1,6 @@
-import { StixObjectSchema } from '../src/types/stix-object';
+import { SDOSchema } from '../src/schemas/sdo.schema';
 
-describe('StixObjectSchema', () => {
+describe('SDOSchema', () => {
   // Test valid object
   test('should validate a correct STIX object', () => {
     const validObject = {
@@ -10,7 +10,7 @@ describe('StixObjectSchema', () => {
       created: '2023-06-22T10:00:00.000Z',
       modified: '2023-06-22T10:00:00.000Z',
     };
-    expect(() => StixObjectSchema.parse(validObject)).not.toThrow();
+    expect(() => SDOSchema.parse(validObject)).not.toThrow();
   });
 
   // Test required fields
@@ -19,7 +19,7 @@ describe('StixObjectSchema', () => {
       id: 'indicator--12345678-1234-1234-1234-123456789012',
       type: 'indicator',
     };
-    expect(() => StixObjectSchema.parse(invalidObject)).toThrow();
+    expect(() => SDOSchema.parse(invalidObject)).toThrow();
   });
 
   // Test optional fields
@@ -36,7 +36,7 @@ describe('StixObjectSchema', () => {
       confidence: 85,
       lang: 'en',
     };
-    expect(() => StixObjectSchema.parse(objectWithOptionalFields)).not.toThrow();
+    expect(() => SDOSchema.parse(objectWithOptionalFields)).not.toThrow();
   });
 
   // Test confidence validation
@@ -49,7 +49,7 @@ describe('StixObjectSchema', () => {
       modified: '2023-06-22T10:00:00.000Z',
       confidence: 100,
     };
-    expect(() => StixObjectSchema.parse(objectWithInvalidConfidence)).toThrow();
+    expect(() => SDOSchema.parse(objectWithInvalidConfidence)).toThrow();
   });
 
   // Test invalid ID format
@@ -61,7 +61,7 @@ describe('StixObjectSchema', () => {
       created: '2023-06-22T10:00:00.000Z',
       modified: '2023-06-22T10:00:00.000Z',
     };
-    expect(() => StixObjectSchema.parse(objectWithInvalidId)).toThrow();
+    expect(() => SDOSchema.parse(objectWithInvalidId)).toThrow();
   });
 
   // Test invalid timestamp format
@@ -73,7 +73,7 @@ describe('StixObjectSchema', () => {
       created: '2023-06-22',
       modified: '2023-06-22T10:00:00.000Z',
     };
-    expect(() => StixObjectSchema.parse(objectWithInvalidTimestamp)).toThrow();
+    expect(() => SDOSchema.parse(objectWithInvalidTimestamp)).toThrow();
   });
 
   // Test external references
@@ -92,7 +92,7 @@ describe('StixObjectSchema', () => {
         },
       ],
     };
-    expect(() => StixObjectSchema.parse(objectWithExternalReferences)).not.toThrow();
+    expect(() => SDOSchema.parse(objectWithExternalReferences)).not.toThrow();
   });
 
   // Test extensions
@@ -109,7 +109,7 @@ describe('StixObjectSchema', () => {
         },
       },
     };
-    expect(() => StixObjectSchema.parse(objectWithExtensions)).not.toThrow();
+    expect(() => SDOSchema.parse(objectWithExtensions)).not.toThrow();
   });
 
   // Test strict mode (no additional properties)
@@ -122,6 +122,6 @@ describe('StixObjectSchema', () => {
       modified: '2023-06-22T10:00:00.000Z',
       additionalProp: 'This should not be here',
     };
-    expect(() => StixObjectSchema.parse(objectWithAdditionalProps)).toThrow();
+    expect(() => SDOSchema.parse(objectWithAdditionalProps)).toThrow();
   });
 });
