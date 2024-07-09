@@ -1,22 +1,42 @@
 import { z } from 'zod';
 
-import { StixIdentifierSchema } from './stix-identifier';
-import { StixTypeSchema } from "./stix-type";
-import { StixSpecVersionSchema } from './stix-spec-version';
-import { StixTimestampSchema } from './stix-timestamp';
-import { StixCreatedByRefSchema, ExternalReferenceSchema, ExtensionSchema, GranularMarkingSchema } from './misc';
+import { StixIdentifierSchema } from './property-schemas/stix-identifier';
+import { StixTypeSchema } from "./property-schemas/stix-type";
+import { StixSpecVersionSchema } from './property-schemas/stix-spec-version';
+import { StixTimestampSchema } from './property-schemas/stix-timestamp';
+import { StixCreatedByRefSchema, ExternalReferenceSchema, ExtensionSchema, GranularMarkingSchema } from './property-schemas/misc';
 
-export const StixObjectSchema = z
+
+export const StixCreatedTimestampSchema = StixTimestampSchema.brand<"StixCreatedTimestamp">();
+export type StixCreatedTimestamp = z.infer<typeof StixCreatedTimestampSchema>;
+
+export const StixModifiedTimestampSchema = StixTimestampSchema.brand<"StixModifiedTimestamp">();
+export type StixModifiedTimestamp = z.infer<typeof StixModifiedTimestampSchema>;
+
+// Helper functions to create branded types
+export function createStixCreatedTimestamp(value: string): StixCreatedTimestamp {
+    return StixCreatedTimestampSchema.parse(value);
+}
+
+export function createStixModifiedTimestamp(value: string): StixModifiedTimestamp {
+    return StixModifiedTimestampSchema.parse(value);
+}
+
+export const SDOSchema = z
     .object({
         id: StixIdentifierSchema
             .describe("The id property universally and uniquely identifies this object."),
         type: StixTypeSchema,
         spec_version: StixSpecVersionSchema
             .describe("The version of the STIX specification used to represent this object."),
-        created: StixTimestampSchema
+        created: StixCreatedTimestampSchema
+            .or(StixTimestampSchema)
+            // .pipe(StixCreatedTimestampSchema)
             .brand("StixCreatedTimestamp")
             .describe("The created property represents the time at which the first version of this object was created. The timstamp value MUST be precise to the nearest millisecond."),
-        modified: StixTimestampSchema
+        modified: StixModifiedTimestampSchema
+            .or(StixTimestampSchema)
+            // .pipe(StixModifiedTimestampSchema)
             .brand("StixModifiedTimestamp")
             .describe("The modified property represents the time that this particular version of the object was modified. The timstamp value MUST be precise to the nearest millisecond."),
         created_by_ref: StixCreatedByRefSchema
@@ -67,45 +87,6 @@ export const StixObjectSchema = z
         modified: true,
     })
     // Disallow unknown keys. If there are any unknown keys in the input, Zod will throw an error.
-    .strict()
-    // Add toJSON method for deserialization
-    .transform((obj, ctx) => {
-        return {
-            ...obj,
-            toJSON: function() {
-                const jsonObj: Record<string, any> = {};
-                for (const [key, value] of Object.entries(this)) {
-                    if (key !== 'toJSON') {
-                        if (key === 'external_references' && Array.isArray(value)) {
-                            jsonObj[key] = value.map(ref => {
-                                const { toJSON, ...rest } = ref;
-                                return rest;
-                            });
-                        } else if (key === 'granular_markings' && Array.isArray(value)) {
-                            jsonObj[key] = value.map(marking => {
-                                const { toJSON, ...rest } = marking;
-                                return {
-                                    ...rest,
-                                    marking_ref: rest.marking_ref.toString(),
-                                    selectors: Array.isArray(rest.selectors) ? [...rest.selectors] : rest.selectors
-                                };
-                            });
-                        } else if (key === 'object_marking_refs' && Array.isArray(value)) {
-                            jsonObj[key] = value.map(ref => ref.toString());
-                        } else if (key === 'extensions' && typeof value === 'object') {
-                            jsonObj[key] = JSON.parse(JSON.stringify(value));
-                        } else if (Array.isArray(value)) {
-                            jsonObj[key] = [...value];
-                        } else if (typeof value === 'object' && value !== null && 'toString' in value) {
-                            jsonObj[key] = value.toString();
-                        } else {
-                            jsonObj[key] = value;
-                        }
-                    }
-                }
-                return jsonObj;
-            }
-        };
-    });   
+    .strict();
 
-export type StixObject = z.infer<typeof StixObjectSchema>;
+export type SDO = z.infer<typeof SDOSchema>;
