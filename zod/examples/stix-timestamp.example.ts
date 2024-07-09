@@ -1,21 +1,19 @@
-import { StixTimestamp } from '../src/objects/stix-timestamp';
-import { StixTimestampSchema } from '../src/types/stix-timestamp'; 
+import { ZodError } from "zod";
+import { StixTimestamp, StixTimestampSchema } from "../src/schemas/property-schemas/stix-timestamp";
+
 
 // Usage example
 const parsedTimestamp: StixTimestamp = StixTimestampSchema.parse("2023-06-21T15:30:00Z");
 
 console.log(parsedTimestamp);
-// { value: 2023-06-21T15:30:00.000Z, toString: [Function: toString] }
+// 2023-06-21T15:30:00Z
 
-console.log(parsedTimestamp.value);
-// 2023-06-21T15:30:00.000Z
 
-console.log(parsedTimestamp.value.getFullYear()); // 2023
-console.log(parsedTimestamp.value.getMonth()); // 5
-console.log(parsedTimestamp.value.getDay()); // 3
+try {
+    const parsedTimestampBad: StixTimestamp = StixTimestampSchema.parse("2023-06-21T15:30:00"); // <-- removed the 'Z'
+    console.log(parsedTimestampBad);
+} catch (error) {
+    console.log((error as ZodError).flatten().formErrors[0])
+    // Invalid STIX timestamp format: must be an RFC3339 timestamp with a timezone specification of 'Z'.
+}
 
-console.log(Object.getPrototypeOf(parsedTimestamp));
-// [Object: null prototype] {}
-
-console.log(parsedTimestamp.toString());
-// "2023-06-21T15:30:00Z"

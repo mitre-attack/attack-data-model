@@ -1,24 +1,15 @@
 import { z } from "zod";
-import { StixIdentifier, StixIdentifierSchema } from "../src/types/stix-identifier";
-
+import { StixIdentifier, StixIdentifierSchema } from "../src/schemas/property-schemas/stix-identifier";
+import { StixIdentifierImpl } from "../src/classes/stix-identifier.cls";
 
 const id = 'attack-pattern--00000000-0000-4000-8000-000000000000';
 const parsedId: StixIdentifier = StixIdentifierSchema.parse(id);
 
-console.log(parsedId);
-// {
-//     type: 'attack-pattern',
-//     uuid: '00000000-0000-4000-8000-000000000000',
-//     toString: [Function: toString],
-//     [Symbol(Symbol.toPrimitive)]: [Function: [Symbol.toPrimitive]]
-// }
-
-console.log(parsedId.type);       // attack-pattern
-console.log(parsedId.uuid);       // 00000000-0000-4000-8000-000000000000
-console.log(String(parsedId));    // attack-pattern--00000000-0000-4000-8000-000000000000
-console.log(`${parsedId}`);       // attack-pattern--00000000-0000-4000-8000-000000000000
-console.log(parsedId.toString()); // attack-pattern--00000000-0000-4000-8000-000000000000
-console.log(parsedId + '');       // attack-pattern--00000000-0000-4000-8000-000000000000
+console.log(parsedId);                  // attack-pattern--00000000-0000-4000-8000-000000000000
+console.log(String(parsedId));          // attack-pattern--00000000-0000-4000-8000-000000000000
+console.log(`${parsedId}`);             // attack-pattern--00000000-0000-4000-8000-000000000000
+console.log(parsedId.toString());       // attack-pattern--00000000-0000-4000-8000-000000000000
+console.log(parsedId + '');             // attack-pattern--00000000-0000-4000-8000-000000000000
 
 
 try {
@@ -29,12 +20,12 @@ try {
         console.log(err.issues);
     }
 }
-// Throws:
 // [
 //     {
-//       code: 'custom',
-//       message: 'Invalid STIX Type: type must be a valid STIX type',
-//       path: []
+//         code: 'custom',
+//         message: 'Invalid STIX Identifier',
+//         fatal: true,
+//         path: []
 //     }
 // ]
 
@@ -47,11 +38,61 @@ try {
         console.log(err.issues);
     }
 }
-// Throws:
 // [
 //     {
-//       code: 'custom',
-//       message: 'Invalid STIX identifier format: must comply with regex: /^[a-z-]+--[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i',
-//       path: []
+//         code: 'custom',
+//         message: 'Invalid STIX Identifier',
+//         fatal: true,
+//         path: []
 //     }
 // ]
+
+
+const stixIdObject = new StixIdentifierImpl(id);
+
+console.log(stixIdObject);
+// StixIdentifierImpl {
+//     _page: {},
+//     _type: 'attack-pattern',
+//     _uuid: '00000000-0000-4000-8000-000000000000',
+//     _stix: { stix: 'attack-pattern--00000000-0000-4000-8000-000000000000' }
+// }
+
+console.log(`${stixIdObject}`);                             // attack-pattern--00000000-0000-4000-8000-000000000000
+console.log(stixIdObject.toString());                       // attack-pattern--00000000-0000-4000-8000-000000000000
+console.log(String(stixIdObject));                          // attack-pattern--00000000-0000-4000-8000-000000000000
+console.log(stixIdObject.toJSON());                         // { type: 'attack-pattern', uuid: '00000000-0000-4000-8000-000000000000' }
+console.log(stixIdObject instanceof StixIdentifierImpl);    // true
+
+
+try {
+    const badStixIdObject = new StixIdentifierImpl('foobar--00000000-0000-4000-8000-000000000000');
+} catch (err) {
+    if (err instanceof z.ZodError) {
+        console.log(err.issues);
+        // [
+        //     {
+        //       code: 'custom',
+        //       message: 'Invalid STIX Identifier',
+        //       fatal: true,
+        //       path: []
+        //     }
+        // ]
+    }
+}
+
+try {
+    const badStixIdObject = new StixIdentifierImpl('attack-pattern--12345');
+} catch (err) {
+    if (err instanceof z.ZodError) {
+        console.log(err.issues);
+        // [
+        //     {
+        //       code: 'custom',
+        //       message: 'Invalid STIX Identifier',
+        //       fatal: true,
+        //       path: []
+        //     }
+        // ]
+    }
+}
