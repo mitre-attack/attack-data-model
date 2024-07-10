@@ -1,4 +1,4 @@
-import { ExtensionSchema } from "../src/schemas/property-schemas/misc";
+import { ExtensionSchema } from "../src/schemas/common/misc";
 
 const example = {
     extension_type: "custom-extension",

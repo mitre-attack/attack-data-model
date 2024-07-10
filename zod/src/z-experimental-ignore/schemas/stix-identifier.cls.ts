@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { Z } from 'zod-class';
-import { StixTypeSchema } from '../../schemas/property-schemas/stix-type';
+import { StixTypeSchema } from '../../schemas/common/stix-type';
 
 // Helper function to validate UUID
 const isValidUuid = (uuid: string): boolean => {

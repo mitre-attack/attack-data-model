@@ -1,5 +1,5 @@
 import { ZodError, z } from "zod";
-import { StixObject, SDOSchema } from "../src/schemas/sdo.schema";
+import { StixObject, SDOSchema } from "../src/schemas/common/core-stix-sdo.schema";
 
 const validStixObject = {
     "id": "indicator--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3f",

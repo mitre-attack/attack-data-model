@@ -1,5 +1,5 @@
 import { ZodError } from "zod";
-import { StixTimestamp, StixTimestampSchema } from "../src/schemas/property-schemas/stix-timestamp";
+import { StixTimestamp, StixTimestampSchema } from "../src/schemas/common/stix-timestamp";
 
 
 // Usage example

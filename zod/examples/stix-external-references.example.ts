@@ -1,5 +1,5 @@
 import { ZodError } from "zod";
-import { ExternalReferenceSchema } from "../src/schemas/property-schemas/misc"
+import { ExternalReferenceSchema } from "../src/schemas/common/misc"
 
 const example = {
     "source_name": "ACME Threat Intel",

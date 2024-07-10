@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { StixIdentifier, StixIdentifierSchema } from "../src/schemas/property-schemas/stix-identifier";
+import { StixIdentifier, StixIdentifierSchema } from "../src/schemas/common/stix-identifier";
 import { StixIdentifierImpl } from "../src/classes/stix-identifier.cls";
 
 const id = 'attack-pattern--00000000-0000-4000-8000-000000000000';

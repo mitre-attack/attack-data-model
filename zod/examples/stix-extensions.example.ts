@@ -1,4 +1,4 @@
-import { ExtensionsSchema, Extension } from "../src/schemas/property-schemas/misc";
+import { ExtensionsSchema, Extension } from "../src/schemas/common/misc";
 
 const example = {
     "extension1": {

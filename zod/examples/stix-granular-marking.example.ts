@@ -1,5 +1,5 @@
 import { ZodError } from "zod";
-import { GranularMarkingSchema } from "../src/schemas/property-schemas/misc";
+import { GranularMarkingSchema } from "../src/schemas/common/misc";
 
 const validExample = {
     marking_ref: "marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da",

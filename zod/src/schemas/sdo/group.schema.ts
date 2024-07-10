@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { SDOSchema } from "./sdo.schema";
-import { StixTypeSchema } from "./property-schemas/stix-type";
+import { SDOSchema } from "../common/core-stix-sdo.schema";
+import { StixTypeSchema } from "../common/stix-type";
 
 // Group Schema
 export const GroupSchema = SDOSchema.extend({

@@ -1,4 +1,4 @@
-import { SDOSchema } from '../src/schemas/sdo.schema';
+import { SDOSchema } from '../src/schemas/common/core-stix-sdo.schema';
 
 describe('SDOSchema', () => {
   // Test valid object

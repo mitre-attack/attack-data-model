@@ -1,4 +1,4 @@
-import { SDOSchema, SDO } from "../schemas/sdo.schema";
+import { SDOSchema, SDO } from "../schemas/common/core-stix-sdo.schema";
 
 export class SDOImpl {
     private readonly _data: SDO;

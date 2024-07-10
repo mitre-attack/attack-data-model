@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import { Z } from 'zod-class';
 
-import { StixIdentifierSchema } from '../../schemas/property-schemas/stix-identifier';
-import { StixTypeSchema } from "../../schemas/property-schemas/stix-type";
-import { StixSpecVersionSchema } from '../../schemas/property-schemas/stix-spec-version';
-import { StixTimestampSchema } from '../../schemas/property-schemas/stix-timestamp';
-import { StixCreatedByRefSchema, ExternalReferenceSchema, ExtensionSchema, GranularMarkingSchema } from '../../schemas/property-schemas/misc';
+import { StixIdentifierSchema } from '../../schemas/common/stix-identifier';
+import { StixTypeSchema } from "../../schemas/common/stix-type";
+import { StixSpecVersionSchema } from '../../schemas/common/stix-spec-version';
+import { StixTimestampSchema } from '../../schemas/common/stix-timestamp';
+import { StixCreatedByRefSchema, ExternalReferenceSchema, ExtensionSchema, GranularMarkingSchema } from '../../schemas/common/misc';
 
 
 export class SDO extends Z.class({

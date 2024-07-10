@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import axios from 'axios';
 import fs from 'fs/promises';
-import { TechniqueSchema } from './schemas/technique.schema';
-import { TacticSchema } from './schemas/tactic.schema';
-import { GroupSchema } from './schemas/group.schema';
+import { TechniqueSchema } from './schemas/sdo/technique.schema';
+import { TacticSchema } from './schemas/sdo/tactic.schema';
+import { GroupSchema } from './schemas/sdo/group.schema';
 
 export class AttackDataModel {
     private techniques: Map<string, z.infer<typeof TechniqueSchema>> = new Map();

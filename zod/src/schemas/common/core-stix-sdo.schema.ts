@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
-import { StixIdentifierSchema } from './property-schemas/stix-identifier';
-import { StixTypeSchema } from "./property-schemas/stix-type";
-import { StixSpecVersionSchema } from './property-schemas/stix-spec-version';
-import { StixTimestampSchema } from './property-schemas/stix-timestamp';
-import { StixCreatedByRefSchema, ExternalReferenceSchema, ExtensionSchema, GranularMarkingSchema } from './property-schemas/misc';
+import { StixIdentifierSchema } from './stix-identifier';
+import { StixTypeSchema } from "./stix-type";
+import { StixSpecVersionSchema } from './stix-spec-version';
+import { StixTimestampSchema } from './stix-timestamp';
+import { StixCreatedByRefSchema, ExternalReferenceSchema, ExtensionSchema, GranularMarkingSchema } from './misc';
 
 
 export const StixCreatedTimestampSchema = StixTimestampSchema.brand<"StixCreatedTimestamp">();

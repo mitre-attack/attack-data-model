@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { StixIdentifier, StixIdentifierSchema } from "../schemas/property-schemas/stix-identifier";
-import { StixType, StixTypeSchema } from "../schemas/property-schemas/stix-type";
+import { StixIdentifier, StixIdentifierSchema } from "../schemas/common/stix-identifier";
+import { StixType, StixTypeSchema } from "../schemas/common/stix-type";
 import { StixProperty, initializeStixProperty } from "./abstract";
 
 const UuidSchema = z.string().uuid();

@@ -1,4 +1,4 @@
-import { StixCreatedByRefSchema } from "../src/schemas/property-schemas/misc";
+import { StixCreatedByRefSchema } from "../src/schemas/common/misc";
 
 const example = "identity--2d1c6ab3-5e4e-48ac-a32b-f0c01c2836a8";
 
