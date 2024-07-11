@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { SDOSchema } from './core-stix-sdo.schema';
-import { NameSchema } from '../common';
+import { NameSchema, StixIdentifierSchema } from '../common';
 
 // Define the Attack Domains as a Zod enum
 export const AttackDomains = z.enum([
@@ -28,7 +28,14 @@ export const AttackCoreSDOSchema = SDOSchema.extend({
 
     x_mitre_domains: z.array(AttackDomains)
         .default([AttackDomains.Values['enterprise-attack']])
-        .describe("The technology domains to which the ATT&CK object belongs.")
+        .describe("The technology domains to which the ATT&CK object belongs."),
+
+    x_mitre_deprecated: z.boolean()
+        .describe("Indicates whether the object has been deprecated.")
+        .optional(),
+
+    x_mitre_modified_by_ref: StixIdentifierSchema
+        .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."),
 });
 
 // Define the type for the ATT&CK Core SDO
