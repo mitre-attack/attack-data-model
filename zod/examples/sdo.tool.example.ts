@@ -6,14 +6,27 @@ const created: StixCreatedTimestamp = createStixCreatedTimestamp('2023-04-06T20:
 const modified: StixModifiedTimestamp = createStixModifiedTimestamp('2023-04-06T20:03:00.000Z');
 
 const sdoData = {
-    id: 'tool--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3f',
+    id: 'tool--11f8d7eb-1927-4806-9267-3a11d4d4d6be',
     type: 'tool',
-    description: 'test',
+    description: '[Sliver](https://attack.mitre.org/software/S0633) is an open source, cross-platform, red team command and control framework written in Golang.(Citation: Bishop Fox Sliver Framework August 2019)',
     spec_version: '2.1',
     created,
+    created_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
     modified,
+    x_mitre_aliases: [
+        "Sliver"
+    ],
+    x_mitre_contributors: [
+        "Achute Sharma, Keysight",
+        "Ayan Saha, Keysight"
+    ],
+    x_mitre_platforms: [
+        "Windows",
+        "Linux",
+        "macOS"
+    ],
     confidence: 85,
-    name: "S1098",
+    name: "Sliver",
     x_mitre_modified_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5"
 };
 

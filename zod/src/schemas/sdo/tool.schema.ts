@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
 import { StixTypeSchema } from "../common/stix-type";
-import { VersionSchema, NameSchema, DescriptionSchema, StixIdentifierSchema } from '../common';
+import { DescriptionSchema, PlatformsSchema, MitreContributorsSchema,StixCreatedByRefSchema } from '../common';
 import { StixIdentifierImpl } from "../../classes/stix-identifier.cls";
 
 // Custom error messages
@@ -27,14 +27,35 @@ export const ToolSchema = AttackCoreSDOSchema.extend({
         { message: "The 'id' property must be of type 'tool'" }
     ),
 
-    description: DescriptionSchema
-    // Add more fields specific to Tool...
+    description: DescriptionSchema,
+
+    created_by_ref: StixCreatedByRefSchema
+        .describe("The ID of the Source object that describes who created this object."),    
+    
+    x_mitre_platforms: PlatformsSchema,
+
+    x_mitre_contributors: MitreContributorsSchema,
+
+    x_mitre_aliases: z
+        .array(
+            z.string(), 
+            {
+                invalid_type_error: "Aliases must be an array of strings."
+            }
+        )
+        .describe("List of aliases for the given software.")
+        .optional(),
+        
+    labels: z
+        .array(
+            z.string(), 
+            {
+                invalid_type_error: "Labels must be an array of strings."
+            }
+        )
+        .describe("The kind(s) of tool(s) being described")
+        .optional()
 });
 
 // Define the type for Tool
 export type Tool = z.infer<typeof ToolSchema>;
-
-//created_by_ref is required
-//x_mitre_platforms
-//x_mitre_contributors
-//x_mitre_aliases
