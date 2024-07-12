@@ -21,4 +21,40 @@ export const DescriptionSchema = z.string()
 
 export type Description = z.infer<typeof DescriptionSchema>;
 
+export const PlatformsSchema = z
+    .array(z.string(), {
+        invalid_type_error: "Platforms must be an array of strings."
+    })
+    .describe("List of platforms that apply to the object.")
+    .optional()
+
+export type Platforms = z.infer<typeof PlatformsSchema>;
+
+export const MitreContributorsSchema = z
+    .array(z.string(), {
+        invalid_type_error: "Contributors must be an array of strings."
+    })
+    .describe("People and organizations who have contributed to the object.")
+    .optional()
+
+export type MitreContributors = z.infer<typeof MitreContributorsSchema>;
+
+export const KillChainNames = z.enum([
+    "mitre-attack",
+    "mitre-mobile-attack",
+    "mitre-ics-attack"
+]);
+  
+export type KillChainName = z.infer<typeof KillChainNames>;
+  
+export const KillChainPhaseSchema = z.object({
+    phase_name: z.string({
+        required_error: "Phase name is required.",
+        invalid_type_error: "Phase name must be a string."
+    }),
+    kill_chain_name: z.string(KillChainNames)
+});
+  
+export type KillChainPhase = z.infer<typeof KillChainPhaseSchema>;
+
 // ... other common properties ...
