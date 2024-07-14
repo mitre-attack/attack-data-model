@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
-import { StixTypeSchema } from "../common/stix-type";
-import { VersionSchema, NameSchema, DescriptionSchema } from '../common';
+import { DescriptionSchema, PlatformsSchema, MitreContributorsSchema,StixCreatedByRefSchema } from '../common';
 
 // Custom error messages
 const SoftwareError = {
@@ -14,14 +13,36 @@ const SoftwareError = {
 
 // Software Schema
 export const SoftwareSchema = AttackCoreSDOSchema.extend({
-    type: z.literal(StixTypeSchema.enum.tool, {
-        message: `'type' property must be equal to ${StixTypeSchema.enum.tool}`
-    }),
+    description: DescriptionSchema,
 
-    version: VersionSchema.optional(),
+    x_mitre_platforms: PlatformsSchema,
 
-    // Add more fields specific to software...
+    x_mitre_contributors: MitreContributorsSchema,
+
+    x_mitre_aliases: z
+        .array(
+            z.string(),
+            {
+                invalid_type_error: "Aliases must be an array of strings."
+            }
+        )
+        .describe("List of aliases for the given software.")
+        .optional(),
+        
+    labels: z
+        .array(
+            z.string(),
+            {
+                invalid_type_error: "Labels must be an array of strings."
+            }
+        )
+        .describe("The kind(s) of software(s) being described")
+        .optional()
 });
 
 // Define the type for Software
 export type Software = z.infer<typeof SoftwareSchema>;
+
+//creted by ref
+//is family
+//x_mitre_old_attack_id
