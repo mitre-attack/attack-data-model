@@ -25,17 +25,6 @@ export const AttackCoreSDOSchema = SDOSchema.extend({
         .regex(/^\d+\.\d+$/, "Must be in the format 'major.minor'")
         .default("2.1")
         .describe("Represents the version of the object in a 'major.minor' format, where both 'major' and 'minor' are integers. This versioning follows semantic versioning principles but excludes the patch number. The version number is incremented by ATT&CK when the content of the object is updated. This property does not apply to relationship objects."),
-
-    x_mitre_domains: z.array(AttackDomains)
-        .default([AttackDomains.Values['enterprise-attack']])
-        .describe("The technology domains to which the ATT&CK object belongs."),
-
-    x_mitre_deprecated: z.boolean()
-        .describe("Indicates whether the object has been deprecated.")
-        .optional(),
-
-    x_mitre_modified_by_ref: StixIdentifierSchema
-        .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."),
 });
 
 // Define the type for the ATT&CK Core SDO
