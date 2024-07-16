@@ -1,9 +1,8 @@
 import { z } from "zod";
 import { StixTypeSchema } from "../common/stix-type";
 import { StixIdentifierImpl } from "../../classes/stix-identifier.cls";
-import { AttackCoreSDOSchema, AttackDomains } from "../common/core-attack-sdo.schema";
+import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
 import { StixIdentifierSchema } from "../common/stix-identifier";
-import { SDOSchema } from "../common/core-stix-sdo.schema";
 
 // Custom error messages
 const IdentityError = {
@@ -27,11 +26,6 @@ export const IdentitySchema = AttackCoreSDOSchema.extend({
         },
         { message: "The 'id' property must be of type 'identity'" }
     ),
-
-    x_mitre_domains: z
-        .array(AttackDomains)
-        .default([AttackDomains.Values['enterprise-attack']])
-        .describe("The technology domains to which the ATT&CK object belongs."),
 
     object_marking_refs: z
     .array(StixIdentifierSchema)
