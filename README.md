@@ -1,6 +1,7 @@
 # ATT&CK Data Model
 
-This repository contains JSON schemas for the MITRE ATT&CK graph data model. The schemas provide a standardized way of representing the ATT&CK data, and can be used in various projects that work with this data.
+This repository contains JSON schemas for the MITRE ATT&CK graph data model.
+The schemas provide a standardized way of representing the ATT&CK data, and can be used in various projects that work with this data.
 
 ### Features
 
