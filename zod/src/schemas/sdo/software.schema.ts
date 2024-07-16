@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
-import { DescriptionSchema, PlatformsSchema, MitreContributorsSchema,StixCreatedByRefSchema } from '../common';
+import { DescriptionSchema, PlatformsSchema, MitreContributorsSchema,StixCreatedByRefSchema, StixIdentifierSchema } from '../common';
 
 // Custom error messages
 const SoftwareError = {
@@ -28,21 +28,11 @@ export const SoftwareSchema = AttackCoreSDOSchema.extend({
         )
         .describe("List of aliases for the given software.")
         .optional(),
-        
-    labels: z
-        .array(
-            z.string(),
-            {
-                invalid_type_error: "Labels must be an array of strings."
-            }
-        )
-        .describe("The kind(s) of software(s) being described")
-        .optional()
+
+    object_marking_refs: z
+        .array(StixIdentifierSchema)
+        .describe("The list of marking-definition objects to be applied to this object.")
 });
 
 // Define the type for Software
 export type Software = z.infer<typeof SoftwareSchema>;
-
-//creted by ref
-//is family
-//x_mitre_old_attack_id

@@ -28,8 +28,7 @@ export const ToolSchema = SoftwareSchema.extend({
     ),
 
     created_by_ref: StixCreatedByRefSchema
-    .describe("The ID of the Source object that describes who created this object."),
-
+    .describe("The ID of the Source object that describes who created this object.")
 
 });
 
