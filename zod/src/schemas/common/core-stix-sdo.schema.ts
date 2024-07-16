@@ -63,7 +63,8 @@ export const SDOSchema = z
             .optional(),
         external_references: z
             .array(ExternalReferenceSchema)
-            .describe("A list of external references which refers to non-STIX information."),
+            .describe("A list of external references which refers to non-STIX information.")
+            .optional(),
         object_marking_refs: z
             .array(StixIdentifierSchema)
             .describe("The list of marking-definition objects to be applied to this object.")
