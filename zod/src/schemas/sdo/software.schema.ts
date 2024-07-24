@@ -1,19 +1,27 @@
 import { z } from "zod";
 import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
-import { DescriptionSchema, PlatformsSchema, MitreContributorsSchema,StixCreatedByRefSchema, StixIdentifierSchema, ExternalReferenceSchema, AttackDomains } from '../common';
+import { DescriptionSchema, PlatformsSchema, MitreContributorsSchema, StixCreatedByRefSchema, StixIdentifierSchema, ExternalReferenceSchema, AttackDomains, StixTypeSchema, StixType, createStixIdentifierSchema } from '../common';
 
-// Custom error messages
-const SoftwareError = {
-    InvalidVersion: {
-        code: z.ZodIssueCode.custom,
-        message: "Software version must be a valid semantic version string",
-    },
-    // Add more custom error messages as needed
-};
+// Initializes the custom ZodErrorMap
+// TODO migrate to loading this in a globally scoped module
+import '../../errors'; 
+
 
 // Software Schema
 export const SoftwareSchema = AttackCoreSDOSchema.extend({
+
     description: DescriptionSchema,
+
+    created_by_ref: StixCreatedByRefSchema
+        .describe("The ID of the Source object that describes who created this object."),
+
+    external_references: z
+        .array(ExternalReferenceSchema)
+        .describe("A list of external references which refers to non-STIX information."),
+
+    object_marking_refs: z
+        .array(StixIdentifierSchema)
+        .describe("The list of marking-definition objects to be applied to this object."),
 
     x_mitre_platforms: PlatformsSchema,
 
@@ -32,14 +40,6 @@ export const SoftwareSchema = AttackCoreSDOSchema.extend({
     x_mitre_deprecated: z.boolean()
         .describe("Indicates whether the object has been deprecated.")
         .optional(),
-
-    external_references: z
-        .array(ExternalReferenceSchema)
-        .describe("A list of external references which refers to non-STIX information."),
-
-    object_marking_refs: z
-        .array(StixIdentifierSchema)
-        .describe("The list of marking-definition objects to be applied to this object."),
 
     x_mitre_modified_by_ref: StixIdentifierSchema
         .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."),
