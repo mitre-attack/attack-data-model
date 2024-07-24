@@ -25,6 +25,10 @@ export const AttackCoreSDOSchema = SDOSchema.extend({
         .regex(/^\d+\.\d+$/, "Must be in the format 'major.minor'")
         .default("2.1")
         .describe("Represents the version of the object in a 'major.minor' format, where both 'major' and 'minor' are integers. This versioning follows semantic versioning principles but excludes the patch number. The version number is incremented by ATT&CK when the content of the object is updated. This property does not apply to relationship objects."),
+
+    x_mitre_old_attack_id: z.string()
+        .describe("Old ATT&CK IDs that may have been associated with this object")
+        .optional(),
 });
 
 // Define the type for the ATT&CK Core SDO
