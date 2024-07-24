@@ -59,5 +59,14 @@ export const StixIdentifierSchema = z.custom<_StixIdentifier>(
     }
 ).describe("Represents identifiers across the CTI specifications. The format consists of the name of the top-level object being identified, followed by two dashes (--), followed by a UUIDv4.");
 
+export const createStixIdentifierSchema = (expectedType: StixType) =>
+    StixIdentifierSchema.refine(
+        (val) => val.split('--')[0] === expectedType,
+        (val) => ({
+            message: `The 'id' property must be of type '${expectedType}', but got '${val.split('--')[0]}'`,
+            path: ['id'],
+        })
+    );
+
 // Type inference
 export type StixIdentifier = z.infer<typeof StixIdentifierSchema>;

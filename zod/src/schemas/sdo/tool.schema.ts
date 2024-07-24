@@ -15,17 +15,9 @@ const ToolError = {
 
 // Tool Schema
 export const ToolSchema = SoftwareSchema.extend({
-    type: z.literal(StixTypeSchema.enum.tool, {
-        message: `'type' property must be equal to ${StixTypeSchema.enum.tool}`
-    }),
 
-    id: z.string().refine(
-        id => {
-            const parsedId = new StixIdentifierImpl(id);
-            return parsedId.type === "tool"
-        },
-        { message: "The 'id' property must be of type 'tool'" }
-    ),
+    id: createStixIdentifierSchema(StixTypeSchema.enum.tool),
+
 
     created_by_ref: StixCreatedByRefSchema
     .describe("The ID of the Source object that describes who created this object.")

@@ -15,17 +15,8 @@ const IdentityError = {
 
 // Identity Schema
 export const IdentitySchema = AttackCoreSDOSchema.extend({
-    type: z.literal(StixTypeSchema.enum.identity, {
-        message: `'type' property must be equal to ${StixTypeSchema.enum.identity}`
-    }),
 
-    id: z.string().refine(
-        id => {
-            const parsedId = new StixIdentifierImpl(id);
-            return parsedId.type === "identity"
-        },
-        { message: "The 'id' property must be of type 'identity'" }
-    ),
+    id: createStixIdentifierSchema(StixTypeSchema.enum.identity),
 
     object_marking_refs: z
     .array(StixIdentifierSchema)
