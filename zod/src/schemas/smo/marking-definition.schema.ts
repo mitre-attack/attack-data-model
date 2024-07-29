@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { StixTypeSchema } from "../common/stix-type";
 import { AttackDomains } from "../common/core-attack-sdo.schema";
+import { StixCreatedByRefSchema } from "../common";
 
 // Custom error messages
 const MarkingDefinitionSchemaError = {
@@ -20,15 +21,15 @@ const MarkingDefinitionSchemaError = {
 //   DONE "id": "Required",
 //   DONE "spec_version": "Required",
 //   DONE "x_mitre_attack_spec_version": "Required",
-//   DONE"created_by_ref": "Optional",
+//   DONE "created_by_ref": "Optional",
 //   DONE "created": "Required",
 //   DONE "x_mitre_domains": "Required",
-//   "definition_type": "Required",
-//   "definition": "Required"
-//   "external_references": "Optional",
-//   "object_marking_refs": "Optional",
-//   "granular_markings": "Optional"
-//   "name": "Optional"
+//   DONE"definition_type": "Required",
+//   DONE "definition": "Required"
+//   DONE"external_references": "Optional",
+//   DONE "object_marking_refs": "Optional",
+//   DONE "granular_markings": "Optional"
+//   DONE "name": "Optional"
 // }
 
 // MarkingDefinition Schema
@@ -43,10 +44,22 @@ export const MarkingDefinitionSchema = z.object({
 
   created: z.string().describe("The time when the object was created."),
 
+  created_by_ref: StixCreatedByRefSchema.describe(
+    "The ID of the Source object that describes who created this object."
+  ).optional(),
+
   x_mitre_domains: z
     .array(AttackDomains)
     .default([AttackDomains.Values["enterprise-attack"]])
     .describe("The technology domains to which the ATT&CK object belongs."),
+
+  x_mitre_attack_spec_version: z
+    .string()
+    .regex(/^\d+\.\d+\.\d+$/, "Must be in the format 'major.minor.patch'")
+    .default("2.0.0")
+    .describe(
+      "The version of the ATT&CK spec used by the object. This field helps consuming software determine if the data format is supported. If the field is not present on an object, the spec version will be assumed to be 2.0.0. Refer to the ATT&CK CHANGELOG for all supported versions."
+    ),
 
   definition_type: z
     .enum(["statement", "tlp"], {
