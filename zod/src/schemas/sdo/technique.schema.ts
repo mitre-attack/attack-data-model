@@ -1,24 +1,18 @@
 import { z } from 'zod';
 import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
 import { StixTypeSchema } from '../common/stix-type';
-import { MitreContributorsSchema, DescriptionSchema, KillChainPhaseSchema, PlatformsSchema, AttackDomains } from '../common';
+import { MitreContributorsSchema, DescriptionSchema, KillChainPhaseSchema, PlatformsSchema, AttackDomains, StixIdentifierSchema } from '../common';
 
-export const TacticTypes = z.enum([
+// Initializes the custom ZodErrorMap
+import '../../errors'; 
+
+export const MobileTacticTypes = z.enum([
     "Post-Adversary Device Access",
     "Pre-Adversary Device Access",
     "Without Adversary Device Access"
 ]);
 
-export type TacticType = z.infer<typeof TacticTypes>;
-
-// Custom error messages
-const TechniqueSchemaError = {
-    InvalidFormat: {
-        code: z.ZodIssueCode.custom,
-        message: "Custom error message for invalid format",
-    },
-    // Add more custom error messages as needed
-};
+export type MobileTacticType = z.infer<typeof MobileTacticTypes>;
 
 // Technique Schema
 export const TechniqueSchema = AttackCoreSDOSchema.extend({
@@ -100,23 +94,61 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
         .array(z.string(), {
             invalid_type_error: "x_mitre_network_requirements must be an array of strings."
         })
-        // TODO: describe()
         .optional(),
 
     x_mitre_tactic_type: z
-        .array(TacticTypes)
+        .array(MobileTacticTypes)
         .describe("'Post-Adversary Device Access', 'Pre-Adversary Device Access', or 'Without Adversary Device Access'.")
         .optional(),
+
+    x_mitre_deprecated: z
+        .boolean({
+            invalid_type_error: "x_mitre_deprecated must be a boolean."
+        })
+        .describe("Indicates whether the object has been deprecated.")
+        .optional(),
     
+    x_mitre_domains: z
+        .array(AttackDomains)
+        .default([AttackDomains.Values['enterprise-attack']])
+        .describe("The technology domains to which the ATT&CK object belongs."),
+
+    x_mitre_modified_by_ref: StixIdentifierSchema
+        .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."),
 })
 .required({
     name: true,
     type: true,
     kill_chain_phases: true,
-
     x_mitre_version: true,
     x_mitre_domains: true,
     x_mitre_is_subtechnique: true,
+})
+// validate common fields
+.superRefine(({external_references, x_mitre_is_subtechnique}, ctx) => {
+    // ATT&CK ID format
+    if (!external_references?.length) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "At least one external_reference must be specified."
+        });
+    } else {
+        let attackIdEntry = external_references[0];
+        if (!attackIdEntry.external_id) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "ATT&CK ID must be defined in the first external_references entry.",
+            });
+        } else {
+            let idRegex = x_mitre_is_subtechnique ? /^T\d{4}\.\d{3}$/ : /^T\d{4}$/;
+            if (!idRegex.test(attackIdEntry.external_id)) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: `The first external_reference must match the ATT&CK ID format ${x_mitre_is_subtechnique ? "Txxxx.xxx" : "Txxxx"}.`
+                });
+            }
+        }
+    }
 })
 // validate Enterprise only fields
 .superRefine(({x_mitre_domains,
@@ -193,19 +225,19 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
     let mobileDomain = AttackDomains.enum['mobile-attack'];
 
     // 'x_mitre_tactic_type' can only be populated for Mobile
-    let hasValidDomainForTacticType = x_mitre_domains.includes(mobileDomain);
-    if (x_mitre_tactic_type?.length && !hasValidDomainForTacticType) {
+    let hasValidDomain = x_mitre_domains.includes(mobileDomain);
+    if (x_mitre_tactic_type?.length && !hasValidDomain) {
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: "x_mitre_tactic_type is only supported in the 'enterprise-attack' domain.",
+            message: "x_mitre_tactic_type is only supported in the 'mobile-attack' domain.",
         })
     }
 })
 // validate multi-domain fields
 .superRefine(({x_mitre_domains, x_mitre_data_sources}, ctx) => {
     let validDomains = ['enterprise-attack', 'ics-attack'];
-    let hasValidDomainForDataSources = x_mitre_domains.some(d => validDomains.includes(d));
-    if (x_mitre_data_sources?.length && !hasValidDomainForDataSources) {
+    let hasValidDomain = x_mitre_domains.some(d => validDomains.includes(d));
+    if (x_mitre_data_sources?.length && !hasValidDomain) {
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "x_mitre_data_sources is not supported in the 'mobile-attack' domain.",
