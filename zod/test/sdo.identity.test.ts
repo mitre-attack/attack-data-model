@@ -1,4 +1,3 @@
-import { SDOSchema } from '../src/schemas/common/core-stix-sdo.schema';
 import { IdentitySchema } from "../src/schemas/sdo/identity.schema";
 
 describe('IdentitySchema', () => {
@@ -31,6 +30,26 @@ describe('IdentitySchema', () => {
       name: "The MITRE Corporation"
     };
     expect(() => IdentitySchema.parse(invalidObject)).toThrow();
+  });
+
+  // Test fields in STIX but not in ATT&CK
+  test('should validate object with fields in STIX but not in ATT&CK', () => {
+    const validObject = {
+      type: 'identity',
+      id: 'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5',
+      created: "2017-06-01T00:00:00.000Z",
+      modified: "2017-06-01T00:00:00.000Z",
+      object_marking_refs: [
+          "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+      ],
+      identity_class: "organization",
+      name: "The MITRE Corporation",
+      description: "identity object description",
+      roles: ["administrator"],
+      sectors: ["non-profit"],
+      contact_information: "attack@mitre.org"
+    };
+    expect(() => IdentitySchema.parse(validObject)).not.toThrow();
   });
 
   // Test invalid ID format

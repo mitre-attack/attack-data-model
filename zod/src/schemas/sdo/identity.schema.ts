@@ -9,8 +9,44 @@ import '../../errors';
 /**
  * Determine all possible values that can exist on identity_class
  */
-export const IdentityClassOV = z.enum(['organization']);
+export const IdentityClassOV = z.enum([
+    "individual",
+    "group",
+    "system",
+    "organization",
+    "class",
+    "unspecified"
+]);
 
+export const sectorsList = z.enum([
+    "agriculture",
+    "aerospace",
+    "automotive",
+    "communications",
+    "construction",
+    "defence",
+    "education",
+    "energy",
+    "entertainment",
+    "financial-services",
+    "government-national",
+    "government-regional",
+    "government-local",
+    "government-public-services",
+    "healthcare",
+    "hospitality-leisure",
+    "infrastructure",
+    "insurance",
+    "manufacturing",
+    "mining",
+    "non-profit",
+    "pharmaceuticals",
+    "retail",
+    "technology",
+    "telecommunications",
+    "transportation",
+    "utilities"
+])
 
 /**
  * Identity Schema
@@ -26,7 +62,34 @@ export const IdentitySchema = AttackCoreSDOSchema.extend({
         .describe("The list of marking-definition objects to be applied to this object."),
 
     identity_class: IdentityClassOV
-        .describe("The type of entity that this Identity describes, e.g., an individual or organization. This is an open vocabulary and the values SHOULD come from the identity-class-ov vocabulary.")
+        .describe("The type of entity that this Identity describes, e.g., an individual or organization. This is an open vocabulary and the values SHOULD come from the identity-class-ov vocabulary."),
+
+    description: z
+        .string()
+        .describe("A description of the object.")
+        .optional(),
+    
+    roles: z
+        .array(
+            z.string(),
+            {
+                invalid_type_error: "Roles must be an array of strings."
+            }
+        )
+        .describe("The list of roles that this Identity performs.")
+        .optional(),
+    
+    sectors: z
+        .array(
+            sectorsList,
+        )
+        .describe("The list of industry sectors that this Identity belongs to. This is an open vocabulary and values SHOULD come from the industry-sector-ov vocabulary.")
+        .optional(),
+    
+    contact_information: z
+        .string()
+        .describe("The contact information (e-mail, phone number, etc.) for this Identity.")
+        .optional()
 });
 
 // Define the type for Identity
