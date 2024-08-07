@@ -49,7 +49,7 @@ console.log("\nExample 1 - Valid Technique:");
 console.log(`SUCCESS ${TechniqueSchema.parse(validEnterpriseTechnique).name}`)
 
 /*************************************************************************************************** */
-// Example 2: Invalid Technique (ATT&CK ID does not match format Txxxx)
+// Example 2: Invalid Technique (ATT&CK ID does not match format T####)
 /*************************************************************************************************** */
 const invalidTechniqueID = {
 	...validEnterpriseTechnique,
@@ -62,7 +62,7 @@ const invalidTechniqueID = {
 	],
 };
 
-console.log("\nExample 2 - Invalid Technique (ATT&CK ID does not match format Txxxx):");
+console.log("\nExample 2 - Invalid Technique (ATT&CK ID does not match format T####):");
 try {
     TechniqueSchema.parse(invalidTechniqueID);
 } catch (error) {
@@ -74,7 +74,7 @@ try {
 	Validation errors: [
 	{
 		code: 'custom',
-		message: 'The first external_reference must match the ATT&CK ID format Txxxx.',
+		message: 'The first external_reference must match the ATT&CK ID format T####.',
 		path: []
 	}
 	]
@@ -134,7 +134,7 @@ console.log("\nExample 3 - Valid Subtechnique:");
 console.log(`SUCCESS ${TechniqueSchema.parse(validSubtechnique).name}`)
 
 /*************************************************************************************************** */
-// Example 4: Invalid Sub-technique (ATT&CK ID does not match format Txxxx.xxx)
+// Example 4: Invalid Sub-technique (ATT&CK ID does not match format T####.###)
 /*************************************************************************************************** */
 const invalidSubtechniqueID = {
 	...validSubtechnique,
@@ -152,7 +152,7 @@ const invalidSubtechniqueID = {
 	],
 }
 
-console.log("\nExample 4 - Invalid Subtechnique (ATT&CK ID does not match format Txxxx.xxx):");
+console.log("\nExample 4 - Invalid Subtechnique (ATT&CK ID does not match format T####.###):");
 try {
     TechniqueSchema.parse(invalidSubtechniqueID);
 } catch (error) {
@@ -164,7 +164,7 @@ try {
 	Validation errors: [
 	{
 		code: 'custom',
-		message: 'The first external_reference must match the ATT&CK ID format Txxxx.xxx.',
+		message: 'The first external_reference must match the ATT&CK ID format T####.###.',
 		path: []
 	}
 	]
