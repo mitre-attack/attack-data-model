@@ -25,7 +25,6 @@ export const GroupSchema = AttackCoreSDOSchema.extend({
 
     x_mitre_domains: z
         .array(AttackDomains)
-        .default([AttackDomains.Values["enterprise-attack"]])
         .describe("The technology domains to which the ATT&CK object belongs."),
 
     x_mitre_modified_by_ref: StixIdentifierSchema
