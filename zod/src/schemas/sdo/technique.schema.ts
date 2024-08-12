@@ -139,11 +139,11 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
                 message: "ATT&CK ID must be defined in the first external_references entry.",
             });
         } else {
-            let idRegex = x_mitre_is_subtechnique ? /^T\d{4}\.\d{3}$/ : /^T\d{4}$/;
+            let idRegex = x_mitre_is_subtechnique ? /T\d{4}\.\d{3}$/ : /T\d{4}$/;
             if (!idRegex.test(attackIdEntry.external_id)) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
-                    message: `The first external_reference must match the ATT&CK ID format ${x_mitre_is_subtechnique ? "Txxxx.xxx" : "Txxxx"}.`
+                    message: `The first external_reference must match the ATT&CK ID format ${x_mitre_is_subtechnique ? "T####.###" : "T####"}.`
                 });
             }
         }
