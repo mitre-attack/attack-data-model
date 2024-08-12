@@ -15,7 +15,9 @@ import {
 // Group Schema
 export const GroupSchema = AttackCoreSDOSchema.extend({
 
-    type: createStixIdentifierSchema(StixTypeSchema.enum["intrusion-set"]),
+    id: createStixIdentifierSchema(StixTypeSchema.enum["intrusion-set"]),
+    
+    type: z.literal(StixTypeSchema.enum["intrusion-set"]),
 
     description: z
         .string()
