@@ -26,7 +26,6 @@ export const PlatformsSchema = z
         invalid_type_error: "Platforms must be an array of strings."
     })
     .describe("List of platforms that apply to the object.")
-    .optional()
 
 export type Platforms = z.infer<typeof PlatformsSchema>;
 
@@ -35,7 +34,6 @@ export const MitreContributorsSchema = z
         invalid_type_error: "Contributors must be an array of strings."
     })
     .describe("People and organizations who have contributed to the object.")
-    .optional()
 
 export type MitreContributors = z.infer<typeof MitreContributorsSchema>;
 
