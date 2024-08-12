@@ -5,6 +5,7 @@ import {
 } from "../common/core-attack-sdo.schema";
 import { StixTypeSchema } from "../common/stix-type";
 import {
+    createStixIdentifierSchema,
     MitreContributorsSchema,
     StixIdentifierSchema,
     StixTimestampSchema,
@@ -14,7 +15,7 @@ import {
 // Group Schema
 export const GroupSchema = AttackCoreSDOSchema.extend({
 
-    type: z.literal(StixTypeSchema.enum["intrusion-set"]),
+    type: createStixIdentifierSchema(StixTypeSchema.enum["intrusion-set"]),
 
     description: z
         .string()
