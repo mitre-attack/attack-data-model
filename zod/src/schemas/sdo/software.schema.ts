@@ -6,14 +6,10 @@ import { DescriptionSchema, PlatformsSchema, MitreContributorsSchema, StixCreate
 // TODO migrate to loading this in a globally scoped module
 import '../../errors'; 
 
-
 // Software Schema
 export const SoftwareSchema = AttackCoreSDOSchema.extend({
 
     description: DescriptionSchema,
-
-    created_by_ref: StixCreatedByRefSchema
-        .describe("The ID of the Source object that describes who created this object."),
 
     external_references: z
         .array(ExternalReferenceSchema)

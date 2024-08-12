@@ -62,7 +62,22 @@ try {
 }
 
 /** ************************************************************************************************* */
-// Example 4: Parsing the provided example identity
+// Example 4: Identity with fields in STIX but not in ATT&CK
+/** ************************************************************************************************* */
+const identityWithStixFields = {
+    ...validIdentity,
+    description: "identity object description",
+    roles: ["administrator"],
+    sectors: ["non-profit"],
+    contact_information: "attack@mitre.org"
+};
+
+console.log("\nExample 4 - Identity with fields in STIX but not in ATT&CK:");
+console.log(IdentitySchema.parse(identityWithStixFields));
+
+
+/** ************************************************************************************************* */
+// Example 5: Parsing the provided example identity
 /** ************************************************************************************************* */
 const exampleOfRealIdentity = {
     "type": "identity",
@@ -76,7 +91,7 @@ const exampleOfRealIdentity = {
     ]
 }
 
-console.log("\nExample 4 - Parsing the provided example identity:");
+console.log("\nExample 5 - Parsing the provided example identity:");
 try {
     const parsedIdentity = IdentitySchema.parse(exampleOfRealIdentity);
     console.log(parsedIdentity);

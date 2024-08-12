@@ -143,9 +143,30 @@ try {
         // Validation error: Invalid literal value, expected "tool"
     }
 }
+/** ************************************************************************************************* */
+// Example 6: Tool with fields in STIX but not in ATT&CK
+/** ************************************************************************************************* */
+const toolWithStixFields = {
+    ...validTool,
+    kill_chain_phases: [
+		{
+			"kill_chain_name": "mitre-attack",
+			"phase_name": "command-and-control"
+		}
+	],
+    aliases: [
+        "Sliver"
+    ],
+    tool_types: ["remote-access"],
+    tool_version: "1.0"
+};
+
+
+console.log("\nExample 6 - Tool with fields in STIX but not in ATT&CK:");
+console.log(ToolSchema.parse(toolWithStixFields));
 
 /** ************************************************************************************************* */
-// Example 6: Parsing the provided example tool
+// Example 7: Parsing the provided example tool
 /** ************************************************************************************************* */
 
 const exampleOfRealTool = {
@@ -195,7 +216,7 @@ const exampleOfRealTool = {
     "x_mitre_version": "1.2"
 }
 
-console.log("\nExample 6 - Parsing the provided example tool:");
+console.log("\nExample 7 - Parsing the provided example tool:");
 try {
     const parsedTool = ToolSchema.parse(exampleOfRealTool);
     console.log(parsedTool);
