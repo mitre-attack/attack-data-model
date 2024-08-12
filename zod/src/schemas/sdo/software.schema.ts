@@ -6,8 +6,20 @@ import { DescriptionSchema, PlatformsSchema, MitreContributorsSchema, StixCreate
 // TODO migrate to loading this in a globally scoped module
 import '../../errors'; 
 
+
 // Software Schema
 export const SoftwareSchema = AttackCoreSDOSchema.extend({
+
+    // Not used in ATT&CK Malware or Tool but defined in STIX
+    aliases: z
+        .array(z.string())
+        .optional()
+        .describe("Alternative names used to identify this software."),
+
+    // Even though this is defined as an optional field within the Core STIX SDO schema, it is required for Software.
+    // TODO Fix created_by_ref in Darkmoon (malware--310f437b-29e7-4844-848c-7220868d074a) before making this required.
+    created_by_ref: StixCreatedByRefSchema
+        .describe("The ID of the Source object that describes who created this object."),
 
     description: DescriptionSchema,
 
@@ -19,9 +31,12 @@ export const SoftwareSchema = AttackCoreSDOSchema.extend({
         .array(StixIdentifierSchema)
         .describe("The list of marking-definition objects to be applied to this object."),
 
+    // Malware: Required
+    // Tool: Optional
     x_mitre_platforms: PlatformsSchema,
 
-    x_mitre_contributors: MitreContributorsSchema,
+    x_mitre_contributors: MitreContributorsSchema
+        .optional(),
 
     x_mitre_aliases: z
         .array(
@@ -33,7 +48,8 @@ export const SoftwareSchema = AttackCoreSDOSchema.extend({
         .describe("List of aliases for the given software.")
         .optional(),
     
-    x_mitre_deprecated: z.boolean()
+    x_mitre_deprecated: z
+        .boolean()
         .describe("Indicates whether the object has been deprecated.")
         .optional(),
 
@@ -42,8 +58,7 @@ export const SoftwareSchema = AttackCoreSDOSchema.extend({
     
     x_mitre_domains: z
         .array(AttackDomains)
-        .default([AttackDomains.Values['enterprise-attack']])
-        .describe("The technology domains to which the ATT&CK object belongs.")
+        .describe("The technology domains to which the ATT&CK object belongs."),
 });
 
 // Define the type for Software

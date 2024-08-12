@@ -1,21 +1,13 @@
 import { z } from "zod";
 import { StixTypeSchema } from "../common/stix-type";
 import { SoftwareSchema } from "./software.schema";
-import { createStixIdentifierSchema, KillChainPhaseSchema, StixCreatedByRefSchema } from "../common";
+import { createStixIdentifierSchema, KillChainPhaseSchema, PlatformsSchema, StixCreatedByRefSchema } from "../common";
+import { ToolTypesOpenVocabulary } from "../common/open-vocabulary";
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
 import '../../errors'; 
-export const toolTypes = z.enum([
-    'denial-of-service',
-    'exploitation',
-    'information-gathering',
-    'network-capture',
-    'credential-exploitation',
-    'remote-access',
-    'vulnerability-scanning',
-    'unknown'
-]);
+
 
 // Tool Schema
 export const ToolSchema = SoftwareSchema.extend({
@@ -24,19 +16,11 @@ export const ToolSchema = SoftwareSchema.extend({
 
     type: z.literal(StixTypeSchema.enum.tool),
 
-    created_by_ref: StixCreatedByRefSchema
-        .describe("The ID of the Source object that describes who created this object."),
-
+    // Not used in ATT&CK Tool but defined in STIX
     tool_types: z
-        .array(toolTypes)
+        .array(ToolTypesOpenVocabulary)
         .optional()
         .describe('The kind(s) of tool(s) being described.'),
-
-    // Not used in ATT&CK Tool but defined in STIX
-    aliases: z
-        .array(z.string())
-        .optional()
-        .describe("Alternative names used to identify this Campaign."),
 
     // Not used in ATT&CK Tool but defined in STIX
     kill_chain_phases: z
@@ -48,8 +32,10 @@ export const ToolSchema = SoftwareSchema.extend({
     tool_version: z
         .string()
         .optional()
-        .describe('The version identifier associated with the Tool')
+        .describe('The version identifier associated with the Tool'),
 
+    x_mitre_platforms: PlatformsSchema
+        .optional()
 });
 
 // Define the type for Malware
