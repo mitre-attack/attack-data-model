@@ -5,6 +5,7 @@ import { StixTypeSchema } from "./stix-type";
 import { StixSpecVersionSchema } from './stix-spec-version';
 import { StixTimestampSchema } from './stix-timestamp';
 import { StixCreatedByRefSchema, ExternalReferenceSchema, ExtensionSchema, GranularMarkingSchema } from './misc';
+import { ObjectMarkingRefsSchema } from './common-properties';
 
 
 export const StixCreatedTimestampSchema = StixTimestampSchema.brand<"StixCreatedTimestamp">();
@@ -65,9 +66,7 @@ export const SDOSchema = z
             .array(ExternalReferenceSchema)
             .describe("A list of external references which refers to non-STIX information.")
             .optional(),
-        object_marking_refs: z
-            .array(StixIdentifierSchema)
-            .describe("The list of marking-definition objects to be applied to this object.")
+        object_marking_refs: ObjectMarkingRefsSchema
             .optional(),
         granular_markings: z
             .array(GranularMarkingSchema)

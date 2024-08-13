@@ -57,9 +57,7 @@ export const IdentitySchema = AttackCoreSDOSchema.extend({
 
     type: z.literal(StixTypeSchema.enum.identity),
 
-    object_marking_refs: z
-        .array(StixIdentifierSchema)
-        .describe("The list of marking-definition objects to be applied to this object."),
+    object_marking_refs: ObjectMarkingRefsSchema,
 
     identity_class: IdentityClassOV
         .describe("The type of entity that this Identity describes, e.g., an individual or organization. This is an open vocabulary and the values SHOULD come from the identity-class-ov vocabulary."),

@@ -6,6 +6,7 @@ import { StixTypeSchema } from "../../schemas/common/stix-type";
 import { StixSpecVersionSchema } from '../../schemas/common/stix-spec-version';
 import { StixTimestampSchema } from '../../schemas/common/stix-timestamp';
 import { StixCreatedByRefSchema, ExternalReferenceSchema, ExtensionSchema, GranularMarkingSchema } from '../../schemas/common/misc';
+import { ObjectMarkingRefsSchema } from '../../schemas/common';
 
 
 export class SDO extends Z.class({
@@ -47,9 +48,7 @@ export class SDO extends Z.class({
         .array(ExternalReferenceSchema)
         .describe("A list of external references which refers to non-STIX information.")
         .optional(),
-    object_marking_refs: z
-        .array(StixIdentifierSchema)
-        .describe("The list of marking-definition objects to be applied to this object.")
+    object_marking_refs: ObjectMarkingRefsSchema
         .optional(),
     granular_markings: z
         .array(GranularMarkingSchema)

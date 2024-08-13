@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
-import { DescriptionSchema, PlatformsSchema, MitreContributorsSchema, StixCreatedByRefSchema, StixIdentifierSchema, ExternalReferenceSchema, AttackDomains, StixTypeSchema, StixType, createStixIdentifierSchema } from '../common';
+import { DescriptionSchema, PlatformsSchema, MitreContributorsSchema, StixCreatedByRefSchema, StixIdentifierSchema, ExternalReferenceSchema, AttackDomains, StixTypeSchema, StixType, createStixIdentifierSchema, ObjectMarkingRefsSchema } from '../common';
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
@@ -27,9 +27,8 @@ export const SoftwareSchema = AttackCoreSDOSchema.extend({
         .array(ExternalReferenceSchema)
         .describe("A list of external references which refers to non-STIX information."),
 
-    object_marking_refs: z
-        .array(StixIdentifierSchema)
-        .describe("The list of marking-definition objects to be applied to this object."),
+    object_marking_refs: ObjectMarkingRefsSchema
+    ,
 
     // Malware: Required
     // Tool: Optional

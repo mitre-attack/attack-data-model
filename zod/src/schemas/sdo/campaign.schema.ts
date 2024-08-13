@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
-import { StixTypeSchema, StixTimestampSchema, MitreContributorsSchema, StixCreatedByRefSchema, StixIdentifierSchema, ExternalReferenceSchema, AttackDomains } from "../common";
+import { StixTypeSchema, StixTimestampSchema, MitreContributorsSchema, StixCreatedByRefSchema, StixIdentifierSchema, ExternalReferenceSchema, AttackDomains, ObjectMarkingRefsSchema } from "../common";
 
 // Custom error messages
 const CampaignSchemaError = {
@@ -53,14 +53,17 @@ export const AttackCampaignSchema = AttackCoreSDOSchema.extend({
 
     type: z.literal(StixTypeSchema.enum.campaign, CampaignSchemaError.InvalidType),
 
-    description: z.string().describe("A description that provides more details and context about the Campaign."),
+    description: z
+        .string({
+            message: "description must be a non-empty string"
+        })
+        .min(1)
+        .describe("A description that provides more details and context about the Campaign."),
 
     created_by_ref: StixCreatedByRefSchema
         .describe("The ID of the Source object that describes who created this object."),
 
-    object_marking_refs: z
-        .array(StixIdentifierSchema)
-        .describe("The list of marking-definition objects to be applied to this object."),
+    object_marking_refs: ObjectMarkingRefsSchema,
 
     x_mitre_domains: z
         .array(AttackDomains)

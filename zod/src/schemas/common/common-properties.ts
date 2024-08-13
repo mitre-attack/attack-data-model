@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { StixIdentifierSchema } from './stix-identifier';
 
 export const VersionSchema = z.string()
     .regex(/^\d+\.\d+$/, "Version must be in the format 'major.minor'")
@@ -54,5 +55,20 @@ export const KillChainPhaseSchema = z.object({
 });
   
 export type KillChainPhase = z.infer<typeof KillChainPhaseSchema>;
+
+export const ObjectMarkingRefsSchema = z
+    .array(StixIdentifierSchema)
+    .superRefine((val, ctx) => {
+        val.forEach((identifier, index) => {
+            if (!identifier.startsWith('marking-definition--')) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: `All identifiers must start with 'marking-definition--'. Invalid identifier at index ${index}.`,
+                    path: [index],
+                });
+            }
+        });
+    })
+    .describe("The list of marking-definition objects to be applied to this object.");
 
 // ... other common properties ...

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { StixTypeSchema } from "../common/stix-type";
 import { AttackDomains } from "../common/core-attack-sdo.schema";
-import { StixCreatedByRefSchema } from "../common";
+import { ObjectMarkingRefsSchema, StixCreatedByRefSchema } from "../common";
 
 // Custom error messages
 const MarkingDefinitionSchemaError = {
@@ -89,10 +89,8 @@ export const MarkingDefinitionSchema = z.object({
     .optional()
     .describe("External references related to this marking definition."),
 
-  object_marking_refs: z
-    .array(z.string())
-    .optional()
-    .describe("References to marking definitions applied to this object."),
+  object_marking_refs: ObjectMarkingRefsSchema
+    .optional(),
 
   granular_markings: z
     .array(z.string())
