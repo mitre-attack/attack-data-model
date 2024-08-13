@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AttackCoreSDOSchema, AttackDomains, DescriptionSchema, MitreContributorsSchema, PlatformsSchema, StixIdentifierSchema, StixTypeSchema } from '../common';
+import { AttackCoreSDOSchema, AttackDomains, DescriptionSchema, MitreContributorsSchema, ObjectMarkingRefsSchema, PlatformsSchema, StixIdentifierSchema, StixTypeSchema } from '../common';
 
 // Initializes the custom ZodErrorMap
 import '../../errors';
@@ -33,6 +33,8 @@ export const AssetSchema = AttackCoreSDOSchema.extend({
 	description: DescriptionSchema
 		.describe("The description of the object.")
 		.optional(),
+
+	object_marking_refs: ObjectMarkingRefsSchema,
 	
 	x_mitre_platforms: PlatformsSchema,
 
@@ -46,7 +48,8 @@ export const AssetSchema = AttackCoreSDOSchema.extend({
 		})
 		.optional(),
 
-	x_mitre_contributors: MitreContributorsSchema,
+	x_mitre_contributors: MitreContributorsSchema
+		.optional(),
 	
 	x_mitre_sectors: z
 		.array(AssetSectors)
