@@ -1,56 +1,14 @@
 import { z } from "zod";
 import { StixTypeSchema } from "../common/stix-type";
-import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
+import { ObjectMarkingRefsSchema } from "../common/common-properties";
+import { AttackCoreSDOSchema, AttackDomains } from "../common/core-attack-sdo.schema";
 import { createStixIdentifierSchema, StixIdentifierSchema } from "../common/stix-identifier";
+import { IdentityClassOpenVocabulary, SectorsListOpenVocabulary } from "../common/open-vocabulary";
 
+// TODO migrate to loading this in a globally scoped module
 import '../../errors';
 
 
-/**
- * Determine all possible values that can exist on identity_class
- */
-export const IdentityClassOV = z.enum([
-    "individual",
-    "group",
-    "system",
-    "organization",
-    "class",
-    "unspecified"
-]);
-
-export const sectorsList = z.enum([
-    "agriculture",
-    "aerospace",
-    "automotive",
-    "communications",
-    "construction",
-    "defence",
-    "education",
-    "energy",
-    "entertainment",
-    "financial-services",
-    "government-national",
-    "government-regional",
-    "government-local",
-    "government-public-services",
-    "healthcare",
-    "hospitality-leisure",
-    "infrastructure",
-    "insurance",
-    "manufacturing",
-    "mining",
-    "non-profit",
-    "pharmaceuticals",
-    "retail",
-    "technology",
-    "telecommunications",
-    "transportation",
-    "utilities"
-])
-
-/**
- * Identity Schema
- */
 export const IdentitySchema = AttackCoreSDOSchema.extend({
 
     id: createStixIdentifierSchema(StixTypeSchema.enum.identity),
@@ -59,7 +17,7 @@ export const IdentitySchema = AttackCoreSDOSchema.extend({
 
     object_marking_refs: ObjectMarkingRefsSchema,
 
-    identity_class: IdentityClassOV
+    identity_class: IdentityClassOpenVocabulary
         .describe("The type of entity that this Identity describes, e.g., an individual or organization. This is an open vocabulary and the values SHOULD come from the identity-class-ov vocabulary."),
 
     description: z
@@ -79,7 +37,7 @@ export const IdentitySchema = AttackCoreSDOSchema.extend({
     
     sectors: z
         .array(
-            sectorsList,
+            SectorsListOpenVocabulary,
         )
         .describe("The list of industry sectors that this Identity belongs to. This is an open vocabulary and values SHOULD come from the industry-sector-ov vocabulary.")
         .optional(),
@@ -87,7 +45,11 @@ export const IdentitySchema = AttackCoreSDOSchema.extend({
     contact_information: z
         .string()
         .describe("The contact information (e-mail, phone number, etc.) for this Identity.")
-        .optional()
+        .optional(),
+
+    x_mitre_domains: z
+        .array(AttackDomains)
+        .describe("The technology domains to which the ATT&CK object belongs."),
 });
 
 // Define the type for Identity

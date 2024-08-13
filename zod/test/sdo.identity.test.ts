@@ -12,7 +12,8 @@ describe('IdentitySchema', () => {
           "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
       ],
       identity_class: "organization",
-      name: "The MITRE Corporation"
+      name: "The MITRE Corporation",
+      x_mitre_domains: ["enterprise-attack"]
     };
     expect(() => IdentitySchema.parse(validObject)).not.toThrow();
   });
@@ -47,7 +48,8 @@ describe('IdentitySchema', () => {
       description: "identity object description",
       roles: ["administrator"],
       sectors: ["non-profit"],
-      contact_information: "attack@mitre.org"
+      contact_information: "attack@mitre.org",
+      x_mitre_domains: ["enterprise-attack"]
     };
     expect(() => IdentitySchema.parse(validObject)).not.toThrow();
   });
