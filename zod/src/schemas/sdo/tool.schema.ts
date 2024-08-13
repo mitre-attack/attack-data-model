@@ -33,9 +33,6 @@ export const ToolSchema = SoftwareSchema.extend({
         .string()
         .optional()
         .describe('The version identifier associated with the Tool'),
-
-    x_mitre_platforms: PlatformsSchema
-        .optional()
 });
 
 // Define the type for Malware

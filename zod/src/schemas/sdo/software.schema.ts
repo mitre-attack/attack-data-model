@@ -33,7 +33,8 @@ export const SoftwareSchema = AttackCoreSDOSchema.extend({
 
     // Malware: Required
     // Tool: Optional
-    x_mitre_platforms: PlatformsSchema,
+    x_mitre_platforms: PlatformsSchema
+        .optional(),
 
     x_mitre_contributors: MitreContributorsSchema
         .optional(),
