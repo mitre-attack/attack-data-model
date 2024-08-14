@@ -26,9 +26,6 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
         .describe("The description of the object.")
         .optional(),
 
-    object_marking_refs: ObjectMarkingRefsSchema
-        .optional(),
-
     x_mitre_platforms: PlatformsSchema,
 
     x_mitre_detection: z

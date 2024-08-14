@@ -11,8 +11,6 @@ export const CollectionSchema = AttackCoreSDOSchema.extend({
         .describe("Details, context, and explanation about the purpose or contents of the collection.")
         .optional(),
 
-	object_marking_refs: ObjectMarkingRefsSchema,
-
 	x_mitre_contents: z
 		.array(ObjectVersionReferenceSchema)
 		.describe("Specifies the objects contained within the collection."),
