@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
 import { StixTypeSchema } from '../common/stix-type';
-import { MitreContributorsSchema, DescriptionSchema, KillChainPhaseSchema, PlatformsSchema, AttackDomains, StixIdentifierSchema } from '../common';
+import { MitreContributorsSchema, DescriptionSchema, KillChainPhaseSchema, PlatformsSchema, AttackDomains, StixIdentifierSchema, ObjectMarkingRefsSchema } from '../common';
 
 // Initializes the custom ZodErrorMap
 import '../../errors'; 
@@ -24,6 +24,9 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
 
     description: DescriptionSchema
         .describe("The description of the object.")
+        .optional(),
+
+    object_marking_refs: ObjectMarkingRefsSchema
         .optional(),
 
     x_mitre_platforms: PlatformsSchema,
@@ -55,7 +58,8 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
         .describe("List of defensive tools, methodologies, or processes the technique can bypass.")
         .optional(),
 
-    x_mitre_contributors: MitreContributorsSchema,
+    x_mitre_contributors: MitreContributorsSchema
+        .optional(),
 
     x_mitre_permissions_required: z
         .array(z.string(), {
