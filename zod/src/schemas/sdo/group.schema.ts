@@ -1,15 +1,8 @@
 import { z } from "zod";
-import {
-    AttackCoreSDOSchema,
-    AttackDomains,
-} from "../common/core-attack-sdo.schema";
+import { AttackCoreSDOSchema, AttackDomains } from "../common/core-attack-sdo.schema";
 import { StixTypeSchema } from "../common/stix-type";
-import {
-    createStixIdentifierSchema,
-    MitreContributorsSchema,
-    StixIdentifierSchema,
-    StixTimestampSchema,
-} from "../common";
+import { createStixIdentifierSchema, MitreContributorsSchema, StixTimestampSchema } from "../common";
+import { AttackMotivationOpenVocabulary, AttackResourceLevelOpenVocabulary } from "../common/open-vocabulary";
 
 
 // Group Schema
@@ -19,6 +12,7 @@ export const GroupSchema = AttackCoreSDOSchema.extend({
     
     type: z.literal(StixTypeSchema.enum["intrusion-set"]),
 
+    // Not used in ATT&CK Group but defined in STIX
     description: z
         .string()
         .optional()
@@ -30,11 +24,7 @@ export const GroupSchema = AttackCoreSDOSchema.extend({
         .array(AttackDomains)
         .describe("The technology domains to which the ATT&CK object belongs."),
 
-    x_mitre_modified_by_ref: StixIdentifierSchema
-        .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations.")
-        .optional(),
-
-    x_mitre_contributors: MitreContributorsSchema,
+    x_mitre_contributors: MitreContributorsSchema.optional(),
 
     x_mitre_deprecated: z
         .boolean()
@@ -46,32 +36,33 @@ export const GroupSchema = AttackCoreSDOSchema.extend({
         .optional()
         .describe("Alternative names used to identify this Intrusion Set."),
 
-
+    // Not used in ATT&CK Group but defined in STIX
     first_seen: StixTimestampSchema
         .optional()
         .describe("The time that this Intrusion Set was first seen."),
 
+    // Not used in ATT&CK Group but defined in STIX
     last_seen: StixTimestampSchema
         .optional()
         .describe("The time that this Intrusion Set was last seen."),
 
+    // Not used in ATT&CK Group but defined in STIX
     goals: z
         .array(z.string())
         .optional()
         .describe("The high-level goals of this Intrusion Set, namely, what are they trying to do."),
 
-    resource_level: z
-        .string() // TODO The value for this property SHOULD come from the attack-resource-level-ov open vocabulary.
+    // Not used in ATT&CK Group but defined in STIX
+    resource_level: AttackResourceLevelOpenVocabulary
         .optional()
         .describe("This property specifies the organizational level at which this Intrusion Set typically works, which in turn determines the resources available to this Intrusion Set for use in an attack."),
 
-    primary_motivation: z
-        .string() // TODO The value for this property SHOULD come from the attack-motivation-ov open vocabulary.
+    primary_motivation: AttackMotivationOpenVocabulary
         .optional()
         .describe("The primary reason, motivation, or purpose behind this Intrusion Set."),
 
     secondary_motivations: z
-        .array(z.string()) // TODO The values for this property SHOULD come from the attack-motivation-ov open vocabulary.
+        .array(AttackMotivationOpenVocabulary)
         .optional()
         .describe("The secondary reasons, motivations, or purposes behind this Intrusion Set."),
 });
