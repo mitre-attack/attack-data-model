@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { StixIdentifierSchema } from './stix-identifier';
-import { StixModifiedTimestampSchema } from './core-stix-sdo.schema';
 import { StixTimestampSchema } from './stix-timestamp';
 
 export const VersionSchema = z.string()
@@ -79,8 +78,7 @@ export const ObjectVersionReferenceSchema = z.object({
             message: "'object_ref' is required."
         })
         .describe("The ID of the referenced object."),
-    object_modified: StixModifiedTimestampSchema
-        .or(StixTimestampSchema)
+    object_modified: StixTimestampSchema
         .brand("StixModifiedTimestamp")
         .refine(val => val !== undefined, {
             message: "'object_modified' is required."
