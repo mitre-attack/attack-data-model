@@ -57,7 +57,8 @@ export const SDOSchema = z
             .int().min(1).max(99).optional()
             .refine(val => val === undefined || (val > 0 && val < 100), {
                 message: "Confidence must be between 1 and 99 inclusive."
-            }),
+            })
+            .optional(),
         lang: z
             .string()
             .describe("Identifies the language of the text content in this object.")
