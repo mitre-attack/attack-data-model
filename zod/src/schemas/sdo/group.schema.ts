@@ -34,7 +34,7 @@ export const GroupSchema = AttackCoreSDOSchema.extend({
     aliases: z
         .array(z.string())
         .optional()
-        .describe("Alternative names used to identify this Intrusion Set."),
+        .describe("Alternative names used to identify this group. The first alias must match the object's name."),
 
     // Not used in ATT&CK Group but defined in STIX
     first_seen: StixTimestampSchema
@@ -65,6 +65,16 @@ export const GroupSchema = AttackCoreSDOSchema.extend({
         .array(AttackMotivationOpenVocabulary)
         .optional()
         .describe("The secondary reasons, motivations, or purposes behind this Intrusion Set."),
+})
+    .refine(schema => {
+        // The object's name MUST be listed as the first alias in the aliases field
+        if (schema.aliases && schema.aliases.length > 0) {
+            return schema.aliases[0] === schema.name;
+        }
+        return true;
+    }, {
+        message: "The first alias must match the object's name",
+        path: ['aliases']
 });
 
 // Define the type for SchemaName

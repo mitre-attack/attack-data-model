@@ -86,7 +86,10 @@ export const AttackCampaignSchema = AttackCoreSDOSchema.extend({
         .boolean()
         .describe("The revoked property indicates whether the object has been revoked."),
 
-    aliases: z.array(z.string()).default([]).describe("Alternative names used to identify this Campaign."),
+    aliases: z
+        .array(z.string())
+        .default([])
+        .describe("Alternative names used to identify this campaign. The first alias must match the object's name."),
 
     first_seen: StixTimestampSchema
         .describe("The time that this Campaign was first seen."),
@@ -99,6 +102,16 @@ export const AttackCampaignSchema = AttackCoreSDOSchema.extend({
 
     x_mitre_last_seen_citation: z.string().min(1, CampaignSchemaError.InvalidLastSeenCitation)
         .describe("The citation for the last_seen property."),
+})
+    .refine(schema => {
+        // The object's name MUST be listed as the first alias in the aliases field
+        if (schema.aliases && schema.aliases.length > 0) {
+            return schema.aliases[0] === schema.name;
+        }
+        return true;
+    }, {
+        message: "The first alias must match the object's name",
+        path: ['aliases']
 });
 
 // Define the type for AttackCampaign
