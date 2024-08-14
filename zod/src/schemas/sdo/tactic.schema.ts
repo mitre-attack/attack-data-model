@@ -15,8 +15,6 @@ export const TacticSchema = AttackCoreSDOSchema.extend({
         .describe("The description of the object.")
         .optional(),
 
-    object_marking_refs: ObjectMarkingRefsSchema,
-
     x_mitre_domains: z
         .array(AttackDomains)
         .describe("The technology domains to which the ATT&CK object belongs."),

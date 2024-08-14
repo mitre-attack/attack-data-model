@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import { StixIdentifierSchema } from './stix-identifier';
+import { StixModifiedTimestampSchema } from './core-stix-sdo.schema';
+import { StixTimestampSchema } from './stix-timestamp';
 
 export const VersionSchema = z.string()
     .regex(/^\d+\.\d+$/, "Version must be in the format 'major.minor'")
@@ -70,5 +72,20 @@ export const ObjectMarkingRefsSchema = z
         });
     })
     .describe("The list of marking-definition objects to be applied to this object.");
+
+export const ObjectVersionReferenceSchema = z.object({
+    object_ref: StixIdentifierSchema
+        .refine(val => val !== undefined, {
+            message: "'object_ref' is required."
+        })
+        .describe("The ID of the referenced object."),
+    object_modified: StixModifiedTimestampSchema
+        .or(StixTimestampSchema)
+        .brand("StixModifiedTimestamp")
+        .refine(val => val !== undefined, {
+            message: "'object_modified' is required."
+        })
+        .describe("The modified time of the referenced object. It MUST be an exact match for the modified time of the STIX object being referenced.")
+});
 
 // ... other common properties ...

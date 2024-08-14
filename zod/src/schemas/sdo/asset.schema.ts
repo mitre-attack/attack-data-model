@@ -33,8 +33,6 @@ export const AssetSchema = AttackCoreSDOSchema.extend({
 	description: DescriptionSchema
 		.describe("The description of the object.")
 		.optional(),
-
-	object_marking_refs: ObjectMarkingRefsSchema,
 	
 	x_mitre_platforms: PlatformsSchema,
 
