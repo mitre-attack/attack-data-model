@@ -15,7 +15,8 @@ const TlpMarkingObjectSchema = z.object({
   tlp: z
     .string()
     .describe("The TLP level [TLP] of the content marked by this marking definition, as defined in this section.")
-});
+})
+  .strict();
 
 // Base schema for all TLP marking definitions
 const BaseMarkingDefinitionSchema = z.object({
@@ -28,6 +29,10 @@ const BaseMarkingDefinitionSchema = z.object({
   definition: TlpMarkingObjectSchema
 });
 
+// The following standard marking definitions MUST be used to reference or represent TLP markings. 
+// Other instances of tlp-marking MUST NOT be used or created(the only instances of TLP marking 
+// definitions permitted are those defined here).
+
 // TLP:WHITE schema
 const TlpWhiteSchema = BaseMarkingDefinitionSchema.extend({
   id: z.literal('marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9'),
@@ -35,7 +40,8 @@ const TlpWhiteSchema = BaseMarkingDefinitionSchema.extend({
   definition: z.object({
     tlp: z.literal('white')
   })
-});
+})
+  .strict();
 
 // TLP:GREEN schema
 const TlpGreenSchema = BaseMarkingDefinitionSchema.extend({
@@ -44,7 +50,8 @@ const TlpGreenSchema = BaseMarkingDefinitionSchema.extend({
   definition: z.object({
     tlp: z.literal('green')
   })
-});
+})
+  .strict();
 
 // TLP:AMBER schema
 const TlpAmberSchema = BaseMarkingDefinitionSchema.extend({
@@ -53,7 +60,8 @@ const TlpAmberSchema = BaseMarkingDefinitionSchema.extend({
   definition: z.object({
     tlp: z.literal('amber')
   })
-});
+})
+  .strict();
 
 // TLP:RED schema
 const TlpRedSchema = BaseMarkingDefinitionSchema.extend({
@@ -62,7 +70,8 @@ const TlpRedSchema = BaseMarkingDefinitionSchema.extend({
   definition: z.object({
     tlp: z.literal('red')
   })
-});
+})
+  .strict();
 
 // Union type for all TLP marking definitions
 const TlpMarkingDefinitionSchema = z.union([
@@ -86,7 +95,8 @@ export const StatementMarkingObjectSchema = z.object({
   statement: z
     .string()
     .describe("A Statement (e.g., copyright, terms of use) applied to the content marked by this marking definition.")
-});
+})
+  .strict();
 
 
 /////////////////////////////////////
@@ -114,13 +124,12 @@ export const MarkingDefinitionSchema = z.object({
     .describe("The ID of the Source object that describes who created this object."),
 
   // Deprecated in STIX
-  // Not used in ATT&CK but defined in STIX
+  // Optional in STIX but required in ATT&CK
   definition_type: z
     .enum(
       ["statement", "tlp"],
       { message: "definition_type must be either 'statement' or 'tlp'" }
-    )
-    .optional()
+  )
     .describe("The definition_type property identifies the type of Marking Definition."),
 
   // Deprecated in STIX
@@ -136,7 +145,8 @@ export const MarkingDefinitionSchema = z.object({
     .string()
     .regex(/^\d+\.\d+\.\d+$/, "Must be in the format 'major.minor.patch'")
     .describe("The version of the ATT&CK spec used by the object. This field helps consuming software determine if the data format is supported. If the field is not present on an object, the spec version will be assumed to be 2.0.0. Refer to the ATT&CK CHANGELOG for all supported versions."),
-});
+})
+  .strict();
 
 // Define the type for MarkingDefinition
 export type MarkingDefinition = z.infer<typeof MarkingDefinitionSchema>;
