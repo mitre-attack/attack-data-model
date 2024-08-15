@@ -1,7 +1,7 @@
-import { z } from "zod"; } from "../common";
+import { z } from "zod";
 import { StixTypeSchema } from "../common/stix-type";
 import { AttackDomains } from "../common/core-attack-sdo.schema";
-import { createStixIdentifierSchema, SDOSchema, StixCreatedByRefSchema, StixSpecVersionSchema, StixTimestampSchema } from "../common";
+import { createStixIdentifierSchema, StixCreatedByRefSchema, StixSpecVersionSchema, StixTimestampSchema } from "../common";
 
 
 /////////////////////////////////////
