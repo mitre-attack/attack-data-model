@@ -1,7 +1,7 @@
-import { z } from "zod";
+import { z } from "zod"; } from "../common";
 import { StixTypeSchema } from "../common/stix-type";
 import { AttackDomains } from "../common/core-attack-sdo.schema";
-import { createStixIdentifierSchema, SDOSchema, StixCreatedByRefSchema } from "../common";
+import { createStixIdentifierSchema, SDOSchema, StixCreatedByRefSchema, StixSpecVersionSchema, StixTimestampSchema } from "../common";
 
 
 /////////////////////////////////////
@@ -96,11 +96,18 @@ export const StatementMarkingObjectSchema = z.object({
 /////////////////////////////////////
 
 // MarkingDefinition Schema
-export const MarkingDefinitionSchema = SDOSchema.extend({
+export const MarkingDefinitionSchema = z.object({
 
   id: createStixIdentifierSchema(StixTypeSchema.enum["marking-definition"]),
 
   type: z.literal(StixTypeSchema.enum["marking-definition"]),
+
+  spec_version: StixSpecVersionSchema
+    .describe("The version of the STIX specification used to represent this object."),
+
+  created: StixTimestampSchema
+    .brand("StixCreatedTimestamp")
+    .describe("The created property represents the time at which the first version of this object was created. The timstamp value MUST be precise to the nearest millisecond."),
 
   // Optional in STIX but required in ATT&CK
   created_by_ref: StixCreatedByRefSchema
