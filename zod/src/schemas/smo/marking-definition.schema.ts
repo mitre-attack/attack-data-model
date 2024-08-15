@@ -114,7 +114,7 @@ export const MarkingDefinitionSchema = z.object({
     .describe("The ID of the Source object that describes who created this object."),
 
   // Deprecated in STIX
-  // Not used in ATT&CK Malware but defined in STIX
+  // Not used in ATT&CK but defined in STIX
   definition_type: z
     .enum(
       ["statement", "tlp"],
