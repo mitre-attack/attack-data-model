@@ -105,6 +105,30 @@ export type MitreDefenseBypasses = z.infer<typeof MitreDefenseBypassesSchema>;
 
 /////////////////////////////////////
 //
+// MITRE Permissions Required
+//
+/////////////////////////////////////
+
+const SupportedMitrePermissionsRequired = [
+    'Remote Desktop Users',
+    'SYSTEM',
+    'Administrator',
+    'root',
+    'User'
+] as const;
+
+export const MitrePermissionsRequiredSchema = z
+    .array(z.enum(SupportedMitrePermissionsRequired), {
+        invalid_type_error: "x_mitre_permissions_required must be an array of strings."
+    })
+    .min(1)
+    .describe("The lowest level of permissions the adversary is required to be operating within to perform the technique on a system.");
+
+export type MitrePermissionsRequired = z.infer<typeof MitrePermissionsRequiredSchema>;
+
+
+/////////////////////////////////////
+//
 // MITRE Platforms
 //
 /////////////////////////////////////
@@ -154,10 +178,21 @@ export type Platforms = z.infer<typeof PlatformsSchema>;
 /////////////////////////////////////
 
 export const MitreContributorsSchema = z
-    .array(z.string(), {
-        invalid_type_error: "Contributors must be an array of strings."
-    })
-    .describe("People and organizations who have contributed to the object.")
+    .array(
+        z.string().refine(
+            (value) => {
+                const parts = value.split(':');
+                return parts.length === 2 && parts[0].trim() !== '' && parts[1].trim() !== '';
+            },
+            {
+                message: "Each entry must conform to the pattern '<Data Source Name>: <Data Component Name>'",
+            }
+        ),
+        {
+            invalid_type_error: "Contributors must be an array of strings.",
+        }
+    )
+    .describe("People and organizations who have contributed to the object.");
 
 export type MitreContributors = z.infer<typeof MitreContributorsSchema>;
 
