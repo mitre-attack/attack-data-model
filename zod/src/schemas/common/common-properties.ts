@@ -44,6 +44,67 @@ export type Description = z.infer<typeof DescriptionSchema>;
 
 /////////////////////////////////////
 //
+// MITRE Defense Bypassed
+//
+/////////////////////////////////////
+
+const SupportedMitreDefenseBypasses = [
+    'Signature-based detection',
+    'Multi-Factor Authentication',
+    'Network Intrusion Detection System',
+    'Application Control',
+    'Host forensic analysis',
+    'Exploit Prevention',
+    'Signature-based Detection',
+    'Data Execution Prevention',
+    'Heuristic Detection',
+    'File system access controls',
+    'File Monitoring',
+    'Digital Certificate Validation',
+    'Logon Credentials',
+    'Firewall',
+    'Host Forensic Analysis',
+    'Static File Analysis',
+    'Heuristic detection',
+    'Notarization',
+    'System access controls',
+    'Binary Analysis',
+    'Web Content Filters',
+    'Network intrusion detection system',
+    'Host intrusion prevention systems',
+    'Application control',
+    'Defensive network service scanning',
+    'User Mode Signature Validation',
+    'Encryption',
+    'Log Analysis',
+    'Autoruns Analysis',
+    'Anti Virus',
+    'Gatekeeper',
+    'Anti-virus',
+    'Log analysis',
+    'Process whitelisting',
+    'Host Intrusion Prevention Systems',
+    'Windows User Account Control',
+    'System Access Controls',
+    'Application whitelisting',
+    'Whitelisting by file name or path',
+    'File monitoring'
+] as const;
+
+export const MitreDefenseBypassesSchema = z
+    .array(z.enum(SupportedMitreDefenseBypasses))
+    .min(1)
+    .refine(
+        (items) => new Set(items).size === items.length,
+        { message: "Mitre defense bypasses must be unique (no duplicates allowed)." }
+    )
+    .describe("List of defensive tools, methodologies, or processes the technique can bypass.");
+
+export type MitreDefenseBypasses = z.infer<typeof MitreDefenseBypassesSchema>;
+
+
+/////////////////////////////////////
+//
 // MITRE Platforms
 //
 /////////////////////////////////////
