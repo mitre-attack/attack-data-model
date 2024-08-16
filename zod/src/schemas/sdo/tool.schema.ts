@@ -33,7 +33,18 @@ export const ToolSchema = SoftwareSchema.extend({
         .string()
         .optional()
         .describe('The version identifier associated with the Tool'),
-});
+})
+.refine(schemas => {
+    // The object's name MUST be listed as the first alias in the x_mitre_aliases field
+        if (schemas.x_mitre_aliases && schemas.x_mitre_aliases.length > 0) {
+            return schemas.x_mitre_aliases[0] === schemas.name;
+        }
+        return true;
+    },
+    {
+        message: "The first alias must match the object's name",
+        path: ['x_mitre_aliases']
+    });
 
 // Define the type for Malware
 export type Tool = z.infer<typeof ToolSchema>;
