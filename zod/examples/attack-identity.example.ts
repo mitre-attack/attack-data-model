@@ -14,7 +14,8 @@ const validIdentity = {
         "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
     ],
     identity_class: "organization",
-    name: "The MITRE Corporation"
+    name: "The MITRE Corporation",
+    x_mitre_domains:["enterprise-attack"]
 };
 
 console.log("Example 1 - Valid Identity:");
