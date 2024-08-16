@@ -3,7 +3,7 @@ import { StixTypeSchema } from "../common/stix-type";
 import { ObjectMarkingRefsSchema } from "../common/common-properties";
 import { AttackCoreSDOSchema, AttackDomains } from "../common/core-attack-sdo.schema";
 import { createStixIdentifierSchema, StixIdentifierSchema } from "../common/stix-identifier";
-import { IdentityClassOpenVocabulary, SectorsListOpenVocabulary } from "../common/open-vocabulary";
+import { IdentityClassOpenVocabulary, IndustrySectorOpenVocabulary } from "../common/open-vocabulary";
 
 // TODO migrate to loading this in a globally scoped module
 import '../../errors';
@@ -37,7 +37,7 @@ export const IdentitySchema = AttackCoreSDOSchema.extend({
     
     sectors: z
         .array(
-            SectorsListOpenVocabulary,
+            IndustrySectorOpenVocabulary,
         )
         .describe("The list of industry sectors that this Identity belongs to. This is an open vocabulary and values SHOULD come from the industry-sector-ov vocabulary.")
         .optional(),

@@ -6,8 +6,7 @@ import { z } from "zod";
 /** ************************************************************************************************* */
 const validMarkingDefinition = {
   definition: {
-    statement:
-      "Copyright 2015-2024, The MITRE Corporation. MITRE ATT&CK and ATT&CK are registered trademarks of The MITRE Corporation.",
+    statement: "Copyright 2015-2024, The MITRE Corporation. MITRE ATT&CK and ATT&CK are registered trademarks of The MITRE Corporation.",
   },
   id: "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168",
   type: "marking-definition",
@@ -21,6 +20,20 @@ const validMarkingDefinition = {
 
 console.log("Example 1 - Valid Marking Definition:");
 console.log(MarkingDefinitionSchema.parse(validMarkingDefinition));
+// {
+//   id: 'marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168',
+//   type: 'marking-definition',
+//   spec_version: '2.1',
+//   created: '2017-06-01T00:00:00.000Z',
+//   created_by_ref: 'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5',
+//   definition_type: 'statement',
+//   definition: {
+//     statement: 'Copyright 2015-2024, The MITRE Corporation. MITRE ATT&CK and ATT&CK are registered trademarks of The MITRE Corporation.'
+//   },
+//   x_mitre_domains: [ 'mobile-attack' ],
+//   x_mitre_attack_spec_version: '2.1.0'
+// }
+
 
 /** ************************************************************************************************* */
 // Example 2: Invalid Marking Definition (missing required fields)
@@ -50,49 +63,67 @@ try {
     console.log("Validation errors:", error.errors);
   }
 }
-/**
-   * Validation errors: [
-    {
-          code: 'invalid_type',
-          expected: 'string',
-          received: 'undefined',
-          path: [ 'created' ],
-          message: 'Required'
-      },
-      {
-          code: 'invalid_type',
-          expected: 'string',
-          received: 'undefined',
-          path: [ 'definition_type' ],
-          message: 'Required'
-      }
-      ]
-   */
+// Validation errors: [
+//   {
+//     code: 'custom',
+//     message: "Invalid STIX timestamp format: must be an RFC3339 timestamp with a timezone specification of 'Z'.",
+//     fatal: true,
+//     path: [ 'created' ]
+//   },
+//   {
+//     expected: "'statement' | 'tlp'",
+//     received: 'undefined',
+//     code: 'invalid_type',
+//     path: [ 'definition_type' ],
+//     message: "definition_type must be either 'statement' or 'tlp'"
+//   }
+// ]
 
 /** ************************************************************************************************* */
-// Example 3: Marking Definition with optional fields
+// Example 3: Marking Definition with invalid fields
 /** ************************************************************************************************* */
+const invalidDefinitionStatement = {
+  statement: "Example statement",
+  name: "Example name",   // <--- This property is not allowed on definition statements
+  external_references: [  // <--- This property is not allowed on definition statements
+    {
+      source_name: "mitre-attack",
+      url: "https://attack.mitre.org/software/S0698",
+      external_id: "S0698",
+    },
+  ],
+  object_marking_refs: [ // <--- This property is not allowed on definition statements
+    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168",
+  ],
+  created_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5", // <--- This property is not allowed on definition statements
+}
+
 const markingDefinitionWithOptionalFields = {
   ...validMarkingDefinition,
-  definition: {
-    statement: "Example statement",
-    name: "Example name",
-    external_references: [
-      {
-        source_name: "mitre-attack",
-        url: "https://attack.mitre.org/software/S0698",
-        external_id: "S0698",
-      },
-    ],
-    object_marking_refs: [
-      "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168",
-    ],
-    created_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
-  },
+  definition: invalidDefinitionStatement,
 };
 
 console.log("\nExample 3 - Marking Definition with optional fields:");
-console.log(MarkingDefinitionSchema.parse(markingDefinitionWithOptionalFields));
+try {
+  MarkingDefinitionSchema.parse(markingDefinitionWithOptionalFields);
+} catch (error) {
+  if (error instanceof z.ZodError) {
+    console.log("Validation errors:", error.errors);
+  }
+}
+// Validation errors: [
+//   {
+//     code: 'unrecognized_keys',
+//     keys: [
+//       'name',
+//       'external_references',
+//       'object_marking_refs',
+//       'created_by_ref'
+//     ],
+//     path: [ 'definition' ],
+//     message: "Unrecognized key(s) in object: 'name', 'external_references', 'object_marking_refs', 'created_by_ref'"
+//   }
+// ]
 
 /** ************************************************************************************************* */
 // Example 4: Marking Definition with invalid type
@@ -135,13 +166,10 @@ try {
   const parsedMarkingDefinition = MarkingDefinitionSchema.parse(
     exampleOfRealMarkingDefinition
   );
-  console.log(
-    "Parsed successfully. marking definition id: marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168",
-    parsedMarkingDefinition.id
-  );
-  // Parsed successfully. Marking Definition id: marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168
+  console.log(`Parsed successfully. marking definition id: ${parsedMarkingDefinition.id}`);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation errors:", error.errors);
   }
 }
+// Parsed successfully. Marking Definition id: marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168

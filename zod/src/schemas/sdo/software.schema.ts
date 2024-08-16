@@ -45,7 +45,7 @@ export const SoftwareSchema = AttackCoreSDOSchema.extend({
                 invalid_type_error: "Aliases must be an array of strings."
             }
         )
-        .describe("List of aliases for the given software.")
+        .describe("Alternative names used to identify this software. The first alias must match the object's name.")
         .optional(),
     
     x_mitre_deprecated: z
@@ -59,6 +59,16 @@ export const SoftwareSchema = AttackCoreSDOSchema.extend({
     x_mitre_domains: z
         .array(AttackDomains)
         .describe("The technology domains to which the ATT&CK object belongs."),
+})
+    .refine(schema => {
+        // The object's name MUST be listed as the first alias in the x_mitre_aliases field
+        if (schema.x_mitre_aliases && schema.x_mitre_aliases.length > 0) {
+            return schema.x_mitre_aliases[0] === schema.name;
+        }
+        return true;
+    }, {
+        message: "The first alias must match the object's name",
+        path: ['aliases']
 });
 
 // Define the type for Software

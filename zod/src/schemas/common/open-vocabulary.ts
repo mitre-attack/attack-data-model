@@ -121,24 +121,94 @@ export const IdentityClassOpenVocabulary = z.enum([
     "unspecified"
 ]);
 
-export const SectorsListOpenVocabulary = z.enum([
+/**
+ * 10.2 Attack Motivation Vocabulary
+ * 
+ * Vocabulary Name: attack-motivation-ov
+ * 
+ * The attack motivation vocabulary is currently used in the following SDO(s):
+ *   * Intrusion Set
+ *   * Threat Actor
+ * 
+ * Knowing a Threat Actor or Intrusion Set's motivation may allow an analyst or 
+ * defender to better understand likely targets and behaviors.
+ */
+export const AttackMotivationOpenVocabulary = z.enum([
+    "accidental",
+    "coercion",
+    "dominance",
+    "ideology",
+    "notoriety",
+    "organizational-gain",
+    "personal-gain",
+    "personal-satisfaction",
+    "revenge",
+    "unpredictable"
+]);
+
+/**
+ * 10.3 Attack Resource Level Vocabulary
+ * 
+ * Vocabulary Name: attack-resource-level-ov
+ * 
+ * The attack resource level vocabulary is currently used in the following SDO(s):
+ *   * Intrusion Set
+ *   * Threat Actor
+ * 
+ * Attack Resource Level is an open vocabulary that captures the general level of 
+ * resources that a threat actor, intrusion set, or campaign might have access to. 
+ * It ranges from individual, a person acting alone, to government, the resources 
+ * of a national government.
+ * 
+ * This section including vocabulary items and their descriptions is based on the 
+ * Threat Agent Library publication from Intel Corp in September 2007 [Casey 2007].
+ */
+export const AttackResourceLevelOpenVocabulary = z.enum([
+    "individual",
+    "club",
+    "contest",
+    "team",
+    "organization",
+    "government"
+]);
+
+/**
+ * 10.11 Industry Sector Vocabulary
+ * 
+ * Vocabulary Name: industry-sector-ov
+ * 
+ * The industry sector vocabulary is currently used in the following SDO(s):
+ *   * Identity
+ * 
+ * Industry sector is an open vocabulary that describes industrial and commercial sectors. 
+ * It is intended to be holistic; it has been derived from several other lists and is not 
+ * limited to "critical infrastructure" sectors.
+ */
+export const IndustrySectorOpenVocabulary = z.enum([
     "agriculture",
     "aerospace",
     "automotive",
+    "chemical",
+    "commercial",
     "communications",
     "construction",
-    "defence",
+    "defense",
     "education",
     "energy",
     "entertainment",
     "financial-services",
-    "government-national",
-    "government-regional",
+    "government",
+    "government-emergency-services",
     "government-local",
+    "government-national",
     "government-public-services",
+    "government-regional",
     "healthcare",
     "hospitality-leisure",
     "infrastructure",
+    "infrastructure-dams",
+    "infrastructure-nuclear",
+    "infrastructure-water",
     "insurance",
     "manufacturing",
     "mining",

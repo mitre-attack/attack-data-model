@@ -8,21 +8,6 @@ import { StixCreatedByRefSchema, ExternalReferenceSchema, ExtensionSchema, Granu
 import { ObjectMarkingRefsSchema } from './common-properties';
 
 
-export const StixCreatedTimestampSchema = StixTimestampSchema.brand<"StixCreatedTimestamp">();
-export type StixCreatedTimestamp = z.infer<typeof StixCreatedTimestampSchema>;
-
-export const StixModifiedTimestampSchema = StixTimestampSchema.brand<"StixModifiedTimestamp">();
-export type StixModifiedTimestamp = z.infer<typeof StixModifiedTimestampSchema>;
-
-// Helper functions to create branded types
-export function createStixCreatedTimestamp(value: string): StixCreatedTimestamp {
-    return StixCreatedTimestampSchema.parse(value);
-}
-
-export function createStixModifiedTimestamp(value: string): StixModifiedTimestamp {
-    return StixModifiedTimestampSchema.parse(value);
-}
-
 export const SDOSchema = z
     .object({
         id: StixIdentifierSchema
@@ -30,14 +15,10 @@ export const SDOSchema = z
         type: StixTypeSchema,
         spec_version: StixSpecVersionSchema
             .describe("The version of the STIX specification used to represent this object."),
-        created: StixCreatedTimestampSchema
-            .or(StixTimestampSchema)
-            // .pipe(StixCreatedTimestampSchema)
+        created: StixTimestampSchema
             .brand("StixCreatedTimestamp")
             .describe("The created property represents the time at which the first version of this object was created. The timstamp value MUST be precise to the nearest millisecond."),
-        modified: StixModifiedTimestampSchema
-            .or(StixTimestampSchema)
-            // .pipe(StixModifiedTimestampSchema)
+        modified: StixTimestampSchema
             .brand("StixModifiedTimestamp")
             .describe("The modified property represents the time that this particular version of the object was modified. The timstamp value MUST be precise to the nearest millisecond."),
         created_by_ref: StixCreatedByRefSchema
@@ -57,7 +38,8 @@ export const SDOSchema = z
             .int().min(1).max(99).optional()
             .refine(val => val === undefined || (val > 0 && val < 100), {
                 message: "Confidence must be between 1 and 99 inclusive."
-            }),
+            })
+            .optional(),
         lang: z
             .string()
             .describe("Identifies the language of the text content in this object.")

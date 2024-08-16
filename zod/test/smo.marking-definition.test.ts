@@ -7,6 +7,9 @@ describe("MarkingDefinitionSchema", () => {
       spec_version: "2.1",
       id: "marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da",
       created: "2016-08-01T00:00:00.000Z",
+      created_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "x_mitre_attack_spec_version": "2.1.0",
+      "x_mitre_domains": ["enterprise-attack"],
       definition_type: "statement",
       definition: {
         statement: "Copyright 2019, Example Corp",
@@ -22,8 +25,10 @@ describe("MarkingDefinitionSchema", () => {
       spec_version: "2.1",
       id: "marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed",
       created: "2017-01-20T00:00:00.000Z",
+      created_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "x_mitre_attack_spec_version": "2.1.0",
+      "x_mitre_domains": ["enterprise-attack"],
       definition_type: "tlp",
-      name: "TLP:RED",
       definition: {
         tlp: "red",
       },
@@ -63,24 +68,22 @@ describe("MarkingDefinitionSchema", () => {
     );
   });
 
-  it("should validate optional fields", () => {
+  it("should throw an error if unrecognized fields detected (name, external_references)", () => {
     const validData = {
       type: "marking-definition",
       spec_version: "2.1",
       id: "marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed",
       created: "2017-01-20T00:00:00.000Z",
       definition_type: "tlp",
-      name: "TLP:RED",
+      name: "TLP:RED", // <--- Not allowed
       definition: {
         tlp: "red",
       },
-      external_references: ["https://example.com"],
-      object_marking_refs: [
-        "marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da",
-      ],
-      granular_markings: ["example granular marking"],
+      external_references: ["https://example.com"], // <--- Not allowed
     };
 
-    expect(() => MarkingDefinitionSchema.parse(validData)).not.toThrow();
+    expect(() => MarkingDefinitionSchema.parse(validData)).toThrowError(
+      /Unrecognized key\(s\) in object: 'name', 'external_references'/
+    );
   });
 });
