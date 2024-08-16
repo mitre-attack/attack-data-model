@@ -9,6 +9,7 @@ import { StixType } from '../schemas/common/stix-type';
  */
 const stixTypeToSchemaName: Record<StixType, string> = {
     "attack-pattern": "AttackPattern",
+    "bundle": "StixBundle",
     "campaign": "Campaign",
     "course-of-action": "CourseOfAction",
     "identity": "Identity",
