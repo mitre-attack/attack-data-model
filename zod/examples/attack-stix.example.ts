@@ -59,7 +59,9 @@ const validStix = {
             ],
             identity_class: "organization",
             name: "The MITRE Corporation",
-            x_mitre_domains:["enterprise-attack"]
+            x_mitre_domains:["enterprise-attack"],
+            x_mitre_attack_spec_version: "3.2.0",
+	        x_mitre_version: "1.0"
         },
         {
             modified: "2023-10-04T18:05:43.237Z",
@@ -259,6 +261,7 @@ const validStix = {
                 "Linux",
                 "macOS"
             ],
+            x_mitre_attack_spec_version: "2.1.0",
             x_mitre_version: "1.2"
         },
         {

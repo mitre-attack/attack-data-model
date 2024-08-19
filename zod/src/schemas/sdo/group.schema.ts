@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { AttackCoreSDOSchema, AttackDomains } from "../common/core-attack-sdo.schema";
 import { StixTypeSchema } from "../common/stix-type";
-import { createStixIdentifierSchema, MitreContributorsSchema, StixTimestampSchema } from "../common";
+import { createStixIdentifierSchema, StixTimestampSchema } from "../common";
 import { AttackMotivationOpenVocabulary, AttackResourceLevelOpenVocabulary } from "../common/open-vocabulary";
 
 
@@ -24,7 +24,9 @@ export const GroupSchema = AttackCoreSDOSchema.extend({
         .array(AttackDomains)
         .describe("The technology domains to which the ATT&CK object belongs."),
 
-    x_mitre_contributors: MitreContributorsSchema.optional(),
+    x_mitre_contributors: z
+        .array(z.string())
+        .optional(),
 
     x_mitre_deprecated: z
         .boolean()
