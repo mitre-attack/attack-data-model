@@ -40,6 +40,24 @@ try {
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation errors:", error.errors);
+        /**
+         * Validation errors: [
+            {
+                code: 'invalid_type',
+                expected: 'array',
+                received: 'undefined',
+                path: [ 'object_marking_refs' ],
+                message: 'Required'
+            },
+            {
+                expected: "'individual' | 'group' | 'system' | 'organization' | 'class' | 'unspecified'",
+                received: 'undefined',
+                code: 'invalid_type',
+                path: [ 'identity_class' ],
+                message: 'Required'
+            }
+            ]
+         */
     }
 }
 
@@ -74,7 +92,25 @@ const identityWithStixFields = {
 
 console.log("\nExample 4 - Identity with fields in STIX but not in ATT&CK:");
 console.log(IdentitySchema.parse(identityWithStixFields));
-
+/**
+ * {
+    id: 'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5',
+    type: 'identity',
+    spec_version: '2.1',
+    created: '2017-06-01T00:00:00.000Z',
+    modified: '2017-06-01T00:00:00.000Z',
+    object_marking_refs: [ 'marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168' ],
+    name: 'The MITRE Corporation',
+    x_mitre_attack_spec_version: '2.0.0',
+    x_mitre_version: '2.1',
+    identity_class: 'organization',
+    description: 'identity object description',
+    roles: [ 'administrator' ],
+    sectors: [ 'non-profit' ],
+    contact_information: 'attack@mitre.org',
+    x_mitre_domains: [ 'enterprise-attack' ]
+    }
+ */
 
 /** ************************************************************************************************* */
 // Example 5: Parsing the provided example identity
