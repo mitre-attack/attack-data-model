@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { StixTypeSchema } from "../common/stix-type";
 import { AttackDomains } from "../common/core-attack-sdo.schema";
-import { createStixIdentifierSchema, StixCreatedByRefSchema, StixSpecVersionSchema, StixTimestampSchema } from "../common";
+import { createStixIdentifierSchema, NameSchema, StixCreatedByRefSchema, StixSpecVersionSchema, StixTimestampSchema } from "../common";
 
 
 /////////////////////////////////////
@@ -111,6 +111,8 @@ export const MarkingDefinitionSchema = z.object({
   id: createStixIdentifierSchema(StixTypeSchema.enum["marking-definition"]),
 
   type: z.literal(StixTypeSchema.enum["marking-definition"]),
+
+  name: NameSchema.optional(),
 
   spec_version: StixSpecVersionSchema
     .describe("The version of the STIX specification used to represent this object."),

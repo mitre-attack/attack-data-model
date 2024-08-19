@@ -1,32 +1,33 @@
 import { z } from 'zod';
 import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
-import { StixTypeSchema } from '../common/stix-type';
-import { MitreContributorsSchema, DescriptionSchema, KillChainPhaseSchema, PlatformsSchema, AttackDomains, StixIdentifierSchema, ObjectMarkingRefsSchema } from '../common';
+import { StixType, StixTypeSchema } from '../common/stix-type';
+import { DescriptionSchema, KillChainPhaseSchema, PlatformsSchema, AttackDomains, StixIdentifierSchema, ObjectMarkingRefsSchema, createStixIdentifierSchema, MitreDefenseBypassesSchema, MitrePermissionsRequiredSchema, MitreEffectivePermissionsSchema, MitreTacticTypeSchema, MitreDataSourcesSchema } from '../common';
 
 // Initializes the custom ZodErrorMap
 import '../../errors'; 
 
-export const MobileTacticTypes = z.enum([
-    "Post-Adversary Device Access",
-    "Pre-Adversary Device Access",
-    "Without Adversary Device Access"
-]);
 
-export type MobileTacticType = z.infer<typeof MobileTacticTypes>;
+const TECHNIQUE_TYPE: StixType = StixTypeSchema.enum['attack-pattern'];
+Object.freeze(TECHNIQUE_TYPE);
+
 
 // Technique Schema
 export const TechniqueSchema = AttackCoreSDOSchema.extend({
-    type: z.literal(StixTypeSchema.enum['attack-pattern'], {
-        message: `'type' property must be equal to ${StixTypeSchema.enum['attack-pattern']}`
-    }),
 
-    kill_chain_phases: z.array(KillChainPhaseSchema),
+    id: createStixIdentifierSchema(TECHNIQUE_TYPE),
+
+    type: z.literal(TECHNIQUE_TYPE),
+
+    kill_chain_phases: z
+        .array(KillChainPhaseSchema)
+        .optional(),
 
     description: DescriptionSchema
         .describe("The description of the object.")
         .optional(),
 
-    x_mitre_platforms: PlatformsSchema,
+    x_mitre_platforms: PlatformsSchema
+        .optional(),
 
     x_mitre_detection: z
         .string({
@@ -41,28 +42,18 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
         })
         .describe("If true, this attack-pattern is a sub-technique."),
 
-    x_mitre_data_sources: z
-        .array(z.string(), {
-            invalid_type_error: "x_mitre_data_sources must be an array of strings."
-        })
+    x_mitre_data_sources: MitreDataSourcesSchema
         .describe("Sources of information that may be used to identify the action or result of the action being performed.")
         .optional(),
     
-    x_mitre_defense_bypassed: z
-        .array(z.string(), {
-            invalid_type_error: "x_mitre_defense_bypass must be an array of strings."
-        })
-        .describe("List of defensive tools, methodologies, or processes the technique can bypass.")
+    x_mitre_defense_bypassed: MitreDefenseBypassesSchema
         .optional(),
 
-    x_mitre_contributors: MitreContributorsSchema
+    x_mitre_contributors: z
+        .array(z.string())
         .optional(),
 
-    x_mitre_permissions_required: z
-        .array(z.string(), {
-            invalid_type_error: "x_mitre_permissions_required must be an array of strings."
-        })
-        .describe("The lowest level of permissions the adversary is required to be operating within to perform the technique on a system.")
+    x_mitre_permissions_required: MitrePermissionsRequiredSchema
         .optional(),
 
     x_mitre_remote_support: z
@@ -78,28 +69,20 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
         .optional(),
 
     x_mitre_impact_type: z
-        .array(z.string(), {
+        .array(z.enum(['Availability', 'Integrity']), {
             invalid_type_error: "x_mitre_impact_type must be an array of strings."
         })
         .describe("Denotes if the technique can be used for integrity or availability attacks.")
         .optional(),
 
-    x_mitre_effective_permissions: z
-        .array(z.string(), {
-            invalid_type_error: "x_mitre_effective_permissions must be an array of strings."
-        })
-        .describe("The level of permissions the adversary will attain by performing the technique.")
+    x_mitre_effective_permissions: MitreEffectivePermissionsSchema
         .optional(),
     
     x_mitre_network_requirements: z
-        .array(z.string(), {
-            invalid_type_error: "x_mitre_network_requirements must be an array of strings."
-        })
+        .boolean()
         .optional(),
 
-    x_mitre_tactic_type: z
-        .array(MobileTacticTypes)
-        .describe("'Post-Adversary Device Access', 'Pre-Adversary Device Access', or 'Without Adversary Device Access'.")
+    x_mitre_tactic_type: MitreTacticTypeSchema
         .optional(),
 
     x_mitre_deprecated: z
