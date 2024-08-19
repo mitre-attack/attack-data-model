@@ -105,6 +105,56 @@ export type MitreDefenseBypasses = z.infer<typeof MitreDefenseBypassesSchema>;
 
 /////////////////////////////////////
 //
+// MITRE Tactic Type
+//
+/////////////////////////////////////
+
+const SupportedMitreTacticTypes = [
+    "Post-Adversary Device Access",
+    "Pre-Adversary Device Access",
+    "Without Adversary Device Access"
+] as const;
+
+export const MitreTacticTypeSchema = z
+    .array(z.enum(SupportedMitreTacticTypes), {
+        invalid_type_error: 'x_mitre_tactic_type must be an array of strings.',
+        message: 'x_mitre_tactic_type may only contain values from the following list: ' + SupportedMitreTacticTypes.join(', ')
+    })
+    .describe('"Post-Adversary Device Access", "Pre-Adversary Device Access", or "Without Adversary Device Access".')
+
+export type MitreTacticType = z.infer<typeof MitreTacticTypeSchema>;
+
+
+
+/////////////////////////////////////
+//
+// MITRE Effective Permissions
+//
+/////////////////////////////////////
+
+const SupportedMitreEffectivePermissions = [
+    'Administrator',
+    'SYSTEM',
+    'User',
+    'root'
+] as const;
+
+// TODO How do we address/verify "Enterprise domain in the Privilege Escalation tactic"?
+export const MitreEffectivePermissionsSchema = z
+    .array(z.enum(SupportedMitreEffectivePermissions), {
+        invalid_type_error: 'x_mitre_effective_permissions must be an array of strings.',
+        message: 'x_mitre_effective_permissions may only contain values from the following list: ' + SupportedMitreEffectivePermissions.join(', ')
+    })
+    .min(1)
+    .refine(
+        (items) => new Set(items).size === items.length,
+        { message: "Effective permissions must be unique (no duplicates allowed)." }
+    )
+    .describe('The level of permissions the adversary will attain by performing the technique.');
+
+
+/////////////////////////////////////
+//
 // MITRE Permissions Required
 //
 /////////////////////////////////////
@@ -118,9 +168,13 @@ const SupportedMitrePermissionsRequired = [
 ] as const;
 
 export const MitrePermissionsRequiredSchema = z
-    .array(z.enum(SupportedMitrePermissionsRequired), {
-        invalid_type_error: "x_mitre_permissions_required must be an array of strings."
-    })
+    .array(
+        z.enum(SupportedMitrePermissionsRequired),
+        {
+            invalid_type_error: "x_mitre_permissions_required must be an array of strings.",
+            message: "x_mitre_permissions_required may only contain values from the following list: " + SupportedMitrePermissionsRequired.join(', ')
+        }
+    )
     .min(1)
     .describe("The lowest level of permissions the adversary is required to be operating within to perform the technique on a system.");
 
@@ -159,42 +213,54 @@ const SupportedPlatforms = [
 ] as const;
 
 export const PlatformsSchema = z
-    .array(z.enum(SupportedPlatforms))
+    .array(
+        z.enum(SupportedPlatforms),
+        {
+            invalid_type_error: "x_mitre_platforms must be an array of strings.",
+            message: "x_mitre_platforms may only contain values from the following list: " + SupportedPlatforms.join(', ')
+        }
+    )
     .min(1)
     .refine(
         (items) => new Set(items).size === items.length,
-        { message: "Platforms must be unique (no duplicates allowed)." }
+        {
+            message: "Platforms must be unique (no duplicates allowed)."
+        }
     )
     .describe("List of platforms that apply to the object.");
 
-// Type inference
 export type Platforms = z.infer<typeof PlatformsSchema>;
 
 
 /////////////////////////////////////
 //
-// MITRE Contributors
+// MITRE Data Sources (x_mitre_data_sources)
 //
 /////////////////////////////////////
 
-export const MitreContributorsSchema = z
-    .array(
-        z.string().refine(
-            (value) => {
-                const parts = value.split(':');
-                return parts.length === 2 && parts[0].trim() !== '' && parts[1].trim() !== '';
-            },
-            {
-                message: "Each entry must conform to the pattern '<Data Source Name>: <Data Component Name>'",
-            }
-        ),
+// a singular data source
+export const MitreDataSourceSchema = z
+    .string()
+    .refine(
+        (value) => {
+            const parts = value.split(':');
+            return parts.length === 2 && parts[0].trim() !== '' && parts[1].trim() !== '';
+        },
         {
-            invalid_type_error: "Contributors must be an array of strings.",
+            message: "Each entry must conform to the pattern '<Data Source Name>: <Data Component Name>'",
         }
     )
     .describe("People and organizations who have contributed to the object.");
 
-export type MitreContributors = z.infer<typeof MitreContributorsSchema>;
+// list of data sources
+export const MitreDataSourcesSchema = z
+    .array(MitreDataSourceSchema, {
+        invalid_type_error: "x_mitre_data_sources must be an array of strings."
+    })
+    .describe("Data sources that are used to perform the technique.");
+
+export type MitreDataSource = z.infer<typeof MitreDataSourceSchema>;
+export type MitreDataSources = z.infer<typeof MitreDataSourcesSchema>;
 
 
 /////////////////////////////////////
@@ -203,13 +269,13 @@ export type MitreContributors = z.infer<typeof MitreContributorsSchema>;
 //
 /////////////////////////////////////
 
-export const KillChainNames = z.enum([
+export const KillChainNameSchema = z.enum([
     "mitre-attack",
     "mitre-mobile-attack",
     "mitre-ics-attack"
 ]);
   
-export type KillChainName = z.infer<typeof KillChainNames>;
+export type KillChainName = z.infer<typeof KillChainNameSchema>;
   
 export const KillChainPhaseSchema = z.object({
     phase_name: z
@@ -233,7 +299,7 @@ export const KillChainPhaseSchema = z.object({
             }
         ),
 
-    kill_chain_name: KillChainNames
+    kill_chain_name: KillChainNameSchema
 })
     .strict();
   
