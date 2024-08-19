@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 const VALUES = [
     "attack-pattern",
+    "bundle",
     "campaign",
     "course-of-action",
     "identity",
