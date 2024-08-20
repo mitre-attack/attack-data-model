@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { AttackCoreSDOSchema, DescriptionSchema, ObjectMarkingRefsSchema, ObjectVersionReferenceSchema, StixTypeSchema } from "../common";
+import { AttackCoreSDOSchema, createStixIdentifierSchema, DescriptionSchema, ObjectMarkingRefsSchema, ObjectVersionReferenceSchema, StixTypeSchema } from "../common";
 
 // https://github.com/center-for-threat-informed-defense/attack-workbench-frontend/blob/master/docs/collections.md#collections
 export const CollectionSchema = AttackCoreSDOSchema.extend({
-	type: z.literal(StixTypeSchema.enum["x-mitre-collection"], {
-		message: `'type' property must be equal to ${StixTypeSchema.enum['x-mitre-collection']}`
-	}),
+	id: createStixIdentifierSchema(StixTypeSchema.enum['x-mitre-collection']),
+
+	type: z.literal(StixTypeSchema.enum["x-mitre-collection"]),
 
     description: DescriptionSchema
         .describe("Details, context, and explanation about the purpose or contents of the collection.")
@@ -13,6 +13,7 @@ export const CollectionSchema = AttackCoreSDOSchema.extend({
 
 	x_mitre_contents: z
 		.array(ObjectVersionReferenceSchema)
+		.min(1, "At least one STIX object reference is required.")
 		.describe("Specifies the objects contained within the collection."),
 })
 .required({
