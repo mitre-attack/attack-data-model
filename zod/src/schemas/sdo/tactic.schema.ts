@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AttackCoreSDOSchema, AttackDomains, DescriptionSchema, MitreContributorsSchema, ObjectMarkingRefsSchema, StixIdentifierSchema } from "../common";
+import { AttackCoreSDOSchema, AttackDomains, DescriptionSchema, ObjectMarkingRefsSchema, StixIdentifierSchema } from "../common";
 import { StixTypeSchema } from "../common/stix-type";
 
 // Initializes the custom ZodErrorMap
@@ -19,7 +19,8 @@ export const TacticSchema = AttackCoreSDOSchema.extend({
         .array(AttackDomains)
         .describe("The technology domains to which the ATT&CK object belongs."),
 
-    x_mitre_contributors: MitreContributorsSchema
+    x_mitre_contributors: z
+        .array(z.string())
         .optional(),
 
     x_mitre_deprecated: z

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
-import { DescriptionSchema, PlatformsSchema, MitreContributorsSchema, StixCreatedByRefSchema, StixIdentifierSchema, ExternalReferenceSchema, AttackDomains, StixTypeSchema, StixType, createStixIdentifierSchema, ObjectMarkingRefsSchema } from '../common';
+import { DescriptionSchema, PlatformsSchema, StixCreatedByRefSchema, StixIdentifierSchema, ExternalReferenceSchema, AttackDomains, StixTypeSchema, StixType, createStixIdentifierSchema, ObjectMarkingRefsSchema } from '../common';
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
@@ -35,7 +35,8 @@ export const SoftwareSchema = AttackCoreSDOSchema.extend({
     x_mitre_platforms: PlatformsSchema
         .optional(),
 
-    x_mitre_contributors: MitreContributorsSchema
+    x_mitre_contributors: z
+        .array(z.string())
         .optional(),
 
     x_mitre_aliases: z

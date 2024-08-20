@@ -42,7 +42,8 @@ const validTool = {
         "Linux",
         "macOS"
     ],
-    x_mitre_version: "1.2"
+    x_mitre_version: "1.2",
+    x_mitre_attack_spec_version: "3.2.0"
 };
 
 console.log("Example 1 - Valid Tool:");

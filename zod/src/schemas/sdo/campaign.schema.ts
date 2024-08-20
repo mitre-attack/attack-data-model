@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
-import { StixTypeSchema, StixTimestampSchema, MitreContributorsSchema, StixCreatedByRefSchema, StixIdentifierSchema, ExternalReferenceSchema, AttackDomains, ObjectMarkingRefsSchema, DescriptionSchema } from "../common";
+import { StixTypeSchema, StixTimestampSchema, StixCreatedByRefSchema, StixIdentifierSchema, ExternalReferenceSchema, AttackDomains, ObjectMarkingRefsSchema, DescriptionSchema } from "../common";
 
 import '../../errors';
 
@@ -24,7 +24,8 @@ export const AttackCampaignSchema = AttackCoreSDOSchema.extend({
     x_mitre_modified_by_ref: StixIdentifierSchema
         .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."),
 
-    x_mitre_contributors: MitreContributorsSchema
+    x_mitre_contributors: z
+        .array(z.string())
         .optional(),
 
     x_mitre_deprecated: z
