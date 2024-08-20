@@ -4,7 +4,7 @@ import { createStixIdentifierSchema } from "../common/stix-identifier";
 import { MalwareSchema } from "./malware.schema";
 import '../../errors';
 import { AssetSchema } from "./asset.schema";
-import { AttackCampaignSchema } from "./campaign.schema";
+import { CampaignSchema } from "./campaign.schema";
 import { DataComponentSchema } from "./data-component.schema";
 import { DataSourceSchema } from "./data-source.schema";
 import { IdentitySchema } from "./identity.schema";
@@ -17,7 +17,7 @@ import { MitigationSchema } from "./mitigation.schema";
 
 const StixObjectSchema: {[key: string]: z.ZodSchema} = {
   "x-mitre-asset": AssetSchema,
-  "campaign": AttackCampaignSchema,
+  "campaign": CampaignSchema,
   "x-mitre-data-component": DataComponentSchema,
   "x-mitre-data-source": DataSourceSchema,
   "identity": IdentitySchema,

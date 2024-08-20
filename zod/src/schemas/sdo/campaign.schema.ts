@@ -1,21 +1,27 @@
 import { z } from "zod";
 import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
-import { StixTypeSchema, StixTimestampSchema, StixCreatedByRefSchema, StixIdentifierSchema, ExternalReferenceSchema, AttackDomains, ObjectMarkingRefsSchema, DescriptionSchema } from "../common";
+import { StixTypeSchema, StixTimestampSchema, StixCreatedByRefSchema, StixIdentifierSchema, ExternalReferenceSchema, AttackDomains, DescriptionSchema, createStixIdentifierSchema } from "../common";
 
 import '../../errors';
 
 // ATT&CK Campaign Schema
-export const AttackCampaignSchema = AttackCoreSDOSchema.extend({
-    type: z.literal(StixTypeSchema.enum.campaign, {
-        message: `'type' property must be equal to ${StixTypeSchema.enum.campaign}`
-    }),
+export const CampaignSchema = AttackCoreSDOSchema.extend({
+
+    id: createStixIdentifierSchema(StixTypeSchema.enum.campaign),
+
+    type: z.literal(StixTypeSchema.enum.campaign),
 
     description: DescriptionSchema
-        .describe("A description that provides more details and context about the Campaign."),
+        .describe("A description that provides more details and context about the Campaign.")
+        .optional(),
+
+    external_references: z
+        .array(ExternalReferenceSchema)
+        .min(1, "At least one external reference is required.")
+        .describe("A list of external references which refers to non-STIX information."),
 
     created_by_ref: StixCreatedByRefSchema
-        .describe("The ID of the Source object that describes who created this object.")
-        .optional(),
+        .describe("The ID of the Source object that describes who created this object."),
 
     x_mitre_domains: z
         .array(AttackDomains)
@@ -29,9 +35,7 @@ export const AttackCampaignSchema = AttackCoreSDOSchema.extend({
         .optional(),
 
     x_mitre_deprecated: z
-        .boolean({
-            invalid_type_error: "x_mitre_deprecated must be a boolean."
-        })
+        .boolean()
         .describe("Indicates whether the object has been deprecated.")
         .optional(),
 
@@ -40,9 +44,11 @@ export const AttackCampaignSchema = AttackCoreSDOSchema.extend({
         .default([])
         .describe("Alternative names used to identify this campaign. The first alias must match the object's name."),
 
+    // Optional in STIX but required in ATT&CK
     first_seen: StixTimestampSchema
         .describe("The time that this Campaign was first seen."),
 
+    // Optional in STIX but required in ATT&CK
     last_seen: StixTimestampSchema
         .describe("The time that this Campaign was last seen."),
 
@@ -71,30 +77,25 @@ export const AttackCampaignSchema = AttackCoreSDOSchema.extend({
     path: ['aliases']
 })
 .superRefine(({external_references}, ctx) => {
-    // ATT&CK ID format
-    if (!external_references?.length) {
+    // Verify the first external reference is an ATT&CK ID
+    const attackIdEntry = external_references[0];
+    if (!attackIdEntry.external_id) {
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: "At least one external_reference must be specified."
+            message: "ATT&CK ID must be defined in the first external_reference entry.",
+            path: ['external_references', 0, 'external_id']
         });
     } else {
-        let attackIdEntry = external_references[0];
-        if (!attackIdEntry.external_id) {
+        const idRegex = /C\d{4}$/;
+        if (!idRegex.test(attackIdEntry.external_id)) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: "ATT&CK ID must be defined in the first external_reference entry.",
+                message: `The first external_reference must match the ATT&CK ID format "C####"}.`,
+                path: ['external_references', 0, 'external_id']
             });
-        } else {
-            let idRegex = /C\d{4}$/;
-            if (!idRegex.test(attackIdEntry.external_id)) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: `The first external_reference must match the ATT&CK ID format "C####"}.`
-                });
-            }
         }
     }
 })
 
 // Define the type for AttackCampaign
-export type AttackCampaign = z.infer<typeof AttackCampaignSchema>;
+export type Campaign = z.infer<typeof CampaignSchema>;
