@@ -120,7 +120,7 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
     })
     .superRefine((schema, ctx) => {
 
-        // unpack properties from schema
+        // Destructure relevant properties from the schema
         const {
             external_references,
             kill_chain_phases,
@@ -136,16 +136,16 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
             x_mitre_data_sources
         } = schema;
 
-        // define helper variables
+        // Helper variables for domain checks
         const inEnterpriseDomain = x_mitre_domains.includes(AttackDomains.enum['enterprise-attack']);
         const inMobileDomain = x_mitre_domains.includes(AttackDomains.enum['mobile-attack']);
 
         //==============================================================================
-        // Verify that first external reference is an ATT&CK ID
+        // Validate external references
         //==============================================================================
 
+        // Verify that first external reference is an ATT&CK ID
         const attackIdEntry = external_references[0];
-
         if (!attackIdEntry.external_id) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
@@ -153,9 +153,8 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
                 path: ['external_references', 0, 'external_id']
             });
         } else {
-
+            // Check if the ATT&CK ID format is correct based on whether it's a sub-technique
             const idRegex = x_mitre_is_subtechnique ? /^T\d{4}\.\d{3}$/ : /^T\d{4}$/;
-
             if (!idRegex.test(attackIdEntry.external_id)) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
@@ -169,8 +168,18 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
         // Validate Enterprise-only properties
         //==============================================================================
 
+        // Extract tactics from kill_chain_phases
         const tactics = kill_chain_phases?.map(tactic => tactic.phase_name) || [];
 
+        /**
+         * Validates that the specified property is only valid if the
+         * technique is associated with the specified tactic and belongs to the enterprise
+         * domain.
+         * 
+         * @param fieldName The property key that will be evaluated
+         * @param value The property value that will be evaluated
+         * @param requiredTactic The name of the tactic required for the property to be valid
+         */
         function validateEnterpriseOnlyField(
             fieldName: string,
             value: any,
