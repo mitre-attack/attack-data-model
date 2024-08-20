@@ -32,9 +32,9 @@ const StixObjectSchema: {[key: string]: z.ZodSchema} = {
 
 // Define the schema for a STIX bundle
 export const StixBundleSchema = z.object({
-  id: createStixIdentifierSchema(StixTypeSchema.enum.bundle),
+  id: createStixIdentifierSchema(StixTypeSchema.enum["stix-bundle"]),
 
-  type: z.literal(StixTypeSchema.enum.bundle),
+  type: z.literal(StixTypeSchema.enum["stix-bundle"]),
 
   objects: z
     .array(z.any())

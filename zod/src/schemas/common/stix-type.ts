@@ -2,18 +2,18 @@ import { z } from 'zod';
 
 const VALUES = [
     "attack-pattern",
-    "bundle",
+    "stix-bundle",
     "campaign",
     "course-of-action",
     "identity",
-    "indicator",
+    "indicator", // not used in ATT&CK
     "intrusion-set",
     "malware",
-    "observed-data",
-    "report",
-    "threat-actor",
+    "observed-data", // not used in ATT&CK
+    "report", // not used in ATT&CK
+    "threat-actor", // not used in ATT&CK
     "tool",
-    "vulnerability",
+    "vulnerability", // not used in ATT&CK
     "marking-definition",
     "x-mitre-data-component",
     "x-mitre-data-source",
@@ -21,7 +21,7 @@ const VALUES = [
     "x-mitre-asset",
     "x-mitre-matrix",
     "x-mitre-collection",
-
+    "relationship",
 ] as const;
 
 export const StixTypeSchema = z
