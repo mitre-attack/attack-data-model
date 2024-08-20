@@ -1,14 +1,13 @@
 import { z } from 'zod';
 import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
 import { StixType, StixTypeSchema } from '../common/stix-type';
-import { DescriptionSchema, KillChainPhaseSchema, PlatformsSchema, AttackDomains, StixIdentifierSchema, ObjectMarkingRefsSchema, createStixIdentifierSchema, MitreDefenseBypassesSchema, MitrePermissionsRequiredSchema, MitreEffectivePermissionsSchema, MitreTacticTypeSchema, MitreDataSourcesSchema } from '../common';
+import { DescriptionSchema, KillChainPhaseSchema, PlatformsSchema, AttackDomains, createStixIdentifierSchema, MitreDefenseBypassesSchema, MitrePermissionsRequiredSchema, MitreEffectivePermissionsSchema, MitreTacticTypeSchema, MitreDataSourcesSchema, MitreModifiedByRefSchema, ExternalReferenceSchema } from '../common';
 
 // Initializes the custom ZodErrorMap
 import '../../errors'; 
 
-
+// read only type reference
 const TECHNIQUE_TYPE: StixType = StixTypeSchema.enum['attack-pattern'];
-Object.freeze(TECHNIQUE_TYPE);
 
 
 // Technique Schema
@@ -17,6 +16,12 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
     id: createStixIdentifierSchema(TECHNIQUE_TYPE),
 
     type: z.literal(TECHNIQUE_TYPE),
+
+    // Optional in STIX but required in ATT&CK
+    external_references: z
+        .array(ExternalReferenceSchema)
+        .min(1, "At least one external reference is required.")
+        .describe("A list of external references which refers to non-STIX information."),
 
     kill_chain_phases: z
         .array(KillChainPhaseSchema)
@@ -96,136 +101,124 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
         .array(AttackDomains)
         .describe("The technology domains to which the ATT&CK object belongs."),
 
-    x_mitre_modified_by_ref: StixIdentifierSchema
-        .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."),
+    x_mitre_modified_by_ref: MitreModifiedByRefSchema
+        .optional()
+
 })
-.required({
-    name: true,
-    type: true,
-    kill_chain_phases: true,
-    x_mitre_version: true,
-    x_mitre_domains: true,
-    x_mitre_is_subtechnique: true,
-})
-// validate common fields
-.superRefine(({external_references, x_mitre_is_subtechnique}, ctx) => {
-    // ATT&CK ID format
-    if (!external_references?.length) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "At least one external_reference must be specified."
-        });
-    } else {
-        let attackIdEntry = external_references[0];
+    .required({
+        created: true,
+        external_references: true,
+        id: true,
+        modified: true,
+        name: true,
+        spec_version: true,
+        type: true,
+        x_mitre_attack_spec_version: true,
+        x_mitre_domains: true,
+        x_mitre_is_subtechnique: true,
+        x_mitre_version: true
+    })
+    .superRefine((schema, ctx) => {
+
+        // unpack properties from schema
+        const {
+            external_references,
+            kill_chain_phases,
+            x_mitre_domains,
+            x_mitre_permissions_required,
+            x_mitre_effective_permissions,
+            x_mitre_system_requirements,
+            x_mitre_defense_bypassed,
+            x_mitre_remote_support,
+            x_mitre_impact_type,
+            x_mitre_is_subtechnique,
+            x_mitre_tactic_type,
+            x_mitre_data_sources
+        } = schema;
+
+        // define helper variables
+        const inEnterpriseDomain = x_mitre_domains.includes(AttackDomains.enum['enterprise-attack']);
+        const inMobileDomain = x_mitre_domains.includes(AttackDomains.enum['mobile-attack']);
+
+        //==============================================================================
+        // Verify that first external reference is an ATT&CK ID
+        //==============================================================================
+
+        const attackIdEntry = external_references[0];
+
         if (!attackIdEntry.external_id) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 message: "ATT&CK ID must be defined in the first external_references entry.",
+                path: ['external_references', 0, 'external_id']
             });
         } else {
-            let idRegex = x_mitre_is_subtechnique ? /T\d{4}\.\d{3}$/ : /T\d{4}$/;
+
+            const idRegex = x_mitre_is_subtechnique ? /^T\d{4}\.\d{3}$/ : /^T\d{4}$/;
+
             if (!idRegex.test(attackIdEntry.external_id)) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
-                    message: `The first external_reference must match the ATT&CK ID format ${x_mitre_is_subtechnique ? "T####.###" : "T####"}.`
+                    message: `The first external_reference must match the ATT&CK ID format ${x_mitre_is_subtechnique ? "T####.###" : "T####"}.`,
+                    path: ['external_references', 0, 'external_id']
                 });
             }
         }
-    }
-})
-// validate Enterprise only fields
-.superRefine(({x_mitre_domains,
-               kill_chain_phases,
-               x_mitre_system_requirements,
-               x_mitre_permissions_required,
-               x_mitre_effective_permissions,
-               x_mitre_defense_bypassed,
-               x_mitre_remote_support,
-               x_mitre_impact_type,
-              }, ctx) => {
-    let enterpriseDomain = AttackDomains.enum['enterprise-attack'];
 
-    // helper functions/variables
-    let tactics = function() {
-        return kill_chain_phases.map(tactic => tactic.phase_name);
-    };
-    let hasValidDomain = x_mitre_domains.includes(enterpriseDomain);
-    let inPrivilegeEscalationTactic = tactics().includes('privilege-escalation');
-    let inDefenseEvasionTactic = tactics().includes('defense-evasion');
-    let inExecutionTactic = tactics().includes('execution');
-    let inImpactTactic = tactics().includes('impact');
+        //==============================================================================
+        // Validate Enterprise-only properties
+        //==============================================================================
 
-    // x_mitre_system_requirements
-    if (x_mitre_system_requirements?.length && !hasValidDomain) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "x_mitre_system_requirements is only supported in the 'enterprise-attack' domain.",
-        });
-    }
+        const tactics = kill_chain_phases?.map(tactic => tactic.phase_name) || [];
 
-    // x_mitre_permissions_required
-    if (x_mitre_permissions_required?.length && !hasValidDomain && !inPrivilegeEscalationTactic) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "x_mitre_permissions_required is only supported in the 'enterprise-attack' domain in the Privilege Escalation tactic.",
-        });
-    }
+        function validateEnterpriseOnlyField(
+            fieldName: string,
+            value: any,
+            requiredTactic: string | null = null
+        ) {
+            if (value !== undefined) {
+                if (!inEnterpriseDomain) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: `${fieldName} is only supported in the 'enterprise-attack' domain.`,
+                        path: [fieldName]
+                    });
+                } else if (requiredTactic && kill_chain_phases !== undefined && !tactics.includes(requiredTactic)) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: `${fieldName} is only supported in the ${requiredTactic} tactic.`,
+                        path: [fieldName]
+                    });
+                }
+            }
+        }
 
-    // x_mitre_effective_permissions
-    if (x_mitre_effective_permissions?.length && !hasValidDomain && !inPrivilegeEscalationTactic) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "x_mitre_effective_permissions is only supported in the 'enterprise-attack' domain in the Privilege Escalation tactic.",
-        });
-    }
+        // Validate enterprise-only fields
+        validateEnterpriseOnlyField('x_mitre_system_requirements', x_mitre_system_requirements);
+        validateEnterpriseOnlyField('x_mitre_permissions_required', x_mitre_permissions_required, 'privilege-escalation');
+        validateEnterpriseOnlyField('x_mitre_effective_permissions', x_mitre_effective_permissions, 'privilege-escalation');
+        validateEnterpriseOnlyField('x_mitre_defense_bypassed', x_mitre_defense_bypassed, 'defense-evasion');
+        validateEnterpriseOnlyField('x_mitre_remote_support', x_mitre_remote_support, 'execution');
+        validateEnterpriseOnlyField('x_mitre_impact_type', x_mitre_impact_type, 'impact');
 
-    // x_mitre_defense_bypassed
-    if (x_mitre_defense_bypassed?.length && !hasValidDomain && !inDefenseEvasionTactic) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "x_mitre_defense_bypassed is only supported in the 'enterprise-attack' domain in the Defense Evasion tactic.",
-        });
-    }
+        //==============================================================================
+        // Validate Mobile-only properties
+        //==============================================================================
 
-    // x_mitre_remote_support
-    if (x_mitre_remote_support !== undefined && !hasValidDomain && !inExecutionTactic) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "x_mitre_remote_support is only supported in the 'enterprise-attack' domain in the Execution tactic.",
-        });
-    }
+        if (x_mitre_tactic_type?.length && !inMobileDomain) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "x_mitre_tactic_type is only supported in the 'mobile-attack' domain.",
+            })
+        }
 
-    // x_mitre_impact_type
-    if (x_mitre_impact_type?.length && !hasValidDomain && !inImpactTactic) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "x_mitre_impact_type is only supported in the 'enterprise-attack' domain in the Impact tactic.",
-        });
-    }
-})
-// validate Mobile only fields
-.superRefine(({x_mitre_domains, x_mitre_tactic_type}, ctx) => {
-    let mobileDomain = AttackDomains.enum['mobile-attack'];
+        if (x_mitre_data_sources && inMobileDomain) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "x_mitre_data_sources is not supported in the 'mobile-attack' domain.",
+            });
+        }
+    });
 
-    // 'x_mitre_tactic_type' can only be populated for Mobile
-    let hasValidDomain = x_mitre_domains.includes(mobileDomain);
-    if (x_mitre_tactic_type?.length && !hasValidDomain) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "x_mitre_tactic_type is only supported in the 'mobile-attack' domain.",
-        })
-    }
-})
-// validate multi-domain fields
-.superRefine(({x_mitre_domains, x_mitre_data_sources}, ctx) => {
-    let validDomains = ['enterprise-attack', 'ics-attack'];
-    let hasValidDomain = x_mitre_domains.some(d => validDomains.includes(d));
-    if (x_mitre_data_sources?.length && !hasValidDomain) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "x_mitre_data_sources is not supported in the 'mobile-attack' domain.",
-        });
-    }
-});
 
 export type Technique = z.infer<typeof TechniqueSchema>;
