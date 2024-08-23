@@ -125,8 +125,7 @@ export const isValidSourceType = function(relationshipType: string, sourceRef: s
 };
 
 // Helper function to validate relationship target_ref type
-export const isValidTargetType = function(relationshipType: string, sourceRef: string, targetRef: string): [boolean, any] {
-	const sourceType = getType(sourceRef);
+export const isValidTargetType = function(relationshipType: string, targetRef: string): [boolean, any] {
 	const targetType = getType(targetRef);
 
 	// Check if target type is valid
