@@ -57,17 +57,10 @@ export const attackDomainSchema = z.enum([
 ]);
 
 export const xMitreDomainsSchema = z
-    .array(z.string())
+    .array(attackDomainSchema)
     .min(1, {
         message: "At least one MITRE ATT&CK domain must be specified."
     })
-    .refine(
-        (domains) => domains.every((domain) => attackDomainSchema.safeParse(domain).success),
-        (val) => ({
-            message: `Invalid MITRE ATT&CK domain(s): ${val.filter(domain => !attackDomainSchema.safeParse(domain).success).join(", ")}. Allowed values are: ${attackDomainSchema.options.join(", ")}.`
-        })
-    )
-    .transform((domains) => domains as z.infer<typeof attackDomainSchema>[])
     .describe("The technology domains to which the ATT&CK object belongs.");
 
 export type XMitreDomains = z.infer<typeof xMitreDomainsSchema>;
