@@ -5,7 +5,6 @@ import {
 } from "../common/core-attack-sdo.schema";
 import { StixTypeSchema } from "../common/stix-type";
 import {
-  MitreContributorsSchema,
   PlatformsSchema,
   StixIdentifierSchema,
 } from "../common";
@@ -68,8 +67,10 @@ export const DataSourceSchema = AttackCoreSDOSchema.extend({
     "The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."
   ),
 
-  x_mitre_contributors: MitreContributorsSchema.optional(),
-
+  x_mitre_contributors: z
+    .array(z.string())
+    .optional(),
+    
   x_mitre_deprecated: z
     .boolean()
     .describe("Indicates whether the object has been deprecated.")

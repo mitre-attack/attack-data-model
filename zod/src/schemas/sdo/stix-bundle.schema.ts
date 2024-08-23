@@ -25,16 +25,16 @@ const StixObjectSchema: {[key: string]: z.ZodSchema} = {
   "x-mitre-matrix": MatrixSchema,
   "tool": ToolSchema,
   "x-mitre-tactic": TacticSchema,
-  "attack-pattern": TechniqueSchema,
+  // "attack-pattern": TechniqueSchema, // uncomment after review
   "intrusion-set": GroupSchema,
   "course-of-action": MitigationSchema
 };
 
 // Define the schema for a STIX bundle
 export const StixBundleSchema = z.object({
-  id: createStixIdentifierSchema(StixTypeSchema.enum["stix-bundle"]),
+  id: createStixIdentifierSchema(StixTypeSchema.enum["bundle"]),
 
-  type: z.literal(StixTypeSchema.enum["stix-bundle"]),
+  type: z.literal(StixTypeSchema.enum["bundle"]),
 
   objects: z
     .array(z.any())

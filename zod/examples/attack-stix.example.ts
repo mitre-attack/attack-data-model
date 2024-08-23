@@ -185,46 +185,6 @@ const validStix = {
             spec_version: "2.1",
         },
         {
-            modified: "2024-02-02T19:04:35.389Z",
-            name: "Data Obfuscation",
-            description: "Adversaries may obfuscate command and control traffic to make it more difficult to detect.(Citation: Bitdefender FunnyDream Campaign November 2020) Command and control (C2) communications are hidden (but not necessarily encrypted) in an attempt to make the content more difficult to discover or decipher and to make the communication less conspicuous and hide commands from being seen. This encompasses many methods, such as adding junk data to protocol traffic, using steganography, or impersonating legitimate protocols. ",
-            kill_chain_phases: [
-                {
-                    "kill_chain_name": "mitre-attack",
-                    "phase_name": "command-and-control"
-                }
-            ],
-            x_mitre_deprecated: false,
-            x_mitre_domains: [
-                "enterprise-attack"
-            ],
-            x_mitre_is_subtechnique: false,
-            x_mitre_platforms: [
-                "Linux",
-                "macOS",
-                "Windows"
-            ],
-            x_mitre_version: "1.1",
-            type: "attack-pattern",
-            id: "attack-pattern--ad255bfe-a9e6-4b52-a258-8d3462abe842",
-            created: "2017-05-31T21:30:18.931Z",
-            created_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
-            revoked: false,
-            external_references: [
-                {
-                    "source_name": "mitre-attack",
-                    "url": "https://attack.mitre.org/techniques/T1001",
-                    "external_id": "T1001"
-                }
-            ],
-            object_marking_refs: [
-                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
-            ],
-            x_mitre_attack_spec_version: "3.2.0",
-            x_mitre_modified_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
-            spec_version: "2.1"
-        },
-        {
             type: 'tool',
             id: 'tool--11f8d7eb-1927-4806-9267-3a11d4d4d6be',
             spec_version: '2.1',

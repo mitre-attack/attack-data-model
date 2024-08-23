@@ -28,6 +28,7 @@ const stixTypeToSchemaName: Record<StixType, string> = {
     "x-mitre-asset": "Asset",
     "x-mitre-matrix": "Matrix",
     "x-mitre-collection": "Collection",
+    "relationship": "RelationshipSchema"
 };
 
 /**
