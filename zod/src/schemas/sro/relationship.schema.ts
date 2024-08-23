@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { SROSchema } from '../common/core-stix-sro.schema';
 import { StixTypeSchema } from '../common/stix-type';
 import { createStixIdentifierSchema, ObjectMarkingRefsSchema, StixCreatedByRefSchema, StixIdentifierSchema } from '../common';
-import { getType, RelationshipTypeSchema, validSourceTypes, validTargetTypes, isValidSourceAndTargetRef } from '../common/relationship-type';
+import { RelationshipTypeSchema, isValidSourceType, isValidTargetType, isValidRelationship } from '../common/relationship-type';
 
 // Initializes the custom ZodErrorMap
 import '../../errors'; 
@@ -44,34 +44,36 @@ export const RelationshipSchema = SROSchema.extend({
 	source_ref: true,
 	target_ref: true,
 })
-.refine((schema) => {
-	// Validate source ref is a valid type based on the relationship_type
-	const sourceType = getType(schema.source_ref);
-	const validSources = validSourceTypes(schema.relationship_type, schema.target_ref);
-	return validSources.includes(sourceType);
-}, {
-	message: "Invalid source type for the specified relationship type.",
-	path: ["source_ref"]
-})
-.refine((schema) => {
-	// Validate target ref is a valid type based on the relationship_type
-	const targetType = getType(schema.target_ref);
-	const validTargets = validTargetTypes(schema.relationship_type, schema.source_ref);
-	return validTargets.includes(targetType);
-}, {
-	message: "Invalid target type for the specified relationship type.",
-	path: ["target_ref"]
-})
-.refine((schema) => {
-	// Validate source and target refs are compatible types
-	// This catches cases in which the custom validation above
-	// may return a false positive (e.g. an invalid relationship
-	// MALWARE "uses" MALWARE would pass the validation logic
-	// above)
-	// NOTE: this may possibly supersede the above validaton
-	return isValidSourceAndTargetRef(schema.relationship_type, schema.source_ref, schema.target_ref);
-}, {
-	message: "Incompatible source and target types for the specified relationship_type.",
+.superRefine(({relationship_type, source_ref, target_ref}, ctx) => {
+	// Validate relationship type
+	const [validRelationship, relError] = isValidRelationship(relationship_type, source_ref, target_ref);
+	if (!validRelationship) {
+		ctx.addIssue({
+			code: z.ZodIssueCode.custom,
+			message: relError. message,
+			path: relError.path
+		});
+	}
+
+	// Validate source ref type
+	const [validSource, sourceError] = isValidSourceType(relationship_type, source_ref);
+	if (!validSource) {
+		ctx.addIssue({
+			code: z.ZodIssueCode.custom,
+			message: sourceError.message,
+			path: sourceError.path
+		});
+	}
+
+	// Validate target ref type
+	const [validTarget, targetError] = isValidTargetType(relationship_type, target_ref);
+	if (!validTarget) {
+		ctx.addIssue({
+			code: z.ZodIssueCode.custom,
+			message: targetError.message,
+			path: targetError.path
+		});
+	}
 });
 
 export type Relationship = z.infer<typeof RelationshipSchema>;

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { StixIdentifierSchema } from './stix-identifier';
 import { StixIdentifierImpl } from '../../classes/stix-identifier.cls';
-import { StixTypeSchema } from './stix-type';
+import { StixType, StixTypeSchema } from './stix-type';
 
 const VALUES = [
 	"uses",
@@ -19,263 +19,123 @@ export const RelationshipTypeSchema = z
 
 export type RelationshipType = z.infer<typeof RelationshipTypeSchema>;
 
-// Helper function for getting the type from source and target ref
+interface RelationshipMap {
+	[relationshipType: string]: {
+		source: string[],
+		target: string[]
+	}
+}
+
+export const relationshipMap: RelationshipMap = {
+	"uses": {
+		// malware or tool USES attack-pattern
+		// intrusion-set USES malware, tool, or attack-pattern
+		// campaign USES malware, tool, or attack-pattern
+		source: ["malware", "tool", "intrusion-set", "campaign"],
+		target: ["attack-pattern", "malware", "tool"]
+	},
+	"mitigates": {
+		// course-of-action MITIGATES attack-pattern
+		source: ["course-of-action"],
+		target: ["attack-pattern"]
+	},
+	"subtechnique-of": {
+		// attack-pattern SUBTECHNIQUE-OF attack-pattern
+		source: ["attack-pattern"],
+		target: ["attack-pattern"]
+	},
+	"detects": {
+		// x-mitre-data-component DETECTS attack-pattern
+		source: ["x-mitre-data-component"],
+		target: ["attack-pattern"]
+	},
+	"attributed-to": {
+		// campaign ATTRIBUTED-TO intrusion-set
+		source: ["campaign"],
+		target: ["intrusion-set"]
+	},
+	"targets": {
+		// attack-pattern TARGETS x-mitre-asset
+		source: ["attack-pattern"],
+		target: ["x-mitre-asset"]
+	},
+	"revoked-by": {
+		// any REVOKED-BY any, where source and target are the same type
+		source: StixTypeSchema.options,
+		target: StixTypeSchema.options
+	}
+}
+
+// Edge case invalid "uses" combinations
+const invalidUsesRelationships = [
+	["malware", "malware"],
+	["malware", "tool"],
+	["tool", "malware"],
+	["tool", "tool"]
+]
+
+// Helper function to get type from source and target ref
 export const getType = function(ref: string): string {
 	const objectIdentifier = new StixIdentifierImpl(ref);
 	return objectIdentifier.type;
 }
 
-// Helper function for validating source and target ref types
-export const isValidSourceAndTargetRef = function(relationshipType: string, sourceRef: string, targetRef: string): boolean {
+// Helper function to validate relationship
+export const isValidRelationship = function(relationshipType: string, sourceRef: string, targetRef: string): [boolean, any] {
 	const sourceType = getType(sourceRef);
 	const targetType = getType(targetRef);
-	const StixTypes = StixTypeSchema.Enum;
 
-	/**
-	 * CASE: "uses"
-	 */
+	const mapping = relationshipMap[relationshipType];
+	if (!mapping) {
+		return [false, {
+			message: `Invalid 'relationship_type', must be one of ${Object.keys(relationshipMap)}`,
+			path: ["relationship_type"]
+		}];
+	}
+
+	// Check edge cases for "uses" relationships
 	if (relationshipType === RelationshipTypeSchema.enum.uses) {
-		// malware or tool USES attack-pattern
-		if (sourceType === StixTypes.malware || sourceType === StixTypes.tool) {
-			return targetType === StixTypes['attack-pattern'];
-		}
-
-		// intrusion-set USES malware, tool, or attack-pattern
-		// campaign USES malware, tool, or attack-pattern
-		else if (sourceType === StixTypes['intrusion-set'] || sourceType == StixTypes.campaign) {
-			return targetType === StixTypes.malware
-				|| targetType === StixTypes.tool
-				|| targetType === StixTypes['attack-pattern'];
+		for (let [invalidSource, invalidTarget] of invalidUsesRelationships) {
+			if (sourceType === invalidSource && targetType === invalidTarget) {
+				return [false, {
+					message: `Invalid "uses" relationship: source and target cannot both be "malware" or "tool"`,
+					path: ["relationship_type"]
+				}];
+			}
 		}
 	}
 
-	/**
-	 * CASE: "mitigates"
-	 */
-	else if (relationshipType === RelationshipTypeSchema.enum.mitigates) {
-		// course-of-action MITIGATES attack-pattern
-		return sourceType === StixTypes['course-of-action']
-			&& targetType === StixTypes['attack-pattern'];
-	}
-
-	/**
-	 * CASE: "subtechnique-of"
-	 */
-	else if (relationshipType === RelationshipTypeSchema.enum['subtechnique-of']) {
-		// attack-pattern SUBTECHNIQUE-OF attack-pattern
-		return sourceType === StixTypes['attack-pattern']
-			&& targetType === StixTypes['attack-pattern'];
-	}
-
-	/**
-	 * CASE: "detects"
-	 */
-	else if (relationshipType === RelationshipTypeSchema.enum.detects) {
-		// x-mitre-data-component DETECTS attack-pattern
-		return sourceType === StixTypes['x-mitre-data-component']
-			&& targetType === StixTypes['attack-pattern'];
-	}
-
-	/**
-	 * CASE: "attributed-to"
-	 */
-	else if (relationshipType == RelationshipTypeSchema.enum['attributed-to']) {
-		// campaign ATTRIBUTED-TO intrusion-set
-		return sourceType === StixTypes.campaign
-			&& targetType === StixTypes['intrusion-set'];
-	}
-
-	/**
-	 * CASE: "targets"
-	 */
-	else if (relationshipType == RelationshipTypeSchema.enum.targets) {
-		// attack-pattern TARGETS x-mitre-asset
-		return sourceType === StixTypes['attack-pattern']
-			&& targetType === StixTypes['x-mitre-asset'];
-	}
-
-	/**
-	 * CASE: "revoked-by"
-	 */
-	else if (relationshipType == RelationshipTypeSchema.enum['revoked-by']) {
-		// any REVOKED-BY any, where source and target are the same type
-		return sourceType === targetType;
-	}
-
-	// invalid source type or target type
-	return false;
+	// No issues found with relationship type
+	return [true, {}];
 }
 
-// Helper function for valid relationship source types
-export const validSourceTypes = function(relationshipType: string, targetRef: string): string[] {
-	const targetType = getType(targetRef);
-	const StixTypes = StixTypeSchema.Enum;
+// Helper function to validate relationship source_ref type
+export const isValidSourceType = function(relationshipType: string, sourceRef: string): [boolean, any] {
+	const sourceType = getType(sourceRef);
 
-	/**
-	 * CASE: "uses"
-	 */
-	if (relationshipType === RelationshipTypeSchema.enum.uses) {
-		// intrusion-set USES malware or tool
-		// campaign USES malware or tool
-		if (targetType === StixTypes.malware || targetType === StixTypes.tool) {
-			return ["intrusion-set", "campaign"];
-		}
-
-		// malware or tool USES attack-pattern
-		// intrusion-set USES attack-pattern
-		// campaign USES attack-pattern
-		else if (targetType === StixTypes['attack-pattern']) {
-			return ["malware", "tool", "intrusion-set", "campaign"];
-		}
+	// Check if source type is valid
+	const mapping = relationshipMap[relationshipType];
+	if (mapping?.source && !mapping.source.includes(sourceType)) {
+		return [false, {
+			message: `Invalid source type, must be one of ${mapping.source}`,
+			path: ["source_ref"]
+		}];
 	}
-
-	/**
-	 * CASE: "mitigates"
-	 */
-	else if (relationshipType === RelationshipTypeSchema.enum.mitigates) {
-		// course-of-action MITIGATES attack-pattern
-		if (targetType === StixTypes['attack-pattern']) {
-			return ["course-of-action"];
-		}
-	}
-
-	/**
-	 * CASE: "subtechnique-of"
-	 */
-	else if (relationshipType === RelationshipTypeSchema.enum['subtechnique-of']) {
-		// attack-pattern SUBTECHNIQUE-OF attack-pattern
-		if (targetType === StixTypes['attack-pattern']) {
-			return ["attack-pattern"];
-		}
-	}
-
-	/**
-	 * CASE: "detects"
-	 */
-	else if (relationshipType === RelationshipTypeSchema.enum.detects) {
-		// x-mitre-data-component DETECTS attack-pattern
-		if (targetType === StixTypes['attack-pattern']) {
-			return ["x-mitre-data-component"];
-		}
-	}
-
-	/**
-	 * CASE: "attributed-to"
-	 */
-	else if (relationshipType === RelationshipTypeSchema.enum['attributed-to']) {
-		// campaign ATTRIBUTED-TO intrusion-set
-		if (targetType === StixTypes['intrusion-set']) {
-			return ['campaign'];
-		}
-	}
-
-	/**
-	 * CASE: "targets"
-	 */
-	else if (relationshipType === RelationshipTypeSchema.enum.targets) {
-		// attack-pattern TARGETS x-mitre-asset
-		if (targetType === StixTypes['x-mitre-asset']) {
-			return ['attack-pattern'];
-		}
-	}
-
-	/**
-	 * CASE: "revoked-by"
-	 */
-	else if (relationshipType === RelationshipTypeSchema.enum['revoked-by']) {
-		// any REVOKED-BY any
-		return StixTypeSchema.options;
-	}
-
-	// invalid target type or relationship type, return empty set
-	return [];
+	return [true, {}];
 };
 
-// Helper function for valid relationship target types
-export const validTargetTypes = function(relationshipType: string, sourceRef: string) {
+// Helper function to validate relationship target_ref type
+export const isValidTargetType = function(relationshipType: string, sourceRef: string, targetRef: string): [boolean, any] {
 	const sourceType = getType(sourceRef);
-	const StixTypes = StixTypeSchema.Enum;
+	const targetType = getType(targetRef);
 
-	/**
-	 * CASE: "uses"
-	 */
-	if (relationshipType === RelationshipTypeSchema.enum.uses) {
-		// malware or tool USES attack-pattern
-		if (sourceType === StixTypes.malware || sourceType === StixTypes.tool) {
-			return ["attack-pattern"];
-		}
-
-		// intrusion-set USES malware or tool
-		// intrusion-set USES attack-pattern
-		else if (sourceType === StixTypes['intrusion-set']) {
-			return ["malware", "tool", "attack-pattern"]
-		}
-
-		// campaign USES malware or tool
-		// campaign USES attack-pattern
-		else if (sourceType === StixTypes.campaign) {
-			return ["malware", "tool", "attack-pattern"]
-		}
+	// Check if target type is valid
+	const mapping = relationshipMap[relationshipType];
+	if (mapping?.target && !mapping.target.includes(targetType)) {
+		return [false, {
+			message: `Invalid target type, must be one of ${mapping.target}`,
+			path: ["target_ref"]
+		}];
 	}
-
-	/**
-	 * CASE: "mitigates"
-	 */
-	else if (relationshipType === RelationshipTypeSchema.enum.mitigates) {
-		// course-of-action MITIGATES attack-pattern
-		if (sourceType === StixTypes['course-of-action']) {
-			return ["attack-pattern"];
-		}
-	}
-
-	/**
-	 * CASE: "subtechnique-of"
-	 */
-	else if (relationshipType === RelationshipTypeSchema.enum['subtechnique-of']) {
-		// attack-pattern SUBTECHNIQUE-OF attack-pattern
-		if (sourceType === StixTypes['attack-pattern']) {
-			return ["attack-pattern"];
-		}
-	}
-
-	/**
-	 * CASE: "detects"
-	 */
-	else if (relationshipType === RelationshipTypeSchema.enum.detects) {
-		// x-mitre-data-component DETECTS attack-pattern
-		if (sourceType === StixTypes['x-mitre-data-component']) {
-			return ["attack-pattern"];
-		}
-	}
-
-	/**
-	 * CASE: "attributed-to"
-	 */
-	else if (relationshipType === RelationshipTypeSchema.enum['attributed-to']) {
-		// campaign ATTRIBUTED-TO intrusion-set
-		if (sourceType === StixTypes.campaign) {
-			return ["intrusion-set"];
-		}
-	}
-
-	/**
-	 * CASE: "targets"
-	 */
-	else if (relationshipType === RelationshipTypeSchema.enum.targets) {
-		// attack-pattern TARGETS x-mitre-asset
-		if (sourceType === StixTypes['attack-pattern']) {
-			return ["x-mitre-asset"];
-		}
-	}
-
-	/**
-	 * CASE: "revoked-by"
-	 */
-	else if (relationshipType === RelationshipTypeSchema.enum['revoked-by']) {
-		// any REVOKED-BY any
-		return StixTypeSchema.options;
-	}
-
-	// invalid source type or relationship type, return empty set
-	return [];
+	return [true, {}];
 }
