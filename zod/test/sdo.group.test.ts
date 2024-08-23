@@ -1,4 +1,4 @@
-import { GroupSchema } from "../src/schemas/sdo/group.schema";
+import { groupSchema } from "../src/schemas/sdo/group.schema";
 
 describe("GroupSchema", () => {
   it("should validate a valid Group object", () => {
@@ -29,7 +29,7 @@ describe("GroupSchema", () => {
       extensions: {},
     };
 
-    expect(() => GroupSchema.parse(validGroup)).not.toThrow();
+    expect(() => groupSchema.parse(validGroup)).not.toThrow();
   });
 
   it("should invalidate a Group object with missing required fields", () => {
@@ -38,7 +38,7 @@ describe("GroupSchema", () => {
       // Missing required fields like id, spec_version, name, etc.
     };
 
-    expect(() => GroupSchema.parse(invalidGroup)).toThrow();
+    expect(() => groupSchema.parse(invalidGroup)).toThrow();
   });
 
   it("should invalidate a Group object with incorrect type", () => {
@@ -53,7 +53,7 @@ describe("GroupSchema", () => {
       modified: "2023-01-01T00:00:00.000Z",
     };
 
-    expect(() => GroupSchema.parse(invalidGroup)).toThrow();
+    expect(() => groupSchema.parse(invalidGroup)).toThrow();
   });
 
   it("should invalidate a Group object with invalid x_mitre_attack_spec_version format", () => {
@@ -68,7 +68,7 @@ describe("GroupSchema", () => {
       modified: "2023-01-01T00:00:00.000Z",
     };
 
-    expect(() => GroupSchema.parse(invalidGroup)).toThrow();
+    expect(() => groupSchema.parse(invalidGroup)).toThrow();
   });
 
   it("should invalidate a Group object with invalid x_mitre_version format", () => {
@@ -83,7 +83,7 @@ describe("GroupSchema", () => {
       modified: "2023-01-01T00:00:00.000Z",
     };
 
-    expect(() => GroupSchema.parse(invalidGroup)).toThrow();
+    expect(() => groupSchema.parse(invalidGroup)).toThrow();
   });
 
   it("should invalidate a Group object with invalid confidence value", () => {
@@ -99,6 +99,6 @@ describe("GroupSchema", () => {
       confidence: 150, // Invalid confidence value
     };
 
-    expect(() => GroupSchema.parse(invalidGroup)).toThrow();
+    expect(() => groupSchema.parse(invalidGroup)).toThrow();
   });
 });

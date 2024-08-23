@@ -1,14 +1,14 @@
 import { z } from 'zod';
 import axios from 'axios';
 import fs from 'fs/promises';
-import { TechniqueSchema } from './schemas/sdo/technique.schema';
-import { TacticSchema } from './schemas/sdo/tactic.schema';
-import { GroupSchema } from './schemas/sdo/group.schema';
+import { techniqueSchema } from './schemas/sdo/technique.schema';
+import { tacticSchema } from './schemas/sdo/tactic.schema';
+import { groupSchema } from './schemas/sdo/group.schema';
 
 export class AttackDataModel {
-    private techniques: Map<string, z.infer<typeof TechniqueSchema>> = new Map();
-    private tactics: Map<string, z.infer<typeof TacticSchema>> = new Map();
-    private groups: Map<string, z.infer<typeof GroupSchema>> = new Map();
+    private techniques: Map<string, z.infer<typeof techniqueSchema>> = new Map();
+    private tactics: Map<string, z.infer<typeof tacticSchema>> = new Map();
+    private groups: Map<string, z.infer<typeof groupSchema>> = new Map();
 
     private constructor() { }
 
@@ -32,15 +32,15 @@ export class AttackDataModel {
         for (const obj of bundle.objects) {
             switch (obj.type) {
                 case 'attack-pattern':
-                    const technique = TechniqueSchema.parse(obj);
+                    const technique = techniqueSchema.parse(obj);
                     this.techniques.set(technique.x_mitre_id, technique);
                     break;
                 case 'x-mitre-tactic':
-                    const tactic = TacticSchema.parse(obj);
+                    const tactic = tacticSchema.parse(obj);
                     this.tactics.set(tactic.x_mitre_shortname, tactic);
                     break;
                 case 'intrusion-set':
-                    const group = GroupSchema.parse(obj);
+                    const group = groupSchema.parse(obj);
                     this.groups.set(group.id, group);
                     break;
                 // Add more cases for other object types

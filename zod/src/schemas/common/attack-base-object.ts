@@ -1,20 +1,10 @@
 import { z } from 'zod';
-import { SDOSchema } from './core-stix-sdo.schema';
-import { NameSchema, StixIdentifierSchema } from '../common';
-
-// Define the Attack Domains as a Zod enum
-export const AttackDomains = z.enum([
-    "enterprise-attack",
-    "mobile-attack",
-    "ics-attack"
-]);
-
-// Infer the type from the Zod enum
-export type AttackDomain = z.infer<typeof AttackDomains>;
+import { stixDomainObjectSchema } from './sdo';
+import { nameSchema } from '.';
 
 // Define the new properties
-export const AttackCoreSDOSchema = SDOSchema.extend({
-    name: NameSchema,
+export const attackBaseObjectSchema = stixDomainObjectSchema.extend({
+    name: nameSchema,
 
     x_mitre_attack_spec_version: z
         .string()
@@ -33,4 +23,4 @@ export const AttackCoreSDOSchema = SDOSchema.extend({
 });
 
 // Define the type for the ATT&CK Core SDO
-export type AttackCoreSDO = z.infer<typeof AttackCoreSDOSchema>;
+export type AttackBaseObject = z.infer<typeof attackBaseObjectSchema>;

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { MalwareSchema } from "../src/schemas/sdo/malware.schema";
-import { ToolSchema } from "../src/schemas/sdo/tool.schema";
+import { malwareSchema } from "../src/schemas/sdo/malware.schema";
+import { toolSchema } from "../src/schemas/sdo/tool.schema";
 
 // Malware Examples - 
 console.log("****************************************************************************************************")
@@ -51,7 +51,7 @@ const validMalware = {
 };
 
 console.log("Example 1 - Valid Malware:");
-console.log(MalwareSchema.parse(validMalware));
+console.log(malwareSchema.parse(validMalware));
 
 /** ************************************************************************************************* */
 // Example 2: Invalid Malware (missing required fields)
@@ -104,7 +104,7 @@ const invalidMalware = {
 
 console.log("Example 2 - Invalid Malware (missing required fields):");
 try {
-    MalwareSchema.parse(invalidMalware);
+    malwareSchema.parse(invalidMalware);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation errors:", error.errors);
@@ -125,7 +125,7 @@ const malwareWithOptionalFields = {
 
 
 console.log("\nExample 3 - Malware with optional fields:");
-console.log(MalwareSchema.parse(malwareWithOptionalFields));
+console.log(malwareSchema.parse(malwareWithOptionalFields));
 
 
 /** ************************************************************************************************* */
@@ -138,7 +138,7 @@ const malwareWithInvalidType = {
 
 console.log("\nExample 4 - Malware with invalid type:");
 try {
-    MalwareSchema.parse(malwareWithInvalidType);
+    malwareSchema.parse(malwareWithInvalidType);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -156,7 +156,7 @@ const malwareWithInvalidId = {
 
 console.log("\nExample 5 - Malware with invalid id:");
 try {
-    MalwareSchema.parse(malwareWithInvalidId);
+    malwareSchema.parse(malwareWithInvalidId);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -218,7 +218,7 @@ const exampleOfRealMalware = {
 
 console.log("\nExample 6 - Parsing the provided example malware:");
 try {
-    const parsedMalware = MalwareSchema.parse(exampleOfRealMalware);
+    const parsedMalware = malwareSchema.parse(exampleOfRealMalware);
     console.log(parsedMalware);
     console.log("Parsed successfully. Malware name:", parsedMalware.name);
     // Parsed successfully. Malware name: HAMMERTOSS
@@ -278,7 +278,7 @@ const validTool = {
 };
 
 console.log("Example 1 - Valid Tool:");
-console.log(ToolSchema.parse(validTool));
+console.log(toolSchema.parse(validTool));
 
 /** ************************************************************************************************* */
 // Example 2: Invalid Tool (missing required fields)
@@ -317,7 +317,7 @@ const invalidTool = {
 
 console.log("Example 2 - Invalid Tool (missing required fields):");
 try {
-    ToolSchema.parse(invalidTool);
+    toolSchema.parse(invalidTool);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation errors:", error.errors);
@@ -337,7 +337,7 @@ const toolWithOptionalFields = {
 
 
 console.log("\nExample 3 - Tool with optional fields:");
-console.log(ToolSchema.parse(toolWithOptionalFields));
+console.log(toolSchema.parse(toolWithOptionalFields));
 
 
 /** ************************************************************************************************* */
@@ -350,7 +350,7 @@ const toolWithInvalidType = {
 
 console.log("\nExample 4 - Tool with invalid type:");
 try {
-    ToolSchema.parse(toolWithInvalidType);
+    toolSchema.parse(toolWithInvalidType);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -368,7 +368,7 @@ const toolWithInvalidId = {
 
 console.log("\nExample 5 - Tool with invalid id:");
 try {
-    ToolSchema.parse(toolWithInvalidId);
+    toolSchema.parse(toolWithInvalidId);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -429,7 +429,7 @@ const exampleOfRealTool = {
 
 console.log("\nExample 6 - Parsing the provided example tool:");
 try {
-    const parsedTool = ToolSchema.parse(exampleOfRealTool);
+    const parsedTool = toolSchema.parse(exampleOfRealTool);
     console.log(parsedTool);
     console.log("Parsed successfully. Tool name:", parsedTool.name);
     // Parsed successfully. Tool name: Sliver

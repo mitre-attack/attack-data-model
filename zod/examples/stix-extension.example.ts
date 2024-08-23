@@ -1,4 +1,4 @@
-import { ExtensionSchema } from "../src/schemas/common/misc";
+import { extensionSchema } from "../src/schemas/common/misc";
 
 const example = {
     extension_type: "custom-extension",
@@ -8,7 +8,7 @@ const example = {
     }
 };
 
-const parsedExample = ExtensionSchema.parse(example);
+const parsedExample = extensionSchema.parse(example);
 
 console.log(parsedExample);
 // {

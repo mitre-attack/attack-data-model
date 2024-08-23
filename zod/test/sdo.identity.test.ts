@@ -1,4 +1,4 @@
-import { IdentitySchema } from "../src/schemas/sdo/identity.schema";
+import { identitySchema } from "../src/schemas/sdo/identity.schema";
 
 describe('IdentitySchema', () => {
   // Test valid object
@@ -15,7 +15,7 @@ describe('IdentitySchema', () => {
       name: "The MITRE Corporation",
       x_mitre_domains: ["enterprise-attack"]
     };
-    expect(() => IdentitySchema.parse(validObject)).not.toThrow();
+    expect(() => identitySchema.parse(validObject)).not.toThrow();
   });
 
   // Test required fields
@@ -30,7 +30,7 @@ describe('IdentitySchema', () => {
       ],
       name: "The MITRE Corporation"
     };
-    expect(() => IdentitySchema.parse(invalidObject)).toThrow();
+    expect(() => identitySchema.parse(invalidObject)).toThrow();
   });
 
   // Test fields in STIX but not in ATT&CK
@@ -51,7 +51,7 @@ describe('IdentitySchema', () => {
       contact_information: "attack@mitre.org",
       x_mitre_domains: ["enterprise-attack"]
     };
-    expect(() => IdentitySchema.parse(validObject)).not.toThrow();
+    expect(() => identitySchema.parse(validObject)).not.toThrow();
   });
 
   // Test invalid ID format
@@ -63,6 +63,6 @@ describe('IdentitySchema', () => {
       created: '2023-06-22T10:00:00.000Z',
       modified: '2023-06-22T10:00:00.000Z'
     };
-    expect(() => IdentitySchema.parse(objectWithInvalidId)).toThrow();
+    expect(() => identitySchema.parse(objectWithInvalidId)).toThrow();
   });
 });

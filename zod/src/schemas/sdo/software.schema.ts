@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
-import { DescriptionSchema, PlatformsSchema, StixCreatedByRefSchema, StixIdentifierSchema, ExternalReferenceSchema, AttackDomains, StixTypeSchema, StixType, createStixIdentifierSchema, ObjectMarkingRefsSchema } from '../common';
+import { attackBaseObjectSchema } from "../common/attack-base-object";
+import { descriptionSchema, xMitrePlatformsSchema, stixCreatedByRefSchema, stixIdentifierSchema, externalReferenceSchema, objectMarkingRefsSchema, xMitreDomainsSchema } from '../common';
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
@@ -8,7 +8,7 @@ import '../../errors';
 
 
 // Software Schema
-export const SoftwareSchema = AttackCoreSDOSchema.extend({
+export const softwareSchema = attackBaseObjectSchema.extend({
 
     // Not used in ATT&CK Malware or Tool but defined in STIX
     aliases: z
@@ -18,21 +18,21 @@ export const SoftwareSchema = AttackCoreSDOSchema.extend({
 
     // Even though this is defined as an optional field within the Core STIX SDO schema, it is required for Software.
     // TODO Fix created_by_ref in Darkmoon (malware--310f437b-29e7-4844-848c-7220868d074a) before making this required.
-    created_by_ref: StixCreatedByRefSchema
+    created_by_ref: stixCreatedByRefSchema
         .describe("The ID of the Source object that describes who created this object."),
 
-    description: DescriptionSchema,
+    description: descriptionSchema,
 
     external_references: z
-        .array(ExternalReferenceSchema)
+        .array(externalReferenceSchema)
         .describe("A list of external references which refers to non-STIX information."),
 
-    object_marking_refs: ObjectMarkingRefsSchema
+    object_marking_refs: objectMarkingRefsSchema
     ,
 
     // Malware: Required
     // Tool: Optional
-    x_mitre_platforms: PlatformsSchema
+    x_mitre_platforms: xMitrePlatformsSchema
         .optional(),
 
     x_mitre_contributors: z
@@ -54,13 +54,11 @@ export const SoftwareSchema = AttackCoreSDOSchema.extend({
         .describe("Indicates whether the object has been deprecated.")
         .optional(),
 
-    x_mitre_modified_by_ref: StixIdentifierSchema
+    x_mitre_modified_by_ref: stixIdentifierSchema
         .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."),
     
-    x_mitre_domains: z
-        .array(AttackDomains)
-        .describe("The technology domains to which the ATT&CK object belongs."),
+    x_mitre_domains: xMitreDomainsSchema,
 });
 
 // Define the type for Software
-export type Software = z.infer<typeof SoftwareSchema>;
+export type Software = z.infer<typeof softwareSchema>;

@@ -1,65 +1,73 @@
 import { z } from "zod";
-import { AttackCoreSDOSchema, AttackDomains, DescriptionSchema, ObjectMarkingRefsSchema, StixIdentifierSchema } from "../common";
-import { StixTypeSchema } from "../common/stix-type";
+import { attackBaseObjectSchema, createStixIdentifierSchema, descriptionSchema, externalReferenceSchema, xMitreDeprecatedSchema, xMitreModifiedByRefSchema, xMitreShortNameSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, xMitreDomainsSchema } from "../common";
+import { stixTypeSchema } from "../common/stix-type";
 
 // Initializes the custom ZodErrorMap
 import '../../errors'; 
 
 // Tactic Schema
-export const TacticSchema = AttackCoreSDOSchema.extend({
-    type: z.literal(StixTypeSchema.enum["x-mitre-tactic"], {
-        message: `'type' property must be equal to ${StixTypeSchema.enum["x-mitre-tactic"]}`
-    }),
+export const tacticSchema = attackBaseObjectSchema.extend({
 
-    description: DescriptionSchema
-        .describe("The description of the object.")
+    id: createStixIdentifierSchema(stixTypeSchema.enum["x-mitre-tactic"]),
+
+    type: z.literal(stixTypeSchema.enum["x-mitre-tactic"]),
+
+    description: descriptionSchema,
+
+    // Optional in STIX but required in ATT&CK
+    created_by_ref: stixCreatedByRefSchema
+        .describe("The created_by_ref property specifies the id property of the identity object that describes the entity that created this object. If this attribute is omitted, the source of this information is undefined. This may be used by object creators who wish to remain anonymous."),
+
+    // Optional in STIX but required in ATT&CK
+    external_references: z
+        .array(externalReferenceSchema)
+        .describe("A list of external references which refers to non-STIX information."),
+
+    // Optional in STIX but required in ATT&CK
+    object_marking_refs: objectMarkingRefsSchema,
+
+    x_mitre_domains: xMitreDomainsSchema,
+
+    x_mitre_deprecated: xMitreDeprecatedSchema
         .optional(),
 
-    x_mitre_domains: z
-        .array(AttackDomains)
-        .describe("The technology domains to which the ATT&CK object belongs."),
+    x_mitre_shortname: xMitreShortNameSchema,
 
-    x_mitre_contributors: z
-        .array(z.string())
-        .optional(),
-
-    x_mitre_deprecated: z
-        .boolean({
-            invalid_type_error: "x_mitre_deprecated must be a boolean."
-        })
-        .describe("Indicates whether the object has been deprecated.")
-        .optional(),
-
-    x_mitre_shortname: z
-        .string()
-        .describe("	The tactic shortname is used for mapping techniques into the tactic. It corresponds to kill_chain_phases.phase_name of the techniques in the tactic."),
-
-    x_mitre_modified_by_ref: StixIdentifierSchema
-        .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."),
+    x_mitre_modified_by_ref: xMitreModifiedByRefSchema
 })
-.required({
-    name: true,
-    type: true,
-    x_mitre_version: true,
-    x_mitre_domains: true,
-    x_mitre_shortname: true,
-})
-.superRefine(({external_references}, ctx) => {
-    // ATT&CK ID format
-    if (!external_references?.length) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "At least one external_reference must be specified."
-        });
-    } else {
-        let attackIdEntry = external_references[0];
+    .required({
+        created: true,
+        created_by_ref: true,
+        description: true,
+        external_references: true,
+        id: true,
+        modified: true,
+        name: true,
+        object_marking_refs: true,
+        spec_version: true,
+        type: true,
+        x_mitre_attack_spec_version: true,
+        x_mitre_domains: true,
+        x_mitre_modified_by_ref: true,
+        x_mitre_shortname: true,
+        x_mitre_version: true,
+    })
+    .superRefine((schema, ctx) => {
+
+        // Destructure relevant properties from the schema
+        const { external_references } = schema;
+
+        // Verify that first external reference is an ATT&CK ID
+        const attackIdEntry = external_references[0];
         if (!attackIdEntry.external_id) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 message: "ATT&CK ID must be defined in the first external_references entry.",
+                path: ['external_references', 0, 'external_id']
             });
         } else {
-            let idRegex = /TA\d{4}$/;
+            // Check if the ATT&CK ID format is correct
+            const idRegex = /TA\d{4}$/;
             if (!idRegex.test(attackIdEntry.external_id)) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
@@ -67,7 +75,6 @@ export const TacticSchema = AttackCoreSDOSchema.extend({
                 });
             }
         }
-    }
-});
+    });
 
-export type Tactic = z.infer<typeof TacticSchema>;
+export type Tactic = z.infer<typeof tacticSchema>;

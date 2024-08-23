@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TechniqueSchema } from "../src/schemas/sdo/technique.schema";
+import { techniqueSchema } from "../src/schemas/sdo/technique.schema";
 
 /*************************************************************************************************** */
 // Example 1: Valid Technique
@@ -46,7 +46,7 @@ const validEnterpriseTechnique = {
 };
 
 console.log("\nExample 1 - Valid Technique:");
-console.log(`SUCCESS ${TechniqueSchema.parse(validEnterpriseTechnique).name}`)
+console.log(`SUCCESS ${techniqueSchema.parse(validEnterpriseTechnique).name}`)
 
 /*************************************************************************************************** */
 // Example 2: Invalid Technique (ATT&CK ID does not match format T####)
@@ -64,7 +64,7 @@ const invalidTechniqueID = {
 
 console.log("\nExample 2 - Invalid Technique (ATT&CK ID does not match format T####):");
 try {
-    TechniqueSchema.parse(invalidTechniqueID);
+	techniqueSchema.parse(invalidTechniqueID);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation errors:", error.errors);
@@ -131,7 +131,7 @@ const validSubtechnique = {
 	"spec_version": "2.1"
 }
 console.log("\nExample 3 - Valid Subtechnique:");
-console.log(`SUCCESS ${TechniqueSchema.parse(validSubtechnique).name}`)
+console.log(`SUCCESS ${techniqueSchema.parse(validSubtechnique).name}`)
 
 /*************************************************************************************************** */
 // Example 4: Invalid Sub-technique (ATT&CK ID does not match format T####.###)
@@ -154,7 +154,7 @@ const invalidSubtechniqueID = {
 
 console.log("\nExample 4 - Invalid Subtechnique (ATT&CK ID does not match format T####.###):");
 try {
-    TechniqueSchema.parse(invalidSubtechniqueID);
+	techniqueSchema.parse(invalidSubtechniqueID);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation errors:", error.errors);
@@ -209,7 +209,7 @@ const invalidTechniqueMissingFields = {
 
 console.log("\nExample 5 - Invalid Technique (missing required fields):");
 try {
-    TechniqueSchema.parse(invalidTechniqueMissingFields);
+	techniqueSchema.parse(invalidTechniqueMissingFields);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation errors:", error.errors);
@@ -251,7 +251,7 @@ const techniqueWithInvalidType = {
 
 console.log("\nExample 6 - Technique with invalid type:");
 try {
-    TechniqueSchema.parse(techniqueWithInvalidType);
+	techniqueSchema.parse(techniqueWithInvalidType);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -283,19 +283,19 @@ const validTechniqueWithEnterpriseFields = {
 		}
 	],
 	// enterprise-only fields
-	"x_mitre_system_requirements": ["system requirements"],
+	"x_mitre_system_requirements": ["Windows 10"],
 	// enterprise-only field in privilege escalation
-	"x_mitre_permissions_required": ["permissions required"],
-	"x_mitre_effective_permissions": ["effective permissions"],
+	"x_mitre_permissions_required": ["User"],
+	"x_mitre_effective_permissions": ["Administrator"],
 	// enterprise-only field in defense evasion
-	"x_mitre_defense_bypassed": ["defense bypassed"],
+	"x_mitre_defense_bypassed": ["Anti-virus"],
 	// enterprise-only field in execution
-	"x_mitre_remote_support": false,
+	"x_mitre_remote_support": true,
 	// enterprise-only field in impact
-	"x_mitre_impact_type": ["impact type"]
+	"x_mitre_impact_type": ["Integrity"]
 };
 console.log("\nExample 7: Valid Enterprise Technique with Enterprise-only fields:");
-let result = TechniqueSchema.parse(validTechniqueWithEnterpriseFields);
+let result = techniqueSchema.parse(validTechniqueWithEnterpriseFields);
 console.log(`SUCCESS ${result.name} (${result.x_mitre_domains})`)
 
 /*************************************************************************************************** */
@@ -309,7 +309,7 @@ const invalidEnterpriseTechnique = {
 
 console.log("\nExample 8: Invalid Enterprise Technique with Mobile-only fields:");
 try {
-    TechniqueSchema.parse(invalidEnterpriseTechnique);
+	techniqueSchema.parse(invalidEnterpriseTechnique);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -370,7 +370,7 @@ const validMobileTechnique = {
 }
 
 console.log("\nExample 9: Valid Mobile Technique with Mobile-only fields:");
-result = TechniqueSchema.parse(validMobileTechnique);
+result = techniqueSchema.parse(validMobileTechnique);
 console.log(`SUCCESS ${result.name} (${result.x_mitre_domains})`)
 
 /*************************************************************************************************** */
@@ -384,7 +384,7 @@ const invalidMobileTechnique = {
 
 console.log("\nExample 10: Invalid Mobile Technique with Enterprise-only fields:");
 try {
-    TechniqueSchema.parse(invalidMobileTechnique);
+	techniqueSchema.parse(invalidMobileTechnique);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -452,8 +452,11 @@ const validIcsTechnique = {
 }
 
 console.log("\nExample 11: Valid ICS Technique with ICS-only fields:");
-result = TechniqueSchema.parse(validIcsTechnique);
+result = techniqueSchema.parse(validIcsTechnique);
 console.log(`SUCCESS ${result.name} (${result.x_mitre_domains})`)
+
+// Expected output:
+// Validation error: Invalid enum value. Expected 'Remote Desktop Users' | 'SYSTEM' | 'Administrator' | 'root' | 'User', received 'permissions required'
 
 /*************************************************************************************************** */
 // Example 12: Invalid ICS Technique with Enterprise-only fields
@@ -466,12 +469,13 @@ const invalidIcsTechnique = {
 
 console.log("\nExample 12: Invalid ICS Technique with Enterprise-only fields:");
 try {
-    TechniqueSchema.parse(invalidIcsTechnique);
+	techniqueSchema.parse(invalidIcsTechnique);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
     }
 }
+// Expected output: 
 // Validation error: x_mitre_permissions_required is only supported in the 'enterprise-attack' domain in the Privilege Escalation tactic.
 
 /*************************************************************************************************** */
@@ -494,5 +498,34 @@ const validMultiDomainTechnique = {
 }
 
 console.log("\nExample 13: Valid multi-domain Technique with Enterprise/ICS-only fields:");
-result = TechniqueSchema.parse(validMultiDomainTechnique);
+result = techniqueSchema.parse(validMultiDomainTechnique);
 console.log(`SUCCESS ${result.name} (${result.x_mitre_domains})`)
+
+// Expected output: 
+// SUCCESS Data Obfuscation(enterprise - attack, ics - attack)
+
+
+/*************************************************************************************************** */
+// Example 14: Enterprise-only fields in the wrong tactic
+/*************************************************************************************************** */
+console.log("\nExample 14: Invalid Enterprise Technique with Enterprise-only field in wrong tactic:");
+const invalidEnterpriseTechniqueWrongTactic = {
+	...validEnterpriseTechnique,
+	"kill_chain_phases": [
+		{
+			"kill_chain_name": "mitre-attack",
+			"phase_name": "execution"
+		}
+	],
+	"x_mitre_permissions_required": ["User"] // This should only be allowed in the privilege-escalation tactic
+};
+
+try {
+	techniqueSchema.parse(invalidEnterpriseTechniqueWrongTactic);
+} catch (error) {
+	if (error instanceof z.ZodError) {
+		console.log("Validation error:", error.errors[0].message);
+	}
+}
+// Expected output: 
+// Validation error: x_mitre_permissions_required is only supported in the privilege - escalation tactic.

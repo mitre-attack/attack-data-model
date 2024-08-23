@@ -1,4 +1,4 @@
-import { DataSourceSchema } from "../src/schemas/sdo/data-source.schema";
+import { dataSourceSchema } from "../src/schemas/sdo/data-source.schema";
 
 describe("DataSourceSchema", () => {
   const validDataSource = {
@@ -32,12 +32,12 @@ describe("DataSourceSchema", () => {
     spec_version: "2.1",
   };
   it("should validate a valid DataSource object", () => {
-    expect(() => DataSourceSchema.parse(validDataSource)).not.toThrow();
+    expect(() => dataSourceSchema.parse(validDataSource)).not.toThrow();
   });
 
   it("should throw an error if 'description' is missing", () => {
     const { description, ...invalidDataSource } = validDataSource;
-    expect(() => DataSourceSchema.parse(invalidDataSource)).toThrow("Required");
+    expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow("Required");
   });
 
   it("should throw an error if 'x_mitre_collection_layers' is not an array of strings", () => {
@@ -45,7 +45,7 @@ describe("DataSourceSchema", () => {
       ...validDataSource,
       x_mitre_collection_layers: "not-an-array",
     };
-    expect(() => DataSourceSchema.parse(invalidDataSource)).toThrow(
+    expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow(
       "x_mitre_collection_layers must be an array of strings."
     );
   });
@@ -57,7 +57,7 @@ describe("DataSourceSchema", () => {
       x_mitre_deprecated,
       ...partialDataSource
     } = validDataSource;
-    expect(() => DataSourceSchema.parse(partialDataSource)).not.toThrow();
+    expect(() => dataSourceSchema.parse(partialDataSource)).not.toThrow();
   });
 
   it("should validate with optional fields present", () => {
@@ -67,6 +67,6 @@ describe("DataSourceSchema", () => {
       x_mitre_contributors: ["Contributor1"],
       x_mitre_deprecated: false,
     };
-    expect(() => DataSourceSchema.parse(completeDataSource)).not.toThrow();
+    expect(() => dataSourceSchema.parse(completeDataSource)).not.toThrow();
   });
 });

@@ -1,28 +1,28 @@
 import { z } from 'zod';
 import { Z } from 'zod-class';
 
-import { StixIdentifierSchema } from '../../schemas/common/stix-identifier';
-import { StixTypeSchema } from "../../schemas/common/stix-type";
-import { StixSpecVersionSchema } from '../../schemas/common/stix-spec-version';
-import { StixTimestampSchema } from '../../schemas/common/stix-timestamp';
-import { StixCreatedByRefSchema, ExternalReferenceSchema, ExtensionSchema, GranularMarkingSchema } from '../../schemas/common/misc';
-import { ObjectMarkingRefsSchema } from '../../schemas/common';
+import { stixIdentifierSchema } from '../../schemas/common/stix-identifier';
+import { stixTypeSchema } from "../../schemas/common/stix-type";
+import { stixSpecVersionSchema } from '../../schemas/common/stix-spec-version';
+import { stixTimestampSchema } from '../../schemas/common/stix-timestamp';
+import { stixCreatedByRefSchema, externalReferenceSchema, extensionSchema, granularMarkingSchema } from '../../schemas/common/misc';
+import { objectMarkingRefsSchema } from '../../schemas/common';
 
 
 export class SDO extends Z.class({
 
-    id: StixIdentifierSchema
+    id: stixIdentifierSchema
         .describe("The id property universally and uniquely identifies this object."),
-    type: StixTypeSchema,
-    spec_version: StixSpecVersionSchema
+    type: stixTypeSchema,
+    spec_version: stixSpecVersionSchema
         .describe("The version of the STIX specification used to represent this object."),
-    created: StixTimestampSchema
+    created: stixTimestampSchema
         // .brand("StixCreatedTimestamp")
         .describe("The created property represents the time at which the first version of this object was created. The timstamp value MUST be precise to the nearest millisecond."),
-    modified: StixTimestampSchema
+    modified: stixTimestampSchema
         // .brand("StixModifiedTimestamp")
         .describe("The modified property represents the time that this particular version of the object was modified. The timstamp value MUST be precise to the nearest millisecond."),
-    created_by_ref: StixCreatedByRefSchema,
+    created_by_ref: stixCreatedByRefSchema,
     // .describe("The ID of the Source object that describes who created this object.")
     // .optional(),
     labels: z
@@ -45,17 +45,17 @@ export class SDO extends Z.class({
         .describe("Identifies the language of the text content in this object.")
         .optional(),
     external_references: z
-        .array(ExternalReferenceSchema)
+        .array(externalReferenceSchema)
         .describe("A list of external references which refers to non-STIX information.")
         .optional(),
-    object_marking_refs: ObjectMarkingRefsSchema
+    object_marking_refs: objectMarkingRefsSchema
         .optional(),
     granular_markings: z
-        .array(GranularMarkingSchema)
+        .array(granularMarkingSchema)
         .describe("The set of granular markings that apply to this object.")
         .optional(),
     extensions: z
-        .record(z.union([ExtensionSchema, z.record(z.unknown())]))
+        .record(z.union([extensionSchema, z.record(z.unknown())]))
         .describe("Specifies any extensions of the object, as a dictionary.")
         .optional(),
 }) { }

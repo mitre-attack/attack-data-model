@@ -1,4 +1,4 @@
-import { MitigationSchema } from "../src/schemas/sdo/mitigation.schema";
+import { mitigationSchema } from "../src/schemas/sdo/mitigation.schema";
 import { describe, it, expect } from "@jest/globals";
 
 describe("MitigationSchema", () => {
@@ -36,20 +36,20 @@ describe("MitigationSchema", () => {
   };
 
   it("should validate a correct Mitigation object", () => {
-    expect(() => MitigationSchema.parse(validMitigation)).not.toThrow();
+    expect(() => mitigationSchema.parse(validMitigation)).not.toThrow();
   });
 
   it("should invalidate a Mitigation object with missing required fields", () => {
     const invalidMitigation = { ...validMitigation };
     delete (invalidMitigation as any).type;
 
-    expect(() => MitigationSchema.parse(invalidMitigation)).toThrow();
+    expect(() => mitigationSchema.parse(invalidMitigation)).toThrow();
   });
 
   it("should invalidate a Mitigation object with incorrect type", () => {
     const invalidMitigation = { ...validMitigation, type: "incorrect-type" };
 
-    expect(() => MitigationSchema.parse(invalidMitigation)).toThrow();
+    expect(() => mitigationSchema.parse(invalidMitigation)).toThrow();
   });
 
   it("should invalidate a Mitigation object with incorrect x_mitre_domains", () => {
@@ -58,7 +58,7 @@ describe("MitigationSchema", () => {
       x_mitre_domains: ["invalid-domain"],
     };
 
-    expect(() => MitigationSchema.parse(invalidMitigation)).toThrow();
+    expect(() => mitigationSchema.parse(invalidMitigation)).toThrow();
   });
 
   it("should validate a Mitigation object with optional fields missing", () => {
@@ -67,7 +67,7 @@ describe("MitigationSchema", () => {
     delete (validMitigationWithoutOptional as any).x_mitre_old_attack_id;
 
     expect(() =>
-      MitigationSchema.parse(validMitigationWithoutOptional)
+      mitigationSchema.parse(validMitigationWithoutOptional)
     ).not.toThrow();
   });
 
@@ -77,7 +77,7 @@ describe("MitigationSchema", () => {
       x_mitre_deprecated: "true",
     };
 
-    expect(() => MitigationSchema.parse(invalidMitigation)).toThrow();
+    expect(() => mitigationSchema.parse(invalidMitigation)).toThrow();
   });
 
   it("should invalidate a Mitigation object with incorrect x_mitre_old_attack_id type", () => {
@@ -86,6 +86,6 @@ describe("MitigationSchema", () => {
       x_mitre_old_attack_id: 12345,
     };
 
-    expect(() => MitigationSchema.parse(invalidMitigation)).toThrow();
+    expect(() => mitigationSchema.parse(invalidMitigation)).toThrow();
   });
 });

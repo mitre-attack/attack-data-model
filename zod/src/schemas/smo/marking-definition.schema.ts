@@ -1,7 +1,6 @@
 import { z } from "zod";
-import { StixTypeSchema } from "../common/stix-type";
-import { AttackDomains } from "../common/core-attack-sdo.schema";
-import { createStixIdentifierSchema, NameSchema, StixCreatedByRefSchema, StixSpecVersionSchema, StixTimestampSchema } from "../common";
+import { stixTypeSchema } from "../common/stix-type";
+import { createStixIdentifierSchema, nameSchema, stixCreatedByRefSchema, stixSpecVersionSchema, stixTimestampSchema, xMitreDomainsSchema } from "../common";
 
 
 /////////////////////////////////////
@@ -108,21 +107,21 @@ export const StatementMarkingObjectSchema = z.object({
 // MarkingDefinition Schema
 export const MarkingDefinitionSchema = z.object({
 
-  id: createStixIdentifierSchema(StixTypeSchema.enum["marking-definition"]),
+  id: createStixIdentifierSchema(stixTypeSchema.enum["marking-definition"]),
 
-  type: z.literal(StixTypeSchema.enum["marking-definition"]),
+  type: z.literal(stixTypeSchema.enum["marking-definition"]),
 
-  name: NameSchema.optional(),
+  name: nameSchema.optional(),
 
-  spec_version: StixSpecVersionSchema
+  spec_version: stixSpecVersionSchema
     .describe("The version of the STIX specification used to represent this object."),
 
-  created: StixTimestampSchema
+  created: stixTimestampSchema
     .brand("StixCreatedTimestamp")
     .describe("The created property represents the time at which the first version of this object was created. The timstamp value MUST be precise to the nearest millisecond."),
 
   // Optional in STIX but required in ATT&CK
-  created_by_ref: StixCreatedByRefSchema
+  created_by_ref: stixCreatedByRefSchema
     .describe("The ID of the Source object that describes who created this object."),
 
   // Deprecated in STIX
@@ -139,9 +138,7 @@ export const MarkingDefinitionSchema = z.object({
     .union([TlpMarkingObjectSchema, StatementMarkingObjectSchema])
     .describe("The definition property contains the marking object itself (e.g., the TLP marking as defined in section 7.2.1.4, the Statement marking as defined in section 7.2.1.3). Any new marking definitions SHOULD be specified using the extension facility described in section 7.3. If the extensions property is not present, this property MUST be present."),
 
-  x_mitre_domains: z
-    .array(AttackDomains)
-    .describe("The technology domains to which the ATT&CK object belongs."),
+  x_mitre_domains: xMitreDomainsSchema,
 
   x_mitre_attack_spec_version: z
     .string()

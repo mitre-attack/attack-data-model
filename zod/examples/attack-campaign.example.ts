@@ -1,5 +1,5 @@
-import { StixCreatedByRefSchema, StixCreatedTimestampSchema, StixModifiedTimestampSchema } from "../src/schemas/common";
-import { CampaignSchema, AttackCampaign } from "../src/schemas/sdo/campaign.schema";
+import { stixCreatedByRefSchema, stixCreatedTimestampSchema, stixModifiedTimestampSchema } from "../src/schemas/common";
+import { campaignSchema, AttackCampaign } from "../src/schemas/sdo/campaign.schema";
 import { z } from "zod";
 
 /** ************************************************************************************************* */
@@ -13,9 +13,9 @@ const validCampaign: AttackCampaign = {
     name: "Operation Dream Job",
     x_mitre_version: "1.2",
     description: "Operation Dream Job was a cyber espionage operation...",
-    created_by_ref: StixCreatedByRefSchema.parse("identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5"),
-    created: StixCreatedTimestampSchema.parse("2023-03-17T13:37:42.596Z"),
-    modified: StixModifiedTimestampSchema.parse("2024-04-11T00:31:21.576Z"),
+    created_by_ref: stixCreatedByRefSchema.parse("identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5"),
+    created: stixCreatedTimestampSchema.parse("2023-03-17T13:37:42.596Z"),
+    modified: stixModifiedTimestampSchema.parse("2024-04-11T00:31:21.576Z"),
     object_marking_refs: ["marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"],
     x_mitre_domains: ["enterprise-attack"],
     external_references: [
@@ -36,7 +36,7 @@ const validCampaign: AttackCampaign = {
 };
 
 console.log("Example 1 - Valid Campaign:");
-console.log(CampaignSchema.parse(validCampaign));
+console.log(campaignSchema.parse(validCampaign));
 
 
 /** ************************************************************************************************* */
@@ -68,7 +68,7 @@ const invalidCampaign = {
 
 console.log("\nExample 2 - Invalid Campaign (missing required fields):");
 try {
-    CampaignSchema.parse(invalidCampaign);
+    campaignSchema.parse(invalidCampaign);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation errors:", error.errors);
@@ -123,7 +123,7 @@ const campaignWithOptionalFields: AttackCampaign = {
 };
 
 console.log("\nExample 3 - Campaign with optional fields:");
-console.log(CampaignSchema.parse(campaignWithOptionalFields));
+console.log(campaignSchema.parse(campaignWithOptionalFields));
 
 /** ************************************************************************************************* */
 // Example 4: Campaign with invalid type
@@ -135,7 +135,7 @@ const campaignWithInvalidType = {
 
 console.log("\nExample 4 - Campaign with invalid type:");
 try {
-    CampaignSchema.parse(campaignWithInvalidType);
+    campaignSchema.parse(campaignWithInvalidType);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -154,7 +154,7 @@ const campaignWithInvalidDates = {
 
 console.log("\nExample 5 - Campaign with invalid dates:");
 try {
-    CampaignSchema.parse(campaignWithInvalidDates);
+    campaignSchema.parse(campaignWithInvalidDates);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -173,7 +173,7 @@ const campaignWithInvalidCitations = {
 
 console.log("\nExample 6 - Campaign with invalid citations:");
 try {
-    CampaignSchema.parse(campaignWithInvalidCitations);
+    campaignSchema.parse(campaignWithInvalidCitations);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -249,7 +249,7 @@ const exampleOfRealCampaign = {
 
 console.log("\nExample 7 - Parsing the provided example campaign:");
 try {
-    const parsedCampaign = CampaignSchema.parse(exampleOfRealCampaign);
+    const parsedCampaign = campaignSchema.parse(exampleOfRealCampaign);
     console.log("Parsed successfully. Campaign name:", parsedCampaign.name);
     // Parsed successfully. Campaign name: Operation Dream Job
 } catch (error) {

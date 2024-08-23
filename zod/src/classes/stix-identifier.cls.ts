@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { StixIdentifier, StixIdentifierSchema } from "../schemas/common/stix-identifier";
-import { StixType, StixTypeSchema } from "../schemas/common/stix-type";
+import { StixIdentifier, stixIdentifierSchema } from "../schemas/common/stix-identifier";
+import { StixType, stixTypeSchema } from "../schemas/common/stix-type";
 import { StixProperty, initializeStixProperty } from "./abstract";
 
 const UuidSchema = z.string().uuid();
@@ -14,7 +14,7 @@ export class StixIdentifierImpl {
 
     constructor(data: string | { type: string; uuid: string } | StixIdentifierImpl) {
         // Handle the case where data might be a StixIdentifierImpl instance by calling toString() on it if it's not a string.
-        const parsedData = StixIdentifierSchema.parse(typeof data === 'string' ? data : data.toString());
+        const parsedData = stixIdentifierSchema.parse(typeof data === 'string' ? data : data.toString());
         const [type, uuid] = parsedData.split('--');
 
         // Use type assertion to inform TypeScript that we trust this type
@@ -35,7 +35,7 @@ export class StixIdentifierImpl {
         return this._stix;
     }
 
-    public get type(): z.infer<typeof StixTypeSchema> {
+    public get type(): z.infer<typeof stixTypeSchema> {
         return this._type;
     }
 

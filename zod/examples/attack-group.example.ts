@@ -1,4 +1,4 @@
-import { GroupSchema } from "../src/schemas/sdo/group.schema";
+import { groupSchema } from "../src/schemas/sdo/group.schema";
 import { z } from "zod";
 
 /** ************************************************************************************************* */
@@ -17,7 +17,7 @@ const validGroup = {
 };
 
 console.log("Example 1 - Valid Group:");
-console.log(GroupSchema.parse(validGroup));
+console.log(groupSchema.parse(validGroup));
 
 /** ************************************************************************************************* */
 // Example 2: Invalid Group (missing required fields)
@@ -36,7 +36,7 @@ const invalidGroup = {
 
 console.log("\nExample 2 - Invalid Group (missing required fields):");
 try {
-  GroupSchema.parse(invalidGroup);
+  groupSchema.parse(invalidGroup);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation errors:", error.errors);
@@ -87,7 +87,7 @@ const groupWithOptionalFields = {
 };
 
 console.log("\nExample 3 - Group with optional fields:");
-console.log(GroupSchema.parse(groupWithOptionalFields));
+console.log(groupSchema.parse(groupWithOptionalFields));
 
 /** ************************************************************************************************* */
 // Example 4: Group with invalid type
@@ -99,7 +99,7 @@ const grouptWithInvalidType = {
 
 console.log("\nExample 4 - Group with invalid type:");
 try {
-  GroupSchema.parse(grouptWithInvalidType);
+  groupSchema.parse(grouptWithInvalidType);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation error:", error.errors[0].message);
@@ -118,7 +118,7 @@ const groupWithInvalidDates = {
 
 console.log("\nExample 5 - Group with invalid dates:");
 try {
-  GroupSchema.parse(groupWithInvalidDates);
+  groupSchema.parse(groupWithInvalidDates);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation error:", error.errors[0].message);
@@ -171,7 +171,7 @@ const exampleOfRealGroup = {
 
 console.log("\nExample 6 - Parsing the provided example group:");
 try {
-  const parsedGroup = GroupSchema.parse(exampleOfRealGroup);
+  const parsedGroup = groupSchema.parse(exampleOfRealGroup);
   console.log("Parsed successfully. Group name:", parsedGroup.name);
   // Parsed successfully. Group name: CyberAv3ngers
 } catch (error) {

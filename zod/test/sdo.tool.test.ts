@@ -1,4 +1,4 @@
-import { ToolSchema } from "../src/schemas/sdo/tool.schema";
+import { toolSchema } from "../src/schemas/sdo/tool.schema";
 
 describe('ToolSchema', () => {
   // Test valid object
@@ -42,7 +42,7 @@ describe('ToolSchema', () => {
       ],
       x_mitre_version: "1.2"
     };
-    expect(() => ToolSchema.parse(validObject)).not.toThrow();
+    expect(() => toolSchema.parse(validObject)).not.toThrow();
   });
 
   // Test required fields
@@ -77,7 +77,7 @@ describe('ToolSchema', () => {
       ],
       x_mitre_version: "1.2"
     };
-    expect(() => ToolSchema.parse(invalidObject)).toThrow();
+    expect(() => toolSchema.parse(invalidObject)).toThrow();
   });
 
   // Test invalid ID format
@@ -89,7 +89,7 @@ describe('ToolSchema', () => {
       created: '2023-06-22T10:00:00.000Z',
       modified: '2023-06-22T10:00:00.000Z'
     };
-    expect(() => ToolSchema.parse(objectWithInvalidId)).toThrow();
+    expect(() => toolSchema.parse(objectWithInvalidId)).toThrow();
   });
 
 
@@ -138,7 +138,7 @@ describe('ToolSchema', () => {
         "Ayan Saha, Keysight"
     ]
     };
-    expect(() => ToolSchema.parse(objectWithOptionalFields)).not.toThrow();
+    expect(() => toolSchema.parse(objectWithOptionalFields)).not.toThrow();
   });
 
   // Test fields in STIX but not in ATT&CK
@@ -197,7 +197,7 @@ describe('ToolSchema', () => {
       tool_types: ["remote-access"],
       tool_version: "1.0"
     };
-    expect(() => ToolSchema.parse(objectWithStixFields)).not.toThrow();
+    expect(() => toolSchema.parse(objectWithStixFields)).not.toThrow();
   });
 
   // Test invalid type
@@ -209,6 +209,6 @@ describe('ToolSchema', () => {
       created: '2023-06-22T10:00:00.000Z',
       modified: '2023-06-22T10:00:00.000Z',
     };
-    expect(() => ToolSchema.parse(objectWithInvalidId)).toThrow();
+    expect(() => toolSchema.parse(objectWithInvalidId)).toThrow();
   });
 });

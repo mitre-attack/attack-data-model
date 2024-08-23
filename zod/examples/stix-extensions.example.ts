@@ -1,4 +1,4 @@
-import { ExtensionsSchema, Extension } from "../src/schemas/common/misc";
+import { extensionsSchema, Extension } from "../src/schemas/common/misc";
 
 const example = {
     "extension1": {
@@ -17,7 +17,7 @@ const example = {
     }
 };
 
-const parsedExample = ExtensionsSchema.parse(example);
+const parsedExample = extensionsSchema.parse(example);
 
 console.log(parsedExample);
 // {

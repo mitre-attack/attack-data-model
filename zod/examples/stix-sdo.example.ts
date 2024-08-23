@@ -1,8 +1,8 @@
 import { SDOImpl } from "../src/classes/sdo.cls";
-import { SDO, StixCreatedTimestamp, StixModifiedTimestamp, createStixCreatedTimestamp, createStixModifiedTimestamp } from "../src/schemas/common/core-stix-sdo.schema";
+import { SDO, StixCreatedTimestamp, StixModifiedTimestamp, stixCreatedTimestampSchema, stixModifiedTimestampSchema } from "../src/schemas/common";
 
-const created: StixCreatedTimestamp = createStixCreatedTimestamp('2023-04-06T20:03:00.000Z');
-const modified: StixModifiedTimestamp = createStixModifiedTimestamp('2023-04-06T20:03:00.000Z');
+const created: StixCreatedTimestamp = stixCreatedTimestampSchema.parse('2023-04-06T20:03:00.000Z');
+const modified: StixModifiedTimestamp = stixModifiedTimestampSchema.parse('2023-04-06T20:03:00.000Z');
 
 const sdoData: SDO = {
     id: 'indicator--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3f',

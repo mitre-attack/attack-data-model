@@ -1,4 +1,4 @@
-import { MitigationSchema } from "../src/schemas/sdo/mitigation.schema";
+import { mitigationSchema } from "../src/schemas/sdo/mitigation.schema";
 import { z } from "zod";
 
 /** ************************************************************************************************* */
@@ -35,7 +35,7 @@ const validMitigation = {
 };
 
 console.log("Example 1 - Valid Mitigation:");
-console.log(MitigationSchema.parse(validMitigation));
+console.log(mitigationSchema.parse(validMitigation));
 
 /** ************************************************************************************************* */
 // Example 2: Invalid Mitigation (missing required fields)
@@ -59,7 +59,7 @@ const invalidMitigation = {
 
 console.log("\nExample 2 - Invalid Mitigation (missing required fields):");
 try {
-  MitigationSchema.parse(invalidMitigation);
+  mitigationSchema.parse(invalidMitigation);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation errors:", error.errors);
@@ -107,7 +107,7 @@ const mitigationWithOptionalFields = {
 };
 
 console.log("\nExample 3 - Mitigation with optional fields:");
-console.log(MitigationSchema.parse(mitigationWithOptionalFields));
+console.log(mitigationSchema.parse(mitigationWithOptionalFields));
 
 /** ************************************************************************************************* */
 // Example 4: Mitigation with invalid type
@@ -119,7 +119,7 @@ const mitigationWithInvalidType = {
 
 console.log("\nExample 4 - Mitigation with invalid type:");
 try {
-  MitigationSchema.parse(mitigationWithInvalidType);
+  mitigationSchema.parse(mitigationWithInvalidType);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation error:", error.errors[0].message);
@@ -165,7 +165,7 @@ const exampleOfRealMitigation = {
 
 console.log("\nExample 5 - Parsing the provided example mitigation:");
 try {
-  const parsedMitigation = MitigationSchema.parse(exampleOfRealMitigation);
+  const parsedMitigation = mitigationSchema.parse(exampleOfRealMitigation);
   console.log("Parsed successfully. Mitigation name:", parsedMitigation.name);
   // Parsed successfully. Mitigation name: Password Filter DLL Mitigation
 } catch (error) {

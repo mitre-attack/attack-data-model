@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const VALUES = [
+const supportedStixTypes = [
     "attack-pattern",
     "bundle",
     "campaign",
@@ -24,8 +24,8 @@ const VALUES = [
     "relationship",
 ] as const;
 
-export const StixTypeSchema = z
-    .enum(VALUES)
+export const stixTypeSchema = z
+    .enum(supportedStixTypes)
     .describe("The type property identifies the type of STIX Object (SDO, Relationship Object, etc). The value of the type field MUST be one of the types defined by a STIX Object (e.g., indicator).")
 
-export type StixType = z.infer<typeof StixTypeSchema>;
+export type StixType = z.infer<typeof stixTypeSchema>;

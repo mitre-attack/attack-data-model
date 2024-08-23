@@ -1,4 +1,4 @@
-import { DataComponentSchema } from "../src/schemas/sdo/data-component.schema";
+import { dataComponentSchema } from "../src/schemas/sdo/data-component.schema";
 
 describe("DataComponentSchema", () => {
   const validDataComponent = {
@@ -25,12 +25,12 @@ describe("DataComponentSchema", () => {
   };
 
   it("should validate a valid DataComponent object", () => {
-    expect(() => DataComponentSchema.parse(validDataComponent)).not.toThrow();
+    expect(() => dataComponentSchema.parse(validDataComponent)).not.toThrow();
   });
 
   it("should throw an error if 'description' is missing", () => {
     const { description, ...invalidDataComponent } = validDataComponent;
-    expect(() => DataComponentSchema.parse(invalidDataComponent)).toThrow(
+    expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow(
       "Required"
     );
   });
@@ -38,14 +38,14 @@ describe("DataComponentSchema", () => {
   it("should throw an error if 'x_mitre_data_source_ref' is missing", () => {
     const { x_mitre_data_source_ref, ...invalidDataComponent } =
       validDataComponent;
-    expect(() => DataComponentSchema.parse(invalidDataComponent)).toThrow(
+    expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow(
       "Required"
     );
   });
 
   it("should allow optional fields to be omitted", () => {
     const { x_mitre_deprecated, ...partialDataComponent } = validDataComponent;
-    expect(() => DataComponentSchema.parse(partialDataComponent)).not.toThrow();
+    expect(() => dataComponentSchema.parse(partialDataComponent)).not.toThrow();
   });
 
   it("should validate with optional fields present", () => {
@@ -54,7 +54,7 @@ describe("DataComponentSchema", () => {
       x_mitre_deprecated: false,
     };
     expect(() =>
-      DataComponentSchema.parse(completeDataComponent)
+      dataComponentSchema.parse(completeDataComponent)
     ).not.toThrow();
   });
 });

@@ -1,17 +1,17 @@
 import { z } from 'zod';
-import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
-import { StixType, StixTypeSchema } from '../common/stix-type';
-import { DescriptionSchema, KillChainPhaseSchema, PlatformsSchema, AttackDomains, createStixIdentifierSchema, MitreDefenseBypassesSchema, MitrePermissionsRequiredSchema, MitreEffectivePermissionsSchema, MitreTacticTypeSchema, MitreDataSourcesSchema, MitreModifiedByRefSchema, ExternalReferenceSchema } from '../common';
+import { attackBaseObjectSchema } from "../common/attack-base-object";
+import { StixType, stixTypeSchema } from '../common/stix-type';
+import { descriptionSchema, killChainPhaseSchema, xMitrePlatformsSchema, attackDomainSchema, createStixIdentifierSchema, xMitreDefenseBypassesSchema, xMitrePermissionsRequiredSchema, xMitreEffectivePermissionsSchema, xMitreTacticTypeSchema, xMitreDataSourcesSchema, xMitreModifiedByRefSchema, externalReferenceSchema, xMitreDomainsSchema } from '../common';
 
 // Initializes the custom ZodErrorMap
 import '../../errors'; 
 
 // read only type reference
-const TECHNIQUE_TYPE: StixType = StixTypeSchema.enum['attack-pattern'];
+const TECHNIQUE_TYPE: StixType = stixTypeSchema.enum['attack-pattern'];
 
 
 // Technique Schema
-export const TechniqueSchema = AttackCoreSDOSchema.extend({
+export const techniqueSchema = attackBaseObjectSchema.extend({
 
     id: createStixIdentifierSchema(TECHNIQUE_TYPE),
 
@@ -19,19 +19,19 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
 
     // Optional in STIX but required in ATT&CK
     external_references: z
-        .array(ExternalReferenceSchema)
+        .array(externalReferenceSchema)
         .min(1, "At least one external reference is required.")
         .describe("A list of external references which refers to non-STIX information."),
 
     kill_chain_phases: z
-        .array(KillChainPhaseSchema)
+        .array(killChainPhaseSchema)
         .optional(),
 
-    description: DescriptionSchema
+    description: descriptionSchema
         .describe("The description of the object.")
         .optional(),
 
-    x_mitre_platforms: PlatformsSchema
+    x_mitre_platforms: xMitrePlatformsSchema
         .optional(),
 
     x_mitre_detection: z
@@ -47,18 +47,18 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
         })
         .describe("If true, this attack-pattern is a sub-technique."),
 
-    x_mitre_data_sources: MitreDataSourcesSchema
+    x_mitre_data_sources: xMitreDataSourcesSchema
         .describe("Sources of information that may be used to identify the action or result of the action being performed.")
         .optional(),
     
-    x_mitre_defense_bypassed: MitreDefenseBypassesSchema
+    x_mitre_defense_bypassed: xMitreDefenseBypassesSchema
         .optional(),
 
     x_mitre_contributors: z
         .array(z.string())
         .optional(),
 
-    x_mitre_permissions_required: MitrePermissionsRequiredSchema
+    x_mitre_permissions_required: xMitrePermissionsRequiredSchema
         .optional(),
 
     x_mitre_remote_support: z
@@ -80,14 +80,14 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
         .describe("Denotes if the technique can be used for integrity or availability attacks.")
         .optional(),
 
-    x_mitre_effective_permissions: MitreEffectivePermissionsSchema
+    x_mitre_effective_permissions: xMitreEffectivePermissionsSchema
         .optional(),
     
     x_mitre_network_requirements: z
         .boolean()
         .optional(),
 
-    x_mitre_tactic_type: MitreTacticTypeSchema
+    x_mitre_tactic_type: xMitreTacticTypeSchema
         .optional(),
 
     x_mitre_deprecated: z
@@ -97,11 +97,9 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
         .describe("Indicates whether the object has been deprecated.")
         .optional(),
     
-    x_mitre_domains: z
-        .array(AttackDomains)
-        .describe("The technology domains to which the ATT&CK object belongs."),
+    x_mitre_domains: xMitreDomainsSchema,
 
-    x_mitre_modified_by_ref: MitreModifiedByRefSchema
+    x_mitre_modified_by_ref: xMitreModifiedByRefSchema
         .optional()
 
 })
@@ -137,8 +135,8 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
         } = schema;
 
         // Helper variables for domain checks
-        const inEnterpriseDomain = x_mitre_domains.includes(AttackDomains.enum['enterprise-attack']);
-        const inMobileDomain = x_mitre_domains.includes(AttackDomains.enum['mobile-attack']);
+        const inEnterpriseDomain = x_mitre_domains.includes(attackDomainSchema.enum['enterprise-attack']);
+        const inMobileDomain = x_mitre_domains.includes(attackDomainSchema.enum['mobile-attack']);
 
         //==============================================================================
         // Validate external references
@@ -230,4 +228,4 @@ export const TechniqueSchema = AttackCoreSDOSchema.extend({
     });
 
 
-export type Technique = z.infer<typeof TechniqueSchema>;
+export type Technique = z.infer<typeof techniqueSchema>;

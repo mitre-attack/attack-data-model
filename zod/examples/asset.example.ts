@@ -1,6 +1,6 @@
 
 import { z } from "zod";
-import { AssetSchema } from "../src/schemas/sdo/asset.schema";
+import { assetSchema } from "../src/schemas/sdo/asset.schema";
 
 /*************************************************************************************************** */
 // Example 1: Valid Asset
@@ -40,7 +40,7 @@ const validAsset = {
 };
 
 console.log("\nExample 1: Valid Asset:");
-console.log(`SUCCESS ${AssetSchema.parse(validAsset).name}`)
+console.log(`SUCCESS ${assetSchema.parse(validAsset).name}`)
 
 /*************************************************************************************************** */
 // Example 2: Invalid Asset (ATT&CK ID does not match format A####)
@@ -57,7 +57,7 @@ const invalidAssetID = {
 
 console.log("\nExample 2: Invalid Asset (ATT&CK ID does not match format A####):");
 try {
-    AssetSchema.parse(invalidAssetID);
+	assetSchema.parse(invalidAssetID);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation errors:", error.errors);
@@ -115,7 +115,7 @@ const invalidAssetMissingFields = {
 
 console.log("\nExample 3: Invalid Asset (missing required fields):");
 try {
-    AssetSchema.parse(invalidAssetMissingFields);
+	assetSchema.parse(invalidAssetMissingFields);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation errors:", error.errors);
@@ -150,7 +150,7 @@ const assetWithInvalidType = {
 
 console.log("\nExample 4: Asset with invalid type:");
 try {
-    AssetSchema.parse(assetWithInvalidType);
+	assetSchema.parse(assetWithInvalidType);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -179,7 +179,7 @@ const assetWithOptionalFields = {
 };
 
 console.log("\nExample 5: Asset with optional fields:");
-console.log(AssetSchema.parse(assetWithOptionalFields));
+console.log(assetSchema.parse(assetWithOptionalFields));
 
 /*************************************************************************************************** */
 // Example 6: Asset with invalid sectors
@@ -193,7 +193,7 @@ const assetWithInvalidSectors = {
 
 console.log("\nExample 6: Asset with invalid sectors:");
 try {
-    AssetSchema.parse(assetWithInvalidSectors);
+	assetSchema.parse(assetWithInvalidSectors);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -215,7 +215,7 @@ const assetWithInvalidRelatedAssets = {
 
 console.log("\nExample 7: Asset with invalid related assets:");
 try {
-    AssetSchema.parse(assetWithInvalidRelatedAssets);
+	assetSchema.parse(assetWithInvalidRelatedAssets);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);

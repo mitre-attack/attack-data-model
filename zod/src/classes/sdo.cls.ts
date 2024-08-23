@@ -1,10 +1,10 @@
-import { SDOSchema, SDO } from "../schemas/common/core-stix-sdo.schema";
+import { stixDomainObjectSchema, SDO } from "../schemas/common/sdo";
 
 export class SDOImpl {
     private readonly _data: SDO;
 
     constructor(data: SDO) {
-        this._data = SDOSchema.parse(data);
+        this._data = stixDomainObjectSchema.parse(data);
         this.initializeGetters();
     }
 

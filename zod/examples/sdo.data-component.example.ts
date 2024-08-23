@@ -1,4 +1,4 @@
-import { DataComponentSchema } from "../src/schemas/sdo/data-component.schema";
+import { dataComponentSchema } from "../src/schemas/sdo/data-component.schema";
 import { z } from "zod";
 
 /** ************************************************************************************************* */
@@ -26,7 +26,7 @@ const validDataComponent = {
 };
 
 console.log("Example 1 - Valid Data Component:");
-console.log(DataComponentSchema.parse(validDataComponent));
+console.log(dataComponentSchema.parse(validDataComponent));
 
 /** ************************************************************************************************* */
 // Example 2: Invalid Data Component (missing required fields)
@@ -51,7 +51,7 @@ const invalidDataComponent = {
 
 console.log("\nExample 2 - Invalid Data Component (missing required fields):");
 try {
-  DataComponentSchema.parse(invalidDataComponent);
+  dataComponentSchema.parse(invalidDataComponent);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation errors:", error.errors);
@@ -86,7 +86,7 @@ const dataComponentWithOptionalFields = {
 };
 
 console.log("\nExample 3 - Data Component with optional fields:");
-console.log(DataComponentSchema.parse(dataComponentWithOptionalFields));
+console.log(dataComponentSchema.parse(dataComponentWithOptionalFields));
 
 /** ************************************************************************************************* */
 // Example 4: Data Component with invalid type
@@ -98,7 +98,7 @@ const dataComponentWithInvalidType = {
 
 console.log("\nExample 4 - Data Component with invalid type:");
 try {
-  DataComponentSchema.parse(dataComponentWithInvalidType);
+  dataComponentSchema.parse(dataComponentWithInvalidType);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation error:", error.errors[0].message);
@@ -117,7 +117,7 @@ const dataComponentWithInvalidDates = {
 
 console.log("\nExample 5 - Dat Component with invalid dates:");
 try {
-  DataComponentSchema.parse(dataComponentWithInvalidDates);
+  dataComponentSchema.parse(dataComponentWithInvalidDates);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation error:", error.errors[0].message);
@@ -153,7 +153,7 @@ const exampleOfRealDataComponent = {
 
 console.log("\nExample 6 - Parsing the provided example data component:");
 try {
-  const parsedDataComponent = DataComponentSchema.parse(
+  const parsedDataComponent = dataComponentSchema.parse(
     exampleOfRealDataComponent
   );
   console.log(

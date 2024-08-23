@@ -1,9 +1,9 @@
 import {
-  StixCreatedByRefSchema,
-  StixCreatedTimestampSchema,
-  StixModifiedTimestampSchema,
+  stixCreatedByRefSchema,
+  stixCreatedTimestampSchema,
+  stixModifiedTimestampSchema,
 } from "../src/schemas/common";
-import { DataSourceSchema } from "../src/schemas/sdo/data-source.schema";
+import { dataSourceSchema } from "../src/schemas/sdo/data-source.schema";
 import { z } from "zod";
 
 /** ************************************************************************************************* */
@@ -17,11 +17,11 @@ const validDataSource = {
   name: "Test Data Source",
   x_mitre_version: "1.2",
   description: "Test data source description",
-  created_by_ref: StixCreatedByRefSchema.parse(
+  created_by_ref: stixCreatedByRefSchema.parse(
     "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5"
   ),
-  created: StixCreatedTimestampSchema.parse("2023-03-17T13:37:42.596Z"),
-  modified: StixModifiedTimestampSchema.parse("2024-04-11T00:31:21.576Z"),
+  created: stixCreatedTimestampSchema.parse("2023-03-17T13:37:42.596Z"),
+  modified: stixModifiedTimestampSchema.parse("2024-04-11T00:31:21.576Z"),
   object_marking_refs: [
     "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168",
   ],
@@ -38,7 +38,7 @@ const validDataSource = {
 };
 
 console.log("Example 1 - Valid Data Source:");
-console.log(DataSourceSchema.parse(validDataSource));
+console.log(dataSourceSchema.parse(validDataSource));
 
 /** ************************************************************************************************* */
 // Example 2: Invalid Data Source (missing required fields)
@@ -51,7 +51,7 @@ const invalidDataSource = {
   name: "Test Data Source",
   x_mitre_version: "1.2",
   // Missing description
-  created_by_ref: StixCreatedByRefSchema.parse(
+  created_by_ref: stixCreatedByRefSchema.parse(
     "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5"
   ),
   created: StixCreatedTimestampSchema.parse("2023-03-17T13:37:42.596Z"),
@@ -69,7 +69,7 @@ const invalidDataSource = {
 
 console.log("\nExample 2 - Invalid Data Source (missing required fields):");
 try {
-  DataSourceSchema.parse(invalidDataSource);
+  dataSourceSchema.parse(invalidDataSource);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation errors:", error.errors);
@@ -113,7 +113,7 @@ const dataSourceWithOptionalFields = {
 };
 
 console.log("\nExample 3 - Data Source with optional fields:");
-console.log(DataSourceSchema.parse(dataSourceWithOptionalFields));
+console.log(dataSourceSchema.parse(dataSourceWithOptionalFields));
 
 /** ************************************************************************************************* */
 // Example 4: Data Source with invalid type
@@ -125,7 +125,7 @@ const dataSourceWithInvalidType = {
 
 console.log("\nExample 4 - Data Source with invalid type:");
 try {
-  DataSourceSchema.parse(dataSourceWithInvalidType);
+  dataSourceSchema.parse(dataSourceWithInvalidType);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation error:", error.errors[0].message);
@@ -144,7 +144,7 @@ const dataSourceWithInvalidDates = {
 
 console.log("\nExample 5 - Dat source with invalid dates:");
 try {
-  DataSourceSchema.parse(dataSourceWithInvalidDates);
+  dataSourceSchema.parse(dataSourceWithInvalidDates);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation error:", error.errors[0].message);
@@ -188,7 +188,7 @@ const exampleOfRealDataSource = {
 
 console.log("\nExample 6 - Parsing the provided example data source:");
 try {
-  const parsedDataSource = DataSourceSchema.parse(exampleOfRealDataSource);
+  const parsedDataSource = dataSourceSchema.parse(exampleOfRealDataSource);
   console.log("Parsed successfully. Data Source name:", parsedDataSource.name);
   // Parsed successfully. Data Source name: Sensor Health
 } catch (error) {

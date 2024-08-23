@@ -1,18 +1,19 @@
 import { z } from 'zod';
-import { AttackCoreSDOSchema, createStixIdentifierSchema, DescriptionSchema, ObjectMarkingRefsSchema, ObjectVersionReferenceSchema, StixTypeSchema } from "../common";
+import { attackBaseObjectSchema, createStixIdentifierSchema, descriptionSchema, objectMarkingRefsSchema, objectVersionReferenceSchema, stixTypeSchema } from "../common";
 
 // https://github.com/center-for-threat-informed-defense/attack-workbench-frontend/blob/master/docs/collections.md#collections
-export const CollectionSchema = AttackCoreSDOSchema.extend({
-	id: createStixIdentifierSchema(StixTypeSchema.enum['x-mitre-collection']),
+export const collectionSchema = attackBaseObjectSchema.extend({
 
-	type: z.literal(StixTypeSchema.enum["x-mitre-collection"]),
+	id: createStixIdentifierSchema(stixTypeSchema.enum['x-mitre-collection']),
 
-    description: DescriptionSchema
+	type: z.literal(stixTypeSchema.enum["x-mitre-collection"]),
+
+	description: descriptionSchema
         .describe("Details, context, and explanation about the purpose or contents of the collection.")
         .optional(),
 
 	x_mitre_contents: z
-		.array(ObjectVersionReferenceSchema)
+		.array(objectVersionReferenceSchema)
 		.min(1, "At least one STIX object reference is required.")
 		.describe("Specifies the objects contained within the collection."),
 })
@@ -30,4 +31,4 @@ export const CollectionSchema = AttackCoreSDOSchema.extend({
 	x_mitre_contents: true,
 });
 
-export type Collection = z.infer<typeof CollectionSchema>;
+export type Collection = z.infer<typeof collectionSchema>;

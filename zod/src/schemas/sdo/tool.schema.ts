@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { StixTypeSchema } from "../common/stix-type";
-import { SoftwareSchema } from "./software.schema";
-import { createStixIdentifierSchema, KillChainPhaseSchema, PlatformsSchema, StixCreatedByRefSchema } from "../common";
+import { stixTypeSchema } from "../common/stix-type";
+import { softwareSchema } from "./software.schema";
+import { createStixIdentifierSchema, killChainPhaseSchema, xMitrePlatformsSchema, stixCreatedByRefSchema } from "../common";
 import { ToolTypesOpenVocabulary } from "../common/open-vocabulary";
 
 // Initializes the custom ZodErrorMap
@@ -10,11 +10,11 @@ import '../../errors';
 
 
 // Tool Schema
-export const ToolSchema = SoftwareSchema.extend({
+export const toolSchema = softwareSchema.extend({
 
-    id: createStixIdentifierSchema(StixTypeSchema.enum.tool),
+    id: createStixIdentifierSchema(stixTypeSchema.enum.tool),
 
-    type: z.literal(StixTypeSchema.enum.tool),
+    type: z.literal(stixTypeSchema.enum.tool),
 
     // Not used in ATT&CK Tool but defined in STIX
     tool_types: z
@@ -24,7 +24,7 @@ export const ToolSchema = SoftwareSchema.extend({
 
     // Not used in ATT&CK Tool but defined in STIX
     kill_chain_phases: z
-        .array(KillChainPhaseSchema)
+        .array(killChainPhaseSchema)
         .optional()
         .describe('The list of kill chain phases for which this Tool can be used.'),
     
@@ -47,4 +47,4 @@ export const ToolSchema = SoftwareSchema.extend({
     });
 
 // Define the type for Malware
-export type Tool = z.infer<typeof ToolSchema>;
+export type Tool = z.infer<typeof toolSchema>;

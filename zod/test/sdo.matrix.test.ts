@@ -1,5 +1,5 @@
-import { MatrixSchema } from "../src/schemas/sdo/matrix.schema";
-import { AttackDomains } from "../src/schemas/common/core-attack-sdo.schema";
+import { matrixSchema } from "../src/schemas/sdo/matrix.schema";
+import { AttackDomains } from "../src/schemas/common/attack-base-object";
 
 describe("MatrixSchema", () => {
   const validMatrix = {
@@ -26,7 +26,7 @@ describe("MatrixSchema", () => {
   };
 
   test("valid matrix", () => {
-    expect(() => MatrixSchema.parse(validMatrix)).not.toThrow();
+    expect(() => matrixSchema.parse(validMatrix)).not.toThrow();
   });
 
   test("missing required fields", () => {
@@ -48,7 +48,7 @@ describe("MatrixSchema", () => {
       tactic_refs: ["x-mitre-tactic--12345678-1234-1234-1234-123456789012"],
     };
 
-    expect(() => MatrixSchema.parse(invalidMatrix)).toThrow();
+    expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
   });
 
   test("invalid x_mitre_domains", () => {
@@ -57,7 +57,7 @@ describe("MatrixSchema", () => {
       x_mitre_domains: ["invalid-domain"],
     };
 
-    expect(() => MatrixSchema.parse(invalidMatrix)).toThrow();
+    expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
   });
 
   test("invalid x_mitre_modified_by_ref", () => {
@@ -66,7 +66,7 @@ describe("MatrixSchema", () => {
       x_mitre_modified_by_ref: "invalid-id",
     };
 
-    expect(() => MatrixSchema.parse(invalidMatrix)).toThrow();
+    expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
   });
 
   test("invalid tactic_refs", () => {
@@ -75,7 +75,7 @@ describe("MatrixSchema", () => {
       tactic_refs: ["invalid-tactic-id"],
     };
 
-    expect(() => MatrixSchema.parse(invalidMatrix)).toThrow();
+    expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
   });
 
   test("optional x_mitre_deprecated present", () => {
@@ -84,7 +84,7 @@ describe("MatrixSchema", () => {
       x_mitre_deprecated: true,
     };
 
-    expect(() => MatrixSchema.parse(matrixWithDeprecated)).not.toThrow();
+    expect(() => matrixSchema.parse(matrixWithDeprecated)).not.toThrow();
   });
 
   test("optional x_mitre_deprecated missing", () => {
@@ -92,7 +92,7 @@ describe("MatrixSchema", () => {
       ...validMatrix,
     };
 
-    expect(() => MatrixSchema.parse(matrixWithoutDeprecated)).not.toThrow();
+    expect(() => matrixSchema.parse(matrixWithoutDeprecated)).not.toThrow();
   });
 
   test("optional revoked present", () => {
@@ -101,7 +101,7 @@ describe("MatrixSchema", () => {
       revoked: true,
     };
 
-    expect(() => MatrixSchema.parse(matrixWithRevoked)).not.toThrow();
+    expect(() => matrixSchema.parse(matrixWithRevoked)).not.toThrow();
   });
 
   test("optional revoked missing", () => {
@@ -109,6 +109,6 @@ describe("MatrixSchema", () => {
       ...validMatrix,
     };
 
-    expect(() => MatrixSchema.parse(matrixWithoutRevoked)).not.toThrow();
+    expect(() => matrixSchema.parse(matrixWithoutRevoked)).not.toThrow();
   });
 });

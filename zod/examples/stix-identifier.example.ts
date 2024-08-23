@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { StixIdentifier, StixIdentifierSchema } from "../src/schemas/common/stix-identifier";
+import { StixIdentifier, stixIdentifierSchema } from "../src/schemas/common/stix-identifier";
 import { StixIdentifierImpl } from "../src/classes/stix-identifier.cls";
 
 const id = 'attack-pattern--00000000-0000-4000-8000-000000000000';
-const parsedId: StixIdentifier = StixIdentifierSchema.parse(id);
+const parsedId: StixIdentifier = stixIdentifierSchema.parse(id);
 
 console.log(parsedId);                  // attack-pattern--00000000-0000-4000-8000-000000000000
 console.log(String(parsedId));          // attack-pattern--00000000-0000-4000-8000-000000000000
@@ -14,7 +14,7 @@ console.log(parsedId + '');             // attack-pattern--00000000-0000-4000-80
 
 try {
     const badId = 'foobar--00000000-0000-4000-8000-000000000000' // 'foobar' is not a valid StixType!
-    const badParsedId: StixIdentifier = StixIdentifierSchema.parse(badId);
+    const badParsedId: StixIdentifier = stixIdentifierSchema.parse(badId);
 } catch (err) {
     if (err instanceof z.ZodError) {
         console.log(err.issues);
@@ -32,7 +32,7 @@ try {
 
 try {
     const badId = 'attack-pattern--00000000-0000-4000-8000-00000000000' // There is one missing digit!
-    const badParsedId: StixIdentifier = StixIdentifierSchema.parse(badId);
+    const badParsedId: StixIdentifier = stixIdentifierSchema.parse(badId);
 } catch (err) {
     if (err instanceof z.ZodError) {
         console.log(err.issues);

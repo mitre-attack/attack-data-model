@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { Z } from 'zod-class';
-import { StixTypeSchema } from '../../schemas/common/stix-type';
+import { stixTypeSchema } from '../../schemas/common/stix-type';
 
 // Helper function to validate UUID
 const isValidUuid = (uuid: string): boolean => {
@@ -27,11 +27,11 @@ export class StixIdentifierSchema extends Z.class({
     value: z.string().refine(
         (val) => {
             const [type, uuid] = val.split('--');
-            return StixTypeSchema.safeParse(type).success && isValidUuid(uuid);
+            return stixTypeSchema.safeParse(type).success && isValidUuid(uuid);
         },
         (val) => {
             const [type, uuid] = val.split('--');
-            if (!StixTypeSchema.safeParse(type).success) {
+            if (!stixTypeSchema.safeParse(type).success) {
                 return StixIdentifierError.InvalidType;
             }
             if (!isValidUuid(uuid)) {
@@ -41,8 +41,8 @@ export class StixIdentifierSchema extends Z.class({
         }
     ).describe("Represents identifiers across the CTI specifications. The format consists of the name of the top-level object being identified, followed by two dashes (--), followed by a UUIDv4.")
 }) {
-    get type(): z.infer<typeof StixTypeSchema> {
-        return this.value.split('--')[0] as z.infer<typeof StixTypeSchema>;
+    get type(): z.infer<typeof stixTypeSchema> {
+        return this.value.split('--')[0] as z.infer<typeof stixTypeSchema>;
     }
 
     get uuid(): string {

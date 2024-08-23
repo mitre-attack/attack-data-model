@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ToolSchema } from "../src/schemas/sdo/tool.schema";
+import { toolSchema } from "../src/schemas/sdo/tool.schema";
 
 /** ************************************************************************************************* */
 // Example 1: Valid Tool
@@ -47,7 +47,7 @@ const validTool = {
 };
 
 console.log("Example 1 - Valid Tool:");
-console.log(ToolSchema.parse(validTool));
+console.log(toolSchema.parse(validTool));
 
 /** ************************************************************************************************* */
 // Example 2: Invalid Tool (missing required fields)
@@ -86,7 +86,7 @@ const invalidTool = {
 
 console.log("Example 2 - Invalid Tool (missing required fields):");
 try {
-    ToolSchema.parse(invalidTool);
+    toolSchema.parse(invalidTool);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation errors:", error.errors);
@@ -106,7 +106,7 @@ const toolWithOptionalFields = {
 
 
 console.log("\nExample 3 - Tool with optional fields:");
-console.log(ToolSchema.parse(toolWithOptionalFields));
+console.log(toolSchema.parse(toolWithOptionalFields));
 
 
 /** ************************************************************************************************* */
@@ -119,7 +119,7 @@ const toolWithInvalidType = {
 
 console.log("\nExample 4 - Tool with invalid type:");
 try {
-    ToolSchema.parse(toolWithInvalidType);
+    toolSchema.parse(toolWithInvalidType);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -137,7 +137,7 @@ const toolWithInvalidId = {
 
 console.log("\nExample 5 - Tool with invalid id:");
 try {
-    ToolSchema.parse(toolWithInvalidId);
+    toolSchema.parse(toolWithInvalidId);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -164,7 +164,7 @@ const toolWithStixFields = {
 
 
 console.log("\nExample 6 - Tool with fields in STIX but not in ATT&CK:");
-console.log(ToolSchema.parse(toolWithStixFields));
+console.log(toolSchema.parse(toolWithStixFields));
 
 /** ************************************************************************************************* */
 // Example 7: Parsing the provided example tool
@@ -219,7 +219,7 @@ const exampleOfRealTool = {
 
 console.log("\nExample 7 - Parsing the provided example tool:");
 try {
-    const parsedTool = ToolSchema.parse(exampleOfRealTool);
+    const parsedTool = toolSchema.parse(exampleOfRealTool);
     console.log(parsedTool);
     console.log("Parsed successfully. Tool name:", parsedTool.name);
     // Parsed successfully. Tool name: Sliver

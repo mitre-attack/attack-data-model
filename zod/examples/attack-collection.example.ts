@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CollectionSchema } from "../src/schemas/sdo/collection.schema";
+import { collectionSchema } from "../src/schemas/sdo/collection.schema";
 
 /****************************************************************************************************/
 // Example 1: Valid Collection
@@ -30,7 +30,7 @@ const validCollection = {
 };
 
 console.log("\nExample 1: Valid Collection:");
-console.log(`SUCCESS ${CollectionSchema.parse(validCollection).name}`)
+console.log(`SUCCESS ${collectionSchema.parse(validCollection).name}`)
 
 /****************************************************************************************************/
 // Example 2: Invalid Collection (missing required fields)
@@ -50,7 +50,7 @@ const invalidCollectionMissingFields = {
 };
 console.log("\nExample 2: Invalid Collection (missing required fields):");
 try {
-    CollectionSchema.parse(invalidCollectionMissingFields);
+    collectionSchema.parse(invalidCollectionMissingFields);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation errors:", error.errors);
@@ -92,7 +92,7 @@ const collectionWithInvalidType = {
 
 console.log("\nExample 3: Collection with invalid type:");
 try {
-    CollectionSchema.parse(collectionWithInvalidType);
+    collectionSchema.parse(collectionWithInvalidType);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -109,7 +109,7 @@ const collectionWithOptionalFields = {
 };
 
 console.log("\nExample 4: Collection with optional fields:");
-console.log(CollectionSchema.parse(collectionWithOptionalFields).description);
+console.log(collectionSchema.parse(collectionWithOptionalFields).description);
 
 /****************************************************************************************************/
 // Example 5: Collection with invalid object version references
@@ -135,7 +135,7 @@ const collectionWithInvalidContents = {
 
 console.log("\nExample 5: Collection with invalid object version references:");
 try {
-    CollectionSchema.parse(collectionWithInvalidContents);
+    collectionSchema.parse(collectionWithInvalidContents);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);

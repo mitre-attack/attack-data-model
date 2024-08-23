@@ -1,16 +1,16 @@
 import { ZodError } from "zod";
-import { StixTimestamp, StixTimestampSchema } from "../src/schemas/common/stix-timestamp";
+import { StixTimestamp, stixTimestampSchema } from "../src/schemas/common/stix-timestamp";
 
 
 // Usage example
-const parsedTimestamp: StixTimestamp = StixTimestampSchema.parse("2023-06-21T15:30:00Z");
+const parsedTimestamp: StixTimestamp = stixTimestampSchema.parse("2023-06-21T15:30:00Z");
 
 console.log(parsedTimestamp);
 // 2023-06-21T15:30:00Z
 
 
 try {
-    const parsedTimestampBad: StixTimestamp = StixTimestampSchema.parse("2023-06-21T15:30:00"); // <-- removed the 'Z'
+    const parsedTimestampBad: StixTimestamp = stixTimestampSchema.parse("2023-06-21T15:30:00"); // <-- removed the 'Z'
     console.log(parsedTimestampBad);
 } catch (error) {
     console.log((error as ZodError).flatten().formErrors[0])

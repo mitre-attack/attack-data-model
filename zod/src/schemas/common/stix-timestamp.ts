@@ -18,11 +18,9 @@ const isValidRFC3339 = (timestamp: string): boolean => {
     return !isNaN(date.getTime());
 };
 
-// Custom type for STIX timestamp
 type _StixTimestamp = string;
 
-// Refined StixTimestampSchema using z.custom()
-export const StixTimestampSchema = z.custom<_StixTimestamp>(
+export const stixTimestampSchema = z.custom<_StixTimestamp>(
     (val): val is _StixTimestamp => {
         if (val instanceof Date) {
             return isValidRFC3339(val.toISOString());
@@ -37,5 +35,17 @@ export const StixTimestampSchema = z.custom<_StixTimestamp>(
     }
 ).describe("Represents timestamps across the CTI specifications. The format is an RFC3339 timestamp, with a required timezone specification of 'Z'.");
 
-// Type inference
-export type StixTimestamp = z.infer<typeof StixTimestampSchema>;
+export type StixTimestamp = z.infer<typeof stixTimestampSchema>;
+
+
+/////////////////////////////////////
+//
+// Branded Timestamps
+//
+/////////////////////////////////////
+
+export const stixCreatedTimestampSchema = stixTimestampSchema.brand("StixCreatedTimestamp");
+export type StixCreatedTimestamp = z.infer<typeof stixCreatedTimestampSchema>;
+
+export const stixModifiedTimestampSchema = stixTimestampSchema.brand("StixModifiedTimestamp");
+export type StixModifiedTimestamp = z.infer<typeof stixModifiedTimestampSchema>;

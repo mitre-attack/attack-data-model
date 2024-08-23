@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
-import { StixTypeSchema } from "../common/stix-type";
+import { attackBaseObjectSchema } from "../common/attack-base-object";
+import { stixTypeSchema } from "../common/stix-type";
 
 // Custom error messages
 const SchemaNameError = {
@@ -12,9 +12,9 @@ const SchemaNameError = {
 };
 
 // SchemaName Schema
-export const SchemaNameSchema = AttackCoreSDOSchema.extend({
-    type: z.literal(StixTypeSchema.enum.schemaType, {
-        message: `'type' property must be equal to ${StixTypeSchema.enum.schemaType}`
+export const SchemaNameSchema = attackBaseObjectSchema.extend({
+    type: z.literal(stixTypeSchema.enum.schemaType, {
+        message: `'type' property must be equal to ${stixTypeSchema.enum.schemaType}`
     }),
 
     // Add additional fields specific to this schema

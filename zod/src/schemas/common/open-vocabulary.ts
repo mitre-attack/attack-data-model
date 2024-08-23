@@ -112,7 +112,7 @@ export const ToolTypesOpenVocabulary = z.enum([
 ]);
 
 
-export const IdentityClassOpenVocabulary = z.enum([
+export const identityClassOpenVocabulary = z.enum([
     "individual",
     "group",
     "system",
@@ -133,7 +133,7 @@ export const IdentityClassOpenVocabulary = z.enum([
  * Knowing a Threat Actor or Intrusion Set's motivation may allow an analyst or 
  * defender to better understand likely targets and behaviors.
  */
-export const AttackMotivationOpenVocabulary = z.enum([
+export const attackMotivationOpenVocabulary = z.enum([
     "accidental",
     "coercion",
     "dominance",
@@ -163,7 +163,7 @@ export const AttackMotivationOpenVocabulary = z.enum([
  * This section including vocabulary items and their descriptions is based on the 
  * Threat Agent Library publication from Intel Corp in September 2007 [Casey 2007].
  */
-export const AttackResourceLevelOpenVocabulary = z.enum([
+export const attackResourceLevelOpenVocabulary = z.enum([
     "individual",
     "club",
     "contest",
@@ -184,7 +184,7 @@ export const AttackResourceLevelOpenVocabulary = z.enum([
  * It is intended to be holistic; it has been derived from several other lists and is not 
  * limited to "critical infrastructure" sectors.
  */
-export const IndustrySectorOpenVocabulary = z.enum([
+export const industrySectorOpenVocabulary = z.enum([
     "agriculture",
     "aerospace",
     "automotive",

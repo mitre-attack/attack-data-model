@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { IdentitySchema } from "../src/schemas/sdo/identity.schema";
+import { identitySchema } from "../src/schemas/sdo/identity.schema";
 
 /** ************************************************************************************************* */
 // Example 1: Valid Identity
@@ -20,7 +20,7 @@ const validIdentity = {
 };
 
 console.log("Example 1 - Valid Identity:");
-console.log(IdentitySchema.parse(validIdentity));
+console.log(identitySchema.parse(validIdentity));
 
 /** ************************************************************************************************* */
 // Example 2: Invalid Identity (missing required fields)
@@ -38,7 +38,7 @@ const invalidIdentity = {
 
 console.log("Example 2 - Invalid Identity (missing required fields):");
 try {
-    IdentitySchema.parse(invalidIdentity);
+    identitySchema.parse(invalidIdentity);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation errors:", error.errors);
@@ -73,7 +73,7 @@ const identityWithInvalidId = {
 
 console.log("\nExample 3 - Identity with invalid id:");
 try {
-    IdentitySchema.parse(identityWithInvalidId);
+    identitySchema.parse(identityWithInvalidId);
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
@@ -93,7 +93,7 @@ const identityWithStixFields = {
 };
 
 console.log("\nExample 4 - Identity with fields in STIX but not in ATT&CK:");
-console.log(IdentitySchema.parse(identityWithStixFields));
+console.log(identitySchema.parse(identityWithStixFields));
 /**
  * {
     id: 'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5',
@@ -131,7 +131,7 @@ const exampleOfRealIdentity = {
 
 console.log("\nExample 5 - Parsing the provided example identity:");
 try {
-    const parsedIdentity = IdentitySchema.parse(exampleOfRealIdentity);
+    const parsedIdentity = identitySchema.parse(exampleOfRealIdentity);
     console.log(parsedIdentity);
     console.log("Parsed successfully. Identity name:", parsedIdentity.name);
     // Parsed successfully. Identity name: The MITRE Corporation

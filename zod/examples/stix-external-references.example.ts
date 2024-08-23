@@ -1,5 +1,5 @@
 import { ZodError } from "zod";
-import { ExternalReferenceSchema } from "../src/schemas/common/misc"
+import { externalReferenceSchema } from "../src/schemas/common/misc"
 
 const example = {
     "source_name": "ACME Threat Intel",
@@ -7,7 +7,7 @@ const example = {
     "url": "https://example.com/threat-report-101"
 }
 
-const parsedExample = ExternalReferenceSchema.parse(example);
+const parsedExample = externalReferenceSchema.parse(example);
 
 console.log(parsedExample);
 // {
@@ -22,7 +22,7 @@ try {
         "description": "This indicator was reported by ACME Threat Intelligence Team",
         "url": "https://example.com/threat-report-101"
     }
-    console.log(ExternalReferenceSchema.parse(badSourceName));
+    console.log(externalReferenceSchema.parse(badSourceName));
 } catch (error) {
     console.log((error as ZodError).message);
     // [
@@ -46,7 +46,7 @@ try {
         "description": 12345,
         "url": "https://example.com/threat-report-101"
     }
-    console.log(ExternalReferenceSchema.parse(badDescription));
+    console.log(externalReferenceSchema.parse(badDescription));
 } catch (error) {
     console.log((error as ZodError).message);
     // [
@@ -70,7 +70,7 @@ try {
         "description": "This indicator was reported by ACME Threat Intelligence Team",
         "url": "https;//example/threat-report-101"
     }
-    console.log(ExternalReferenceSchema.parse(badUrl));
+    console.log(externalReferenceSchema.parse(badUrl));
 } catch (error) {
     (error as ZodError).errors.forEach(e => console.log(e.message))
     // Invalid URL format. Please provide a valid URL.

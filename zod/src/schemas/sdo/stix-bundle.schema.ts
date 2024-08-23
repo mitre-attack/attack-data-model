@@ -1,40 +1,40 @@
 import { z } from "zod";
-import { StixTypeSchema } from "../common/stix-type";
+import { stixTypeSchema } from "../common/stix-type";
 import { createStixIdentifierSchema } from "../common/stix-identifier";
-import { MalwareSchema } from "./malware.schema";
+import { malwareSchema } from "./malware.schema";
 import '../../errors';
-import { AssetSchema } from "./asset.schema";
-import { CampaignSchema } from "./campaign.schema";
-import { DataComponentSchema } from "./data-component.schema";
-import { DataSourceSchema } from "./data-source.schema";
-import { IdentitySchema } from "./identity.schema";
-import { MatrixSchema } from "./matrix.schema";
-import { ToolSchema } from "./tool.schema";
-import { TacticSchema } from "./tactic.schema";
-import { TechniqueSchema } from "./technique.schema";
-import { GroupSchema } from "./group.schema";
-import { MitigationSchema } from "./mitigation.schema";
+import { assetSchema } from "./asset.schema";
+import { campaignSchema } from "./campaign.schema";
+import { dataComponentSchema } from "./data-component.schema";
+import { dataSourceSchema } from "./data-source.schema";
+import { identitySchema } from "./identity.schema";
+import { matrixSchema } from "./matrix.schema";
+import { toolSchema } from "./tool.schema";
+import { tacticSchema } from "./tactic.schema";
+import { techniqueSchema } from "./technique.schema";
+import { groupSchema } from "./group.schema";
+import { mitigationSchema } from "./mitigation.schema";
 
 const StixObjectSchema: {[key: string]: z.ZodSchema} = {
-  "x-mitre-asset": AssetSchema,
-  "campaign": CampaignSchema,
-  "x-mitre-data-component": DataComponentSchema,
-  "x-mitre-data-source": DataSourceSchema,
-  "identity": IdentitySchema,
-  "malware": MalwareSchema,
-  "x-mitre-matrix": MatrixSchema,
-  "tool": ToolSchema,
-  "x-mitre-tactic": TacticSchema,
-  // "attack-pattern": TechniqueSchema, // uncomment after review
-  "intrusion-set": GroupSchema,
-  "course-of-action": MitigationSchema
+  "x-mitre-asset": assetSchema,
+  "campaign": campaignSchema,
+  "x-mitre-data-component": dataComponentSchema,
+  "x-mitre-data-source": dataSourceSchema,
+  "identity": identitySchema,
+  "malware": malwareSchema,
+  "x-mitre-matrix": matrixSchema,
+  "tool": toolSchema,
+  "x-mitre-tactic": tacticSchema,
+  // "attack-pattern": techniqueSchema, // uncomment after review
+  "intrusion-set": groupSchema,
+  "course-of-action": mitigationSchema
 };
 
 // Define the schema for a STIX bundle
 export const StixBundleSchema = z.object({
-  id: createStixIdentifierSchema(StixTypeSchema.enum["bundle"]),
+  id: createStixIdentifierSchema(stixTypeSchema.enum.bundle),
 
-  type: z.literal(StixTypeSchema.enum["bundle"]),
+  type: z.literal(stixTypeSchema.enum.bundle),
 
   objects: z
     .array(z.any())

@@ -1,4 +1,4 @@
-import { MatrixSchema } from "../src/schemas/sdo/matrix.schema";
+import { matrixSchema } from "../src/schemas/sdo/matrix.schema";
 import { z } from "zod";
 
 /** ************************************************************************************************* */
@@ -45,7 +45,7 @@ const validMatrix = {
 };
 
 console.log("Example 1 - Valid Matrix:");
-console.log(MatrixSchema.parse(validMatrix));
+console.log(matrixSchema.parse(validMatrix));
 
 /** ************************************************************************************************* */
 // Example 2: Invalid Matrix (missing required fields)
@@ -89,7 +89,7 @@ const invalidMatrix = {
 
 console.log("\nExample 2 - Invalid Matrix (missing required fields):");
 try {
-  MatrixSchema.parse(invalidMatrix);
+  matrixSchema.parse(invalidMatrix);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation errors:", error.errors);
@@ -124,7 +124,7 @@ const matrixWithOptionalFields = {
 };
 
 console.log("\nExample 3 - Matrix with optional fields:");
-console.log(MatrixSchema.parse(matrixWithOptionalFields));
+console.log(matrixSchema.parse(matrixWithOptionalFields));
 
 /** ************************************************************************************************* */
 // Example 4: Matrix with invalid type
@@ -136,7 +136,7 @@ const matrixWithInvalidType = {
 
 console.log("\nExample 4 - Matrix with invalid type:");
 try {
-  MatrixSchema.parse(matrixWithInvalidType);
+  matrixSchema.parse(matrixWithInvalidType);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation error:", error.errors[0].message);
@@ -189,7 +189,7 @@ const exampleOfRealMatrix = {
 
 console.log("\nExample 5 - Parsing the provided example matrix:");
 try {
-  const parsedMatrix = MatrixSchema.parse(exampleOfRealMatrix);
+  const parsedMatrix = matrixSchema.parse(exampleOfRealMatrix);
   console.log("Parsed successfully. Matrix name:", parsedMatrix.name);
   // Parsed successfully. Matrix name: ATT&CK for ICS
 } catch (error) {

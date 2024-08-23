@@ -1,10 +1,7 @@
 import { z } from "zod";
-import {
-  AttackCoreSDOSchema,
-  AttackDomains,
-} from "../common/core-attack-sdo.schema";
-import { StixTypeSchema } from "../common/stix-type";
-import { StixIdentifierSchema } from "../common";
+import { attackBaseObjectSchema } from "../common/attack-base-object";
+import { stixTypeSchema } from "../common/stix-type";
+import { stixIdentifierSchema, xMitreDomainsSchema } from "../common";
 
 // Custom error messages
 const DataComponentSchemaError = {
@@ -34,9 +31,9 @@ const DataComponentSchemaError = {
 //   }
 
 // Data Component Schema
-export const DataComponentSchema = AttackCoreSDOSchema.extend({
-  type: z.literal(StixTypeSchema.enum["x-mitre-data-component"], {
-    message: `'type' property must be equal to ${StixTypeSchema.enum["x-mitre-data-component"]}`,
+export const dataComponentSchema = attackBaseObjectSchema.extend({
+  type: z.literal(stixTypeSchema.enum["x-mitre-data-component"], {
+    message: `'type' property must be equal to ${stixTypeSchema.enum["x-mitre-data-component"]}`,
   }),
 
   description: z
@@ -45,12 +42,9 @@ export const DataComponentSchema = AttackCoreSDOSchema.extend({
       "A description that provides more details and context about the Data Component."
     ),
 
-  x_mitre_domains: z
-    .array(AttackDomains)
-    .default([AttackDomains.Values["enterprise-attack"]])
-    .describe("The technology domains to which the ATT&CK object belongs."),
+  x_mitre_domains: xMitreDomainsSchema,
 
-  x_mitre_modified_by_ref: StixIdentifierSchema.describe(
+  x_mitre_modified_by_ref: stixIdentifierSchema.describe(
     "The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."
   ),
 
@@ -65,4 +59,4 @@ export const DataComponentSchema = AttackCoreSDOSchema.extend({
 });
 
 // Define the type for SchemaName
-export type DataComponent = z.infer<typeof DataComponentSchema>;
+export type DataComponent = z.infer<typeof dataComponentSchema>;

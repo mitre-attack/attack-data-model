@@ -1,33 +1,31 @@
 import { z } from "zod";
-import { AttackCoreSDOSchema } from "../common/core-attack-sdo.schema";
-import { StixTypeSchema, StixTimestampSchema, StixCreatedByRefSchema, StixIdentifierSchema, ExternalReferenceSchema, AttackDomains, DescriptionSchema, createStixIdentifierSchema } from "../common";
+import { attackBaseObjectSchema } from "../common/attack-base-object";
+import { stixTypeSchema, stixTimestampSchema, stixCreatedByRefSchema, stixIdentifierSchema, descriptionSchema, xMitreDomainsSchema, externalReferenceSchema } from "../common";
 
 import '../../errors';
 
 // ATT&CK Campaign Schema
 export const CampaignSchema = AttackCoreSDOSchema.extend({
 
-    id: createStixIdentifierSchema(StixTypeSchema.enum.campaign),
+    id: createStixIdentifierSchema(stixTypeSchema.enum.campaign),
 
     type: z.literal(StixTypeSchema.enum.campaign),
 
-    description: DescriptionSchema
+    description: descriptionSchema
         .describe("A description that provides more details and context about the Campaign.")
         .optional(),
 
     external_references: z
-        .array(ExternalReferenceSchema)
+        .array(externalReferenceSchema)
         .min(1, "At least one external reference is required.")
         .describe("A list of external references which refers to non-STIX information."),
 
     created_by_ref: StixCreatedByRefSchema
         .describe("The ID of the Source object that describes who created this object."),
 
-    x_mitre_domains: z
-        .array(AttackDomains)
-        .describe("The technology domains to which the ATT&CK object belongs."),
+    x_mitre_domains: xMitreDomainsSchema,
 
-    x_mitre_modified_by_ref: StixIdentifierSchema
+    x_mitre_modified_by_ref: stixIdentifierSchema
         .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."),
 
     x_mitre_contributors: z
@@ -45,11 +43,11 @@ export const CampaignSchema = AttackCoreSDOSchema.extend({
         .describe("Alternative names used to identify this campaign. The first alias must match the object's name."),
 
     // Optional in STIX but required in ATT&CK
-    first_seen: StixTimestampSchema
+    first_seen: stixTimestampSchema
         .describe("The time that this Campaign was first seen."),
 
     // Optional in STIX but required in ATT&CK
-    last_seen: StixTimestampSchema
+    last_seen: stixTimestampSchema
         .describe("The time that this Campaign was last seen."),
 
     x_mitre_first_seen_citation: z.string()

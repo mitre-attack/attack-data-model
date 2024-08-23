@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { StixTypeSchema, StixType } from './stix-type';
+import { stixTypeSchema, StixType } from './stix-type';
 
 // Define the STIX Identifier type
 type _StixIdentifier = `${StixType}--${string}`;
@@ -26,7 +26,7 @@ const isValidUuid = (uuid: string): boolean => {
 };
 
 // Refactored StixIdentifierSchema
-export const StixIdentifierSchema = z.custom<_StixIdentifier>(
+export const stixIdentifierSchema = z.custom<_StixIdentifier>(
     (val): val is _StixIdentifier => {
         if (typeof val !== 'string') return false;
 
@@ -34,7 +34,7 @@ export const StixIdentifierSchema = z.custom<_StixIdentifier>(
 
         if (!type || !uuid) return false;
 
-        const isValidType = StixTypeSchema.safeParse(type).success;
+        const isValidType = stixTypeSchema.safeParse(type).success;
         if (!isValidType) return false;
 
         return isValidUuid(uuid);
@@ -45,11 +45,11 @@ export const StixIdentifierSchema = z.custom<_StixIdentifier>(
 ).refine(
     (val) => {
         const [type, uuid] = val.split('--');
-        return StixTypeSchema.safeParse(type).success && isValidUuid(uuid);
+        return stixTypeSchema.safeParse(type).success && isValidUuid(uuid);
     },
     (val) => {
         const [type, uuid] = val.split('--');
-        if (!StixTypeSchema.safeParse(type).success) {
+        if (!stixTypeSchema.safeParse(type).success) {
             return StixIdentifierError.InvalidType;
         }
         if (!isValidUuid(uuid)) {
@@ -60,7 +60,7 @@ export const StixIdentifierSchema = z.custom<_StixIdentifier>(
 ).describe("Represents identifiers across the CTI specifications. The format consists of the name of the top-level object being identified, followed by two dashes (--), followed by a UUIDv4.");
 
 export const createStixIdentifierSchema = (expectedType: StixType) =>
-    StixIdentifierSchema.refine(
+    stixIdentifierSchema.refine(
         (val) => val.split('--')[0] === expectedType,
         (val) => ({
             message: `The 'id' property must be of type '${expectedType}', but got '${val.split('--')[0]}'`,
@@ -69,4 +69,4 @@ export const createStixIdentifierSchema = (expectedType: StixType) =>
     );
 
 // Type inference
-export type StixIdentifier = z.infer<typeof StixIdentifierSchema>;
+export type StixIdentifier = z.infer<typeof stixIdentifierSchema>;
