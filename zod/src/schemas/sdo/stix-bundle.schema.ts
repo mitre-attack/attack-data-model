@@ -39,18 +39,25 @@ export const StixBundleSchema = z.object({
   objects: z
     .array(z.any())
     .refine((objects) => {
-      return objects.every((obj: any) => {
+      let validationErrors: string = "";
+      const validationPassed = objects.every((obj: any) => {
         const schema = StixObjectSchema[obj.type];
         if (!schema) {
+          validationErrors = `Object of unknown type: ${obj.type}`
           return false; // Not known object type
         }
         try {
           schema.parse(obj);
           return true;
-        } catch (e) {
+        } catch (e:any) {
+          validationErrors = `Validation schema failed for type: ${obj.type}: ${e.errors}`
           return false;
         }
       });
+      if (!validationPassed) {
+        throw new Error(`One or more objects in the bundle failed validation: ${validationErrors}`);
+      }
+      return true
     }, {
       message: "One or more objects in the bundle failed validation"
     }),
