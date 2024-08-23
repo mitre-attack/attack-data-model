@@ -1,5 +1,5 @@
-import { matrixSchema } from "../src/schemas/sdo/matrix.schema";
-import { AttackDomains } from "../src/schemas/common/attack-base-object";
+import { matrixSchema } from "../../src/schemas/sdo/matrix.schema";
+import { AttackDomains } from "../../src/schemas/common/attack-base-object";
 
 describe("MatrixSchema", () => {
   const validMatrix = {

@@ -1,4 +1,4 @@
-import { dataSourceSchema } from "../src/schemas/sdo/data-source.schema";
+import { dataSourceSchema } from "../../src/schemas/sdo/data-source.schema";
 
 describe("DataSourceSchema", () => {
   const validDataSource = {

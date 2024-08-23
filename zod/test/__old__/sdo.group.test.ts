@@ -1,4 +1,4 @@
-import { groupSchema } from "../src/schemas/sdo/group.schema";
+import { groupSchema } from "../../src/schemas/sdo/group.schema";
 
 describe("GroupSchema", () => {
   it("should validate a valid Group object", () => {

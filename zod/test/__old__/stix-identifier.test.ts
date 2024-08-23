@@ -1,5 +1,5 @@
-import { stixIdentifierSchema, StixIdentifierError } from '../src/schemas/common/stix-identifier';
-import { stixTypeSchema } from '../src/schemas/common/stix-type';
+import { stixIdentifierSchema, StixIdentifierError } from '../../src/schemas/common/stix-identifier';
+import { stixTypeSchema } from '../../src/schemas/common/stix-type';
 
 describe('StixIdentifierSchema', () => {
   // Test valid STIX identifier

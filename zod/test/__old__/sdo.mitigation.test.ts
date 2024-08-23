@@ -1,4 +1,4 @@
-import { mitigationSchema } from "../src/schemas/sdo/mitigation.schema";
+import { mitigationSchema } from "../../src/schemas/sdo/mitigation.schema";
 import { describe, it, expect } from "@jest/globals";
 
 describe("MitigationSchema", () => {

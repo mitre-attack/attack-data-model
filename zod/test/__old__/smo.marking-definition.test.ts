@@ -1,4 +1,4 @@
-import { MarkingDefinitionSchema } from "../src/schemas/smo/marking-definition.schema";
+import { MarkingDefinitionSchema } from "../../src/schemas/smo/marking-definition.schema";
 
 describe("MarkingDefinitionSchema", () => {
   it("should validate a correct marking definition with statement", () => {

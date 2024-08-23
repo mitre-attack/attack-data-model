@@ -1,4 +1,4 @@
-import { identitySchema } from "../src/schemas/sdo/identity.schema";
+import { identitySchema } from "../../src/schemas/sdo/identity.schema";
 
 describe('IdentitySchema', () => {
   // Test valid object
@@ -9,7 +9,7 @@ describe('IdentitySchema', () => {
       created: "2017-06-01T00:00:00.000Z",
       modified: "2017-06-01T00:00:00.000Z",
       object_marking_refs: [
-          "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
       ],
       identity_class: "organization",
       name: "The MITRE Corporation",
@@ -26,7 +26,7 @@ describe('IdentitySchema', () => {
       created: "2017-06-01T00:00:00.000Z",
       modified: "2017-06-01T00:00:00.000Z",
       object_marking_refs: [
-          "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
       ],
       name: "The MITRE Corporation"
     };
@@ -41,7 +41,7 @@ describe('IdentitySchema', () => {
       created: "2017-06-01T00:00:00.000Z",
       modified: "2017-06-01T00:00:00.000Z",
       object_marking_refs: [
-          "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
       ],
       identity_class: "organization",
       name: "The MITRE Corporation",

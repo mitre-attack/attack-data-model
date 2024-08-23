@@ -1,4 +1,4 @@
-import { dataComponentSchema } from "../src/schemas/sdo/data-component.schema";
+import { dataComponentSchema } from "../../src/schemas/sdo/data-component.schema";
 
 describe("DataComponentSchema", () => {
   const validDataComponent = {

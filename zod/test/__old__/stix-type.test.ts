@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { stixTypeSchema } from '../src/schemas/common/stix-type';
+import { stixTypeSchema } from '../../src/schemas/common/stix-type';
 
 
 describe('StixTypeSchema', () => {
