@@ -1,15 +1,15 @@
 import { z } from "zod";
 import { attackBaseObjectSchema } from "../common/attack-base-object";
-import { stixTypeSchema, stixTimestampSchema, stixCreatedByRefSchema, stixIdentifierSchema, descriptionSchema, xMitreDomainsSchema, externalReferenceSchema } from "../common";
+import { stixTypeSchema, stixTimestampSchema, stixCreatedByRefSchema, stixIdentifierSchema, descriptionSchema, xMitreDomainsSchema, externalReferenceSchema, createStixIdentifierSchema } from "../common";
 
 import '../../errors';
 
 // ATT&CK Campaign Schema
-export const CampaignSchema = AttackCoreSDOSchema.extend({
+export const CampaignSchema = attackBaseObjectSchema.extend({
 
     id: createStixIdentifierSchema(stixTypeSchema.enum.campaign),
 
-    type: z.literal(StixTypeSchema.enum.campaign),
+    type: z.literal(stixTypeSchema.enum.campaign),
 
     description: descriptionSchema
         .describe("A description that provides more details and context about the Campaign.")
@@ -20,7 +20,7 @@ export const CampaignSchema = AttackCoreSDOSchema.extend({
         .min(1, "At least one external reference is required.")
         .describe("A list of external references which refers to non-STIX information."),
 
-    created_by_ref: StixCreatedByRefSchema
+    created_by_ref: stixCreatedByRefSchema
         .describe("The ID of the Source object that describes who created this object."),
 
     x_mitre_domains: xMitreDomainsSchema,

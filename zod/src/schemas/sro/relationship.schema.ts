@@ -1,37 +1,37 @@
 import { z } from 'zod';
-import { SROSchema } from '../common/core-stix-sro.schema';
-import { StixTypeSchema } from '../common/stix-type';
-import { createStixIdentifierSchema, ObjectMarkingRefsSchema, StixCreatedByRefSchema, StixIdentifierSchema } from '../common';
-import { RelationshipTypeSchema, isValidSourceType, isValidTargetType, isValidRelationship } from '../common/relationship-type';
+import { stixRelationshipObjectSchema } from '../common/sro';
+import { createStixIdentifierSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, stixTypeSchema } from '../common';
+import { relationshipTypeSchema, isValidSourceType, isValidTargetType, isValidRelationship } from '../common/relationship-type';
 
 // Initializes the custom ZodErrorMap
 import '../../errors'; 
 
-export const RelationshipSchema = SROSchema.extend({
-	id: createStixIdentifierSchema(StixTypeSchema.enum.relationship),
+export const RelationshipSchema = stixRelationshipObjectSchema.extend({
 
-	type: z.literal(StixTypeSchema.enum.relationship),
+	id: createStixIdentifierSchema(stixTypeSchema.enum.relationship),
+
+	type: z.literal(stixTypeSchema.enum.relationship),
 
 	// Optional in STIX but required in ATT&CK
-	object_marking_refs: ObjectMarkingRefsSchema,
+	object_marking_refs: objectMarkingRefsSchema,
 
   	// Optional in STIX but required in ATT&CK
-  	created_by_ref: StixCreatedByRefSchema
+	created_by_ref: stixCreatedByRefSchema
 		.describe("The created_by_ref property specifies the id property of the identity object that describes the entity that created this object. If this attribute is omitted, the source of this information is undefined. This may be used by object creators who wish to remain anonymous."),
 
 	// external_references are not required (Relationships do not have ATT&CK IDs)
 
-	relationship_type: RelationshipTypeSchema,
+	relationship_type: relationshipTypeSchema,
 
 	description: z
 		.string()
 		.optional()
 		.describe("A description that provides more details and context about the Relationship, potentially including its purpose and its key characteristics."),
 	
-	source_ref: StixIdentifierSchema
+	source_ref: stixIdentifierSchema
 		.describe("The ID of the source (from) object."),
 
-	target_ref: StixIdentifierSchema
+	target_ref: stixIdentifierSchema
 		.describe("The ID of the target (to) object."),
 })
 .required({

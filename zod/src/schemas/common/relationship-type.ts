@@ -1,7 +1,6 @@
 import { z } from 'zod';
-import { StixIdentifierSchema } from './stix-identifier';
 import { StixIdentifierImpl } from '../../classes/stix-identifier.cls';
-import { StixType, StixTypeSchema } from './stix-type';
+import { stixTypeSchema } from './stix-type';
 
 const VALUES = [
 	"uses",
@@ -13,11 +12,11 @@ const VALUES = [
 	"revoked-by"
 ] as const;
 
-export const RelationshipTypeSchema = z
+export const relationshipTypeSchema = z
 	.enum(VALUES)
 	.describe("The name used to identify the type of Relationship.")
 
-export type RelationshipType = z.infer<typeof RelationshipTypeSchema>;
+export type RelationshipType = z.infer<typeof relationshipTypeSchema>;
 
 interface RelationshipMap {
 	[relationshipType: string]: {
@@ -61,8 +60,8 @@ export const relationshipMap: RelationshipMap = {
 	},
 	"revoked-by": {
 		// any REVOKED-BY any, where source and target are the same type
-		source: StixTypeSchema.options,
-		target: StixTypeSchema.options
+		source: stixTypeSchema.options,
+		target: stixTypeSchema.options
 	}
 }
 
@@ -94,7 +93,7 @@ export const isValidRelationship = function(relationshipType: string, sourceRef:
 	}
 
 	// Check edge cases for "uses" relationships
-	if (relationshipType === RelationshipTypeSchema.enum.uses) {
+	if (relationshipType === relationshipTypeSchema.enum.uses) {
 		for (let [invalidSource, invalidTarget] of invalidUsesRelationships) {
 			if (sourceType === invalidSource && targetType === invalidTarget) {
 				return [false, {
