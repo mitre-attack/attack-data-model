@@ -1,11 +1,11 @@
 import { stixCreatedByRefSchema, stixCreatedTimestampSchema, stixModifiedTimestampSchema } from "../src/schemas/common";
-import { campaignSchema, AttackCampaign } from "../src/schemas/sdo/campaign.schema";
+import { campaignSchema } from "../src/schemas/sdo/campaign.schema";
 import { z } from "zod";
 
 /** ************************************************************************************************* */
 // Example 1: Valid Campaign
 /** ************************************************************************************************* */
-const validCampaign: AttackCampaign = {
+const validCampaign = {
     type: "campaign",
     id: "campaign--0257b35b-93ef-4a70-80dd-ad5258e6045b",
     spec_version: "2.1",
@@ -117,7 +117,7 @@ try {
 /** ************************************************************************************************* */
 // Example 3: Campaign with optional fields
 /** ************************************************************************************************* */
-const campaignWithOptionalFields: AttackCampaign = {
+const campaignWithOptionalFields = {
     ...validCampaign,
     x_mitre_contributors: ["John Doe", "Jane Smith"],
 };

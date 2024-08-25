@@ -5,7 +5,7 @@ import { stixTypeSchema, stixTimestampSchema, stixCreatedByRefSchema, stixIdenti
 import '../../errors';
 
 // ATT&CK Campaign Schema
-export const CampaignSchema = attackBaseObjectSchema.extend({
+export const campaignSchema = attackBaseObjectSchema.extend({
 
     id: createStixIdentifierSchema(stixTypeSchema.enum.campaign),
 
@@ -96,4 +96,4 @@ export const CampaignSchema = attackBaseObjectSchema.extend({
 })
 
 // Define the type for AttackCampaign
-export type Campaign = z.infer<typeof CampaignSchema>;
+export type Campaign = z.infer<typeof campaignSchema>;
