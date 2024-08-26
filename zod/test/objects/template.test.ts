@@ -8,6 +8,10 @@ describe('YourSchema', () => {
     beforeAll(() => {
         // TODO reset techniques to the appropriate object type
         techniques = global.attackData.objectsByType['attack-pattern'];
+
+        const minimalTechnique = {
+
+        };
     });
 
     describe('Valid Inputs', () => {
@@ -32,11 +36,11 @@ describe('YourSchema', () => {
                 // Validate that Zod throws when object contains invalid values for this field
             });
 
-            it('should reject omittance of required values', () => {
+            it('should reject omitted required values', () => {
                 // Validate that Zod throws when object is missing this field (if required)
             });
 
-            it('should accept omittance of optional values', () => {
+            it('should accept omitted optional values', () => {
                 // Validate that Zod succeeds when object is missing this field (if optional)
             });
         });
