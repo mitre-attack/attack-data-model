@@ -1,11 +1,73 @@
 import { z } from "zod";
-import { attackBaseObjectSchema, createStixIdentifierSchema, descriptionSchema, externalReferenceSchema, xMitreDeprecatedSchema, xMitreModifiedByRefSchema, xMitreShortNameSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, xMitreDomainsSchema } from "../common";
+import { attackBaseObjectSchema, createStixIdentifierSchema, descriptionSchema, externalReferenceSchema, xMitreDeprecatedSchema, xMitreModifiedByRefSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, xMitreDomainsSchema } from "../common";
 import { stixTypeSchema } from "../common/stix-type";
 
 // Initializes the custom ZodErrorMap
 import '../../errors'; 
 
-// Tactic Schema
+
+/////////////////////////////////////
+//
+// MITRE Shortname (x_mitre_shortname)
+//
+/////////////////////////////////////
+
+const supportedMitreShortNames = [
+    'credential-access',
+    'execution',
+    'impact',
+    'persistence',
+    'privilege-escalation',
+    'lateral-movement',
+    'defense-evasion',
+    'exfiltration',
+    'discovery',
+    'collection',
+    'resource-development',
+    'reconnaissance',
+    'command-and-control',
+    'initial-access',
+    'inhibit-response-function',
+    'privilege-escalation',
+    'lateral-movement',
+    'discovery',
+    'initial-access',
+    'impact',
+    'persistence',
+    'execution',
+    'command-and-control',
+    'collection',
+    'evasion',
+    'impair-process-control',
+    'initial-access',
+    'exfiltration',
+    'persistence',
+    'privilege-escalation',
+    'command-and-control',
+    'execution',
+    'impact',
+    'credential-access',
+    'collection',
+    'lateral-movement',
+    'defense-evasion',
+    'network-effects',
+    'discovery',
+    'remote-service-effects'
+] as const;
+
+export const xMitreShortNameSchema = z
+    .enum(supportedMitreShortNames)
+    .describe("The x_mitre_shortname of the tactic is used for mapping techniques into the tactic. It corresponds to kill_chain_phases.phase_name of the techniques in the tactic.");
+
+export type XMitreShortName = z.infer<typeof xMitreShortNameSchema>;
+
+
+/////////////////////////////////////
+//
+// MITRE Tactic
+//
+/////////////////////////////////////
+
 export const tacticSchema = attackBaseObjectSchema.extend({
 
     id: createStixIdentifierSchema(stixTypeSchema.enum["x-mitre-tactic"]),
