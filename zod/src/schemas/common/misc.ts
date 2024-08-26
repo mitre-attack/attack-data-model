@@ -5,8 +5,8 @@ import { stixIdentifierSchema } from './stix-identifier';
 // ExternalReference schema
 //==============================================================================
 
+// a singlular external reference
 export const externalReferenceSchema = z.object({
-
   source_name: z
     .string({
       required_error: "Source name is required.",
@@ -27,7 +27,14 @@ export const externalReferenceSchema = z.object({
     .optional()
 });
 
+// a list of external reference
+export const externalReferencesSchema = z
+  .array(externalReferenceSchema)
+  .min(1, "At least one external reference is required.")
+  .describe("A list of external references which refers to non-STIX information.")
+
 export type ExternalReference = z.infer<typeof externalReferenceSchema>;
+export type ExternalReferences = z.infer<typeof externalReferencesSchema>;
 
 //==============================================================================
 // StixCreatedByRef schema (wrapper around StixIdentifier)
