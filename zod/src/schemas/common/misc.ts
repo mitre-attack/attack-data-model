@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { stixIdentifierSchema } from './stix-identifier';
+import { stixIdentifierSchema, createStixIdentifierSchema } from './stix-identifier';
+import { stixTypeSchema } from "./stix-type";
 
 //==============================================================================
 // ExternalReference schema
@@ -40,7 +41,7 @@ export type ExternalReferences = z.infer<typeof externalReferencesSchema>;
 // StixCreatedByRef schema (wrapper around StixIdentifier)
 //==============================================================================
 
-export const stixCreatedByRefSchema = stixIdentifierSchema.brand("StixCreatedByRef");
+export const stixCreatedByRefSchema = createStixIdentifierSchema(stixTypeSchema.enum.identity);
 
 export type StixCreatedByRef = z.infer<typeof stixCreatedByRefSchema>;
 
