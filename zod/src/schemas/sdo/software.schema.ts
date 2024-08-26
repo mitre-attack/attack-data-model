@@ -27,8 +27,7 @@ export const softwareSchema = attackBaseObjectSchema.extend({
         .array(externalReferenceSchema)
         .describe("A list of external references which refers to non-STIX information."),
 
-    object_marking_refs: objectMarkingRefsSchema
-    ,
+    object_marking_refs: objectMarkingRefsSchema,
 
     // Malware: Required
     // Tool: Optional
