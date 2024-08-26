@@ -45,6 +45,47 @@ export type Description = z.infer<typeof descriptionSchema>;
 
 /////////////////////////////////////
 //
+// MITRE Version (x_mitre_version)
+//
+/////////////////////////////////////
+
+export const xMitreVersionSchema = z
+    .string()
+    .regex(/^\d+\.\d+$/, "Must be in the format 'major.minor'")
+    .describe("Represents the version of the object in a 'major.minor' format, where both 'major' and 'minor' are integers. This versioning follows semantic versioning principles but excludes the patch number. The version number is incremented by ATT&CK when the content of the object is updated. This property does not apply to relationship objects."),
+
+export type XMitreVersion = z.infer<typeof xMitreVersionSchema>;
+
+
+/////////////////////////////////////
+//
+// MITRE ATT&CK Spec Version (x_mitre_attack_spec_version)
+//
+/////////////////////////////////////
+
+export const xMitreAttackSpecVersionSchema = z
+    .string()
+    .regex(/^\d+\.\d+\.\d+$/, "Must be in the format 'major.minor.patch'")
+    .describe("The version of the ATT&CK spec used by the object. This field helps consuming software determine if the data format is supported. If the field is not present on an object, the spec version will be assumed to be 2.0.0. Refer to the ATT&CK CHANGELOG for all supported versions."),
+
+export type XMitreAttackSpecVersion = z.infer<typeof xMitreAttackSpecVersionSchema>;
+
+
+/////////////////////////////////////
+//
+// MITRE Old ATT&CK ID (x_mitre_old_attack_id)
+//
+/////////////////////////////////////
+
+export const xMitreOldAttackIdSchema = z
+    .string()
+    .describe("Old ATT&CK IDs that may have been associated with this object");
+
+export type XMitreOldAttackId = z.infer<typeof xMitreOldAttackIdSchema>;
+
+
+/////////////////////////////////////
+//
 // MITRE Domains (x_mitre_domains)
 //
 /////////////////////////////////////
@@ -129,8 +170,6 @@ export const xMitrePlatformsSchema = z
     .describe("List of platforms that apply to the object.");
 
 export type XMitrePlatforms = z.infer<typeof xMitrePlatformsSchema>;
-
-
 
 
 /////////////////////////////////////
