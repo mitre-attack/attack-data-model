@@ -1,20 +1,20 @@
 import { log, error } from "console";
 import { v4 as uuidv4 } from 'uuid';
-import { Technique, techniqueSchema, XMitreIsSubtechnique, XMitreRemoteSupport, KillChainPhase, XMitreDataSources, XMitreDefenseBypasses, XMitrePermissionsRequired, XMitreSystemRequirements, XMitreImpactType, XMitreDetection } from '../../src/schemas/sdo/technique.schema';
-import { Description, ExternalReference, ExternalReferences, Name, StixCreatedTimestamp, StixIdentifier, StixModifiedTimestamp, StixSpecVersion, StixType, stixTypeSchema, XMitreAttackSpecVersion, XMitreContributors, XMitreDomains, XMitrePlatforms, XMitreVersion } from '../../src/schemas/common';
+import { Technique, techniqueSchema, XMitreIsSubtechnique, XMitreRemoteSupport, KillChainPhase, XMitreDataSources, XMitreDefenseBypasses, XMitrePermissionsRequired, XMitreSystemRequirements, XMitreImpactType, XMitreDetection, XMitreEffectivePermissions, XMitreNetworkRequirements } from '../../src/schemas/sdo/technique.schema';
+import { Description, ExternalReference, ExternalReferences, Name, StixCreatedTimestamp, StixIdentifier, StixModifiedTimestamp, StixSpecVersion, StixType, stixTypeSchema, XMitreAttackSpecVersion, XMitreContributors, XMitreDeprecated, XMitreDomains, xMitreIdentity, XMitreModifiedByRef, XMitrePlatforms, XMitreVersion } from '../../src/schemas/common';
 
 
 describe('TechniqueSchema', () => {
-    // let techniques: any[];
+    let techniques: any[];
 
     let minimalTechnique: Technique;
 
     beforeAll(() => {
-        // techniques = global.attackData.objectsByType['attack-pattern'];
+        techniques = global.attackData.objectsByType['attack-pattern'];
 
-        minimalTechnique = techniqueSchema.parse({
+        minimalTechnique = {
             id: `attack-pattern--${uuidv4()}` as StixIdentifier,
-            type: stixTypeSchema.Enum["attack-pattern"] as StixType,
+            type: "attack-pattern" as StixType,
             spec_version: '2.1' as StixSpecVersion,
             created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
             modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
@@ -27,7 +27,7 @@ describe('TechniqueSchema', () => {
                 source_name: 'mitre-attack',
                 external_id: 'T1234'
             }] as ExternalReferences
-        });
+        };
     });
 
     describe('Valid Inputs', () => {
@@ -35,22 +35,96 @@ describe('TechniqueSchema', () => {
             expect(() => techniqueSchema.parse(minimalTechnique)).not.toThrow();
         });
 
-        it('should accept fully populated valid object (required + optional fields)', () => {
-            const fullTechnique = {
+        it('should accept a fully populated privilege-escalation technique', () => {
+            const privilegeEscalationTechnique: Technique = {
                 ...minimalTechnique,
                 description: 'Test description' as Description,
-                kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'privilege-escalation' }] as KillChainPhase[],
+                kill_chain_phases: [
+                    { kill_chain_name: 'mitre-attack', phase_name: 'privilege-escalation' } as KillChainPhase
+                ] as KillChainPhase[],
                 x_mitre_detection: 'Test detection' as XMitreDetection,
-                x_mitre_platforms: ['Windows'] as XMitrePlatforms,
-                x_mitre_data_sources: ['Key: Value'] as XMitreDataSources,
-                x_mitre_defense_bypassed: ['Encryption'] as XMitreDefenseBypasses,
-                x_mitre_contributors: ['Contributor'] as XMitreContributors,
-                x_mitre_permissions_required: ['Remote Desktop Users'] as XMitrePermissionsRequired,
-                x_mitre_remote_support: false as XMitreRemoteSupport,
-                x_mitre_system_requirements: ['array', 'of', 'strings'] as XMitreSystemRequirements,
-                x_mitre_impact_type: ['Availability'] as XMitreImpactType,
+                x_mitre_platforms: ['Windows', 'macOS'] as XMitrePlatforms,
+                x_mitre_data_sources: ['Process: Process Creation'] as XMitreDataSources,
+                x_mitre_contributors: ['Contributor 1', 'Contributor 2'] as XMitreContributors,
+                x_mitre_system_requirements: ['Requirement 1', 'Requirement 2'] as XMitreSystemRequirements,
+                x_mitre_permissions_required: ['User'] as XMitrePermissionsRequired,
+                x_mitre_effective_permissions: ['Administrator'] as XMitreEffectivePermissions,
+                x_mitre_network_requirements: true as XMitreNetworkRequirements,
+                x_mitre_deprecated: false as XMitreDeprecated,
+                x_mitre_modified_by_ref: xMitreIdentity as XMitreModifiedByRef
+            };
 
-            }
+            expect(() => techniqueSchema.parse(privilegeEscalationTechnique)).not.toThrow();
+        });
+
+        it('should accept a fully populated defense-evasion technique', () => {
+            const defenseEvasionTechnique: Technique = {
+                ...minimalTechnique,
+                description: 'Test description' as Description,
+                kill_chain_phases: [
+                    { kill_chain_name: 'mitre-attack', phase_name: 'defense-evasion' } as KillChainPhase
+                ] as KillChainPhase[],
+                x_mitre_detection: 'Test detection' as XMitreDetection,
+                x_mitre_platforms: ['Windows', 'macOS'] as XMitrePlatforms,
+                x_mitre_data_sources: ['Process: Process Creation'] as XMitreDataSources,
+                x_mitre_contributors: ['Contributor 1', 'Contributor 2'] as XMitreContributors,
+                x_mitre_system_requirements: ['Requirement 1', 'Requirement 2'] as XMitreSystemRequirements,
+                x_mitre_defense_bypassed: ['Application Control', 'Anti-virus'] as XMitreDefenseBypasses,
+                x_mitre_network_requirements: true as XMitreNetworkRequirements,
+                x_mitre_deprecated: false as XMitreDeprecated,
+                x_mitre_modified_by_ref: xMitreIdentity as XMitreModifiedByRef
+            };
+
+            expect(() => techniqueSchema.parse(defenseEvasionTechnique)).not.toThrow();
+        });
+
+        it('should accept a fully populated execution technique', () => {
+            const executionTechnique: Technique = {
+                ...minimalTechnique,
+                description: 'Test description' as Description,
+                kill_chain_phases: [
+                    { kill_chain_name: 'mitre-attack', phase_name: 'execution' } as KillChainPhase
+                ] as KillChainPhase[],
+                x_mitre_detection: 'Test detection' as XMitreDetection,
+                x_mitre_platforms: ['Windows', 'macOS'] as XMitrePlatforms,
+                x_mitre_data_sources: ['Process: Process Creation'] as XMitreDataSources,
+                x_mitre_contributors: ['Contributor 1', 'Contributor 2'] as XMitreContributors,
+                x_mitre_system_requirements: ['Requirement 1', 'Requirement 2'] as XMitreSystemRequirements,
+                x_mitre_remote_support: true as XMitreRemoteSupport,
+                x_mitre_network_requirements: true as XMitreNetworkRequirements,
+                x_mitre_deprecated: false as XMitreDeprecated,
+                x_mitre_modified_by_ref: xMitreIdentity as XMitreModifiedByRef
+            };
+
+            expect(() => techniqueSchema.parse(executionTechnique)).not.toThrow();
+        });
+
+        it('should accept a fully populated impact technique', () => {
+            const impactTechnique: Technique = {
+                ...minimalTechnique,
+                description: 'Test description' as Description,
+                kill_chain_phases: [
+                    { kill_chain_name: 'mitre-attack', phase_name: 'impact' } as KillChainPhase
+                ] as KillChainPhase[],
+                x_mitre_detection: 'Test detection' as XMitreDetection,
+                x_mitre_platforms: ['Windows', 'macOS'] as XMitrePlatforms,
+                x_mitre_data_sources: ['Process: Process Creation'] as XMitreDataSources,
+                x_mitre_contributors: ['Contributor 1', 'Contributor 2'] as XMitreContributors,
+                x_mitre_system_requirements: ['Requirement 1', 'Requirement 2'] as XMitreSystemRequirements,
+                x_mitre_impact_type: ['Integrity', 'Availability'] as XMitreImpactType,
+                x_mitre_network_requirements: true as XMitreNetworkRequirements,
+                x_mitre_deprecated: false as XMitreDeprecated,
+                x_mitre_modified_by_ref: xMitreIdentity as XMitreModifiedByRef
+            };
+
+            expect(() => techniqueSchema.parse(impactTechnique)).not.toThrow();
+        });
+
+        it('should validate existing ATT&CK objects', () => {
+
+            // get the first technique where all required + optional are included
+            // spoiler alert: there are none
+            //
             // const fullTechnique = techniques.find(t =>
             //     t.description &&
             //     t.kill_chain_phases &&
@@ -69,8 +143,13 @@ describe('TechniqueSchema', () => {
             //     t.x_mitre_deprecated &&
             //     t.x_mitre_modified_by_ref
             // );
-            expect(fullTechnique).toBeDefined();
-            expect(() => techniqueSchema.parse(fullTechnique)).not.toThrow();
+            // expect(fullTechnique).toBeDefined();
+            // expect(() => techniqueSchema.parse(fullTechnique)).not.toThrow();
+
+            for (let technique of techniques) {
+                expect(() => techniqueSchema.parse(technique)).not.toThrow();
+            }
+
         });
     });
 
@@ -95,7 +174,7 @@ describe('TechniqueSchema', () => {
                 expect(() => techniqueSchema.parse(invalidTechnique)).toThrow();
             });
 
-            it('should reject omittance of required values', () => {
+            it('should reject omitted required values', () => {
                 const { id, ...techniqueWithoutId } = minimalTechnique;
                 expect(() => techniqueSchema.parse(techniqueWithoutId)).toThrow();
             });
@@ -109,7 +188,7 @@ describe('TechniqueSchema', () => {
                     external_references: [{
                         source_name: 'mitre-attack',
                         external_id: 'T1234.001' // <--- must match expected sub-technique format
-                    }] as ExternalReference[]
+                    }] as ExternalReferences
                 };
                 expect(() => techniqueSchema.parse(validTechnique)).not.toThrow();
             });
@@ -139,7 +218,7 @@ describe('TechniqueSchema', () => {
                 expect(() => techniqueSchema.parse(invalidTechnique)).toThrow();
             });
 
-            it('should accept omittance of optional values', () => {
+            it('should accept omitted optional values', () => {
                 const { x_mitre_platforms, ...techniqueWithoutPlatforms } = minimalTechnique;
                 expect(() => techniqueSchema.parse(techniqueWithoutPlatforms)).not.toThrow();
             });
