@@ -1,32 +1,27 @@
 import { z } from 'zod';
 import { stixRelationshipObjectSchema } from '../common/sro';
-import { createStixIdentifierSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, stixTypeSchema } from '../common';
-import { relationshipTypeSchema, isValidSourceType, isValidTargetType, isValidRelationship } from '../common/relationship-type';
+import { createStixIdentifierSchema, descriptionSchema, stixIdentifierSchema, StixType, stixTypeSchema } from '../common';
+import { relationshipTypeSchema, isValidSourceType, isValidTargetType, isValidRelationshipType } from '../common/relationship-type';
 
 // Initializes the custom ZodErrorMap
-import '../../errors'; 
+import '../../errors';
 
+// read only type reference
+const RELATIONSHIP_TYPE: StixType = stixTypeSchema.enum.relationship;
+
+// MITRE ATT&CK Relationship schema
 export const RelationshipSchema = stixRelationshipObjectSchema.extend({
 
 	id: createStixIdentifierSchema(stixTypeSchema.enum.relationship),
 
-	type: z.literal(stixTypeSchema.enum.relationship),
+	type: z.literal(RELATIONSHIP_TYPE),
 
-	// Optional in STIX but required in ATT&CK
-	object_marking_refs: objectMarkingRefsSchema,
-
-  	// Optional in STIX but required in ATT&CK
-	created_by_ref: stixCreatedByRefSchema
-		.describe("The created_by_ref property specifies the id property of the identity object that describes the entity that created this object. If this attribute is omitted, the source of this information is undefined. This may be used by object creators who wish to remain anonymous."),
-
-	// external_references are not required (Relationships do not have ATT&CK IDs)
+	// external_references are not required
 
 	relationship_type: relationshipTypeSchema,
 
-	description: z
-		.string()
-		.optional()
-		.describe("A description that provides more details and context about the Relationship, potentially including its purpose and its key characteristics."),
+	description: descriptionSchema
+		.optional(),
 	
 	source_ref: stixIdentifierSchema
 		.describe("The ID of the source (from) object."),
@@ -44,9 +39,16 @@ export const RelationshipSchema = stixRelationshipObjectSchema.extend({
 	source_ref: true,
 	target_ref: true,
 })
-.superRefine(({relationship_type, source_ref, target_ref}, ctx) => {
+.superRefine((schema, ctx) => {
+	// Destructure relevant properties from schema
+	const {
+		relationship_type,
+		source_ref,
+		target_ref
+	} = schema;
+
 	// Validate relationship type
-	const [validRelationship, relError] = isValidRelationship(relationship_type, source_ref, target_ref);
+	const [validRelationship, relError] = isValidRelationshipType(relationship_type, source_ref, target_ref);
 	if (!validRelationship) {
 		ctx.addIssue({
 			code: z.ZodIssueCode.custom,
