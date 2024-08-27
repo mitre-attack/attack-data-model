@@ -52,7 +52,7 @@ export type Description = z.infer<typeof descriptionSchema>;
 export const xMitreVersionSchema = z
     .string()
     .regex(/^\d+\.\d+$/, "Must be in the format 'major.minor'")
-    .describe("Represents the version of the object in a 'major.minor' format, where both 'major' and 'minor' are integers. This versioning follows semantic versioning principles but excludes the patch number. The version number is incremented by ATT&CK when the content of the object is updated. This property does not apply to relationship objects."),
+    .describe("Represents the version of the object in a 'major.minor' format, where both 'major' and 'minor' are integers. This versioning follows semantic versioning principles but excludes the patch number. The version number is incremented by ATT&CK when the content of the object is updated. This property does not apply to relationship objects.")
 
 export type XMitreVersion = z.infer<typeof xMitreVersionSchema>;
 
@@ -66,7 +66,7 @@ export type XMitreVersion = z.infer<typeof xMitreVersionSchema>;
 export const xMitreAttackSpecVersionSchema = z
     .string()
     .regex(/^\d+\.\d+\.\d+$/, "Must be in the format 'major.minor.patch'")
-    .describe("The version of the ATT&CK spec used by the object. This field helps consuming software determine if the data format is supported. If the field is not present on an object, the spec version will be assumed to be 2.0.0. Refer to the ATT&CK CHANGELOG for all supported versions."),
+    .describe("The version of the ATT&CK spec used by the object. This field helps consuming software determine if the data format is supported. If the field is not present on an object, the spec version will be assumed to be 2.0.0. Refer to the ATT&CK CHANGELOG for all supported versions.")
 
 export type XMitreAttackSpecVersion = z.infer<typeof xMitreAttackSpecVersionSchema>;
 
@@ -220,3 +220,5 @@ export const xMitreIdentity: StixIdentifier = "identity--c78cb6e5-0c4b-4611-8297
 export const xMitreModifiedByRefSchema = stixIdentifierSchema
     .refine(val => val == xMitreIdentity)
     .describe("The STIX ID of the MITRE identity object. Used to track the identity of the MITRE organization, which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations.");
+
+    export type XMitreCreatedByRef = z.infer<typeof xMitreModifiedByRefSchema>;
