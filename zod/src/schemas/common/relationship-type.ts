@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { StixIdentifierImpl } from '../../classes/stix-identifier.cls';
 import { stixTypeSchema } from './stix-type';
 
-const VALUES = [
+const supportedRelationshipTypes = [
 	"uses",
 	"mitigates",
 	"subtechnique-of",
@@ -13,7 +13,7 @@ const VALUES = [
 ] as const;
 
 export const relationshipTypeSchema = z
-	.enum(VALUES)
+	.enum(supportedRelationshipTypes)
 	.describe("The name used to identify the type of Relationship.")
 
 export type RelationshipType = z.infer<typeof relationshipTypeSchema>;
@@ -80,7 +80,7 @@ export const getType = function(ref: string): string {
 }
 
 // Helper function to validate relationship
-export const isValidRelationship = function(relationshipType: string, sourceRef: string, targetRef: string): [boolean, any] {
+export const isValidRelationshipType = function(relationshipType: string, sourceRef: string, targetRef: string): [boolean, any] {
 	const sourceType = getType(sourceRef);
 	const targetType = getType(targetRef);
 
