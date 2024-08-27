@@ -18,7 +18,6 @@ const TECHNIQUE_TYPE: StixType = stixTypeSchema.enum['attack-pattern'];
 
 const xMitreNetworkRequirementsSchema = z
     .boolean()
-    .brand("x_mitre_network_requirements")
     .describe(""); // TODO enter a description
 
 export type XMitreNetworkRequirements = z.infer<typeof xMitreNetworkRequirementsSchema>;
@@ -96,7 +95,6 @@ export type XMitreSystemRequirements = z.infer<typeof xMitreSystemRequirementsSc
 
 export const xMitreRemoteSupportSchema = z
     .boolean()
-    .brand("x_mitre_remote_support")
     .describe("If true, the technique can be used to execute something on a remote system.")
 
 export type XMitreRemoteSupport = z.infer<typeof xMitreRemoteSupportSchema>;
@@ -137,11 +135,12 @@ export type XMitrePermissionsRequired = z.infer<typeof xMitrePermissionsRequired
 /////////////////////////////////////
 
 // a singular data source
+type DataSourceString = `${string}: ${string}`;
+
 export const xMitreDataSourceSchema = z
-    .string()
-    .brand("x_mitre_data_sources")
-    .refine(
-        (value) => {
+    .custom<DataSourceString>(
+        (value): value is DataSourceString => {
+            if (typeof value !== 'string') return false;
             const parts = value.split(':');
             return parts.length === 2 && parts[0].trim() !== '' && parts[1].trim() !== '';
         },
@@ -149,7 +148,7 @@ export const xMitreDataSourceSchema = z
             message: "Each entry must conform to the pattern '<Data Source Name>: <Data Component Name>'",
         }
     )
-    .describe("People and organizations who have contributed to the object.");
+    .describe("A single data source in the format 'Data Source Name: Data Component Name'.");
 
 // list of data sources
 export const xMitreDataSourcesSchema = z
@@ -172,7 +171,6 @@ export const xMitreIsSubtechniqueSchema = z
     .boolean({
         invalid_type_error: "x_mitre_is_subtechnique must be a boolean."
     })
-    .brand("x_mitre_is_subtechnique")
     .describe("If true, this attack-pattern is a sub-technique.")
 
 export type XMitreIsSubtechnique = z.infer<typeof xMitreIsSubtechniqueSchema>;
