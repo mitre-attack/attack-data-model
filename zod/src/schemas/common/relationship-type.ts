@@ -104,6 +104,16 @@ export const isValidRelationshipType = function(relationshipType: string, source
 		}
 	}
 
+	// Check edge case for "revoked-by" relationships
+	if (relationshipType === relationshipTypeSchema.enum['revoked-by']) {
+		if (sourceType !== targetType) {
+			return [false, {
+				message: `Invalid "revoked-by" relationship: source and target must be of the same type.`,
+				path: ["relationship_type"]
+			}]
+		}
+	}
+
 	// No issues found with relationship type
 	return [true, {}];
 }
