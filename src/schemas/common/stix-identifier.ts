@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { stixTypeSchema, StixType } from './stix-type';
 
 // Define the STIX Identifier type
-type _StixIdentifier = `${StixType}--${string}`;
+type StixIdentifier = `${StixType}--${string}`;
 
 // Custom error messages
 const StixIdentifierError = {
@@ -25,19 +25,12 @@ const isValidUuid = (uuid: string): boolean => {
     return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(uuid);
 };
 
-// Refactored StixIdentifierSchema
-export const stixIdentifierSchema = z.custom<_StixIdentifier>(
-    (val): val is _StixIdentifier => {
+// Base STIX Identifier Schema
+export const stixIdentifierSchema = z.custom<StixIdentifier>(
+    (val): val is StixIdentifier => {
         if (typeof val !== 'string') return false;
-
         const [type, uuid] = val.split('--');
-
-        if (!type || !uuid) return false;
-
-        const isValidType = stixTypeSchema.safeParse(type).success;
-        if (!isValidType) return false;
-
-        return isValidUuid(uuid);
+        return stixTypeSchema.safeParse(type).success && isValidUuid(uuid);
     },
     {
         message: "Invalid STIX Identifier",
@@ -59,14 +52,30 @@ export const stixIdentifierSchema = z.custom<_StixIdentifier>(
     }
 ).describe("Represents identifiers across the CTI specifications. The format consists of the name of the top-level object being identified, followed by two dashes (--), followed by a UUIDv4.");
 
-export const createStixIdentifierSchema = (expectedType: StixType) =>
-    stixIdentifierSchema.refine(
-        (val) => val.split('--')[0] === expectedType,
-        (val) => ({
-            message: `The 'id' property must be of type '${expectedType}', but got '${val.split('--')[0]}'`,
-            path: ['id'],
-        })
-    );
+// Type-specific STIX Identifier Schema
+export function createStixIdentifierSchema<T extends StixType>(expectedType: T) {
+    type TypeSpecificStixIdentifier = `${T}--${string}`;
 
-// Type inference
-export type StixIdentifier = z.infer<typeof stixIdentifierSchema>;
+    return stixIdentifierSchema.refine(
+        (val): val is TypeSpecificStixIdentifier => val.startsWith(`${expectedType}--`),
+        {
+            message: `Invalid STIX Identifier: must start with '${expectedType}--'`,
+            path: ['id'],
+        }
+    );
+}
+
+// Export types
+export type { StixIdentifier };
+export type TypeSpecificStixIdentifier<T extends StixType> = `${T}--${string}`;
+
+/**
+ * Usage examples:
+ * Create a schema for a specific StixType:
+ *  const tacticIdSchema = createStixTypeIdentifierSchema('x-mitre-tactic');
+ * 
+ * Create a type for a specific StixType:
+ *  type TacticId = z.infer<typeof tacticIdSchema>; // Will be "x-mitre-tactic--${string}"
+ * or
+ *  type TacticId = TypeSpecificStixIdentifier<'x-mitre-tactic'>; // Will be "x-mitre-tactic--${string}"</s> 
+ */
