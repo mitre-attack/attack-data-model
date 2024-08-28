@@ -1,3 +1,6 @@
+# Files tagged with .ignore
+*.ignore
+
 # Repository specific
 attack-releases/
 

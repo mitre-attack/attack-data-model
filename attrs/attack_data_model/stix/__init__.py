@@ -1,1 +1,0 @@
-from .stix import StixObjectMixin
