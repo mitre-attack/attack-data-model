@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { stixDomainObjectSchema } from './sdo';
-import { nameSchema, xMitreAttackSpecVersionSchema, xMitreOldAttackIdSchema, xMitreVersionSchema } from '.';
+import { nameSchema, xMitreAttackSpecVersionSchema, xMitreDeprecatedSchema, xMitreOldAttackIdSchema, xMitreVersionSchema } from '.';
 
 // Define the new properties
 export const attackBaseObjectSchema = stixDomainObjectSchema.extend({
@@ -11,6 +11,9 @@ export const attackBaseObjectSchema = stixDomainObjectSchema.extend({
     x_mitre_version: xMitreVersionSchema,
 
     x_mitre_old_attack_id: xMitreOldAttackIdSchema
+        .optional(),
+    
+    x_mitre_deprecated: xMitreDeprecatedSchema
         .optional(),
 });
 

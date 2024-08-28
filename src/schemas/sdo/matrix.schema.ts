@@ -49,11 +49,6 @@ export const matrixSchema = attackBaseObjectSchema.extend({
     "The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."
   ),
 
-  x_mitre_deprecated: z
-    .boolean()
-    .describe("Indicates whether the object has been deprecated.")
-    .optional(),
-
   tactic_refs: z
     .array(
       z

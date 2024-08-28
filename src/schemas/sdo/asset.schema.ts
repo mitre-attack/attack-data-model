@@ -38,12 +38,6 @@ export const assetSchema = attackBaseObjectSchema.extend({
 
 	x_mitre_domains: xMitreDomainsSchema,
 
-	x_mitre_deprecated: z
-		.boolean({
-			invalid_type_error: "x_mitre_deprecated must be a boolean."
-		})
-		.optional(),
-
 	x_mitre_contributors: z
         .array(z.string())
         .optional(),

@@ -26,11 +26,6 @@ export const groupSchema = attackBaseObjectSchema.extend({
         .array(z.string())
         .optional(),
 
-    x_mitre_deprecated: z
-        .boolean()
-        .describe("Indicates whether the object has been deprecated.")
-        .optional(),
-
     aliases: z
         .array(z.string())
         .optional()

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { attackBaseObjectSchema } from "../common/attack-base-object";
 import { stixTypeSchema } from "../common/stix-type";
-import { createStixIdentifierSchema, externalReferenceSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, xMitreDomainsSchema } from "../common";
+import { createStixIdentifierSchema, externalReferenceSchema, externalReferencesSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, xMitreDomainsSchema } from "../common";
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
@@ -22,8 +22,7 @@ export const mitigationSchema = attackBaseObjectSchema.extend({
     .describe("A description that provides more details and context about the Mitigation."),
 
   // Optional in STIX but required in ATT&CK
-  external_references: z
-    .array(externalReferenceSchema)
+  external_references: externalReferencesSchema
     .describe("A list of external references which refers to non-STIX information."),
 
   // Optional in STIX but required in ATT&CK
@@ -33,11 +32,6 @@ export const mitigationSchema = attackBaseObjectSchema.extend({
 
   x_mitre_modified_by_ref: stixIdentifierSchema
     .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."),
-
-  x_mitre_deprecated: z
-    .boolean()
-    .describe("Indicates whether the object has been deprecated.")
-    .optional(),
 });
 
 // Define the type for SchemaName

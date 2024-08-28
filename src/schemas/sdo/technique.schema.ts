@@ -378,9 +378,6 @@ export const techniqueSchema = attackBaseObjectSchema.extend({
 
     x_mitre_tactic_type: xMitreTacticTypeSchema
         .optional(),
-
-    x_mitre_deprecated: xMitreDeprecatedSchema
-        .optional(),
     
     x_mitre_domains: xMitreDomainsSchema,
 

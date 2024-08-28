@@ -48,11 +48,6 @@ export const dataComponentSchema = attackBaseObjectSchema.extend({
     "The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."
   ),
 
-  x_mitre_deprecated: z
-    .boolean()
-    .describe("Indicates whether the object has been deprecated.")
-    .optional(),
-
   x_mitre_data_source_ref: z
     .string()
     .describe("The STIX ID of the data source this component is a part of."),

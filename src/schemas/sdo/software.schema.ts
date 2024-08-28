@@ -48,11 +48,6 @@ export const softwareSchema = attackBaseObjectSchema.extend({
         .describe("Alternative names used to identify this software. The first alias must match the object's name.")
         .optional(),
     
-    x_mitre_deprecated: z
-        .boolean()
-        .describe("Indicates whether the object has been deprecated.")
-        .optional(),
-
     x_mitre_modified_by_ref: stixIdentifierSchema
         .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."),
     
