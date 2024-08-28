@@ -4,7 +4,7 @@ import { stixIdentifierSchema } from './stix-identifier';
 import { stixTypeSchema } from "./stix-type";
 import { stixSpecVersionSchema } from './stix-spec-version';
 import { stixCreatedTimestampSchema, stixModifiedTimestampSchema } from './stix-timestamp';
-import { stixCreatedByRefSchema, externalReferenceSchema, granularMarkingSchema, extensionsSchema } from './misc';
+import { stixCreatedByRefSchema, externalReferenceSchema, granularMarkingSchema, extensionsSchema, externalReferencesSchema } from './misc';
 import { objectMarkingRefsSchema } from './common-properties';
 
 
@@ -41,9 +41,7 @@ export const stixDomainObjectSchema = z
             .string()
             .describe("Identifies the language of the text content in this object.")
             .optional(),
-        external_references: z
-            .array(externalReferenceSchema)
-            .describe("A list of external references which refers to non-STIX information.")
+        external_references: externalReferencesSchema
             .optional(),
         object_marking_refs: objectMarkingRefsSchema
             .optional(),
