@@ -13,14 +13,9 @@ const stixTypeToSchemaName: Record<StixType, string> = {
     "campaign": "Campaign",
     "course-of-action": "CourseOfAction",
     "identity": "Identity",
-    "indicator": "Indicator",
     "intrusion-set": "IntrusionSet",
     "malware": "Malware",
-    "observed-data": "ObservedData",
-    "report": "Report",
-    "threat-actor": "ThreatActor",
     "tool": "Tool",
-    "vulnerability": "Vulnerability",
     "marking-definition": "MarkingDefinition",
     "x-mitre-data-component": "DataComponent",
     "x-mitre-data-source": "DataSource",
@@ -29,6 +24,11 @@ const stixTypeToSchemaName: Record<StixType, string> = {
     "x-mitre-matrix": "Matrix",
     "x-mitre-collection": "Collection",
     "relationship": "RelationshipSchema"
+    // "indicator": "Indicator",            // not used in ATT&CK
+    // "observed-data": "ObservedData",     // not used in ATT&CK
+    // "report": "Report",                  // not used in ATT&CK
+    // "threat-actor": "ThreatActor",       // not used in ATT&CK
+    // "vulnerability": "Vulnerability",    // not used in ATT&CK
 };
 
 /**
