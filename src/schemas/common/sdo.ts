@@ -20,7 +20,6 @@ export const stixDomainObjectSchema = z
         modified: stixModifiedTimestampSchema
             .describe("The modified property represents the time that this particular version of the object was modified. The timstamp value MUST be precise to the nearest millisecond."),
         created_by_ref: stixCreatedByRefSchema
-            .describe("The created_by_ref property specifies the id property of the identity object that describes the entity that created this object. If this attribute is omitted, the source of this information is undefined. This may be used by object creators who wish to remain anonymous.")
             .optional(),
         labels: z
             .array(z.string())

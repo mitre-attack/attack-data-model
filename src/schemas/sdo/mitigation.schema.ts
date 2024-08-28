@@ -15,8 +15,7 @@ export const mitigationSchema = attackBaseObjectSchema.extend({
   type: z.literal(stixTypeSchema.enum["course-of-action"]),
 
   // Optional in STIX but required in ATT&CK
-  created_by_ref: stixCreatedByRefSchema
-    .describe("The created_by_ref property specifies the id property of the identity object that describes the entity that created this object. If this attribute is omitted, the source of this information is undefined. This may be used by object creators who wish to remain anonymous."),
+  created_by_ref: stixCreatedByRefSchema,
 
   description: z
     .string()

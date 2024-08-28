@@ -41,7 +41,8 @@ export type ExternalReferences = z.infer<typeof externalReferencesSchema>;
 // StixCreatedByRef schema (wrapper around StixIdentifier)
 //==============================================================================
 
-export const stixCreatedByRefSchema = createStixIdentifierSchema(stixTypeSchema.enum.identity);
+export const stixCreatedByRefSchema = createStixIdentifierSchema(stixTypeSchema.enum.identity)
+  .describe("The created_by_ref property specifies the id property of the identity object that describes the entity that created this object. If this attribute is omitted, the source of this information is undefined. This may be used by object creators who wish to remain anonymous."), ;
 
 export type StixCreatedByRef = z.infer<typeof stixCreatedByRefSchema>;
 
