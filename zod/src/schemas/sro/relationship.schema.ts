@@ -10,7 +10,7 @@ import '../../errors';
 const RELATIONSHIP_TYPE: StixType = stixTypeSchema.enum.relationship;
 
 // MITRE ATT&CK Relationship schema
-export const RelationshipSchema = stixRelationshipObjectSchema.extend({
+export const relationshipSchema = stixRelationshipObjectSchema.extend({
 
 	id: createStixIdentifierSchema(stixTypeSchema.enum.relationship),
 
@@ -78,4 +78,4 @@ export const RelationshipSchema = stixRelationshipObjectSchema.extend({
 	}
 });
 
-export type Relationship = z.infer<typeof RelationshipSchema>;
+export type Relationship = z.infer<typeof relationshipSchema>;
