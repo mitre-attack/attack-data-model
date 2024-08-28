@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { attackBaseObjectSchema, createStixIdentifierSchema, descriptionSchema, externalReferenceSchema, xMitreDeprecatedSchema, xMitreModifiedByRefSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, xMitreDomainsSchema } from "../common";
+import { attackBaseObjectSchema, createStixIdentifierSchema, descriptionSchema, externalReferenceSchema, xMitreDeprecatedSchema, xMitreModifiedByRefSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, xMitreDomainsSchema, externalReferencesSchema } from "../common";
 import { stixTypeSchema } from "../common/stix-type";
 
 // Initializes the custom ZodErrorMap
@@ -64,34 +64,38 @@ export type XMitreShortName = z.infer<typeof xMitreShortNameSchema>;
 
 /////////////////////////////////////
 //
+// Tactic ID
+//
+/////////////////////////////////////
+
+const tacticIdSchema = createStixIdentifierSchema('x-mitre-tactic');
+export type TacticId = z.infer<typeof tacticIdSchema>; // Will be "x-mitre-tactic--${string}"
+
+
+/////////////////////////////////////
+//
 // MITRE Tactic
 //
 /////////////////////////////////////
 
 export const tacticSchema = attackBaseObjectSchema.extend({
 
-    id: createStixIdentifierSchema(stixTypeSchema.enum["x-mitre-tactic"]),
+    id: tacticIdSchema,
 
     type: z.literal(stixTypeSchema.enum["x-mitre-tactic"]),
 
     description: descriptionSchema,
 
     // Optional in STIX but required in ATT&CK
-    created_by_ref: stixCreatedByRefSchema
-        .describe("The created_by_ref property specifies the id property of the identity object that describes the entity that created this object. If this attribute is omitted, the source of this information is undefined. This may be used by object creators who wish to remain anonymous."),
+    created_by_ref: stixCreatedByRefSchema,
 
     // Optional in STIX but required in ATT&CK
-    external_references: z
-        .array(externalReferenceSchema)
-        .describe("A list of external references which refers to non-STIX information."),
+    external_references: externalReferencesSchema,
 
     // Optional in STIX but required in ATT&CK
     object_marking_refs: objectMarkingRefsSchema,
 
     x_mitre_domains: xMitreDomainsSchema,
-
-    x_mitre_deprecated: xMitreDeprecatedSchema
-        .optional(),
 
     x_mitre_shortname: xMitreShortNameSchema,
 
@@ -118,6 +122,10 @@ export const tacticSchema = attackBaseObjectSchema.extend({
 
         // Destructure relevant properties from the schema
         const { external_references } = schema;
+
+        //==============================================================================
+        // Validate external references
+        //==============================================================================
 
         // Verify that first external reference is an ATT&CK ID
         const attackIdEntry = external_references[0];
