@@ -6,14 +6,9 @@ const supportedStixTypes = [
     "campaign",
     "course-of-action",
     "identity",
-    "indicator", // not used in ATT&CK
     "intrusion-set",
     "malware",
-    "observed-data", // not used in ATT&CK
-    "report", // not used in ATT&CK
-    "threat-actor", // not used in ATT&CK
     "tool",
-    "vulnerability", // not used in ATT&CK
     "marking-definition",
     "x-mitre-data-component",
     "x-mitre-data-source",
@@ -22,6 +17,11 @@ const supportedStixTypes = [
     "x-mitre-matrix",
     "x-mitre-collection",
     "relationship",
+    // "indicator",         // not used in ATT&CK
+    // "observed-data",     // not used in ATT&CK
+    // "report",            // not used in ATT&CK
+    // "threat-actor",      // not used in ATT&CK
+    // "vulnerability",     // not used in ATT&CK
 ] as const;
 
 export const stixTypeSchema = z
