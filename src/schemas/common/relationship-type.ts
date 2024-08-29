@@ -25,6 +25,20 @@ interface RelationshipMap {
 	}
 }
 
+export const validRelationshipObjectTypes = [
+	"attack-pattern",
+	"campaign",
+	"course-of-action",
+	"intrusion-set",
+	"malware",
+	"tool",
+	"x-mitre-data-component",
+	"x-mitre-data-source",
+	"x-mitre-tactic",
+	"x-mitre-asset",
+	"x-mitre-matrix"
+];
+
 export const relationshipMap: RelationshipMap = {
 	"uses": {
 		// malware or tool USES attack-pattern
@@ -60,8 +74,8 @@ export const relationshipMap: RelationshipMap = {
 	},
 	"revoked-by": {
 		// any REVOKED-BY any, where source and target are the same type
-		source: stixTypeSchema.options,
-		target: stixTypeSchema.options
+		source: validRelationshipObjectTypes,
+		target: validRelationshipObjectTypes
 	}
 }
 
