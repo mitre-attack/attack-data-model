@@ -111,11 +111,11 @@ try {
 /** ************************************************************************************************* */
 const dataComponentWithInvalidDates = {
   ...validDataComponent,
-  first_seen: "2019-09-01", // Invalid date format
-  last_seen: "2020-08-01T04:00:00.000Z",
+  created: "2019-09-01", // Invalid date format
+  modified: "2020-08-01T04:00:00.000Z",
 };
 
-console.log("\nExample 5 - Dat Component with invalid dates:");
+console.log("\nExample 5 - Data Component with invalid dates:");
 try {
   dataComponentSchema.parse(dataComponentWithInvalidDates);
 } catch (error) {
