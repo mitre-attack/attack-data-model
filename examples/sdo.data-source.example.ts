@@ -10,7 +10,7 @@ import { z } from "zod";
 // Example 1: Valid Data Source
 /** ************************************************************************************************* */
 const validDataSource = {
-  type: "data-source",
+  type: "x-mitre-data-source",
   id: "x-mitre-data-source--4523e7f3-8de2-4078-96f8-1227eb537159",
   spec_version: "2.1",
   x_mitre_attack_spec_version: "3.2.0",
@@ -44,7 +44,7 @@ console.log(dataSourceSchema.parse(validDataSource));
 // Example 2: Invalid Data Source (missing required fields)
 /** ************************************************************************************************* */
 const invalidDataSource = {
-  type: "data-source",
+  type: "x-mitre-data-source",
   id: "x-mitre-data-source--4523e7f3-8de2-4078-96f8-1227eb537159",
   spec_version: "2.1",
   x_mitre_attack_spec_version: "3.2.0",
@@ -54,10 +54,10 @@ const invalidDataSource = {
   created_by_ref: stixCreatedByRefSchema.parse(
     "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5"
   ),
-  created: StixCreatedTimestampSchema.parse("2023-03-17T13:37:42.596Z"),
-  modified: StixModifiedTimestampSchema.parse("2024-04-11T00:31:21.576Z"),
+  created: stixCreatedTimestampSchema.parse("2023-03-17T13:37:42.596Z"),
+  modified: stixModifiedTimestampSchema.parse("2024-04-11T00:31:21.576Z"),
   // Missing object_marking_refs
-  x_mitre_platforms: "Optional",
+  x_mitre_platforms: ["Windows", "Linux"],
   x_mitre_domains: ["enterprise-attack"],
   // Missing external_references
   x_mitre_modified_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
@@ -106,7 +106,7 @@ try {
 /** ************************************************************************************************* */
 const dataSourceWithOptionalFields = {
   ...validDataSource,
-  x_mitre_platforms: "Optional",
+  x_mitre_platforms: ['Windows', 'Linux'],
   x_mitre_contributors: ["John Doe", "Jane Smith"],
   x_mitre_deprecated: false,
   revoked: false,
@@ -138,11 +138,11 @@ try {
 /** ************************************************************************************************* */
 const dataSourceWithInvalidDates = {
   ...validDataSource,
-  first_seen: "2019-09-01", // Invalid date format
-  last_seen: "2020-08-01T04:00:00.000Z",
+  created: "2019-09-01", // Invalid date format
+  modified: "2020-08-01T04:00:00.000Z",
 };
 
-console.log("\nExample 5 - Dat source with invalid dates:");
+console.log("\nExample 5 - Data source with invalid dates:");
 try {
   dataSourceSchema.parse(dataSourceWithInvalidDates);
 } catch (error) {
