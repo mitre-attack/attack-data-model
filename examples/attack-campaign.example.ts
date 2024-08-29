@@ -23,6 +23,39 @@ const validCampaign = {
             source_name: "mitre-attack",
             url: "https://attack.mitre.org/campaigns/C0022",
             external_id: "C0022"
+        },
+        {
+            "source_name": "Operation Interception",
+            "description": "(Citation: ESET Lazarus Jun 2020)"
+        },
+        {
+            "source_name": "Operation North Star",
+            "description": "(Citation: McAfee Lazarus Jul 2020)(Citation: McAfee Lazarus Nov 2020)"
+        },
+        {
+            "source_name": "McAfee Lazarus Nov 2020",
+            "description": "Beek, C. (2020, November 5). Operation North Star: Behind The Scenes. Retrieved December 20, 2021.",
+            "url": "https://www.mcafee.com/blogs/other-blogs/mcafee-labs/operation-north-star-behind-the-scenes/"
+        },
+        {
+            "source_name": "ESET Lazarus Jun 2020",
+            "description": "Breitenbacher, D and Osis, K. (2020, June 17). OPERATION IN(TER)CEPTION: Targeted Attacks Against European Aerospace and Military Companies. Retrieved December 20, 2021.",
+            "url": "https://www.welivesecurity.com/wp-content/uploads/2020/06/ESET_Operation_Interception.pdf"
+        },
+        {
+            "source_name": "McAfee Lazarus Jul 2020",
+            "description": "Cashman, M. (2020, July 29). Operation North Star Campaign. Retrieved December 20, 2021.",
+            "url": "https://www.mcafee.com/blogs/other-blogs/mcafee-labs/operation-north-star-a-job-offer-thats-too-good-to-be-true/?hilite=%27Operation%27%2C%27North%27%2C%27Star%27"
+        },
+        {
+            "source_name": "ClearSky Lazarus Aug 2020",
+            "description": "ClearSky Research Team. (2020, August 13). Operation 'Dream Job' Widespread North Korean Espionage Campaign. Retrieved December 20, 2021.",
+            "url": "https://www.clearskysec.com/wp-content/uploads/2020/08/Dream-Job-Campaign.pdf"
+        },
+        {
+            "source_name": "The Hacker News Lazarus Aug 2022",
+            "description": "Lakshmanan, R. (2022, August 17). North Korea Hackers Spotted Targeting Job Seekers with macOS Malware. Retrieved April 10, 2023.",
+            "url": "https://thehackernews.com/2022/08/north-korea-hackers-spotted-targeting.html"
         }
     ],
     x_mitre_modified_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
@@ -98,18 +131,16 @@ try {
         message: 'Required'
     },
     {
-        code: 'invalid_type',
-        expected: 'string',
-        received: 'undefined',
-        path: [ 'x_mitre_first_seen_citation' ],
-        message: 'Required'
+        code: 'custom',
+        message: "The citation must conform to the pattern '(Citation: <Citation Name>)'",
+        fatal: true,
+        path: [ 'x_mitre_first_seen_citation' ]
     },
     {
-        code: 'invalid_type',
-        expected: 'string',
-        received: 'undefined',
-        path: [ 'x_mitre_last_seen_citation' ],
-        message: 'Required'
+        code: 'custom',
+        message: "The citation must conform to the pattern '(Citation: <Citation Name>)'",
+        fatal: true,
+        path: [ 'x_mitre_last_seen_citation' ]
     }
     ]
  */
@@ -177,7 +208,7 @@ try {
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation error:", error.errors[0].message);
-        // Validation error: First seen citation is required and must be a non-empty string
+        // Validation error: The citation must conform to the pattern '(Citation: <Citation Name>)'
     }
 }
 
