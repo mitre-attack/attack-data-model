@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { attackBaseObjectSchema } from "../common/attack-base-object";
 import { stixTypeSchema } from "../common/stix-type";
-import { createStixIdentifierSchema, stixTimestampSchema, xMitreDomainsSchema } from "../common";
+import { aliasesSchema, createStixIdentifierSchema, stixTimestampSchema, xMitreDomainsSchema } from "../common";
 import { attackMotivationOpenVocabulary, attackResourceLevelOpenVocabulary } from "../common/open-vocabulary";
 
 
@@ -26,8 +26,7 @@ export const groupSchema = attackBaseObjectSchema.extend({
         .array(z.string())
         .optional(),
 
-    aliases: z
-        .array(z.string())
+    aliases: aliasesSchema
         .optional()
         .describe("Alternative names used to identify this group. The first alias must match the object's name."),
 

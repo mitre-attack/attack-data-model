@@ -5,6 +5,7 @@ import { StixIdentifier, stixIdentifierSchema } from './stix-identifier';
 /////////////////////////////////////
 //
 // Version
+// (version)
 //
 /////////////////////////////////////
 
@@ -18,7 +19,8 @@ export type Version = z.infer<typeof versionSchema>;
 
 /////////////////////////////////////
 //
-// Name (name)
+// Name 
+// (name)
 //
 /////////////////////////////////////
 
@@ -32,7 +34,8 @@ export type Name = z.infer<typeof nameSchema>;
 
 /////////////////////////////////////
 //
-// Description (description)
+// Description 
+// (description)
 //
 /////////////////////////////////////
 
@@ -45,7 +48,24 @@ export type Description = z.infer<typeof descriptionSchema>;
 
 /////////////////////////////////////
 //
-// MITRE Version (x_mitre_version)
+// Aliases 
+// (aliases)
+//
+/////////////////////////////////////
+
+export const aliasesSchema = z
+    .array(z.string(), {
+        invalid_type_error: "Aliases must be an array of strings."
+    })
+    .describe("Alternative names used to identify this object. The first alias must match the object's name.");
+
+export type Aliases = z.infer<typeof aliasesSchema>;
+
+
+/////////////////////////////////////
+//
+// MITRE Version 
+// (x_mitre_version)
 //
 /////////////////////////////////////
 
@@ -59,7 +79,8 @@ export type XMitreVersion = z.infer<typeof xMitreVersionSchema>;
 
 /////////////////////////////////////
 //
-// MITRE ATT&CK Spec Version (x_mitre_attack_spec_version)
+// MITRE ATT&CK Spec Version 
+// (x_mitre_attack_spec_version)
 //
 /////////////////////////////////////
 
@@ -73,7 +94,8 @@ export type XMitreAttackSpecVersion = z.infer<typeof xMitreAttackSpecVersionSche
 
 /////////////////////////////////////
 //
-// MITRE Old ATT&CK ID (x_mitre_old_attack_id)
+// MITRE Old ATT&CK ID 
+// (x_mitre_old_attack_id)
 //
 /////////////////////////////////////
 
@@ -86,7 +108,8 @@ export type XMitreOldAttackId = z.infer<typeof xMitreOldAttackIdSchema>;
 
 /////////////////////////////////////
 //
-// MITRE Domains (x_mitre_domains)
+// MITRE Domains 
+// (x_mitre_domains)
 //
 /////////////////////////////////////
 
@@ -108,7 +131,8 @@ export type XMitreDomains = z.infer<typeof xMitreDomainsSchema>;
 
 /////////////////////////////////////
 //
-// MITRE Deprecated (x_mitre_deprecated)
+// MITRE Deprecated 
+// (x_mitre_deprecated)
 //
 /////////////////////////////////////
 
@@ -123,7 +147,8 @@ export type XMitreDeprecated = z.infer<typeof xMitreDeprecatedSchema>;
 
 /////////////////////////////////////
 //
-// MITRE Platforms (x_mitre_platforms)
+// MITRE Platforms 
+// (x_mitre_platforms)
 //
 /////////////////////////////////////
 
@@ -174,7 +199,8 @@ export type XMitrePlatforms = z.infer<typeof xMitrePlatformsSchema>;
 
 /////////////////////////////////////
 //
-// Object Marking Reference (object_marking_refs)
+// Object Marking Reference 
+// (object_marking_refs)
 //
 /////////////////////////////////////
 
@@ -198,7 +224,8 @@ export type ObjectMarkingRefs = z.infer<typeof objectMarkingRefsSchema>;
 
 /////////////////////////////////////
 //
-// MITRE Contributors (x_mitre_contributors)
+// MITRE Contributors 
+// (x_mitre_contributors)
 //
 /////////////////////////////////////
 
@@ -211,7 +238,8 @@ export type XMitreContributors = z.infer<typeof xMitreContributorsSchema>;
 
 /////////////////////////////////////
 //
-// MITRE Modified By Ref (x_mitre_modified_by_ref)
+// MITRE Modified By Ref 
+// (x_mitre_modified_by_ref)
 //
 /////////////////////////////////////
 

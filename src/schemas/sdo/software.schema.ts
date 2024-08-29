@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { attackBaseObjectSchema } from "../common/attack-base-object";
-import { descriptionSchema, xMitrePlatformsSchema, stixCreatedByRefSchema, stixIdentifierSchema, externalReferenceSchema, objectMarkingRefsSchema, xMitreDomainsSchema } from '../common';
+import { descriptionSchema, xMitrePlatformsSchema, stixCreatedByRefSchema, stixIdentifierSchema, externalReferenceSchema, objectMarkingRefsSchema, xMitreDomainsSchema, aliasesSchema } from '../common';
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
@@ -11,8 +11,7 @@ import '../../errors';
 export const softwareSchema = attackBaseObjectSchema.extend({
 
     // Not used in ATT&CK Malware or Tool but defined in STIX
-    aliases: z
-        .array(z.string())
+    aliases: aliasesSchema
         .optional()
         .describe("Alternative names used to identify this software."),
 
@@ -38,13 +37,7 @@ export const softwareSchema = attackBaseObjectSchema.extend({
         .array(z.string())
         .optional(),
 
-    x_mitre_aliases: z
-        .array(
-            z.string(),
-            {
-                invalid_type_error: "Aliases must be an array of strings."
-            }
-        )
+    x_mitre_aliases: aliasesSchema
         .describe("Alternative names used to identify this software. The first alias must match the object's name.")
         .optional(),
     
