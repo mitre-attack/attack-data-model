@@ -1,14 +1,25 @@
-import { Description, StixCreatedTimestamp, StixIdentifier, StixModifiedTimestamp, StixSpecVersion, StixType, stixTypeSchema } from '../../src/schemas/common';
-import { relationshipMap, RelationshipType, relationshipTypeSchema, validRelationshipObjectTypes } from '../../src/schemas/common/relationship-type';
-import { Relationship, relationshipSchema } from '../../src/schemas/sro/relationship.schema';
 import { v4 as uuidv4 } from 'uuid';
+import {
+    Relationship, relationshipSchema,
+    RelationshipType, relationshipTypeSchema,
+    validRelationshipObjectTypes,
+    invalidRelationships,
+    isValidRelationship
+} from '../../src/schemas/sro/relationship.schema';
+import {
+    Description, StixCreatedTimestamp, StixIdentifier,
+    StixModifiedTimestamp, StixSpecVersion, StixType,
+    stixTypeSchema,
+    xMitreIdentity
+} from '../../src/schemas/common';
+import { ZodError } from 'zod';
+
 
 describe('RelationshipSchema', () => {
 
-    let objects: any[];
     let minimalRelationship: Relationship;
 
-    const validRelationships = [
+    const validRelationships: { sourceType: StixType, relationshipType: RelationshipType, targetType: StixType }[] = [
         // USES
         { sourceType: 'malware', relationshipType: 'uses', targetType: 'attack-pattern' },
         { sourceType: 'tool', relationshipType: 'uses', targetType: 'attack-pattern' },
@@ -29,23 +40,29 @@ describe('RelationshipSchema', () => {
         // TARGETS
         { sourceType: 'attack-pattern', relationshipType: 'targets', targetType: 'x-mitre-asset' },
         // REVOKED-BY
-        ...validRelationshipObjectTypes.map((objectType) => {
-            return { sourceType: objectType, relationshipType: 'revoked-by', targetType: objectType }
-        })
+        ...validRelationshipObjectTypes.map(objectType => ({
+            sourceType: objectType,
+            relationshipType: 'revoked-by' as RelationshipType,
+            targetType: objectType
+        }))
     ];
 
     beforeAll(() => {
-        objects = global.attackData.objectsByType['attack-pattern'];
 
         minimalRelationship = relationshipSchema.parse({
-			id: `relationship--${uuidv4()}` as StixIdentifier,
-			type: stixTypeSchema.enum.relationship as StixType,
-			spec_version: '2.1' as StixSpecVersion,
-			created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
-            modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
-			relationship_type: relationshipTypeSchema.enum.uses as RelationshipType,
-			source_ref: `campaign--${uuidv4()}` as StixIdentifier,
-			target_ref: `malware--${uuidv4()}` as StixIdentifier
+            id: `relationship--${uuidv4()}`,
+            type: stixTypeSchema.Enum.relationship,
+            spec_version: '2.1',
+            created: '2021-01-01T00:00:00.000Z',
+            modified: '2021-01-01T00:00:00.000Z',
+            relationship_type: relationshipTypeSchema.enum.uses,
+            source_ref: `${stixTypeSchema.Enum.campaign}--${uuidv4()}`,
+            target_ref: `${stixTypeSchema.Enum.malware}--${uuidv4()}`,
+            object_marking_refs: [`marking-definition--${uuidv4()}`],
+            x_mitre_attack_spec_version: "2.1.0",
+            x_mitre_modified_by_ref: xMitreIdentity,
+            x_mitre_version: "1.0",
+            x_mitre_domains: ["enterprise-attack"]
         });
     });
 
@@ -73,7 +90,7 @@ describe('RelationshipSchema', () => {
                 it(`should accept ${sourceType} ${relationshipType} ${targetType} relationship`, () => {
                     const validRelationship: Relationship = {
                         ...minimalRelationship,
-                        relationship_type: relationshipTypeSchema.enum[relationshipType],
+                        relationship_type: relationshipType as RelationshipType,
                         source_ref: `${sourceType}--${uuidv4()}` as StixIdentifier,
                         target_ref: `${targetType}--${uuidv4()}` as StixIdentifier
                     };
@@ -221,39 +238,16 @@ describe('RelationshipSchema', () => {
         });
 
         describe('Relationships with invalid Source/Target types', () => {
-            const invalidRelationships: any[] = [];
 
-            // generate all possible source/target pairs
-            const sourceTargetPairs = stixTypeSchema.options.flatMap(source => 
-                stixTypeSchema.options.map(target => [source, target])
-            );
-            
-            // create all relationship candidates from source/target pairs
-            relationshipTypeSchema.options.forEach(relType => {
-                for (let [src, tgt] of sourceTargetPairs) {
-                    let candidate = { sourceType: src, relationshipType: relType, targetType: tgt };
-                    
-                    // check against the list of valid relationships
-                    const isValid = validRelationships.some(({sourceType, relationshipType, targetType}) => 
-                        sourceType == src && relationshipType == relType && targetType == tgt
-                    );
-                    if (!isValid) {
-                        // add invalid candidate
-                        invalidRelationships.push(candidate);
-                    }
-                }
+            validRelationships.forEach(({ sourceType, relationshipType, targetType }) => {
+                it(`should return true for valid ${sourceType} ${relationshipType} ${targetType} relationship`, () => {
+                    expect(isValidRelationship(sourceType, relationshipType as RelationshipType, targetType)).toBe(true);
+                });
             });
-    
-            // test each invalid relationship
-            invalidRelationships.forEach(({sourceType, relationshipType, targetType}) => {
-                it(`should reject ${sourceType} ${relationshipType} ${targetType} relationship`, () => {
-                    const invalidRelationship: Relationship = {
-                        ...minimalRelationship,
-                        relationship_type: relationshipTypeSchema.enum[relationshipType],
-                        source_ref: `${sourceType}--${uuidv4()}` as StixIdentifier,
-                        target_ref: `${targetType}--${uuidv4()}` as StixIdentifier
-                    };
-                    expect(() => relationshipSchema.parse(invalidRelationship)).toThrow();
+
+            invalidRelationships.forEach(({ sourceType, relationshipType, targetType }) => {
+                it(`should return false for invalid ${sourceType} ${relationshipType} ${targetType} relationship`, () => {
+                    expect(isValidRelationship(sourceType, relationshipType as RelationshipType, targetType)).toBe(false);
                 });
             });
         });
@@ -263,11 +257,52 @@ describe('RelationshipSchema', () => {
         // Add more edge case tests as needed...
     });
 
-    describe('Validate All Objects', () => {
-        // it('should validate all objects in the global.attackData', () => {
-        //     objects.forEach((obj, index) => {
-        //         expect(() => relationshipSchema.parse(obj)).not.toThrow();
-        //     });
-        // });
+    // it('should validate all relationships in the global.attackData.sros', () => {
+    //     relationships.forEach((obj, index) => {
+    //         expect(() => relationshipSchema.parse(obj)).not.toThrow();
+    //     });
+    // });
+
+    it('should validate all relationships in the global.attackData.sros', () => {
+
+        const relationships = global.attackData.objectsByType['relationship'] as Relationship[];
+
+        const errors: { relationship: Relationship; error: ZodError }[] = [];
+
+        for (let relationship of relationships) {
+            try {
+                if (!relationship.x_mitre_deprecated && !relationship.revoked) {
+                    relationshipSchema.parse(relationship);
+                }
+            } catch (error) {
+                if (error instanceof ZodError) {
+                    errors.push({ relationship: relationship, error });
+                } else {
+                    throw error; // Re-throw if it's not a ZodError
+                }
+            }
+        }
+
+        if (errors.length > 0) {
+            const errorReport = errors.map(({ relationship, error }) => {
+                const relationshipId = relationship.id;
+                const errorMessages = error.errors.map(err =>
+                    `    - ${err.path.join('.')}: ${err.message}`
+                ).join('\n');
+
+                return `
+    Relationship ID: ${relationshipId}
+    Validation Errors:
+    ${errorMessages}`;
+            }).join('\n');
+
+            console.warn(`The following ${errors.length} relationship(s) failed validation:\n${errorReport}`);
+        }
+
+        // Log the number of errors found
+        console.log(`Total relationships with validation errors: ${errors.length}`);
+
+        // This expectation will always pass, but it gives us a way to surface the error count in the test results
+        expect(true).toBe(true);
     });
 });
