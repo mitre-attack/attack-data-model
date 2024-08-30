@@ -1,6 +1,6 @@
 export * from './common-properties';
 export * from './attack-base-object';
-export * from './sdo';
+export * from './stix-core';
 export * from './misc';
 export * from './stix-identifier';
 export * from './stix-spec-version';

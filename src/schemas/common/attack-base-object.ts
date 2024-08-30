@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { stixDomainObjectSchema } from './sdo';
+import { stixDomainObjectSchema } from './stix-core';
 import { nameSchema, xMitreAttackSpecVersionSchema, xMitreDeprecatedSchema, xMitreOldAttackIdSchema, xMitreVersionSchema } from '.';
 
 // Define the new properties

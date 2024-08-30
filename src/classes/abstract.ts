@@ -3,7 +3,7 @@ import { StixIdentifier } from "../schemas/common/stix-identifier"
 import { StixSpecVersion } from "../schemas/common/stix-spec-version"
 import { StixTimestamp } from "../schemas/common/stix-timestamp"
 import { StixType } from "../schemas/common/stix-type"
-import { SDO } from "../schemas/common/sdo"
+import { SDO } from "../schemas/common/stix-core"
 
 export type StixPropertyType = SDO | StixIdentifier | StixType | StixSpecVersion | StixCreatedByRef | StixTimestamp;
 

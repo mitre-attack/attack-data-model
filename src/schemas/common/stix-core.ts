@@ -8,7 +8,7 @@ import { stixCreatedByRefSchema, externalReferenceSchema, granularMarkingSchema,
 import { objectMarkingRefsSchema } from './common-properties';
 
 
-export const stixDomainObjectSchema = z
+const stixBaseObjectSchema = z
     .object({
         id: stixIdentifierSchema
             .describe("The id property universally and uniquely identifies this object."),
@@ -63,4 +63,9 @@ export const stixDomainObjectSchema = z
     // Disallow unknown keys. If there are any unknown keys in the input, Zod will throw an error.
     .strict();
 
+
+export const stixDomainObjectSchema = stixBaseObjectSchema.extend({});
+export const stixRelationshipObjectSchema = stixBaseObjectSchema.extend({});
+
 export type SDO = z.infer<typeof stixDomainObjectSchema>;
+export type SRO = z.infer<typeof stixRelationshipObjectSchema>;

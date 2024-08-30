@@ -1,8 +1,7 @@
 // src/utils/attack-data.ts
 
 import axios from 'axios';
-import { SDO } from '../../src/schemas/common/sdo';
-import { SRO } from '../../src/schemas/common/sro';
+import { SDO, SRO } from '../../src/schemas/common/stix-core';
 
 // !curl -k https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json -o enterprise-attack.json
 // !curl -k https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/ics-attack/ics-attack.json -o ics-attack.json
