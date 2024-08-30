@@ -131,7 +131,7 @@ describe('TechniqueSchema', () => {
                 const invalidTechnique: Technique = {
                     ...minimalTechnique,
                     id: 'invalid-id' as StixIdentifier // <--- cast to StixIdentifier to test invalid value
-                };
+                } as Technique;
                 expect(() => techniqueSchema.parse(invalidTechnique)).toThrow();
             });
 

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { attackBaseObjectSchema } from "../common/attack-base-object";
-import { descriptionSchema, xMitrePlatformsSchema, stixCreatedByRefSchema, stixIdentifierSchema, externalReferenceSchema, objectMarkingRefsSchema, xMitreDomainsSchema, aliasesSchema } from '../common';
+import { descriptionSchema, xMitrePlatformsSchema, stixCreatedByRefSchema, stixIdentifierSchema, externalReferenceSchema, objectMarkingRefsSchema, xMitreDomainsSchema, aliasesSchema, xMitreModifiedByRefSchema } from '../common';
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
@@ -24,6 +24,7 @@ export const softwareSchema = attackBaseObjectSchema.extend({
 
     external_references: z
         .array(externalReferenceSchema)
+        .min(1, "At least one external reference is required.")
         .describe("A list of external references which refers to non-STIX information."),
 
     object_marking_refs: objectMarkingRefsSchema,
@@ -41,8 +42,7 @@ export const softwareSchema = attackBaseObjectSchema.extend({
         .describe("Alternative names used to identify this software. The first alias must match the object's name.")
         .optional(),
     
-    x_mitre_modified_by_ref: stixIdentifierSchema
-        .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."),
+    x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
     
     x_mitre_domains: xMitreDomainsSchema,
 });
