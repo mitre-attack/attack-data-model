@@ -288,3 +288,29 @@ try {
         console.log("Validation errors:", error.errors);
     }
 }
+
+/** ************************************************************************************************* */
+// Example 8: Campaign with unknown property
+/** ************************************************************************************************* */
+const campaignWithUnknownProperty = {
+    ...exampleOfRealCampaign,
+    foo: 'bar'
+}
+
+console.log("\nExample 8 - Parsing a campaign with an unknown property (foo: 'bar'):");
+try {
+    const parsedCampaign = campaignSchema.parse(campaignWithUnknownProperty);
+    console.log("Parsed successfully. Campaign name:", parsedCampaign.name);
+} catch (error) {
+    if (error instanceof z.ZodError) {
+        console.log("Validation errors:", error.errors);
+        // Validation errors: [
+        //     {
+        //       code: 'unrecognized_keys',
+        //       keys: [ 'foo' ],
+        //       path: [],
+        //       message: "Unrecognized key(s) in object: 'foo'"
+        //     }
+        //   ]
+    }
+}
