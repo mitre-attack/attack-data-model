@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Technique, techniqueSchema, XMitreIsSubtechnique, XMitreRemoteSupport, KillChainPhase, XMitreDataSources, XMitreDefenseBypasses, XMitrePermissionsRequired, XMitreSystemRequirements, XMitreImpactType, XMitreDetection, XMitreEffectivePermissions, XMitreNetworkRequirements } from '../../src/schemas/sdo/technique.schema';
-import { Description, ExternalReference, ExternalReferences, Name, StixCreatedTimestamp, StixIdentifier, StixModifiedTimestamp, StixSpecVersion, StixType, stixTypeSchema, XMitreAttackSpecVersion, XMitreContributors, XMitreDeprecated, XMitreDomains, xMitreIdentity, XMitreModifiedByRef, XMitrePlatforms, XMitreVersion } from '../../src/schemas/common';
-import { z, ZodError } from "zod";
+import { Technique, techniqueSchema, KillChainPhase, XMitreDataSources, XMitrePermissionsRequired, XMitreSystemRequirements, XMitreDetection, XMitreEffectivePermissions, XMitreNetworkRequirements } from '../../src/schemas/sdo/technique.schema';
+import { Description, ExternalReferences, StixCreatedTimestamp, StixIdentifier, StixModifiedTimestamp, XMitreContributors, XMitreDeprecated, xMitreIdentity, XMitreModifiedByRef, XMitrePlatforms } from '../../src/schemas/common';
+import { ZodError } from "zod";
 
 
 describe('TechniqueSchema', () => {
