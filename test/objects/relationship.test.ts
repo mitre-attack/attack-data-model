@@ -1,3 +1,4 @@
+import { ZodIssue } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import {
     Relationship, relationshipSchema,
@@ -12,7 +13,6 @@ import {
     stixTypeSchema,
     xMitreIdentity
 } from '../../src/schemas/common';
-import { ZodError } from 'zod';
 
 
 describe('RelationshipSchema', () => {
@@ -257,50 +257,59 @@ describe('RelationshipSchema', () => {
         // Add more edge case tests as needed...
     });
 
-    // it('should validate all relationships in the global.attackData.sros', () => {
-    //     relationships.forEach((obj, index) => {
-    //         expect(() => relationshipSchema.parse(obj)).not.toThrow();
-    //     });
-    // });
-
-    it('should validate all relationships in the global.attackData.sros', () => {
-
+    it('should validate existing ATT&CK relationships and report errors', () => {
         const relationships = global.attackData.objectsByType['relationship'] as Relationship[];
 
-        const errors: { relationship: Relationship; error: ZodError }[] = [];
+        const validRelationships: Relationship[] = [];
+        const deprecatedOrRevokedErrors: { relationship: Relationship; issues: z.ZodIssue[] }[] = [];
+        const activeErrors: { relationship: Relationship; issues: z.ZodIssue[] }[] = [];
 
         for (let relationship of relationships) {
-            try {
-                if (!relationship.x_mitre_deprecated && !relationship.revoked) {
-                    relationshipSchema.parse(relationship);
-                }
-            } catch (error) {
-                if (error instanceof ZodError) {
-                    errors.push({ relationship: relationship, error });
+            const result = relationshipSchema.safeParse(relationship);
+            if (result.success) {
+                validRelationships.push(relationship);
+            } else {
+                const errorInfo = { relationship: relationship, issues: result.error.issues };
+                if (relationship.x_mitre_deprecated || relationship.revoked) {
+                    deprecatedOrRevokedErrors.push(errorInfo);
                 } else {
-                    throw error; // Re-throw if it's not a ZodError
+                    activeErrors.push(errorInfo);
                 }
             }
         }
 
-        if (errors.length > 0) {
-            const errorReport = errors.map(({ relationship, error }) => {
-                const relationshipId = relationship.id;
-                const errorMessages = error.errors.map(err =>
-                    `    - ${err.path.join('.')}: ${err.message}`
+        const formatErrorReport = (errors: { relationship: Relationship; issues: z.ZodIssue[] }[]) => {
+            return errors.map(({ relationship, issues }) => {
+                const errorMessages = issues.map(issue =>
+                    `    - ${issue.path.join('.')}: ${issue.message}`
                 ).join('\n');
 
                 return `
-    Relationship ID: ${relationshipId}
-    Validation Errors:
-    ${errorMessages}`;
+                Relationship ID: ${relationship.id}
+                Source Ref: ${relationship.source_ref}
+                Target Ref: ${relationship.target_ref}
+                Relationship Type: ${relationship.relationship_type}
+                Deprecated: ${relationship.x_mitre_deprecated ? 'Yes' : 'No'}
+                Revoked: ${relationship.revoked ? 'Yes' : 'No'}
+                Validation Errors:
+                ${errorMessages}`;
             }).join('\n');
+        };
 
-            console.warn(`The following ${errors.length} relationship(s) failed validation:\n${errorReport}`);
+        if (activeErrors.length > 0) {
+            console.warn(`The following ${activeErrors.length} active relationship(s) failed validation:\n${formatErrorReport(activeErrors)}`);
         }
 
-        // Log the number of errors found
-        console.log(`Total relationships with validation errors: ${errors.length}`);
+        if (deprecatedOrRevokedErrors.length > 0) {
+            console.warn(`The following ${deprecatedOrRevokedErrors.length} deprecated or revoked relationship(s) failed validation:\n${formatErrorReport(deprecatedOrRevokedErrors)}`);
+        }
+
+        console.log(`
+        Total relationships: ${relationships.length}
+        Valid relationships: ${validRelationships.length}
+        Active relationships with errors: ${activeErrors.length}
+        Deprecated or revoked relationships with errors: ${deprecatedOrRevokedErrors.length}
+        `);
 
         // This expectation will always pass, but it gives us a way to surface the error count in the test results
         expect(true).toBe(true);
