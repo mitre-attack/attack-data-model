@@ -69,10 +69,25 @@ export type Aliases = z.infer<typeof aliasesSchema>;
 //
 /////////////////////////////////////
 
+type SingleDigit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+type MitreVersion = `${SingleDigit}.${SingleDigit}`;
+
+const majorMinorVersionRegex = /^[0-9]\.[0-9]$/;
+
 export const xMitreVersionSchema = z
-    .string()
-    .regex(/^\d+\.\d+$/, "Must be in the format 'major.minor'")
-    .describe("Represents the version of the object in a 'major.minor' format, where both 'major' and 'minor' are integers. This versioning follows semantic versioning principles but excludes the patch number. The version number is incremented by ATT&CK when the content of the object is updated. This property does not apply to relationship objects.");
+    .custom<MitreVersion>(
+        (value): value is MitreVersion => {
+            if (typeof value !== 'string') return false;
+            if (!majorMinorVersionRegex.test(value)) return false;
+
+            const [major, minor] = value.split('.').map(Number);
+            return Number.isInteger(major) && Number.isInteger(minor);
+        },
+        {
+            message: "The version must be in the format 'M.N' where M and N are single-digit integers (0-9)"
+        }
+    )
+    .describe("Represents the version of the object in a 'major.minor' format, where both 'major' and 'minor' are single-digit integers. This versioning follows semantic versioning principles but excludes the patch number. The version number is incremented by ATT&CK when the content of the object is updated. This property does not apply to relationship objects.");
 
 export type XMitreVersion = z.infer<typeof xMitreVersionSchema>;
 
@@ -84,13 +99,30 @@ export type XMitreVersion = z.infer<typeof xMitreVersionSchema>;
 //
 /////////////////////////////////////
 
+type VersionNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+type MitreAttackSpecVersion = `${VersionNumber}.${VersionNumber}.${VersionNumber}`;
+
+const majorMinorPatchVersionRegex = /^[0-9]\.[0-9]\.[0-9]$/;
+
 export const xMitreAttackSpecVersionSchema = z
     .string()
-    .regex(/^\d+\.\d+\.\d+$/, "Must be in the format 'major.minor.patch'")
+    .refine(
+        (value): value is MitreAttackSpecVersion => {
+            if (!majorMinorPatchVersionRegex.test(value)) return false;
+            const [major, minor, patch] = value.split('.').map(Number);
+            return (
+                major >= 0 && major <= 9 &&
+                minor >= 0 && minor <= 9 &&
+                patch >= 0 && patch <= 9
+            );
+        },
+        {
+            message: "Must be in the format 'M.N.P' where M, N, and P are single-digit integers (0-9)"
+        }
+    )
     .describe("The version of the ATT&CK spec used by the object. This field helps consuming software determine if the data format is supported. If the field is not present on an object, the spec version will be assumed to be 2.0.0. Refer to the ATT&CK CHANGELOG for all supported versions.");
 
 export type XMitreAttackSpecVersion = z.infer<typeof xMitreAttackSpecVersionSchema>;
-
 
 /////////////////////////////////////
 //
@@ -99,8 +131,21 @@ export type XMitreAttackSpecVersion = z.infer<typeof xMitreAttackSpecVersionSche
 //
 /////////////////////////////////////
 
+// e.g., "MOB-M1008", "MOB-S0012"
+type MitreOldAttackId = `MOB-${'M' | 'S'}${number}`;
+
+const oldAttackIdRegex = /^MOB-(M|S)\d{4}$/;
+
 export const xMitreOldAttackIdSchema = z
     .string()
+    .refine(
+        (value): value is MitreOldAttackId => {
+            return oldAttackIdRegex.test(value);
+        },
+        {
+            message: "Must be in the format 'MOB-X0000' where X is either 'M' or 'S', followed by exactly four digits"
+        }
+    )
     .describe("Old ATT&CK IDs that may have been associated with this object");
 
 export type XMitreOldAttackId = z.infer<typeof xMitreOldAttackIdSchema>;
