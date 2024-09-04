@@ -1,12 +1,53 @@
 import { z } from "zod";
 import { stixTypeSchema } from "../common/stix-type";
 import { softwareSchema } from "./software.schema";
-import { createStixIdentifierSchema, killChainPhaseSchema, xMitrePlatformsSchema, stixCreatedByRefSchema } from "../common";
+import { createStixIdentifierSchema, xMitrePlatformsSchema, stixCreatedByRefSchema } from "../common";
 import { ToolTypesOpenVocabulary } from "../common/open-vocabulary";
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
 import '../../errors'; 
+
+/////////////////////////////////////
+//
+// Kill Chain Phases (kill_chain_phases)
+//
+/////////////////////////////////////
+
+export const killChainNameSchema = z.enum([
+    "mitre-attack",
+    "mitre-mobile-attack",
+    "mitre-ics-attack"
+]);
+
+export const killChainPhaseSchema = z.object({
+    phase_name: z
+        .string({
+            required_error: "Phase name is required.",
+            invalid_type_error: "Phase name must be a string."
+        })
+        .describe("The name of the phase in the kill chain. The value of this property SHOULD be all lowercase and SHOULD use hyphens instead of spaces or underscores as word separators.")
+        .refine(
+            (value) => {
+                // Check if the value is all lowercase
+                const isLowercase = value === value.toLowerCase();
+
+                // Check if the value uses hyphens instead of spaces or underscores
+                const usesHyphens = !value.includes(' ') && !value.includes('_');
+
+                return isLowercase && usesHyphens;
+            },
+            {
+                message: "Phase name should be all lowercase and use hyphens instead of spaces or underscores."
+            }
+        ),
+
+    kill_chain_name: killChainNameSchema
+})
+    .strict();
+
+export type KillChainName = z.infer<typeof killChainNameSchema>;
+export type KillChainPhase = z.infer<typeof killChainPhaseSchema>;
 
 
 // Tool Schema
