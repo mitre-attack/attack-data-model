@@ -1,4 +1,3 @@
-import { ZodIssue } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import {
     Relationship, relationshipSchema,
@@ -49,12 +48,12 @@ describe('RelationshipSchema', () => {
 
     beforeAll(() => {
 
-        minimalRelationship = relationshipSchema.parse({
+        minimalRelationship = {
             id: `relationship--${uuidv4()}`,
             type: stixTypeSchema.Enum.relationship,
             spec_version: '2.1',
-            created: '2021-01-01T00:00:00.000Z',
-            modified: '2021-01-01T00:00:00.000Z',
+            created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+            modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
             relationship_type: relationshipTypeSchema.enum.uses,
             source_ref: `${stixTypeSchema.Enum.campaign}--${uuidv4()}`,
             target_ref: `${stixTypeSchema.Enum.malware}--${uuidv4()}`,
@@ -63,7 +62,7 @@ describe('RelationshipSchema', () => {
             x_mitre_modified_by_ref: xMitreIdentity,
             x_mitre_version: "1.0",
             x_mitre_domains: ["enterprise-attack"]
-        });
+        };
     });
 
     describe('True Positives Tests', () => {
