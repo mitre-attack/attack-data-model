@@ -18,7 +18,7 @@ const isValidRFC3339 = (timestamp: string): boolean => {
     return !isNaN(date.getTime());
 };
 
-type _StixTimestamp = string;
+type _StixTimestamp = `${number}-${number}-${number}T${number}:${number}:${number}${'' | `.${number}`}Z`;
 
 export const stixTimestampSchema = z.custom<_StixTimestamp>(
     (val): val is _StixTimestamp => {
