@@ -69,27 +69,36 @@ export type Aliases = z.infer<typeof aliasesSchema>;
 //
 /////////////////////////////////////
 
-type SingleDigit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
-type MitreVersion = `${SingleDigit}.${SingleDigit}`;
+type Digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
+type OneToTwoDigits = `${Digit}` | `${Digit}${Digit}`;
 
-const majorMinorVersionRegex = /^[0-9]\.[0-9]$/;
+type MitreVersion = `${OneToTwoDigits}.${OneToTwoDigits}`;
+
+const majorMinorVersionRegex = /^(\d{1,3})\.(\d{1,3})$/;
 
 export const xMitreVersionSchema = z
-    .custom<MitreVersion>(
+    .custom<MitreVersion>()
+    .refine(
         (value): value is MitreVersion => {
-            if (typeof value !== 'string') return false;
             if (!majorMinorVersionRegex.test(value)) return false;
-
             const [major, minor] = value.split('.').map(Number);
-            return Number.isInteger(major) && Number.isInteger(minor);
+            return Number.isInteger(major) && Number.isInteger(minor) &&
+                major >= 0 && major <= 99 && minor >= 0 && minor <= 99;
         },
         {
-            message: "The version must be in the format 'M.N' where M and N are single-digit integers (0-9)"
+            message: "The version must be in the format 'M.N' where M and N are integers between 0 and 99"
         }
     )
-    .describe("Represents the version of the object in a 'major.minor' format, where both 'major' and 'minor' are single-digit integers. This versioning follows semantic versioning principles but excludes the patch number. The version number is incremented by ATT&CK when the content of the object is updated. This property does not apply to relationship objects.");
+    .describe("Represents the version of the object in a 'major.minor' format, where both 'major' and 'minor' are integers between 0 and 99. This versioning follows semantic versioning principles but excludes the patch number. The version number is incremented by ATT&CK when the content of the object is updated. This property does not apply to relationship objects.");
 
 export type XMitreVersion = z.infer<typeof xMitreVersionSchema>;
+
+// Test cases
+const x_mitre_version_test0: MitreVersion = '1.0'     // Should pass
+const x_mitre_version_test1: MitreVersion = '1.0.'    // Should fail
+const x_mitre_version_test2: MitreVersion = '1.0.0'   // Should fail
+const x_mitre_version_test3: MitreVersion = '1.0.0.'  // Should fail
+const x_mitre_version_test4: MitreVersion = '1.0.0.0' // Should fail
 
 
 /////////////////////////////////////
