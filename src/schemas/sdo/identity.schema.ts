@@ -20,11 +20,14 @@ export const identitySchema = attackBaseObjectSchema.extend({
     identity_class: identityClassOpenVocabulary
         .describe("The type of entity that this Identity describes, e.g., an individual or organization. This is an open vocabulary and the values SHOULD come from the identity-class-ov vocabulary."),
 
+    x_mitre_domains: xMitreDomainsSchema,
+
     description: z
         .string()
         .describe("A description of the object.")
         .optional(),
     
+    // Not used in ATT&CK Identity but defined in STIX
     roles: z
         .array(
             z.string(),
@@ -35,6 +38,7 @@ export const identitySchema = attackBaseObjectSchema.extend({
         .describe("The list of roles that this Identity performs.")
         .optional(),
     
+    // Not used in ATT&CK Identity but defined in STIX
     sectors: z
         .array(
             industrySectorOpenVocabulary,
@@ -42,12 +46,11 @@ export const identitySchema = attackBaseObjectSchema.extend({
         .describe("The list of industry sectors that this Identity belongs to. This is an open vocabulary and values SHOULD come from the industry-sector-ov vocabulary.")
         .optional(),
     
+    // Not used in ATT&CK Identity but defined in STIX
     contact_information: z
         .string()
         .describe("The contact information (e-mail, phone number, etc.) for this Identity.")
         .optional(),
-
-    x_mitre_domains: xMitreDomainsSchema,
 });
 
 // Define the type for Identity
