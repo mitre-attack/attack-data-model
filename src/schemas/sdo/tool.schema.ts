@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { stixTypeSchema } from "../common/stix-type";
 import { softwareSchema } from "./software.schema";
-import { createStixIdentifierSchema, xMitrePlatformsSchema, stixCreatedByRefSchema } from "../common";
+import { createStixIdentifierSchema } from "../common";
 import { ToolTypesOpenVocabulary } from "../common/open-vocabulary";
 
 // Initializes the custom ZodErrorMap
@@ -87,5 +87,5 @@ export const toolSchema = softwareSchema.extend({
         path: ['x_mitre_aliases']
     });
 
-// Define the type for Malware
+// Define the type for Tool
 export type Tool = z.infer<typeof toolSchema>;

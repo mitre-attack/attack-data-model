@@ -17,7 +17,8 @@ const validIdentity = {
     x_mitre_domains:["enterprise-attack"],
     name: "The MITRE Corporation",
     x_mitre_attack_spec_version: "3.2.0",
-	x_mitre_version: "1.0"
+	x_mitre_version: "1.0",
+    spec_version: "2.1"
 };
 
 console.log("Example 1 - Valid Identity:");
