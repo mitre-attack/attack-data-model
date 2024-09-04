@@ -379,6 +379,7 @@ describe("toolSchema", () => {
                 const errorReport = errors.map(({ tool, error }) => {
                     const toolId = tool.external_references[0].external_id;
                     const toolName = tool.name;
+                    const toolStixId = tool.id;
                     const errorMessages = error.errors.map(err =>
                         `    - ${err.path.join('.')}: ${err.message}`
                     ).join('\n');
@@ -386,6 +387,7 @@ describe("toolSchema", () => {
                     return `
     Tool ID: ${toolId}
     Tool Name: ${toolName}
+    Tool stixID: ${toolStixId}
     Validation Errors:
     ${errorMessages}`;
                 }).join('\n');
