@@ -93,13 +93,6 @@ export const xMitreVersionSchema = z
 
 export type XMitreVersion = z.infer<typeof xMitreVersionSchema>;
 
-// Test cases
-const x_mitre_version_test0: MitreVersion = '1.0'     // Should pass
-const x_mitre_version_test1: MitreVersion = '1.0.'    // Should fail
-const x_mitre_version_test2: MitreVersion = '1.0.0'   // Should fail
-const x_mitre_version_test3: MitreVersion = '1.0.0.'  // Should fail
-const x_mitre_version_test4: MitreVersion = '1.0.0.0' // Should fail
-
 
 /////////////////////////////////////
 //
