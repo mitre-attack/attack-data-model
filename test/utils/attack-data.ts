@@ -1,16 +1,12 @@
-// src/utils/attack-data.ts
-
 import axios from 'axios';
 import { SDO, SRO } from '../../src/schemas/common/stix-core';
+import { StixBundle } from '../../src/schemas/sdo/stix-bundle.schema';
 
-// !curl -k https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json -o enterprise-attack.json
-// !curl -k https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/ics-attack/ics-attack.json -o ics-attack.json
-// !curl - k https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/mobile-attack/mobile-attack.json -o mobile-attack.json
 const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
 
 export type AttackDomain = 'enterprise' | 'ics' | 'mobile';
 
-export async function fetchAttackData(domain: AttackDomain, version?: string): Promise<SDO[]> {
+export async function fetchAttackData(domain: AttackDomain, version?: string): Promise<StixBundle> {
     let url;
     if (version) {
         url = `${GITHUB_BASE_URL}/${domain}-attack/${domain}-attack-${version}.json`;
@@ -18,8 +14,8 @@ export async function fetchAttackData(domain: AttackDomain, version?: string): P
         // get latest version
         url = `${GITHUB_BASE_URL}/${domain}-attack/${domain}-attack.json`;
     }
-    const response = await axios.get(url);
-    return response.data.objects;
+    const response = await axios.get<StixBundle>(url);
+    return response.data;
 }
 
 export function filterObjectsByType(objects: SDO[], type: string | string[]): SDO[] {
@@ -28,21 +24,24 @@ export function filterObjectsByType(objects: SDO[], type: string | string[]): SD
 }
 
 export async function getAttackObjects(domains: AttackDomain[] = ['enterprise', 'ics', 'mobile'], version?: string): Promise<{
+    bundles: StixBundle[];
     allObjects: SDO[];
     sdos: SDO[];
     sros: SRO[];
     smos: SDO[];
     objectsByType: { [key: string]: SDO[] };
 }> {
+    const bundles: StixBundle[] = [];
     const allObjects: SDO[] = [];
 
     for (const domain of domains) {
-        const domainObjects = await fetchAttackData(domain, version);
-        allObjects.push(...domainObjects);
+        const bundle = await fetchAttackData(domain, version);
+        bundles.push(bundle);
+        allObjects.push(...bundle.objects);
     }
 
     const sdos = allObjects.filter(obj => !['relationship', 'marking-definition'].includes(obj.type));
-    const sros = filterObjectsByType(allObjects, 'relationship');
+    const sros = filterObjectsByType(allObjects, 'relationship') as SRO[];
     const smos = filterObjectsByType(allObjects, 'marking-definition');
 
     const objectTypes = [...new Set(allObjects.map(obj => obj.type))];
@@ -58,5 +57,5 @@ export async function getAttackObjects(domains: AttackDomain[] = ['enterprise', 
         ...filterObjectsByType(allObjects, 'malware')
     ];
 
-    return { allObjects, sdos, sros, smos, objectsByType };
+    return { bundles, allObjects, sdos, sros, smos, objectsByType };
 }
