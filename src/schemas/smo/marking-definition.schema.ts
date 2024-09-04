@@ -105,7 +105,7 @@ export const StatementMarkingObjectSchema = z.object({
 /////////////////////////////////////
 
 // MarkingDefinition Schema
-export const MarkingDefinitionSchema = z.object({
+export const markingDefinitionSchema = z.object({
 
   id: createStixIdentifierSchema(stixTypeSchema.enum["marking-definition"]),
 
@@ -148,4 +148,4 @@ export const MarkingDefinitionSchema = z.object({
   .strict();
 
 // Define the type for MarkingDefinition
-export type MarkingDefinition = z.infer<typeof MarkingDefinitionSchema>;
+export type MarkingDefinition = z.infer<typeof markingDefinitionSchema>;

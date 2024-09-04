@@ -1,4 +1,4 @@
-import { MarkingDefinitionSchema } from "../src/schemas/smo/marking-definition.schema";
+import { markingDefinitionSchema } from "../src/schemas/smo/marking-definition.schema";
 import { z } from "zod";
 
 /** ************************************************************************************************* */
@@ -19,7 +19,7 @@ const validMarkingDefinition = {
 };
 
 console.log("Example 1 - Valid Marking Definition:");
-console.log(MarkingDefinitionSchema.parse(validMarkingDefinition));
+console.log(markingDefinitionSchema.parse(validMarkingDefinition));
 // {
 //   id: 'marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168',
 //   type: 'marking-definition',
@@ -57,7 +57,7 @@ console.log(
   "\nExample 2 - Invalid Marking Definition (missing required fields):"
 );
 try {
-  MarkingDefinitionSchema.parse(invalidMarkingDefinition);
+  markingDefinitionSchema.parse(invalidMarkingDefinition);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation errors:", error.errors);
@@ -105,7 +105,7 @@ const markingDefinitionWithOptionalFields = {
 
 console.log("\nExample 3 - Marking Definition with optional fields:");
 try {
-  MarkingDefinitionSchema.parse(markingDefinitionWithOptionalFields);
+  markingDefinitionSchema.parse(markingDefinitionWithOptionalFields);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation errors:", error.errors);
@@ -135,7 +135,7 @@ const markingDefinitionWithInvalidType = {
 
 console.log("\nExample 4 - Marking Definition with invalid type:");
 try {
-  MarkingDefinitionSchema.parse(markingDefinitionWithInvalidType);
+  markingDefinitionSchema.parse(markingDefinitionWithInvalidType);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation error:", error.errors[0].message);
@@ -163,7 +163,7 @@ const exampleOfRealMarkingDefinition = {
 
 console.log("\nExample 5 - Parsing the provided example Marking Definition:");
 try {
-  const parsedMarkingDefinition = MarkingDefinitionSchema.parse(
+  const parsedMarkingDefinition = markingDefinitionSchema.parse(
     exampleOfRealMarkingDefinition
   );
   console.log(`Parsed successfully. marking definition id: ${parsedMarkingDefinition.id}`);
