@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { StixBundle, stixBundleSchema } from '../../src/schemas/sdo/stix-bundle.schema';
-import { StixCreatedTimestamp, StixModifiedTimestamp, xMitreIdentity, XMitreModifiedByRef } from '../../src/schemas/common';
-import { Collection, collectionSchema } from '../../src/schemas/sdo/collection.schema';
+import { StixCreatedTimestamp, StixModifiedTimestamp, xMitreIdentity } from '../../src/schemas/common';
+import { Collection } from '../../src/schemas/sdo/collection.schema';
 import { Technique } from '../../src/schemas/sdo/technique.schema';
 import { z } from 'zod';
 
@@ -46,28 +46,29 @@ describe('StixBundleSchema', () => {
         });
 
         it('should accept bundle with multiple valid objects', () => {
+            const mockTechnique: Technique = {
+                id: `attack-pattern--${uuidv4()}`,
+                type: "attack-pattern",
+                spec_version: '2.1',
+                created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+                modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+                name: 'Test Technique',
+                x_mitre_attack_spec_version: '2.1.0',
+                x_mitre_version: '1.0',
+                x_mitre_domains: ['enterprise-attack'],
+                x_mitre_is_subtechnique: false,
+                external_references: [
+                    {
+                        source_name: 'mitre-attack',
+                        external_id: 'T1234'
+                    }
+                ]
+            }
             const bundleWithMultipleObjects = {
                 ...minimalBundle,
                 objects: [
                     minimalCollection,
-                    {
-                        id: `attack-pattern--${uuidv4()}`,
-                        type: "attack-pattern",
-                        spec_version: '2.1',
-                        created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
-                        modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
-                        name: 'Test Technique',
-                        x_mitre_attack_spec_version: '2.1.0',
-                        x_mitre_version: '1.0',
-                        x_mitre_domains: ['enterprise-attack'],
-                        x_mitre_is_subtechnique: false,
-                        external_references: [
-                            {
-                                source_name: 'mitre-attack',
-                                external_id: 'T1234'
-                            }
-                        ]
-                    } as Technique
+                    mockTechnique
                 ]
             };
             expect(() => stixBundleSchema.parse(bundleWithMultipleObjects)).not.toThrow();
@@ -77,7 +78,7 @@ describe('StixBundleSchema', () => {
     describe('True Negative Tests', () => {
         describe('id', () => {
             it('should reject invalid values', () => {
-                const invalidId = {
+                const invalidId: StixBundle = {
                     ...minimalBundle,
                     id: 'invalid-id' as any
                 };
@@ -103,6 +104,12 @@ describe('StixBundleSchema', () => {
                     type: 'invalid-type' as any
                 };
                 expect(() => stixBundleSchema.parse(invalidType)).toThrow();
+
+                const validTypeWrongValue = {
+                    ...minimalBundle,
+                    type: `attack-pattern--${uuidv4()}` as any
+                };
+                expect(() => stixBundleSchema.parse(validTypeWrongValue)).toThrow();
             });
 
             it('should reject omitted required values', () => {
@@ -112,6 +119,14 @@ describe('StixBundleSchema', () => {
         });
 
         describe('objects', () => {
+            it('should reject invalid value', () => {
+                const bundleWithInvalidObjectsProperty = {
+                    ...minimalBundle,
+                    objects: 'this is a string but should be an array'
+                };
+                expect(() => stixBundleSchema.parse(bundleWithInvalidObjectsProperty)).toThrow();
+            });
+
             it('should reject bundle with no objects', () => {
                 const bundleWithNoObjects = {
                     ...minimalBundle,
