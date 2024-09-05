@@ -108,7 +108,7 @@ describe("identitySchema", () => {
             it('should reject invalid values', () => {
                 const invalidIdentity: Identity = {
                     ...minimalIdentity,
-                    description: 123 as any
+                    object_marking_refs: 123 as any
                 };
                 expect(() => identitySchema.parse(invalidIdentity)).toThrow();
             });
