@@ -31,8 +31,6 @@ describe("toolSchema", () => {
     let minimalTool: Tool;
 
     beforeAll(() => {
-        tools = global.attackData.objectsByType["tool"];
-
         minimalTool = toolSchema.parse({
             type: stixTypeSchema.Enum["tool"] as StixType,
             id: `tool--${uuidv4()}` as StixIdentifier,
@@ -359,6 +357,7 @@ describe("toolSchema", () => {
 
     describe('Validate All Objects', () => {
         it('should validate all objects in the global.attackData', () => {
+            tools = global.attackData.objectsByType["tool"];
             const errors: { tool: Tool; error: ZodError }[] = [];
 
             for (let tool of tools) {

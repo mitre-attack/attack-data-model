@@ -25,8 +25,6 @@ describe("identitySchema", () => {
     let minimalIdentity: Identity;
 
     beforeAll(() => {
-        identities = global.attackData.objectsByType["identity"];
-
         minimalIdentity = identitySchema.parse({
             type: stixTypeSchema.Enum["identity"] as StixType,
             id: `identity--${uuidv4()}` as StixIdentifier,
@@ -108,7 +106,7 @@ describe("identitySchema", () => {
             it('should reject invalid values', () => {
                 const invalidIdentity: Identity = {
                     ...minimalIdentity,
-                    description: 123 as any
+                    object_marking_refs: 123 as any
                 };
                 expect(() => identitySchema.parse(invalidIdentity)).toThrow();
             });
@@ -232,6 +230,7 @@ describe("identitySchema", () => {
 
     describe('Validate All Objects', () => {
         it('should validate all objects in the global.attackData', () => {
+            identities = global.attackData.objectsByType["identity"];
             const errors: { identity: Identity; error: ZodError }[] = [];
 
             for (let identity of identities) {
