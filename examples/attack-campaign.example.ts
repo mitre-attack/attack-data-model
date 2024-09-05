@@ -314,3 +314,95 @@ try {
         //   ]
     }
 }
+
+/** ************************************************************************************************* */
+// Example 9: Campaign with multiple valid citations
+/** ************************************************************************************************* */
+const campaignWithMultipleCitations = {
+    ...exampleOfRealCampaign,
+    x_mitre_first_seen_citation: "(Citation: ESET Lazarus Jun 2020)(Citation: McAfee Lazarus Jul 2020)",
+    x_mitre_last_seen_citation: "(Citation: ClearSky Lazarus Aug 2020)(Citation: The Hacker News Lazarus Aug 2022)"
+};
+
+console.log("\nExample 9 - Campaign with multiple valid citations:");
+try {
+    const parsedCampaign = campaignSchema.parse(campaignWithMultipleCitations);
+    console.log("Parsed successfully. First seen citation:", parsedCampaign.x_mitre_first_seen_citation);
+    console.log("Last seen citation:", parsedCampaign.x_mitre_last_seen_citation);
+} catch (error) {
+    if (error instanceof z.ZodError) {
+        console.log("Validation errors:", error.errors);
+    }
+}
+
+/** ************************************************************************************************* */
+// Example 10: Campaign with invalid multiple citations (missing parentheses)
+/** ************************************************************************************************* */
+const campaignWithInvalidMultipleCitations = {
+    ...exampleOfRealCampaign,
+    x_mitre_first_seen_citation: "(Citation: ESET Lazarus Jun 2020) (Citation: McAfee Lazarus Jul 2020)",
+    x_mitre_last_seen_citation: "(Citation: ClearSky Lazarus Aug 2020)(Citation: Invalid Citation)"
+};
+
+console.log("\nExample 10 - Campaign with invalid multiple citations:");
+try {
+    campaignSchema.parse(campaignWithInvalidMultipleCitations);
+} catch (error) {
+    if (error instanceof z.ZodError) {
+        console.log("Validation errors:", error.errors);
+    }
+}
+
+/** ************************************************************************************************* */
+// Example 11: Campaign with citation not in external_references
+/** ************************************************************************************************* */
+const campaignWithNonExistentCitation = {
+    ...exampleOfRealCampaign,
+    x_mitre_first_seen_citation: "(Citation: ESET Lazarus Jun 2020)(Citation: Non-existent Source)",
+    x_mitre_last_seen_citation: "(Citation: ClearSky Lazarus Aug 2020)"
+};
+
+console.log("\nExample 11 - Campaign with citation not in external_references:");
+try {
+    campaignSchema.parse(campaignWithNonExistentCitation);
+} catch (error) {
+    if (error instanceof z.ZodError) {
+        console.log("Validation errors:", error.errors);
+    }
+}
+
+/** ************************************************************************************************* */
+// Example 12: Campaign with mixed valid and invalid citations
+/** ************************************************************************************************* */
+const campaignWithMixedCitations = {
+    ...exampleOfRealCampaign,
+    x_mitre_first_seen_citation: "(Citation: ESET Lazarus Jun 2020)(Citation: Invalid Citation)",
+    x_mitre_last_seen_citation: "(Citation: ClearSky Lazarus Aug 2020)(Citation: The Hacker News Lazarus Aug 2022)"
+};
+
+console.log("\nExample 12 - Campaign with mixed valid and invalid citations:");
+try {
+    campaignSchema.parse(campaignWithMixedCitations);
+} catch (error) {
+    if (error instanceof z.ZodError) {
+        console.log("Validation errors:", error.errors);
+    }
+}
+
+/** ************************************************************************************************* */
+// Example 13: Campaign with empty citation string
+/** ************************************************************************************************* */
+const campaignWithEmptyCitation = {
+    ...exampleOfRealCampaign,
+    x_mitre_first_seen_citation: "",
+    x_mitre_last_seen_citation: "(Citation: ClearSky Lazarus Aug 2020)"
+};
+
+console.log("\nExample 13 - Campaign with empty citation string:");
+try {
+    campaignSchema.parse(campaignWithEmptyCitation);
+} catch (error) {
+    if (error instanceof z.ZodError) {
+        console.log("Validation errors:", error.errors);
+    }
+}

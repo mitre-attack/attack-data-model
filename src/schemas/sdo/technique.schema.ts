@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { attackBaseObjectSchema } from "../common/attack-base-object";
 import { StixType, stixTypeSchema } from '../common/stix-type';
-import { descriptionSchema, xMitrePlatformsSchema, attackDomainSchema, createStixIdentifierSchema, xMitreModifiedByRefSchema, externalReferenceSchema, xMitreDomainsSchema, xMitreContributorsSchema, xMitreDeprecatedSchema } from '../common';
+import { descriptionSchema, xMitrePlatformsSchema, attackDomainSchema, createStixIdentifierSchema, xMitreModifiedByRefSchema, xMitreDomainsSchema, xMitreContributorsSchema, externalReferencesSchema } from '../common';
 
 // Initializes the custom ZodErrorMap
 import '../../errors'; 
@@ -329,10 +329,7 @@ export const techniqueSchema = attackBaseObjectSchema.extend({
     type: z.literal(TECHNIQUE_TYPE),
 
     // Optional in STIX but required in ATT&CK
-    external_references: z
-        .array(externalReferenceSchema)
-        .min(1, "At least one external reference is required.")
-        .describe("A list of external references which refers to non-STIX information."),
+    external_references: externalReferencesSchema,
 
     kill_chain_phases: z
         .array(killChainPhaseSchema)

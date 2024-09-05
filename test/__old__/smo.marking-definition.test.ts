@@ -1,4 +1,4 @@
-import { MarkingDefinitionSchema } from "../../src/schemas/smo/marking-definition.schema";
+import { markingDefinitionSchema } from "../../src/schemas/smo/marking-definition.schema";
 
 describe("MarkingDefinitionSchema", () => {
   it("should validate a correct marking definition with statement", () => {
@@ -16,7 +16,7 @@ describe("MarkingDefinitionSchema", () => {
       },
     };
 
-    expect(() => MarkingDefinitionSchema.parse(validData)).not.toThrow();
+    expect(() => markingDefinitionSchema.parse(validData)).not.toThrow();
   });
 
   it("should validate a correct marking definition with TLP", () => {
@@ -34,7 +34,7 @@ describe("MarkingDefinitionSchema", () => {
       },
     };
 
-    expect(() => MarkingDefinitionSchema.parse(validData)).not.toThrow();
+    expect(() => markingDefinitionSchema.parse(validData)).not.toThrow();
   });
 
   it("should throw an error if definition_type is incorrect", () => {
@@ -49,7 +49,7 @@ describe("MarkingDefinitionSchema", () => {
       },
     };
 
-    expect(() => MarkingDefinitionSchema.parse(invalidData)).toThrow(
+    expect(() => markingDefinitionSchema.parse(invalidData)).toThrow(
       "definition_type must be either 'statement' or 'tlp'"
     );
   });
@@ -63,7 +63,7 @@ describe("MarkingDefinitionSchema", () => {
       definition_type: "tlp",
     };
 
-    expect(() => MarkingDefinitionSchema.parse(invalidData)).toThrow(
+    expect(() => markingDefinitionSchema.parse(invalidData)).toThrow(
       new RegExp("Required")
     );
   });
@@ -82,7 +82,7 @@ describe("MarkingDefinitionSchema", () => {
       external_references: ["https://example.com"], // <--- Not allowed
     };
 
-    expect(() => MarkingDefinitionSchema.parse(validData)).toThrowError(
+    expect(() => markingDefinitionSchema.parse(validData)).toThrowError(
       /Unrecognized key\(s\) in object: 'name', 'external_references'/
     );
   });

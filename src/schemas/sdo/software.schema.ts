@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { attackBaseObjectSchema } from "../common/attack-base-object";
-import { descriptionSchema, xMitrePlatformsSchema, stixCreatedByRefSchema, stixIdentifierSchema, externalReferenceSchema, objectMarkingRefsSchema, xMitreDomainsSchema, aliasesSchema, xMitreModifiedByRefSchema } from '../common';
+import { descriptionSchema, xMitrePlatformsSchema, stixCreatedByRefSchema, stixIdentifierSchema, externalReferenceSchema, objectMarkingRefsSchema, xMitreDomainsSchema, aliasesSchema, xMitreModifiedByRefSchema, externalReferencesSchema } from '../common';
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
@@ -22,10 +22,7 @@ export const softwareSchema = attackBaseObjectSchema.extend({
 
     description: descriptionSchema,
 
-    external_references: z
-        .array(externalReferenceSchema)
-        .min(1, "At least one external reference is required.")
-        .describe("A list of external references which refers to non-STIX information."),
+    external_references: externalReferencesSchema,
 
     object_marking_refs: objectMarkingRefsSchema,
 

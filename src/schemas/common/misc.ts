@@ -31,7 +31,7 @@ export const externalReferenceSchema = z.object({
 // a list of external reference
 export const externalReferencesSchema = z
   .array(externalReferenceSchema)
-  .min(1, "At least one external reference is required.")
+  .min(1, "At least one external reference is required when 'external_references' is defined.")
   .describe("A list of external references which refers to non-STIX information.")
 
 export type ExternalReference = z.infer<typeof externalReferenceSchema>;

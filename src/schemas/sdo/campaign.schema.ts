@@ -32,15 +32,34 @@ const baseCitationSchema = z
             return true;
         },
         {
-            message: "The citation must conform to the pattern '(Citation: <Citation Name>)'",
+            message: "Each citation must conform to the pattern '(Citation: <Citation Name>)'",
         }
     );
 
-export const xMitreFirstSeenCitationSchema = baseCitationSchema
-    .describe("One to many citations for when the Campaign was first reported in the form “(Citation: <citation name>)” where <citation name> can be found as one of the source_name of one of the external_references.")
+const multipleCitationsSchema = z
+    .custom<string>(
+        (value): value is string => {
+            if (typeof value !== 'string') return false;
 
-export const xMitreLastSeenCitationSchema = baseCitationSchema
-    .describe("One to many citations for when the Campaign was first reported in the form “(Citation: <citation name>)” where <citation name> can be found as one of the source_name of one of the external_references.")
+            // Split the string into individual citations
+            const citations = value.match(/\(Citation:[^)]+\)/g);
+
+            if (!citations) return false;
+
+            // Check if all parts are valid citations and there's no extra content
+            return citations.join('') === value &&
+                citations.every(citation => baseCitationSchema.safeParse(citation).success);
+        },
+        {
+            message: "Must be one or more citations in the form '(Citation: <Citation Name>)' without any separators",
+        }
+    );
+
+export const xMitreFirstSeenCitationSchema = multipleCitationsSchema
+    .describe("One or more citations for when the object was first seen, in the form '(Citation: <citation name>)(Citation: <citation name>)...', where each <citation name> can be found as one of the source_name values in the external_references.");
+
+export const xMitreLastSeenCitationSchema = multipleCitationsSchema
+    .describe("One or more citations for when the object was last seen, in the form '(Citation: <citation name>)(Citation: <citation name>)...', where each <citation name> can be found as one of the source_name values in the external_references.");
 
 export type XMitreFirstSeenCitation = z.infer<typeof xMitreFirstSeenCitationSchema>;
 export type XMitreLastSeenCitation = z.infer<typeof xMitreLastSeenCitationSchema>;
@@ -166,20 +185,33 @@ export const campaignSchema = attackBaseObjectSchema.extend({
 
         // Verify that <citation name> can be found as one of the source_name of one of the external_references
 
-        // Helper function to extract citation name from a citation string
-        const extractCitationName = (citation: Citation): string => {
-            return citation.slice(10, -1).trim(); // Remove "(Citation: " prefix and ")" suffix
+        // Helper function to extract citation names from a citation string
+        const extractCitationNames = (citations: string): string[] => {
+            const matches = citations.match(/\(Citation: ([^)]+)\)/g);
+            return matches ? matches.map(match => match.slice(10, -1).trim()) : [];
         };
 
-        // Helper function to validate a single citation
-        const validateCitation = (citation: Citation, path: string[]) => {
-            const citationName = extractCitationName(citation);
-            const citationExists = external_references.some(ref => ref.source_name === citationName);
+        // Helper function to validate multiple citations
+        const validateCitations = (citations: string, path: string[]) => {
+            const citationNames = extractCitationNames(citations);
 
-            if (!citationExists) {
+            citationNames.forEach((citationName, index) => {
+                const citationExists = external_references.some(ref => ref.source_name === citationName);
+
+                if (!citationExists) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: `Citation "${citationName}" not found in external_references.`,
+                        path: [...path, index]
+                    });
+                }
+            });
+
+            // Validate the format of the entire citation string
+            if (!citations.match(/^(\(Citation: [^)]+\))+$/)) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
-                    message: `Citation "${citationName}" not found in external_references.`,
+                    message: "Citations must be in the format '(Citation: Name1)(Citation: Name2)...' without any separators.",
                     path: path
                 });
             }
@@ -187,12 +219,12 @@ export const campaignSchema = attackBaseObjectSchema.extend({
 
         // Validate x_mitre_first_seen_citation
         if (x_mitre_first_seen_citation) {
-            validateCitation(x_mitre_first_seen_citation, ['x_mitre_first_seen_citation']);
+            validateCitations(x_mitre_first_seen_citation, ['x_mitre_first_seen_citation']);
         }
 
         // Validate x_mitre_last_seen_citation
         if (x_mitre_last_seen_citation) {
-            validateCitation(x_mitre_last_seen_citation, ['x_mitre_last_seen_citation']);
+            validateCitations(x_mitre_last_seen_citation, ['x_mitre_last_seen_citation']);
         }
     });
 

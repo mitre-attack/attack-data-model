@@ -1,10 +1,21 @@
-// src/__tests__/global.test.ts
-
 describe('Global Tests', () => {
     describe('ATT&CK Testing Data', () => {
         it('should have loaded ATT&CK data', () => {
             expect(global.attackData).toBeDefined();
             expect(global.attackData.allObjects.length).toBeGreaterThan(0);
+        });
+
+        it('should have loaded STIX Bundles', () => {
+            expect(global.attackData.bundles).toBeDefined();
+            expect(global.attackData.bundles.length).toBeGreaterThan(0);
+            expect(global.attackData.bundles.every(bundle =>
+                bundle.type === 'bundle' && Array.isArray(bundle.objects)
+            )).toBe(true);
+        });
+
+        it('should have correct number of objects in allObjects matching total objects in bundles', () => {
+            const totalObjectsInBundles = global.attackData.bundles.reduce((sum, bundle) => sum + bundle.objects.length, 0);
+            expect(global.attackData.allObjects.length).toEqual(totalObjectsInBundles);
         });
 
         it('should have all expected STIX Domain Objects (SDOs)', () => {
