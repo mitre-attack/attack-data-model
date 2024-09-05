@@ -1,4 +1,4 @@
-import { groupSchema } from "../src/schemas/sdo/group.schema";
+import { groupSchema } from "../../src/schemas/sdo/group.schema";
 import { z } from "zod";
 
 /** ************************************************************************************************* */

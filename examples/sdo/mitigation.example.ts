@@ -1,4 +1,4 @@
-import { mitigationSchema } from "../src/schemas/sdo/mitigation.schema";
+import { mitigationSchema } from "../../src/schemas/sdo/mitigation.schema";
 import { z } from "zod";
 
 /** ************************************************************************************************* */

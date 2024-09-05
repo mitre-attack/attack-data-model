@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { collectionSchema } from "../src/schemas/sdo/collection.schema";
+import { collectionSchema } from "../../src/schemas/sdo/collection.schema";
 
 /****************************************************************************************************/
 // Example 1: Valid Collection

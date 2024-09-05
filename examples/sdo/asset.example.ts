@@ -1,6 +1,6 @@
 
 import { z } from "zod";
-import { assetSchema } from "../src/schemas/sdo/asset.schema";
+import { assetSchema } from "../../src/schemas/sdo/asset.schema";
 
 /*************************************************************************************************** */
 // Example 1: Valid Asset

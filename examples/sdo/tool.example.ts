@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { toolSchema } from "../src/schemas/sdo/tool.schema";
+import { toolSchema } from "../../src/schemas/sdo/tool.schema";
 
 /** ************************************************************************************************* */
 // Example 1: Valid Tool
@@ -150,11 +150,11 @@ try {
 const toolWithStixFields = {
     ...validTool,
     kill_chain_phases: [
-		{
-			"kill_chain_name": "mitre-attack",
-			"phase_name": "command-and-control"
-		}
-	],
+        {
+            "kill_chain_name": "mitre-attack",
+            "phase_name": "command-and-control"
+        }
+    ],
     aliases: [
         "Sliver"
     ],

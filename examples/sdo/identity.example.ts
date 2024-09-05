@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { identitySchema } from "../src/schemas/sdo/identity.schema";
+import { identitySchema } from "../../src/schemas/sdo/identity.schema";
 
 /** ************************************************************************************************* */
 // Example 1: Valid Identity
