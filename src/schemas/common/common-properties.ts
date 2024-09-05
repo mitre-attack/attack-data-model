@@ -166,6 +166,8 @@ export const attackDomainSchema = z.enum([
     "ics-attack"
 ]);
 
+export type AttackDomain = z.infer<typeof attackDomainSchema>;
+
 export const xMitreDomainsSchema = z
     .array(attackDomainSchema)
     .min(1, {
