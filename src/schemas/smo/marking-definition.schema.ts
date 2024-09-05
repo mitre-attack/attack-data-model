@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { stixTypeSchema } from "../common/stix-type";
-import { createStixIdentifierSchema, nameSchema, stixCreatedByRefSchema, stixSpecVersionSchema, stixTimestampSchema, xMitreDomainsSchema } from "../common";
+import { createStixIdentifierSchema, nameSchema, stixCreatedByRefSchema, stixSpecVersionSchema, stixTimestampSchema, xMitreDeprecatedSchema, xMitreDomainsSchema } from "../common";
 
 
 /////////////////////////////////////
@@ -138,12 +138,19 @@ export const markingDefinitionSchema = z.object({
     .union([TlpMarkingObjectSchema, StatementMarkingObjectSchema])
     .describe("The definition property contains the marking object itself (e.g., the TLP marking as defined in section 7.2.1.4, the Statement marking as defined in section 7.2.1.3). Any new marking definitions SHOULD be specified using the extension facility described in section 7.3. If the extensions property is not present, this property MUST be present."),
 
+  revoked: z
+    .boolean()
+    .optional(),
+
   x_mitre_domains: xMitreDomainsSchema,
 
   x_mitre_attack_spec_version: z
     .string()
     .regex(/^\d+\.\d+\.\d+$/, "Must be in the format 'major.minor.patch'")
     .describe("The version of the ATT&CK spec used by the object. This field helps consuming software determine if the data format is supported. If the field is not present on an object, the spec version will be assumed to be 2.0.0. Refer to the ATT&CK CHANGELOG for all supported versions."),
+
+  x_mitre_deprecated: xMitreDeprecatedSchema
+    .optional(),
 })
   .strict();
 
