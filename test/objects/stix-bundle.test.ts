@@ -149,88 +149,55 @@ describe('StixBundleSchema', () => {
 
     it('should validate existing ATT&CK bundles and report errors', () => {
         const bundles = global.attackData.bundles as StixBundle[];
+        const bundlesWithErrors: { bundleIndex: number; errors: string[] }[] = [];
 
-        const validBundles: StixBundle[] = [];
-        const bundlesWithErrors: {
-            bundle: StixBundle;
-            activeIssues: z.ZodIssue[];
-            deprecatedOrRevokedIssues: z.ZodIssue[];
-        }[] = [];
+        bundles.forEach((bundle, bundleIndex) => {
+            try {
+                stixBundleSchema.parse(bundle);
+            } catch (error) {
+                if (error instanceof z.ZodError) {
+                    const errors: string[] = [];
 
-        for (let bundle of bundles) {
-            console.log(`Processing bundle: ${bundle.id}`);
-            const result = stixBundleSchema.safeParse(bundle);
-            if (result.success) {
-                validBundles.push(bundle);
-            } else {
-                console.log(`Bundle ${bundle.id} has errors:`, result.error.issues);
-                const activeIssues: z.ZodIssue[] = [];
-                const deprecatedOrRevokedIssues: z.ZodIssue[] = [];
+                    // Get bundle ID and friendly name
+                    const bundleId = bundle.id;
+                    const collectionObject = bundle.objects[0] as any;  // The first object should be x-mitre-collection
+                    const bundleFriendlyName = collectionObject.name || 'Unknown';
 
-                result.error.issues.forEach(issue => {
-                    if (issue.path.length >= 4) {
-                        const objectId = issue.path[2] as string;
-                        const object = bundle.objects.find(obj => obj.id === objectId);
-                        if (object && (object.x_mitre_deprecated || object.revoked)) {
-                            deprecatedOrRevokedIssues.push(issue);
-                        } else {
-                            activeIssues.push(issue);
+                    error.issues.forEach((issue) => {
+                        const objectIndex = issue.path.find((p) => typeof p === 'number');
+                        const errorObject = objectIndex !== undefined ? bundle.objects[objectIndex as number] : undefined;
+
+                        let errorMessage = `Error in bundle ${bundleIndex + 1} (${bundleFriendlyName}, ID: ${bundleId}):`;
+                        if (errorObject) {
+
+                            // Determine Object Status
+                            let objectStatus = 'Active';
+                            if ((errorObject as any).x_mitre_deprecated) {
+                                objectStatus = 'Deprecated';
+                            } else if (errorObject.revoked) {
+                                objectStatus = 'Revoked';
+                            }
+                            errorMessage += `\n  Object Index: ${objectIndex}`;
+                            errorMessage += `\n  Object ID: ${errorObject.id}`;
+                            errorMessage += `\n  Object Type: ${errorObject.type}`;
+                            errorMessage += `\n  Object Name: ${(errorObject as any).name || 'N/A'}`;
+                            errorMessage += `\n  Object Status: ${objectStatus}`;
                         }
-                    } else {
-                        activeIssues.push(issue);
-                    }
-                });
+                        errorMessage += `\n  Path: ${issue.path.join('.')}`;
+                        errorMessage += `\n  Error: ${issue.message}`;
 
-                bundlesWithErrors.push({ bundle, activeIssues, deprecatedOrRevokedIssues });
-            }
-        }
+                        errors.push(errorMessage);
+                    });
 
-        const formatErrorReport = (issues: z.ZodIssue[], bundle: StixBundle) => {
-            return issues.map(issue => {
-                let objectId = 'Unknown';
-                let objectType = 'Unknown';
-                let objectName = 'Unknown';
-                if (issue.path.length >= 3) {
-                    objectId = issue.path[2] as string;
-                    const object = bundle.objects.find(obj => obj.id === objectId);
-                    if (object) {
-                        objectType = object.type;
-                        objectName = 'name' in object ? object.name : 'Unnamed';
-                    }
+                    bundlesWithErrors.push({ bundleIndex, errors });
+                    console.warn(errors.join('\n\n'));
                 }
-
-                return `
-                Object ID: ${objectId}
-                Object Type: ${objectType}
-                Object Name: ${objectName}
-                Error: ${issue.message}
-                Path: ${issue.path.join('.')}`;
-            }).join('\n');
-        };
-
-        bundlesWithErrors.forEach(({ bundle, activeIssues, deprecatedOrRevokedIssues }) => {
-            if (activeIssues.length > 0) {
-                console.warn(`
-                Bundle ID: ${bundle.id}
-                The following ${activeIssues.length} active object(s) have issues:
-                ${formatErrorReport(activeIssues, bundle)}`);
-            }
-
-            if (deprecatedOrRevokedIssues.length > 0) {
-                console.warn(`
-                Bundle ID: ${bundle.id}
-                The following ${deprecatedOrRevokedIssues.length} deprecated or revoked object(s) have issues:
-                ${formatErrorReport(deprecatedOrRevokedIssues, bundle)}`);
             }
         });
 
-        console.log(`
-        Total bundles: ${bundles.length}
-        Valid bundles: ${validBundles.length}
-        Bundles with errors: ${bundlesWithErrors.length}
-        Total active objects with issues: ${bundlesWithErrors.reduce((sum, b) => sum + b.activeIssues.length, 0)}
-        Total deprecated/revoked objects with issues: ${bundlesWithErrors.reduce((sum, b) => sum + b.deprecatedOrRevokedIssues.length, 0)}
-        `);
+        // Log a summary of the validation results
+        console.log(`Validated ${bundles.length} bundles`);
+        console.log(`Found errors in ${bundlesWithErrors.length} bundles`);
 
         // This expectation will always pass, but it gives us a way to surface the error count in the test results
         expect(bundlesWithErrors.length).toBeLessThanOrEqual(bundles.length);
