@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { tacticSchema } from "../src/schemas/sdo/tactic.schema";
+import { tacticSchema } from "../../src/schemas/sdo/tactic.schema";
 
 /****************************************************************************************************/
 // Example 1: Valid Tactic
@@ -52,9 +52,9 @@ console.log("\nExample 2: Invalid Tactic (ATT&CK ID does not match format TA####
 try {
 	tacticSchema.parse(invalidTacticID);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
+	if (error instanceof z.ZodError) {
+		console.log("Validation errors:", error.errors);
+	}
 }
 /**
 	Validation errors: [
@@ -99,9 +99,9 @@ console.log("\nExample 3: Invalid Tactic (missing required fields):");
 try {
 	tacticSchema.parse(invalidTacticMissingFields);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
+	if (error instanceof z.ZodError) {
+		console.log("Validation errors:", error.errors);
+	}
 }
 
 // Expected Output:
@@ -149,9 +149,9 @@ console.log("\nExample 4: Tactic with invalid type:");
 try {
 	tacticSchema.parse(tacticWithInvalidType);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
-    }
+	if (error instanceof z.ZodError) {
+		console.log("Validation error:", error.errors[0].message);
+	}
 }
 
 // Expected Output:

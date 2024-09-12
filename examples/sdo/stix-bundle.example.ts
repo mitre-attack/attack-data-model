@@ -1,4 +1,4 @@
-import { StixBundleSchema } from "../src/schemas/sdo/stix-bundle.schema";
+import { stixBundleSchema } from "../../src/schemas/sdo/stix-bundle.schema";
 
 /** ************************************************************************************************* */
 // Example 1: Valid Stix Bundle
@@ -315,4 +315,4 @@ const validStix = {
 };
 
 console.log("Example 1 - Valid Stix Bundle:");
-console.log(StixBundleSchema.parse(validStix));
+console.log(stixBundleSchema.parse(validStix));

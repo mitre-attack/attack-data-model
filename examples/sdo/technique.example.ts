@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { techniqueSchema } from "../src/schemas/sdo/technique.schema";
+import { techniqueSchema } from "../../src/schemas/sdo/technique.schema";
 
 /*************************************************************************************************** */
 // Example 1: Valid Technique
@@ -66,9 +66,9 @@ console.log("\nExample 2 - Invalid Technique (ATT&CK ID does not match format T#
 try {
 	techniqueSchema.parse(invalidTechniqueID);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
+	if (error instanceof z.ZodError) {
+		console.log("Validation errors:", error.errors);
+	}
 }
 /**
 	Validation errors: [
@@ -156,9 +156,9 @@ console.log("\nExample 4 - Invalid Subtechnique (ATT&CK ID does not match format
 try {
 	techniqueSchema.parse(invalidSubtechniqueID);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
+	if (error instanceof z.ZodError) {
+		console.log("Validation errors:", error.errors);
+	}
 }
 /**
 	Validation errors: [
@@ -211,9 +211,9 @@ console.log("\nExample 5 - Invalid Technique (missing required fields):");
 try {
 	techniqueSchema.parse(invalidTechniqueMissingFields);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
+	if (error instanceof z.ZodError) {
+		console.log("Validation errors:", error.errors);
+	}
 }
 /**
 	Validation errors: [
@@ -253,9 +253,9 @@ console.log("\nExample 6 - Technique with invalid type:");
 try {
 	techniqueSchema.parse(techniqueWithInvalidType);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
-    }
+	if (error instanceof z.ZodError) {
+		console.log("Validation error:", error.errors[0].message);
+	}
 }
 // Validation error: Invalid 'type' property. Expected 'attack-pattern' for AttackPattern object, but received 'invalid-type'.
 
@@ -311,9 +311,9 @@ console.log("\nExample 8: Invalid Enterprise Technique with Mobile-only fields:"
 try {
 	techniqueSchema.parse(invalidEnterpriseTechnique);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
-    }
+	if (error instanceof z.ZodError) {
+		console.log("Validation error:", error.errors[0].message);
+	}
 }
 // Validation error: x_mitre_tactic_type is only supported in the 'mobile-attack' domain.
 
@@ -386,9 +386,9 @@ console.log("\nExample 10: Invalid Mobile Technique with Enterprise-only fields:
 try {
 	techniqueSchema.parse(invalidMobileTechnique);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
-    }
+	if (error instanceof z.ZodError) {
+		console.log("Validation error:", error.errors[0].message);
+	}
 }
 // Validation error: x_mitre_system_requirements is only supported in the 'enterprise-attack' domain.
 
@@ -471,9 +471,9 @@ console.log("\nExample 12: Invalid ICS Technique with Enterprise-only fields:");
 try {
 	techniqueSchema.parse(invalidIcsTechnique);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
-    }
+	if (error instanceof z.ZodError) {
+		console.log("Validation error:", error.errors[0].message);
+	}
 }
 // Expected output: 
 // Validation error: x_mitre_permissions_required is only supported in the 'enterprise-attack' domain in the Privilege Escalation tactic.
