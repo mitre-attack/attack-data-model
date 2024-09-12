@@ -75,17 +75,38 @@ export const toolSchema = softwareSchema.extend({
         .optional()
         .describe('The version identifier associated with the Tool'),
 })
-.refine(schemas => {
-    // The object's name MUST be listed as the first alias in the x_mitre_aliases field
-        if (schemas.x_mitre_aliases && schemas.x_mitre_aliases.length > 0) {
-            return schemas.x_mitre_aliases[0] === schemas.name;
+.superRefine((schema, ctx) => {
+    const {
+        external_references,
+    } = schema;
+    const attackIdEntry = external_references[0];
+    if (!attackIdEntry.external_id) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "ATT&CK ID must be defined in the first external_references entry.",
+            path: ['external_references', 0, 'external_id']
+        });
+    } else {
+        const idRegex = /^S\d{4}$/;
+        if (!idRegex.test(attackIdEntry.external_id)) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: `The first external_reference must match the ATT&CK ID format S####}.`,
+                path: ['external_references', 0, 'external_id']
+            });
         }
-        return true;
-    },
-    {
-        message: "The first alias must match the object's name",
-        path: ['x_mitre_aliases']
-    });
+    }
+    
+    // The object's name MUST be listed as the first alias in the x_mitre_aliases field
+    if (schema.x_mitre_aliases && schema.x_mitre_aliases.length > 0) {
+        if (!(schema.x_mitre_aliases[0] === schema.name)){
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "The first alias must match the object's name",
+            });
+        }
+    }
+});
 
 // Define the type for Tool
 export type Tool = z.infer<typeof toolSchema>;

@@ -1,22 +1,9 @@
 import { ZodError } from "zod";
 import {
-    Description,
     ExternalReferences,
-    Name,
-    ObjectMarkingRefs,
-    StixCreatedByRef,
     StixCreatedTimestamp,
     StixIdentifier,
-    StixModifiedTimestamp,
-    StixSpecVersion,
-    StixType,
-    XMitreAttackSpecVersion,
-    XMitreContributors,
-    XMitreDomains,
-    XMitreModifiedByRef,
-    XMitrePlatforms,
-    XMitreVersion,
-    stixTypeSchema,
+    StixModifiedTimestamp
 } from "../../src/schemas/common";
 import {
     KillChainPhase,
@@ -32,14 +19,14 @@ describe("toolSchema", () => {
 
     beforeAll(() => {
         minimalTool = toolSchema.parse({
-            type: stixTypeSchema.Enum["tool"] as StixType,
-            id: `tool--${uuidv4()}` as StixIdentifier,
-            spec_version: "2.1" as StixSpecVersion,
-            created_by_ref: `identity--${uuidv4()}` as StixCreatedByRef,
+            type: "tool",
+            id: `tool--${uuidv4()}`,
+            spec_version: "2.1",
+            created_by_ref: `identity--${uuidv4()}`,
             created: "2021-07-30T15:43:17.770Z" as StixCreatedTimestamp,
             modified: "2024-04-11T00:06:01.264Z" as StixModifiedTimestamp,
-            name: "Sliver" as Name,
-            description:'[Sliver](https://attack.mitre.org/software/S0633) is an open source, cross-platform, red team command and control framework written in Golang.(Citation: Bishop Fox Sliver Framework August 2019)' as Description,
+            name: "Sliver",
+            description:'[Sliver](https://attack.mitre.org/software/S0633) is an open source, cross-platform, red team command and control framework written in Golang.(Citation: Bishop Fox Sliver Framework August 2019)',
             external_references: [
                 {
                     source_name: "mitre-attack",
@@ -51,15 +38,15 @@ describe("toolSchema", () => {
                     description: "F-Secure Labs. (2015, September 17). The Dukes: 7 years of Russian cyberespionage. Retrieved December 10, 2015.",
                     url: "https://www.f-secure.com/documents/996508/1030745/dukes_whitepaper.pdf"
                 }
-            ] as ExternalReferences,
+            ],
             object_marking_refs: [
                 "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168",
-            ] as ObjectMarkingRefs,
-            x_mitre_attack_spec_version: "2.1.0" as XMitreAttackSpecVersion,
-            x_mitre_domains: ["enterprise-attack"] as XMitreDomains,
+            ],
+            x_mitre_attack_spec_version: "2.1.0",
+            x_mitre_domains: ["enterprise-attack"],
             x_mitre_modified_by_ref:
-                "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5" as XMitreModifiedByRef,
-            x_mitre_version: "1.2" as XMitreVersion,
+                "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            x_mitre_version: "1.2",
         });
     });
 
@@ -71,8 +58,8 @@ describe("toolSchema", () => {
         it("should accept fully populated valid object (required + optional ATT&CK fields)", () => {
             const fullTool = {
                 ...minimalTool,
-                x_mitre_platforms: ["Windows"] as XMitrePlatforms,
-                x_mitre_contributors: ["Contributor"] as XMitreContributors,
+                x_mitre_platforms: ["Windows"],
+                x_mitre_contributors: ["Contributor"],
                 x_mitre_aliases: ["Sliver"]
             };
             expect(fullTool).toBeDefined();
@@ -331,6 +318,26 @@ describe("toolSchema", () => {
             it('should reject omitted required values', () => {
                 const { x_mitre_domains, ...toolWithoutDomains } = minimalTool;
                 expect(() => toolSchema.parse(toolWithoutDomains)).toThrow();
+            });
+        });
+    });
+
+    describe('Schema Refinements', () => {
+        describe('External References Validation', () => {
+            it('should reject when ATT&CK ID is missing', () => {
+                const invalidTool = {
+                    ...minimalTool,
+                    external_references: [{ source_name: 'mitre-attack' }]
+                };
+                expect(() => toolSchema.parse(invalidTool)).toThrow(/ATT&CK ID must be defined/);
+            });
+
+            it('should reject invalid ATT&CK ID format for non-subtechnique', () => {
+                const invalidTool = {
+                    ...minimalTool,
+                    external_references: [{ source_name: 'mitre-attack', external_id: 'S123' }]
+                };
+                expect(() => toolSchema.parse(invalidTool)).toThrow(`The first external_reference must match the ATT&CK ID format S####}.`);
             });
         });
     });

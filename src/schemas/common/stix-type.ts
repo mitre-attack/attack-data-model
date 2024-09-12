@@ -17,6 +17,8 @@ const supportedStixTypes = [
     "x-mitre-matrix",
     "x-mitre-collection",
     "relationship",
+    "file",
+    "artifact"
     // "indicator",         // not used in ATT&CK
     // "observed-data",     // not used in ATT&CK
     // "report",            // not used in ATT&CK
