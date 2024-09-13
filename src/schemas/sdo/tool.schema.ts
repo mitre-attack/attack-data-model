@@ -50,7 +50,12 @@ export type KillChainName = z.infer<typeof killChainNameSchema>;
 export type KillChainPhase = z.infer<typeof killChainPhaseSchema>;
 
 
+/////////////////////////////////////
+//
 // Tool Schema
+//
+/////////////////////////////////////
+
 export const toolSchema = softwareSchema.extend({
 
     id: createStixIdentifierSchema(stixTypeSchema.enum.tool),
@@ -76,6 +81,10 @@ export const toolSchema = softwareSchema.extend({
         .describe('The version identifier associated with the Tool'),
 })
 .superRefine((schema, ctx) => {
+    //==============================================================================
+    // Validate external references
+    //==============================================================================
+    
     const {
         external_references,
     } = schema;
@@ -97,6 +106,10 @@ export const toolSchema = softwareSchema.extend({
         }
     }
     
+    //==============================================================================
+    // Validate x_mitre_aliases
+    //==============================================================================
+
     // The object's name MUST be listed as the first alias in the x_mitre_aliases field
     if (schema.x_mitre_aliases && schema.x_mitre_aliases.length > 0) {
         if (!(schema.x_mitre_aliases[0] === schema.name)){

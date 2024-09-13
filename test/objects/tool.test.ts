@@ -26,7 +26,7 @@ describe("toolSchema", () => {
             created: "2021-07-30T15:43:17.770Z" as StixCreatedTimestamp,
             modified: "2024-04-11T00:06:01.264Z" as StixModifiedTimestamp,
             name: "Sliver",
-            description:'[Sliver](https://attack.mitre.org/software/S0633) is an open source, cross-platform, red team command and control framework written in Golang.(Citation: Bishop Fox Sliver Framework August 2019)',
+            description: '[Sliver](https://attack.mitre.org/software/S0633) is an open source, cross-platform, red team command and control framework written in Golang.(Citation: Bishop Fox Sliver Framework August 2019)',
             external_references: [
                 {
                     source_name: "mitre-attack",
@@ -67,7 +67,6 @@ describe("toolSchema", () => {
         });
 
         it("should accept fully populated valid object (required + optional fields defined in STIX but not used in ATT&CK)", () => {
-            // Test with all fields populated with valid, non-edge-case values
             const fullTool = {
                 ...minimalTool,
                 kill_chain_phases: [
@@ -83,7 +82,6 @@ describe("toolSchema", () => {
             expect(fullTool).toBeDefined();
             expect(() => toolSchema.parse(fullTool)).not.toThrow();
         });
-        // Add more valid input tests...
     });
 
     describe("Field-Specific Tests", () => {
@@ -350,8 +348,6 @@ describe("toolSchema", () => {
             } as Tool;
             expect(() => toolSchema.parse(toolWithUnknownProperties)).toThrow();
         });
-
-        // Add any other schema-level tests...
     });
 
     describe("Edge Cases and Special Scenarios", () => {

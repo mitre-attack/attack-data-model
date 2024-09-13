@@ -17,8 +17,8 @@ const supportedStixTypes = [
     "x-mitre-matrix",
     "x-mitre-collection",
     "relationship",
-    "file",
-    "artifact"
+    "file",                 // not used in ATT&CK but used in sample_refs for Malware
+    "artifact"              // not used in ATT&CK but used in sample_refs for Malware
     // "indicator",         // not used in ATT&CK
     // "observed-data",     // not used in ATT&CK
     // "report",            // not used in ATT&CK

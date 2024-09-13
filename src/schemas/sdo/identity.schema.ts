@@ -8,6 +8,11 @@ import { identityClassOpenVocabulary, industrySectorOpenVocabulary } from "../co
 // TODO migrate to loading this in a globally scoped module
 import '../../errors';
 
+/////////////////////////////////////
+//
+// Identity Schema
+//
+/////////////////////////////////////
 
 export const identitySchema = attackBaseObjectSchema.extend({
 

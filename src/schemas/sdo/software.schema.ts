@@ -4,19 +4,16 @@ import { descriptionSchema, xMitrePlatformsSchema, stixCreatedByRefSchema, stixI
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
-import '../../errors'; 
+import '../../errors';
 
-
+/////////////////////////////////////
+//
 // Software Schema
+//
+/////////////////////////////////////
+
 export const softwareSchema = attackBaseObjectSchema.extend({
 
-    // Not used in ATT&CK Malware or Tool but defined in STIX
-    aliases: aliasesSchema
-        .optional()
-        .describe("Alternative names used to identify this software."),
-
-    // Even though this is defined as an optional field within the Core STIX SDO schema, it is required for Software.
-    // TODO Fix created_by_ref in Darkmoon (malware--310f437b-29e7-4844-848c-7220868d074a) before making this required.
     created_by_ref: stixCreatedByRefSchema
         .describe("The ID of the Source object that describes who created this object."),
 
@@ -38,10 +35,16 @@ export const softwareSchema = attackBaseObjectSchema.extend({
     x_mitre_aliases: aliasesSchema
         .describe("Alternative names used to identify this software. The first alias must match the object's name.")
         .optional(),
-    
+
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
-    
+
     x_mitre_domains: xMitreDomainsSchema,
+
+    // Not used in ATT&CK Malware or Tool but defined in STIX
+    aliases: aliasesSchema
+        .optional()
+        .describe("Alternative names used to identify this software."),
+
 });
 
 // Define the type for Software

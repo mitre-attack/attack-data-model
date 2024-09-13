@@ -1,17 +1,8 @@
 import { ZodError } from "zod";
 import {
-    Description,
-    Name,
-    ObjectMarkingRefs,
     StixCreatedTimestamp,
     StixIdentifier,
-    StixModifiedTimestamp,
-    StixSpecVersion,
-    StixType,
-    XMitreAttackSpecVersion,
-    XMitreDomains,
-    XMitreVersion,
-    stixTypeSchema,
+    StixModifiedTimestamp
 } from "../../src/schemas/common";
 import {
     Identity,
@@ -26,19 +17,19 @@ describe("identitySchema", () => {
 
     beforeAll(() => {
         minimalIdentity = identitySchema.parse({
-            type: stixTypeSchema.Enum["identity"] as StixType,
-            id: `identity--${uuidv4()}` as StixIdentifier,
-            spec_version: "2.1" as StixSpecVersion,
+            type: "identity",
+            id: `identity--${uuidv4()}`,
+            spec_version: "2.1",
             created: "2017-06-01T00:00:00.000Z" as StixCreatedTimestamp,
             modified: "2017-06-01T00:00:00.000Z" as StixModifiedTimestamp,
-            name: "The MITRE Corporation" as Name,
+            name: "The MITRE Corporation",
             object_marking_refs: [
                 "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168",
-            ] as ObjectMarkingRefs,
+            ],
             identity_class: "organization",
-            x_mitre_attack_spec_version: "2.1.0" as XMitreAttackSpecVersion,
-            x_mitre_domains: ["enterprise-attack"] as XMitreDomains,
-            x_mitre_version: "1.0" as XMitreVersion,
+            x_mitre_attack_spec_version: "2.1.0",
+            x_mitre_domains: ["enterprise-attack"],
+            x_mitre_version: "1.0"
         });
     });
 
@@ -47,20 +38,11 @@ describe("identitySchema", () => {
             expect(() => identitySchema.parse(minimalIdentity)).not.toThrow();
         });
 
-        // it("should accept fully populated valid object (required + optional ATT&CK fields)", () => {
-        //     const fullIdentity = {
-        //         ...minimalIdentity,
-        //         description: "Description" as Description,
-        //     };
-        //     expect(fullidentity).toBeDefined();
-        //     expect(() => identitySchema.parse(fullidentity)).not.toThrow();
-        // });
-
         it("should accept fully populated valid object (required + optional fields deifined in STIX but not used in ATT&CK)", () => {
             // Test with all fields populated with valid, non-edge-case values
             const fullidentity = {
                 ...minimalIdentity,
-                description: "Description" as Description,
+                description: "Description",
                 roles: ["administrator"],
                 sectors: ["non-profit"], 
                 contact_information: "attack@mitre.org"
