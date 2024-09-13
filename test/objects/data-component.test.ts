@@ -1,7 +1,7 @@
 import { ZodError } from "zod";
 import {
-    StixIdentifier,
-    stixTypeSchema,
+    StixCreatedTimestamp,
+    StixIdentifier
 } from "../../src/schemas/common";
 import {
     DataComponent,
@@ -16,13 +16,13 @@ describe("dataComponentSchema", () => {
     beforeAll(() => {
         minimalDataComponent = dataComponentSchema
             .parse({
-                type: stixTypeSchema.Enum["x-mitre-data-component"],
+                type: "x-mitre-data-component",
                 id: `x-mitre-data-component--${uuidv4()}`,
-                description: "",
+                description: "A user requested active directory credentials, such as a ticket or token.",
                 spec_version: "2.1",
-                created: "2017-06-01T00:00:00.000Z",
-                created_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
-                modified: "2017-06-01T00:00:00.000Z",
+                created: "2017-06-01T00:00:00.000Z" as StixCreatedTimestamp,
+                created_by_ref: `identity--${uuidv4()}`,
+                modified: "2017-06-01T00:00:00.000Z" as StixCreatedTimestamp,
                 name: "Network Connection Creation",
                 object_marking_refs: [
                     "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168",
@@ -190,8 +190,6 @@ describe("dataComponentSchema", () => {
             expect(() => dataComponentSchema
                 .parse(dataComponentWithUnknownProperties)).toThrow();
         });
-
-        // Add any other schema-level tests...
     });
 
     describe("Edge Cases and Special Scenarios", () => {
@@ -206,7 +204,6 @@ describe("dataComponentSchema", () => {
         it('should validate all objects in the global.attackData', () => {
             let dataComponents: any[];
             dataComponents = global.attackData.objectsByType["x-mitre-data-component"];
-
 
             const errors: { dataComponent: DataComponent; error: ZodError }[] = [];
 
