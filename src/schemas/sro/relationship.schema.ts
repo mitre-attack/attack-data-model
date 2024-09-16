@@ -35,17 +35,14 @@ export type RelationshipType = z.infer<typeof relationshipTypeSchema>;
 
 // Valid relationship object types
 export const validRelationshipObjectTypes = [
-	stixTypeSchema.Enum['attack-pattern'],
+	stixTypeSchema.Enum["attack-pattern"],
 	stixTypeSchema.Enum["campaign"],
 	stixTypeSchema.Enum["course-of-action"],
 	stixTypeSchema.Enum["intrusion-set"],
 	stixTypeSchema.Enum["malware"],
 	stixTypeSchema.Enum["tool"],
 	stixTypeSchema.Enum["x-mitre-data-component"],
-	stixTypeSchema.Enum["x-mitre-data-source"],
-	stixTypeSchema.Enum["x-mitre-tactic"],
 	stixTypeSchema.Enum["x-mitre-asset"],
-	stixTypeSchema.Enum["x-mitre-matrix"],
 ];
 
 type RelationshipMap = Record<RelationshipType, { source: StixType[], target: StixType[] }>;
