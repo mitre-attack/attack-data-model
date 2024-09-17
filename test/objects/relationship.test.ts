@@ -8,7 +8,7 @@ import {
     isValidRelationship
 } from '../../src/schemas/sro/relationship.schema';
 import {
-    Description, StixCreatedTimestamp, StixIdentifier,
+    Description, ExternalReferences, StixCreatedTimestamp, StixIdentifier,
     StixModifiedTimestamp, StixSpecVersion, StixType,
     stixTypeSchema,
     xMitreIdentity
@@ -16,7 +16,7 @@ import {
 
 
 describe('RelationshipSchema', () => {
-
+    let relationships: any[];
     let minimalRelationship: Relationship;
 
     const validRelationships: { sourceType: StixType, relationshipType: RelationshipType, targetType: StixType }[] = [
@@ -48,6 +48,7 @@ describe('RelationshipSchema', () => {
     ];
 
     beforeAll(() => {
+        relationships = global.attackData.objectsByType['relationship'];
 
         minimalRelationship = {
             id: `relationship--${uuidv4()}`,
@@ -61,8 +62,6 @@ describe('RelationshipSchema', () => {
             object_marking_refs: [`marking-definition--${uuidv4()}`],
             x_mitre_attack_spec_version: "2.1.0",
             x_mitre_modified_by_ref: xMitreIdentity,
-            x_mitre_version: "1.0",
-            x_mitre_domains: ["enterprise-attack"]
         };
     });
 
@@ -105,8 +104,8 @@ describe('RelationshipSchema', () => {
             it('should reject invalid values', () => {
                 const invalidId: Relationship = {
                     ...minimalRelationship,
-                    id: 'invalid-id' as any
-                };
+                    id: 'invalid-id' as StixIdentifier
+                } as Relationship;
                 expect(() => relationshipSchema.parse(invalidId)).toThrow();
 
                 const invalidRelationshipId: Relationship = {
@@ -227,18 +226,34 @@ describe('RelationshipSchema', () => {
             });
         });
 
-        describe('Schema-Level Tests', () => {
-            it('should reject unknown properties', () => {
-                const relationshipWithUnknownProperties = {
+        describe('external_references', () => {
+            it('should reject invalid values', () => {
+                const invalidRelationship: Relationship = {
                     ...minimalRelationship,
-                    unknown_property: true
-                } as Relationship;
-                expect(() => relationshipSchema.parse(relationshipWithUnknownProperties)).toThrow();
+                    external_references: 'not-an-array' as unknown as ExternalReferences
+
+                };
+                expect(() => relationshipSchema.parse(invalidRelationship)).toThrow();
+            });
+
+            it('should accept omitted optional values', () => {
+                const { external_references, ...relationshipWithoutExternalReferences } = minimalRelationship;
+                expect(() => relationshipSchema.parse(relationshipWithoutExternalReferences)).not.toThrow();
             });
         });
 
-        describe('Relationships with invalid Source/Target types', () => {
+        it('should reject unknown properties', () => {
+            const relationshipWithUnknownProperties = {
+                ...minimalRelationship,
+                unknown_property: true
+            } as Relationship;
+            expect(() => relationshipSchema.parse(relationshipWithUnknownProperties)).toThrow();
+        });
 
+        describe('Schema Refinements', () => {
+            //==============================================================================
+            // Validate relationship object combinations
+            //==============================================================================
             validRelationships.forEach(({ sourceType, relationshipType, targetType }) => {
                 it(`should return true for valid ${sourceType} ${relationshipType} ${targetType} relationship`, () => {
                     expect(isValidRelationship(sourceType, relationshipType as RelationshipType, targetType)).toBe(true);
@@ -253,16 +268,9 @@ describe('RelationshipSchema', () => {
         });
     });
 
-    describe('Edge Cases and Special Scenarios', () => {
-        // Add more edge case tests as needed...
-    });
-
     it('should validate existing ATT&CK relationships and report errors', () => {
-        const relationships = global.attackData.objectsByType['relationship'] as Relationship[];
-
         const validRelationships: Relationship[] = [];
-        const deprecatedOrRevokedErrors: { relationship: Relationship; issues: z.ZodIssue[] }[] = [];
-        const activeErrors: { relationship: Relationship; issues: z.ZodIssue[] }[] = [];
+        const errors: { relationship: Relationship; issues: z.ZodIssue[] }[] = [];
 
         for (let relationship of relationships) {
             const result = relationshipSchema.safeParse(relationship);
@@ -270,11 +278,7 @@ describe('RelationshipSchema', () => {
                 validRelationships.push(relationship);
             } else {
                 const errorInfo = { relationship: relationship, issues: result.error.issues };
-                if (relationship.x_mitre_deprecated || relationship.revoked) {
-                    deprecatedOrRevokedErrors.push(errorInfo);
-                } else {
-                    activeErrors.push(errorInfo);
-                }
+                errors.push(errorInfo);
             }
         }
 
@@ -284,31 +288,23 @@ describe('RelationshipSchema', () => {
                     `    - ${issue.path.join('.')}: ${issue.message}`
                 ).join('\n');
 
-                return `
-                Relationship ID: ${relationship.id}
-                Source Ref: ${relationship.source_ref}
-                Target Ref: ${relationship.target_ref}
-                Relationship Type: ${relationship.relationship_type}
-                Deprecated: ${relationship.x_mitre_deprecated ? 'Yes' : 'No'}
-                Revoked: ${relationship.revoked ? 'Yes' : 'No'}
-                Validation Errors:
-                ${errorMessages}`;
+                return `Relationship ID: ${relationship.id}
+                        Source Ref: ${relationship.source_ref}
+                        Target Ref: ${relationship.target_ref}
+                        Relationship Type: ${relationship.relationship_type}
+                        Validation Errors:
+                        ${errorMessages}`;
             }).join('\n');
         };
 
-        if (activeErrors.length > 0) {
-            console.warn(`The following ${activeErrors.length} active relationship(s) failed validation:\n${formatErrorReport(activeErrors)}`);
-        }
-
-        if (deprecatedOrRevokedErrors.length > 0) {
-            console.warn(`The following ${deprecatedOrRevokedErrors.length} deprecated or revoked relationship(s) failed validation:\n${formatErrorReport(deprecatedOrRevokedErrors)}`);
+        if (errors.length > 0) {
+            console.warn(`The following ${errors.length} relationship(s) failed validation:\n${formatErrorReport(errors)}`);
         }
 
         console.log(`
         Total relationships: ${relationships.length}
         Valid relationships: ${validRelationships.length}
-        Active relationships with errors: ${activeErrors.length}
-        Deprecated or revoked relationships with errors: ${deprecatedOrRevokedErrors.length}
+        Relationships with errors: ${errors.length}
         `);
 
         // This expectation will always pass, but it gives us a way to surface the error count in the test results
