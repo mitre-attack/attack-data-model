@@ -179,6 +179,21 @@ describe("dataComponentSchema", () => {
                 expect(() => dataComponentSchema.parse(dataComponentDataSourceRef)).toThrow();
             });
         });
+
+        describe('x_mitre_deprecated', () => {
+            it('should reject invalid values', () => {
+                const invalidDataComponent: DataComponent = {
+                    ...minimalDataComponent,
+                    x_mitre_deprecated: 'not a boolean' as any
+                };
+                expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
+            });
+
+            it('should accept omitted optional values', () => {
+                const { x_mitre_deprecated, ...dataComponentWithoutDeprecated } = minimalDataComponent;
+                expect(() => dataComponentSchema.parse(dataComponentWithoutDeprecated)).not.toThrow();
+            });
+        });
     });
 
     describe("Schema-Level Tests", () => {

@@ -54,12 +54,12 @@ describe("dataSourceSchema", () => {
                 ...minimalDataSource,
                 x_mitre_platforms: ["Windows"],
                 x_mitre_contributors: ["Contributor"],
+                x_mitre_deprecated: false
             };
             expect(fullDataSource).toBeDefined();
             expect(() => dataSourceSchema.parse(fullDataSource)).not.toThrow();
         });
     })
-
 
 
     describe("Field-Specific Tests", () => {
@@ -73,9 +73,9 @@ describe("dataSourceSchema", () => {
             });
 
             it("should reject omittance of required values", () => {
-                const { id, ...DataSourceWithoutId } = minimalDataSource;
+                const { id, ...dataSourceWithoutId } = minimalDataSource;
                 expect(() => dataSourceSchema
-                    .parse(DataSourceWithoutId)).toThrow();
+                    .parse(dataSourceWithoutId)).toThrow();
             });
         });
 
@@ -90,9 +90,9 @@ describe("dataSourceSchema", () => {
             });
 
             it("should reject omittance of required values", () => {
-                const { type, ...DataSourceWithoutType } = minimalDataSource;
+                const { type, ...dataSourceWithoutType } = minimalDataSource;
                 expect(() => dataSourceSchema
-                    .parse(DataSourceWithoutType)).toThrow();
+                    .parse(dataSourceWithoutType)).toThrow();
             });
         });
 
@@ -107,9 +107,9 @@ describe("dataSourceSchema", () => {
             });
 
             it("should reject omittance of required values", () => {
-                const { description, ...DataSourceWithoutDescription } = minimalDataSource;
+                const { description, ...dataSourceWithoutDescription } = minimalDataSource;
                 expect(() => dataSourceSchema
-                    .parse(DataSourceWithoutDescription)).toThrow();
+                    .parse(dataSourceWithoutDescription)).toThrow();
             });
         });
 
@@ -131,8 +131,8 @@ describe("dataSourceSchema", () => {
             });
 
             it("should reject omittance of required values", () => {
-                const { created_by_ref, ...DataSourceWithoutCreatedByRef } = minimalDataSource;
-                expect(() => dataSourceSchema.parse(DataSourceWithoutCreatedByRef)).toThrow();
+                const { created_by_ref, ...dataSourceWithoutCreatedByRef } = minimalDataSource;
+                expect(() => dataSourceSchema.parse(dataSourceWithoutCreatedByRef)).toThrow();
             });
         });
 
@@ -147,9 +147,9 @@ describe("dataSourceSchema", () => {
             });
 
             it("should reject omittance of required values", () => {
-                const { object_marking_refs, ...DataSourceWithoutObjectMarkingRefs } = minimalDataSource;
+                const { object_marking_refs, ...dataSourceWithoutObjectMarkingRefs } = minimalDataSource;
                 expect(() => dataSourceSchema
-                    .parse(DataSourceWithoutObjectMarkingRefs)).toThrow();
+                    .parse(dataSourceWithoutObjectMarkingRefs)).toThrow();
             });
         });
 
@@ -164,9 +164,9 @@ describe("dataSourceSchema", () => {
             });
 
             it('should reject omitted required values', () => {
-                const { x_mitre_domains, ...DataSourceWithoutDomains } = minimalDataSource;
+                const { x_mitre_domains, ...dataSourceWithoutDomains } = minimalDataSource;
                 expect(() => dataSourceSchema
-                    .parse(DataSourceWithoutDomains)).toThrow();
+                    .parse(dataSourceWithoutDomains)).toThrow();
             });
         });
 
@@ -196,8 +196,8 @@ describe("dataSourceSchema", () => {
             });
 
             it('should reject omitted required values', () => {
-                const { external_references, ...DataSourceWithoutExternalReferences } = minimalDataSource;
-                expect(() => dataSourceSchema.parse(DataSourceWithoutExternalReferences)).toThrow();
+                const { external_references, ...dataSourceWithoutExternalReferences } = minimalDataSource;
+                expect(() => dataSourceSchema.parse(dataSourceWithoutExternalReferences)).toThrow();
             });
         });
 
@@ -213,6 +213,21 @@ describe("dataSourceSchema", () => {
             it("should reject omittance of required values", () => {
                 const { x_mitre_collection_layers, ...DataSourceMitreCollectionLayers } = minimalDataSource;
                 expect(() => dataSourceSchema.parse(DataSourceMitreCollectionLayers)).toThrow();
+            });
+        });
+
+        describe('x_mitre_deprecated', () => {
+            it('should reject invalid values', () => {
+                const invalidDataSource: DataSource = {
+                    ...minimalDataSource,
+                    x_mitre_deprecated: 'not a boolean' as any
+                };
+                expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
+            });
+
+            it('should accept omitted optional values', () => {
+                const { x_mitre_deprecated, ...dataSourceWithoutDeprecated } = minimalDataSource;
+                expect(() => dataSourceSchema.parse(dataSourceWithoutDeprecated)).not.toThrow();
             });
         });
     });
