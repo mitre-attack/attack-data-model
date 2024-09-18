@@ -230,9 +230,9 @@ describe("dataSourceSchema", () => {
             it('should reject invalid ATT&CK ID format for non-subtechnique', () => {
                 const invalidDataSource = {
                     ...minimalDataSource,
-                    external_references: [{ source_name: 'mitre-attack', external_id: 'S123' }]
+                    external_references: [{ source_name: 'mitre-attack', external_id: 'DS123' }]
                 };
-                expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow(`The first external_reference must match the ATT&CK ID format S####}.`);
+                expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow(`The first external_reference must match the ATT&CK ID format DS####}.`);
             });
         });
     });
