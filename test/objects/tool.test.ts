@@ -60,7 +60,8 @@ describe("toolSchema", () => {
                 ...minimalTool,
                 x_mitre_platforms: ["Windows"],
                 x_mitre_contributors: ["Contributor"],
-                x_mitre_aliases: ["Sliver"]
+                x_mitre_aliases: ["Sliver"],
+                x_mitre_deprecated: false
             };
             expect(fullTool).toBeDefined();
             expect(() => toolSchema.parse(fullTool)).not.toThrow();
@@ -316,6 +317,21 @@ describe("toolSchema", () => {
             it('should reject omitted required values', () => {
                 const { x_mitre_domains, ...toolWithoutDomains } = minimalTool;
                 expect(() => toolSchema.parse(toolWithoutDomains)).toThrow();
+            });
+        });
+
+        describe('x_mitre_deprecated', () => {
+            it('should reject invalid values', () => {
+                const invalidTool: Tool = {
+                    ...minimalTool,
+                    x_mitre_deprecated: 'not a boolean' as any
+                };
+                expect(() => toolSchema.parse(invalidTool)).toThrow();
+            });
+
+            it('should accept omitted optional values', () => {
+                const { x_mitre_deprecated, ...toolWithoutDeprecated } = minimalTool;
+                expect(() => toolSchema.parse(toolWithoutDeprecated)).not.toThrow();
             });
         });
     });
