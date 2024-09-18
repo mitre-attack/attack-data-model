@@ -230,13 +230,13 @@ describe("GroupSchema", () => {
         expect(() => groupSchema.parse(invalidGroup)).toThrow();
       });
 
-      //   it("should reject omitted required values", () => {
-      //     const { external_references, ...groupWithoutExternalReferences } =
-      //       minimalGroup;
-      //     expect(() =>
-      //       groupSchema.parse(groupWithoutExternalReferences)
-      //     ).toThrow();
-      //   });
+      it("should reject omitted required values", () => {
+        const { external_references, ...groupWithoutExternalReferences } =
+          minimalGroup;
+        expect(() =>
+          groupSchema.parse(groupWithoutExternalReferences)
+        ).toThrow();
+      });
     });
 
     describe("description", () => {
