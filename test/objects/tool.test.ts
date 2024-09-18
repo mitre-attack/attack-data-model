@@ -338,6 +338,16 @@ describe("toolSchema", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow(`The first external_reference must match the ATT&CK ID format S####}.`);
             });
         });
+
+        describe('x_mitre_aliases Validation', () => {
+            it('should reject when first alias does not match object name', () => {
+                const invalidTool = {
+                    ...minimalTool,
+                    x_mitre_aliases: ["HammerDuke"]
+                };
+                expect(() => toolSchema.parse(invalidTool)).toThrow(`The first alias must match the object's name`);
+            });
+        });
     });
 
     describe("Schema-Level Tests", () => {
@@ -354,8 +364,6 @@ describe("toolSchema", () => {
         it("should handle special case X", () => {
             // Test any schema-specific special cases
         });
-
-        // Add more edge case tests as needed...
     });
 
     describe('Validate All Objects', () => {

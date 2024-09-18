@@ -75,7 +75,32 @@ export const dataSourceSchema = attackBaseObjectSchema.extend({
     .optional(),
 
   x_mitre_collection_layers: xMitreCollectionLayersSchema,
-});
+})
+.superRefine((schema, ctx) => {
+  //==============================================================================
+  // Validate external references
+  //==============================================================================
+
+  const {
+      external_references,
+  } = schema;
+  const attackIdEntry = external_references[0];
+  if (!attackIdEntry.external_id) {
+      ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "ATT&CK ID must be defined in the first external_references entry.",
+          path: ['external_references', 0, 'external_id']
+      });
+  } else {
+      const idRegex = /^DS\d{4}$/;
+      if (!idRegex.test(attackIdEntry.external_id)) {
+          ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: `The first external_reference must match the ATT&CK ID format DS####}.`,
+              path: ['external_references', 0, 'external_id']
+          });
+      }
+  }});
 
 // Define the type for DataSource
 export type DataSource = z.infer<typeof dataSourceSchema>;
