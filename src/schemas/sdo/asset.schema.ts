@@ -46,7 +46,10 @@ export const relatedAssetSchema = z.object({
 			invalid_type_error: "Related asset name must be a string."
 		}),
 
-	related_asset_sectors: xMitreSectorsSchema,
+	related_asset_sectors: xMitreSectorsSchema
+		.optional(),
+	description: descriptionSchema
+		.optional()
 });
 
 export const relatedAssetsSchema = z
@@ -69,7 +72,8 @@ export const assetSchema = attackBaseObjectSchema.extend({
 
 	type: z.literal(stixTypeSchema.enum['x-mitre-asset']),
 
-	description: descriptionSchema,
+	description: descriptionSchema
+		.optional(),
 
 	// Optional in STIX but required in ATT&CK
 	external_references: externalReferencesSchema,
@@ -77,7 +81,8 @@ export const assetSchema = attackBaseObjectSchema.extend({
 	// Optional in STIX but required in ATT&CK
 	object_marking_refs: objectMarkingRefsSchema,
 	
-	x_mitre_platforms: xMitrePlatformsSchema,
+	x_mitre_platforms: xMitrePlatformsSchema
+		.optional(),
 
 	x_mitre_domains: xMitreDomainsSchema,
 
@@ -90,25 +95,21 @@ export const assetSchema = attackBaseObjectSchema.extend({
 	x_mitre_related_assets: relatedAssetsSchema
 		.optional(),
 
-	x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
+	x_mitre_modified_by_ref: xMitreModifiedByRefSchema
+		.optional(),
 })
 	.required({
 		created: true,
 		created_by_ref: true,
-		description: true,
 		external_references: true,
 		id: true,
 		modified: true,
 		name: true,
 		object_marking_refs: true,
-		revoked: true,
 		spec_version: true,
 		type: true,
 		x_mitre_attack_spec_version: true,
-		x_mitre_deprecated: true,
 		x_mitre_domains: true,
-		x_mitre_modified_by_ref: true,
-		x_mitre_platforms: true,
 		x_mitre_version: true,
 	})
 	// validate common fields
