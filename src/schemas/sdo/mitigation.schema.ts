@@ -32,6 +32,20 @@ export const mitigationSchema = attackBaseObjectSchema.extend({
 
   x_mitre_modified_by_ref: stixIdentifierSchema
     .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."),
+})
+.superRefine((schema, ctx) => {
+  //==============================================================================
+  // Validate x_mitre_old_attack_id
+  //==============================================================================
+  const idRegex = /^MOB-M\d{4}$/;
+  const oldAttackId = schema.x_mitre_old_attack_id;
+  if (typeof oldAttackId === 'string' && !idRegex.test(oldAttackId)) {
+      ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `x_mitre_old_attack_id for mitigation need to be in the format MOB-M####}.`,
+          path: ['x_mitre_old_attack_id']
+      });
+  }
 });
 
 // Define the type for SchemaName

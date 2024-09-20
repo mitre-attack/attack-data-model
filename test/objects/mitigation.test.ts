@@ -45,7 +45,7 @@ describe("MitigationSchema", () => {
         {
           source_name: "mitre-attack",
           url: "https://attack.mitre.org/mitigations/M0948",
-          external_id: "M0948",
+          external_id: "M0000",
         },
       ] as ExternalReferences,
       x_mitre_modified_by_ref: xMitreIdentity as XMitreModifiedByRef,
