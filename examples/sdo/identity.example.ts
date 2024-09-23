@@ -35,7 +35,11 @@ const invalidIdentity = {
     modified: "2017-06-01T00:00:00.000Z",
     // Missing object_marking_refs
     // Missing identity_class
-    name: "The MITRE Corporation"
+    x_mitre_domains:["enterprise-attack"],
+    name: "The MITRE Corporation",
+    x_mitre_attack_spec_version: "3.2.0",
+	x_mitre_version: "1.0",
+    spec_version: "2.1"
 };
 
 console.log("Example 2 - Invalid Identity (missing required fields):");
@@ -128,7 +132,11 @@ const exampleOfRealIdentity = {
     "identity_class": "organization",
     "object_marking_refs": [
         "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
-    ]
+    ],
+    "x_mitre_attack_spec_version": "3.2.0",
+	"x_mitre_version": "1.0",
+    "spec_version": "2.1",
+    "x_mitre_domains":["enterprise-attack"],
 }
 
 console.log("\nExample 5 - Parsing the provided example identity:");
@@ -140,5 +148,31 @@ try {
 } catch (error) {
     if (error instanceof z.ZodError) {
         console.log("Validation errors:", error.errors);
+    }
+}
+
+/** ************************************************************************************************* */
+// Example 6: Identity with unknown property
+/** ************************************************************************************************* */
+const identityWithUnknownProperty = {
+    ...exampleOfRealIdentity,
+    foo: 'bar'
+}
+
+console.log("\nExample 6 - Parsing a identity with an unknown property (foo: 'bar'):");
+try {
+    const parsedIdentity = identitySchema.parse(identityWithUnknownProperty);
+    console.log("Parsed successfully. Identity name:", parsedIdentity.name);
+} catch (error) {
+    if (error instanceof z.ZodError) {
+        console.log("Validation errors:", error.errors);
+        // Validation errors: [
+        //     {
+        //       code: 'unrecognized_keys',
+        //       keys: [ 'foo' ],
+        //       path: [],
+        //       message: "Unrecognized key(s) in object: 'foo'"
+        //     }
+        //   ]
     }
 }

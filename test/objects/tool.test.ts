@@ -334,6 +334,21 @@ describe("toolSchema", () => {
                 expect(() => toolSchema.parse(toolWithoutDeprecated)).not.toThrow();
             });
         });
+
+        describe('revoked', () => {
+            it('should reject invalid values', () => {
+                const invalidTool: Tool = {
+                    ...minimalTool,
+                    revoked: 'not a boolean' as any
+                };
+                expect(() => toolSchema.parse(invalidTool)).toThrow();
+            });
+
+            it('should accept omitted optional values', () => {
+                const { revoked, ...toolWithoutRevoked } = minimalTool;
+                expect(() => toolSchema.parse(toolWithoutRevoked)).not.toThrow();
+            });
+        });
     });
 
     describe('Schema Refinements', () => {

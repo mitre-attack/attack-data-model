@@ -1,6 +1,5 @@
 import { ZodError } from "zod";
 import {
-    ExternalReferences,
     StixCreatedTimestamp,
     StixIdentifier,
     StixModifiedTimestamp,
@@ -127,7 +126,7 @@ describe("campaignSchema", () => {
             it('should reject invalid values', () => {
                 const invalidCampaign: Campaign = {
                     ...minimalCampaign,
-                    external_references: 'not-an-array' as unknown as ExternalReferences
+                    external_references: 'not-an-array' as any
 
                 };
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
