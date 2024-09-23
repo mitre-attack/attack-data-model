@@ -23,7 +23,9 @@ const stixTypeToSchemaName: Record<StixType, string> = {
     "x-mitre-asset": "Asset",
     "x-mitre-matrix": "Matrix",
     "x-mitre-collection": "Collection",
-    "relationship": "RelationshipSchema"
+    "relationship": "RelationshipSchema",
+    "file": "",                 // not used in ATT&CK but used in sample_refs for Malware
+    "artifact": ""              // not used in ATT&CK but used in sample_refs for Malware
     // "indicator": "Indicator",            // not used in ATT&CK
     // "observed-data": "ObservedData",     // not used in ATT&CK
     // "report": "Report",                  // not used in ATT&CK

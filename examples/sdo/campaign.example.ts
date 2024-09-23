@@ -1,5 +1,5 @@
-import { stixCreatedByRefSchema, stixCreatedTimestampSchema, stixModifiedTimestampSchema } from "../src/schemas/common";
-import { campaignSchema } from "../src/schemas/sdo/campaign.schema";
+import { stixCreatedByRefSchema, stixCreatedTimestampSchema, stixModifiedTimestampSchema } from "../../src/schemas/common";
+import { campaignSchema } from "../../src/schemas/sdo/campaign.schema";
 import { z } from "zod";
 
 /** ************************************************************************************************* */

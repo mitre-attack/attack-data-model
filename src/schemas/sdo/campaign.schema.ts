@@ -156,9 +156,9 @@ export const campaignSchema = attackBaseObjectSchema.extend({
             }
         }
 
-        //==============================================================================
-        // Validate external references
-        //==============================================================================
+    //==============================================================================
+    // Validate external references
+    //==============================================================================
 
         // Verify the first external reference is an ATT&CK ID
         const attackIdEntry = external_references[0];
@@ -173,15 +173,15 @@ export const campaignSchema = attackBaseObjectSchema.extend({
             if (!idRegex.test(attackIdEntry.external_id)) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
-                    message: `The first external_reference must match the ATT&CK ID format "C####"}.`,
+                    message: `The first external_reference must match the ATT&CK ID format C####}.`,
                     path: ['external_references', 0, 'external_id']
                 });
             }
         }
 
-        //==============================================================================
-        // Validate citations (they must appear in external_references)
-        //==============================================================================
+    //==============================================================================
+    // Validate citations (they must appear in external_references)
+    //==============================================================================
 
         // Verify that <citation name> can be found as one of the source_name of one of the external_references
 
@@ -201,7 +201,7 @@ export const campaignSchema = attackBaseObjectSchema.extend({
                 if (!citationExists) {
                     ctx.addIssue({
                         code: z.ZodIssueCode.custom,
-                        message: `Citation "${citationName}" not found in external_references.`,
+                        message: `Citation ${citationName} not found in external_references.`,
                         path: [...path, index]
                     });
                 }
