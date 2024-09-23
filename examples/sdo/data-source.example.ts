@@ -29,8 +29,8 @@ const validDataSource = {
   external_references: [
     {
       source_name: "mitre-attack",
-      url: "https://attack.mitre.org/campaigns/C0022",
-      external_id: "C0022",
+      url: "https://attack.mitre.org/datasources/DS0014",
+      external_id: "DS0014"
     },
   ],
   x_mitre_modified_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
@@ -194,5 +194,31 @@ try {
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation errors:", error.errors);
+  }
+}
+
+/** ************************************************************************************************* */
+// Example 7: DataSource with unknown property
+/** ************************************************************************************************* */
+const dataSourceWithUnknownProperty = {
+  ...exampleOfRealDataSource,
+  foo: 'bar'
+}
+
+console.log("\nExample 7 - Parsing a dataSource with an unknown property (foo: 'bar'):");
+try {
+  const parsedDataSource = dataSourceSchema.parse(dataSourceWithUnknownProperty);
+  console.log("Parsed successfully. DataSource name:", parsedDataSource.name);
+} catch (error) {
+  if (error instanceof z.ZodError) {
+      console.log("Validation errors:", error.errors);
+      // Validation errors: [
+      //     {
+      //       code: 'unrecognized_keys',
+      //       keys: [ 'foo' ],
+      //       path: [],
+      //       message: "Unrecognized key(s) in object: 'foo'"
+      //     }
+      //   ]
   }
 }

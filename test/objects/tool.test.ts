@@ -361,7 +361,7 @@ describe("toolSchema", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow(/ATT&CK ID must be defined/);
             });
 
-            it('should reject invalid ATT&CK ID format for non-subtechnique', () => {
+            it('should reject invalid ATT&CK ID format', () => {
                 const invalidTool = {
                     ...minimalTool,
                     external_references: [{ source_name: 'mitre-attack', external_id: 'S123' }]

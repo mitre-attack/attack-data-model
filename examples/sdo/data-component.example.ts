@@ -166,3 +166,29 @@ try {
     console.log("Validation errors:", error.errors);
   }
 }
+
+/** ************************************************************************************************* */
+// Example 7: DataComponent with unknown property
+/** ************************************************************************************************* */
+const dataComponentWithUnknownProperty = {
+  ...exampleOfRealDataComponent,
+  foo: 'bar'
+}
+
+console.log("\nExample 7 - Parsing a dataComponent with an unknown property (foo: 'bar'):");
+try {
+  const parsedDataComponent = dataComponentSchema.parse(dataComponentWithUnknownProperty);
+  console.log("Parsed successfully. DataComponent name:", parsedDataComponent.name);
+} catch (error) {
+  if (error instanceof z.ZodError) {
+      console.log("Validation errors:", error.errors);
+      // Validation errors: [
+      //     {
+      //       code: 'unrecognized_keys',
+      //       keys: [ 'foo' ],
+      //       path: [],
+      //       message: "Unrecognized key(s) in object: 'foo'"
+      //     }
+      //   ]
+  }
+}

@@ -40,6 +40,15 @@ describe("dataComponentSchema", () => {
             expect(() => dataComponentSchema
                 .parse(minimalDataComponent)).not.toThrow();
         });
+
+        it("should accept fully populated valid object (required + optional ATT&CK fields)", () => {
+            const fullDataComponent = {
+                ...minimalDataComponent,
+                x_mitre_deprecated: false
+            };
+            expect(fullDataComponent).toBeDefined();
+            expect(() => dataComponentSchema.parse(fullDataComponent)).not.toThrow();
+        });
     })
 
     describe("Field-Specific Tests", () => {
