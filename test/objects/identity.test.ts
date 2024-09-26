@@ -1,7 +1,6 @@
 import { ZodError } from "zod";
 import {
     StixCreatedTimestamp,
-    StixIdentifier,
     StixModifiedTimestamp
 } from "../../src/schemas/common";
 import {
@@ -14,9 +13,10 @@ describe("identitySchema", () => {
     let identities: any[];
 
     let minimalIdentity: Identity;
+    let invalidIdentity: Identity;
 
     beforeAll(() => {
-        minimalIdentity = identitySchema.parse({
+        minimalIdentity = {
             type: "identity",
             id: `identity--${uuidv4()}`,
             spec_version: "2.1",
@@ -30,7 +30,7 @@ describe("identitySchema", () => {
             x_mitre_attack_spec_version: "2.1.0",
             x_mitre_domains: ["enterprise-attack"],
             x_mitre_version: "1.0"
-        });
+        };
     });
 
     describe("Valid Inputs", () => {
@@ -40,7 +40,7 @@ describe("identitySchema", () => {
 
         it("should accept fully populated valid object (required + optional fields deifined in STIX but not used in ATT&CK)", () => {
             // Test with all fields populated with valid, non-edge-case values
-            const fullidentity = {
+            const fullidentity: Identity = {
                 ...minimalIdentity,
                 description: "Description",
                 roles: ["administrator"],
@@ -55,11 +55,14 @@ describe("identitySchema", () => {
 
     describe("Field-Specific Tests", () => {
         describe("id", () => {
-            it("should reject invalid values", () => {
-                const invalidIdentity: Identity = {
+            beforeEach(() => {
+                invalidIdentity = {
                     ...minimalIdentity,
-                    id: "invalid-id" as StixIdentifier,
-                } as Identity;
+                    id: "invalid-id" as any,
+                };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => identitySchema.parse(invalidIdentity)).toThrow();
             });
 
@@ -70,11 +73,14 @@ describe("identitySchema", () => {
         });
 
         describe("type", () => {
-            it("should reject invalid values", () => {
-                const invalidIdentity: Identity = {
+            beforeEach(() => {
+                invalidIdentity = {
                     ...minimalIdentity,
                     type: "invalid-type" as any,
                 };
+            });
+            
+            it("should reject invalid values", () => {
                 expect(() => identitySchema.parse(invalidIdentity)).toThrow();
             });
 
@@ -85,11 +91,14 @@ describe("identitySchema", () => {
         });
 
         describe('object_marking_refs', () => {
-            it('should reject invalid values', () => {
-                const invalidIdentity: Identity = {
+            beforeEach(() => {
+                invalidIdentity = {
                     ...minimalIdentity,
                     object_marking_refs: 123 as any
                 };
+            });
+            
+            it('should reject invalid values', () => {
                 expect(() => identitySchema.parse(invalidIdentity)).toThrow();
             });
 
@@ -100,11 +109,14 @@ describe("identitySchema", () => {
         });
 
         describe("identity_class", () => {
-            it("should reject invalid values", () => {
-                const invalidIdentity: Identity = {
+            beforeEach(() => {
+                invalidIdentity = {
                     ...minimalIdentity,
                     identity_class: "invalid" as any,
                 };
+            });
+            
+            it("should reject invalid values", () => {
                 expect(() => identitySchema.parse(invalidIdentity)).toThrow();
             });
 
@@ -115,11 +127,14 @@ describe("identitySchema", () => {
         });
 
         describe('x_mitre_domains', () => {
-            it('should reject invalid values', () => {
-                const invalidIdentity: Identity = {
+            beforeEach(() => {
+                invalidIdentity = {
                     ...minimalIdentity,
                     x_mitre_domains: 'not an array' as any
                 };
+            });
+            
+            it('should reject invalid values', () => {
                 expect(() => identitySchema.parse(invalidIdentity)).toThrow();
             });
 
@@ -130,84 +145,94 @@ describe("identitySchema", () => {
         });
 
         describe('description', () => {
-            it('should reject invalid values', () => {
-                const invalidIdentity: Identity = {
+            beforeEach(() => {
+                invalidIdentity = {
                     ...minimalIdentity,
                     description: 123 as any
                 };
+            });
+            
+            it('should reject invalid values', () => {
                 expect(() => identitySchema.parse(invalidIdentity)).toThrow();
             });
 
             it("should accept omittance of optional values", () => {
-                const { description, ...identityWithoutDescription } = minimalIdentity;
+                const { description, ...identityWithoutDescription } = invalidIdentity;
                 expect(() => identitySchema.parse(identityWithoutDescription)).not.toThrow();
             });
         });
 
         describe("roles", () => {
-            it("should reject invalid values", () => {
-                const invalidIdentity: Identity = {
+            beforeEach(() => {
+                invalidIdentity = {
                     ...minimalIdentity,
                     roles: 123 as any,
                 };
+            });
+            
+            it("should reject invalid values", () => {
                 expect(() => identitySchema.parse(invalidIdentity)).toThrow();
             });
 
             it("should accept omittance of optional values", () => {
-                const { roles, ...identityWithoutRoles } = minimalIdentity;
+                const { roles, ...identityWithoutRoles } = invalidIdentity;
                 expect(() => identitySchema.parse(identityWithoutRoles)).not.toThrow();
             });
         });
 
         describe("sectors", () => {
-            it("should reject invalid values", () => {
-                const invalidIdentity: Identity = {
+            beforeEach(() => {
+                invalidIdentity = {
                     ...minimalIdentity,
                     sectors: 123 as any,
                 };
+            });
+            
+            it("should reject invalid values", () => {
                 expect(() => identitySchema.parse(invalidIdentity)).toThrow();
             });
 
             it("should accept omittance of optional values", () => {
-                const { sectors, ...identityWithoutRoles } = minimalIdentity;
+                const { sectors, ...identityWithoutRoles } = invalidIdentity;
                 expect(() => identitySchema.parse(identityWithoutRoles)).not.toThrow();
             });
         });
 
         describe("contact_information", () => {
-            it("should reject invalid values", () => {
-                const invalidIdentity: Identity = {
+            beforeEach(() => {
+                invalidIdentity = {
                     ...minimalIdentity,
                     contact_information: 123 as any,
                 };
+            });
+            
+            it("should reject invalid values", () => {
                 expect(() => identitySchema.parse(invalidIdentity)).toThrow();
             });
 
             it("should accept omittance of optional values", () => {
-                const { contact_information, ...identityWithoutContactInformation } = minimalIdentity;
+                const { contact_information, ...identityWithoutContactInformation } = invalidIdentity;
                 expect(() => identitySchema.parse(identityWithoutContactInformation)).not.toThrow();
             });
         });
     });
 
     describe("Schema-Level Tests", () => {
-        it('should reject unknown properties', () => {
-            const identityWithUnknownProperties = {
+        beforeEach(() => {
+            invalidIdentity = {
                 ...minimalIdentity,
                 unknown_property: true
             } as Identity;
-            expect(() => identitySchema.parse(identityWithUnknownProperties)).toThrow();
         });
-
-        // Add any other schema-level tests...
+        it('should reject unknown properties', () => {
+            expect(() => identitySchema.parse(invalidIdentity)).toThrow();
+        });
     });
 
     describe("Edge Cases and Special Scenarios", () => {
         it("should handle special case X", () => {
             // Test any schema-specific special cases
         });
-
-        // Add more edge case tests as needed...
     });
 
     describe('Validate All Objects', () => {

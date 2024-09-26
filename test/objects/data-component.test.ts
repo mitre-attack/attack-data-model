@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 import {
-    StixCreatedTimestamp,
+    StixCreatedTimestamp, StixModifiedTimestamp,
 } from "../../src/schemas/common";
 import {
     DataComponent,
@@ -14,15 +14,14 @@ describe("dataComponentSchema", () => {
     let invalidDataComponent: DataComponent;
 
     beforeAll(() => {
-        minimalDataComponent = dataComponentSchema
-            .parse({
+        minimalDataComponent = {
                 type: "x-mitre-data-component",
                 id: `x-mitre-data-component--${uuidv4()}`,
                 description: "A user requested active directory credentials, such as a ticket or token.",
                 spec_version: "2.1",
                 created: "2017-06-01T00:00:00.000Z" as StixCreatedTimestamp,
                 created_by_ref: `identity--${uuidv4()}`,
-                modified: "2017-06-01T00:00:00.000Z" as StixCreatedTimestamp,
+                modified: "2017-06-01T00:00:00.000Z" as StixModifiedTimestamp,
                 name: "Network Connection Creation",
                 object_marking_refs: [
                     "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168",
@@ -32,7 +31,7 @@ describe("dataComponentSchema", () => {
                 x_mitre_attack_spec_version: "2.1.0",
                 x_mitre_domains: ["enterprise-attack"],
                 x_mitre_version: "1.0",
-            });
+            };
     });
 
     describe("Valid Inputs", () => {
@@ -42,7 +41,7 @@ describe("dataComponentSchema", () => {
         });
 
         it("should accept fully populated valid object (required + optional ATT&CK fields)", () => {
-            const fullDataComponent = {
+            const fullDataComponent: DataComponent = {
                 ...minimalDataComponent,
                 x_mitre_deprecated: false
             };
@@ -237,7 +236,7 @@ describe("dataComponentSchema", () => {
                 unknown_property: true
             } as DataComponent;
         });
-        
+
         it('should reject unknown properties', () => {
             expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
         });
@@ -247,8 +246,6 @@ describe("dataComponentSchema", () => {
         it("should handle special case X", () => {
             // Test any schema-specific special cases
         });
-
-        // Add more edge case tests as needed...
     });
 
     describe('Validate All Objects', () => {

@@ -1,7 +1,6 @@
 import { ZodError } from "zod";
 import {
     StixCreatedTimestamp,
-    StixIdentifier,
     StixModifiedTimestamp,
     StixTimestamp,
 } from "../../src/schemas/common";
@@ -18,7 +17,7 @@ describe("campaignSchema", () => {
     let invalidCampaign: Campaign;
 
     beforeAll(() => {
-        minimalCampaign = campaignSchema.parse({
+        minimalCampaign = {
             type: "campaign",
             id: `campaign--${uuidv4()}`,
             spec_version: "2.1",
@@ -59,7 +58,7 @@ describe("campaignSchema", () => {
             x_mitre_first_seen_citation: "(Citation: ESET Lazarus Jun 2020)",
             x_mitre_last_seen_citation: "(Citation: ClearSky Lazarus Aug 2020)",
             x_mitre_version: "1.2",
-        });
+        };
     });
 
     describe("Valid Inputs", () => {
@@ -68,7 +67,7 @@ describe("campaignSchema", () => {
         });
 
         it("should accept fully populated valid object (required + optional ATT&CK fields)", () => {
-            const fullCampaign = {
+            const fullCampaign: Campaign = {
                 ...minimalCampaign,
                 x_mitre_contributors: ["John Doe", "Jane Smith"]
             };
@@ -347,6 +346,7 @@ describe("campaignSchema", () => {
                     x_mitre_deprecated: 'not a boolean' as any
                 };
             });
+
             it('should reject invalid values', () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
@@ -364,6 +364,7 @@ describe("campaignSchema", () => {
                     revoked: 'not a boolean' as any
                 };
             });
+
             it('should reject invalid values', () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });

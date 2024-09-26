@@ -1,7 +1,8 @@
 import { ZodError } from "zod";
 import {
     ExternalReferences,
-    StixCreatedTimestamp
+    StixCreatedTimestamp,
+    StixModifiedTimestamp
 } from "../../src/schemas/common";
 import {
     DataSource,
@@ -15,15 +16,14 @@ describe("dataSourceSchema", () => {
     let invalidDataSource: DataSource;
 
     beforeAll(() => {
-        minimalDataSource = dataSourceSchema
-            .parse({
+        minimalDataSource = {
                 type: "x-mitre-data-source",
                 id: `x-mitre-data-source--${uuidv4()}`,
                 description: "Test data source description",
                 spec_version: "2.1",
                 created: "2017-06-01T00:00:00.000Z" as StixCreatedTimestamp,
                 created_by_ref: `identity--${uuidv4()}`,
-                modified: "2017-06-01T00:00:00.000Z" as StixCreatedTimestamp,
+                modified: "2017-06-01T00:00:00.000Z" as StixModifiedTimestamp,
                 name: "Network Connection Creation",
                 object_marking_refs: [
                     "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168",
@@ -40,7 +40,7 @@ describe("dataSourceSchema", () => {
                 x_mitre_domains: ["enterprise-attack"],
                 x_mitre_version: "1.0",
                 x_mitre_collection_layers: ["Host"]
-            });
+            };
     });
 
     describe("Valid Inputs", () => {
@@ -49,7 +49,7 @@ describe("dataSourceSchema", () => {
         });
 
         it("should accept fully populated valid object (required + optional ATT&CK fields)", () => {
-            const fullDataSource = {
+            const fullDataSource: DataSource = {
                 ...minimalDataSource,
                 x_mitre_platforms: ["Windows"],
                 x_mitre_contributors: ["Contributor"],
@@ -85,6 +85,7 @@ describe("dataSourceSchema", () => {
                     type: "invalid-type" as any,
                 };
             });
+
             it("should reject invalid values", () => {
                 expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
             });
@@ -108,6 +109,7 @@ describe("dataSourceSchema", () => {
                     created_by_ref: `malware--${uuidv4()}` as any
                 };
             });
+
             it("should reject invalid values", () => {
                 expect(() => dataSourceSchema.parse(invalidDataSource1)).toThrow();
             });
@@ -129,6 +131,7 @@ describe("dataSourceSchema", () => {
                     description: 123 as any
                 };
             });
+
             it('should reject invalid values', () => {
                 expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
             });
@@ -146,6 +149,7 @@ describe("dataSourceSchema", () => {
                     external_references: 'not-an-array' as unknown as ExternalReferences
                 };
             });
+
             it('should reject invalid values', () => {
                 expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
             });
@@ -163,6 +167,7 @@ describe("dataSourceSchema", () => {
                     object_marking_refs: 123 as any
                 };
             });
+
             it('should reject invalid values', () => {
                 expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
             });
@@ -198,6 +203,7 @@ describe("dataSourceSchema", () => {
                     x_mitre_domains: 'not an array' as any
                 };
             });
+
             it('should reject invalid values', () => {
                 expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
             });
@@ -215,6 +221,7 @@ describe("dataSourceSchema", () => {
                     x_mitre_modified_by_ref: 'invalid-id' as any
                 };
             });
+
             it('should reject invalid values', () => {
                 expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
             });
@@ -250,6 +257,7 @@ describe("dataSourceSchema", () => {
                     x_mitre_collection_layers: 'invalid-id' as any
                 };
             });
+
             it('should reject invalid values', () => {
                 expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
             });
@@ -267,6 +275,7 @@ describe("dataSourceSchema", () => {
                     x_mitre_deprecated: 'not a boolean' as any
                 };
             });
+
             it('should reject invalid values', () => {
                 expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
             });
