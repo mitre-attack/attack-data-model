@@ -1,8 +1,7 @@
 import { ZodError } from "zod";
 import {
     ExternalReferences,
-    StixCreatedTimestamp,
-    StixIdentifier
+    StixCreatedTimestamp
 } from "../../src/schemas/common";
 import {
     DataSource,
@@ -13,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 describe("dataSourceSchema", () => {
     let dataSources: any[];
     let minimalDataSource: DataSource;
+    let invalidDataSource: DataSource;
 
     beforeAll(() => {
         minimalDataSource = dataSourceSchema
@@ -45,8 +45,7 @@ describe("dataSourceSchema", () => {
 
     describe("Valid Inputs", () => {
         it("should accept minimal valid object (only required fields)", () => {
-            expect(() => dataSourceSchema
-                .parse(minimalDataSource)).not.toThrow();
+            expect(() => dataSourceSchema.parse(minimalDataSource)).not.toThrow();
         });
 
         it("should accept fully populated valid object (required + optional ATT&CK fields)", () => {
@@ -61,73 +60,60 @@ describe("dataSourceSchema", () => {
         });
     })
 
-
     describe("Field-Specific Tests", () => {
         describe("id", () => {
-            it("should reject invalid values", () => {
-                const invalidDataSource: DataSource = {
+            beforeEach(() => {
+                invalidDataSource = {
                     ...minimalDataSource,
-                    id: "invalid-id" as StixIdentifier,
-                } as DataSource;
+                    id: "invalid-id" as any,
+                }
+            });
+            it("should reject invalid values", () => {
                 expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
             });
 
             it("should reject omittance of required values", () => {
                 const { id, ...dataSourceWithoutId } = minimalDataSource;
-                expect(() => dataSourceSchema
-                    .parse(dataSourceWithoutId)).toThrow();
+                expect(() => dataSourceSchema.parse(dataSourceWithoutId)).toThrow();
             });
         });
 
         describe("type", () => {
-            it("should reject invalid values", () => {
-                const invalidDataSource: DataSource = {
+            beforeEach(() => {
+                invalidDataSource = {
                     ...minimalDataSource,
                     type: "invalid-type" as any,
                 };
-                expect(() => dataSourceSchema
-                    .parse(invalidDataSource)).toThrow();
+            });
+            it("should reject invalid values", () => {
+                expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
             });
 
             it("should reject omittance of required values", () => {
                 const { type, ...dataSourceWithoutType } = minimalDataSource;
-                expect(() => dataSourceSchema
-                    .parse(dataSourceWithoutType)).toThrow();
-            });
-        });
-
-        describe('description', () => {
-            it('should reject invalid values', () => {
-                const invalidDataSource: DataSource = {
-                    ...minimalDataSource,
-                    description: 123 as any
-                };
-                expect(() => dataSourceSchema
-                    .parse(invalidDataSource)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { description, ...dataSourceWithoutDescription } = minimalDataSource;
-                expect(() => dataSourceSchema
-                    .parse(dataSourceWithoutDescription)).toThrow();
+                expect(() => dataSourceSchema.parse(dataSourceWithoutType)).toThrow();
             });
         });
 
         describe("created_by_ref", () => {
-            it("should reject invalid values", () => {
-                const invalidDataSource: DataSource = {
+            let invalidDataSource1: DataSource;
+            let invalidDataSource2: DataSource;
+            beforeEach(() => {
+                invalidDataSource1 = {
                     ...minimalDataSource,
                     created_by_ref: "invalid-created-by-ref" as any,
                 };
-                expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
+                invalidDataSource2 = {
+                    ...minimalDataSource,
+                    created_by_ref: `malware--${uuidv4()}` as any
+                };
+            });
+            it("should reject invalid values", () => {
+                expect(() => dataSourceSchema.parse(invalidDataSource1)).toThrow();
             });
 
             it("should reject invalid values", () => {
-                const invalidDataSource: DataSource = {
-                    ...minimalDataSource,
-                    created_by_ref: `DataSource--${uuidv4()}` as any
-                };
-                expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
+                expect(() => dataSourceSchema.parse(invalidDataSource2)).toThrow();
             });
 
             it("should reject omittance of required values", () => {
@@ -136,62 +122,31 @@ describe("dataSourceSchema", () => {
             });
         });
 
-        describe('object_marking_refs', () => {
-            it('should reject invalid values', () => {
-                const invalidDataSource: DataSource = {
+        describe('description', () => {
+            beforeEach(() => {
+                invalidDataSource = {
                     ...minimalDataSource,
-                    object_marking_refs: 123 as any
+                    description: 123 as any
                 };
-                expect(() => dataSourceSchema
-                    .parse(invalidDataSource)).toThrow();
             });
-
-            it("should reject omittance of required values", () => {
-                const { object_marking_refs, ...dataSourceWithoutObjectMarkingRefs } = minimalDataSource;
-                expect(() => dataSourceSchema
-                    .parse(dataSourceWithoutObjectMarkingRefs)).toThrow();
-            });
-        });
-
-        describe('x_mitre_domains', () => {
             it('should reject invalid values', () => {
-                const invalidDataSource: DataSource = {
-                    ...minimalDataSource,
-                    x_mitre_domains: 'not an array' as any
-                };
-                expect(() => dataSourceSchema
-                    .parse(invalidDataSource)).toThrow();
-            });
-
-            it('should reject omitted required values', () => {
-                const { x_mitre_domains, ...dataSourceWithoutDomains } = minimalDataSource;
-                expect(() => dataSourceSchema
-                    .parse(dataSourceWithoutDomains)).toThrow();
-            });
-        });
-
-        describe('x_mitre_modified_by_ref', () => {
-            it('should reject invalid values', () => {
-                const invalidDataSource: DataSource = {
-                    ...minimalDataSource,
-                    x_mitre_modified_by_ref: 'invalid-id' as any
-                };
                 expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
             });
 
             it("should reject omittance of required values", () => {
-                const { x_mitre_modified_by_ref, ...DataSourceModifiedByRef } = minimalDataSource;
-                expect(() => dataSourceSchema.parse(DataSourceModifiedByRef)).toThrow();
+                const { description, ...dataSourceWithoutDescription } = minimalDataSource;
+                expect(() => dataSourceSchema.parse(dataSourceWithoutDescription)).toThrow();
             });
         });
 
         describe('external_references', () => {
-            it('should reject invalid values', () => {
-                const invalidDataSource: DataSource = {
+            beforeEach(() => {
+                invalidDataSource = {
                     ...minimalDataSource,
                     external_references: 'not-an-array' as unknown as ExternalReferences
-
                 };
+            });
+            it('should reject invalid values', () => {
                 expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
             });
 
@@ -201,12 +156,101 @@ describe("dataSourceSchema", () => {
             });
         });
 
-        describe('x_mitre_collection_layers', () => {
+        describe('object_marking_refs', () => {
+            beforeEach(() => {
+                invalidDataSource = {
+                    ...minimalDataSource,
+                    object_marking_refs: 123 as any
+                };
+            });
             it('should reject invalid values', () => {
-                const invalidDataSource: DataSource = {
+                expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
+            });
+
+            it("should reject omittance of required values", () => {
+                const { object_marking_refs, ...dataSourceWithoutObjectMarkingRefs } = minimalDataSource;
+                expect(() => dataSourceSchema.parse(dataSourceWithoutObjectMarkingRefs)).toThrow();
+            });
+        });
+
+        describe('x_mitre_platforms', () => {
+            beforeEach(() => {
+                invalidDataSource = {
+                    ...minimalDataSource,
+                    x_mitre_platforms: 123 as any
+                };
+            });
+
+            it('should reject invalid values', () => {
+                expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
+            });
+
+            it('should accept omitted optional values', () => {
+                const { x_mitre_platforms, ...dataSourceWithoutPlatforms } = invalidDataSource;
+                expect(() => dataSourceSchema.parse(dataSourceWithoutPlatforms)).not.toThrow();
+            });
+        });
+
+        describe('x_mitre_domains', () => {
+            beforeEach(() => {
+                invalidDataSource = {
+                    ...minimalDataSource,
+                    x_mitre_domains: 'not an array' as any
+                };
+            });
+            it('should reject invalid values', () => {
+                expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
+            });
+
+            it('should reject omitted required values', () => {
+                const { x_mitre_domains, ...dataSourceWithoutDomains } = minimalDataSource;
+                expect(() => dataSourceSchema.parse(dataSourceWithoutDomains)).toThrow();
+            });
+        });
+
+        describe('x_mitre_modified_by_ref', () => {
+            beforeEach(() => {
+                invalidDataSource = {
+                    ...minimalDataSource,
+                    x_mitre_modified_by_ref: 'invalid-id' as any
+                };
+            });
+            it('should reject invalid values', () => {
+                expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
+            });
+
+            it("should reject omittance of required values", () => {
+                const { x_mitre_modified_by_ref, ...DataSourceModifiedByRef } = minimalDataSource;
+                expect(() => dataSourceSchema.parse(DataSourceModifiedByRef)).toThrow();
+            });
+        });
+
+        describe('x_mitre_contributors', () => {
+            beforeEach(() => {
+                invalidDataSource = {
+                    ...minimalDataSource,
+                    x_mitre_contributors: 'invalid string' as any
+                };
+            });
+
+            it('should reject invalid values', () => {
+                expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
+            });
+
+            it('should accept omitted optional values', () => {
+                const { x_mitre_contributors, ...dataSourceWithoutContributors } = invalidDataSource;
+                expect(() => dataSourceSchema.parse(dataSourceWithoutContributors)).not.toThrow();
+            });
+        });
+
+        describe('x_mitre_collection_layers', () => {
+            beforeEach(() => {
+                invalidDataSource = {
                     ...minimalDataSource,
                     x_mitre_collection_layers: 'invalid-id' as any
                 };
+            });
+            it('should reject invalid values', () => {
                 expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
             });
 
@@ -217,16 +261,18 @@ describe("dataSourceSchema", () => {
         });
 
         describe('x_mitre_deprecated', () => {
-            it('should reject invalid values', () => {
-                const invalidDataSource: DataSource = {
+            beforeEach(() => {
+                invalidDataSource = {
                     ...minimalDataSource,
                     x_mitre_deprecated: 'not a boolean' as any
                 };
+            });
+            it('should reject invalid values', () => {
                 expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
             });
 
             it('should accept omitted optional values', () => {
-                const { x_mitre_deprecated, ...dataSourceWithoutDeprecated } = minimalDataSource;
+                const { x_mitre_deprecated, ...dataSourceWithoutDeprecated } = invalidDataSource;
                 expect(() => dataSourceSchema.parse(dataSourceWithoutDeprecated)).not.toThrow();
             });
         });
@@ -253,13 +299,15 @@ describe("dataSourceSchema", () => {
     });
 
     describe("Schema-Level Tests", () => {
-        it('should reject unknown properties', () => {
-            const DataSourceWithUnknownProperties = {
+        beforeEach(() => {
+            invalidDataSource = {
                 ...minimalDataSource,
                 unknown_property: true
             } as DataSource;
-            expect(() => dataSourceSchema
-                .parse(DataSourceWithUnknownProperties)).toThrow();
+        });
+
+        it('should reject unknown properties', () => {
+            expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
         });
     });
 

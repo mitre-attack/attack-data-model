@@ -1,7 +1,6 @@
 import { ZodError } from "zod";
 import {
     StixCreatedTimestamp,
-    StixIdentifier
 } from "../../src/schemas/common";
 import {
     DataComponent,
@@ -12,6 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 describe("dataComponentSchema", () => {
 
     let minimalDataComponent: DataComponent;
+    let invalidDataComponent: DataComponent;
 
     beforeAll(() => {
         minimalDataComponent = dataComponentSchema
@@ -53,11 +53,14 @@ describe("dataComponentSchema", () => {
 
     describe("Field-Specific Tests", () => {
         describe("id", () => {
-            it("should reject invalid values", () => {
-                const invalidDataComponent: DataComponent = {
+            beforeEach(() => {
+                invalidDataComponent = {
                     ...minimalDataComponent,
-                    id: "invalid-id" as StixIdentifier,
-                } as DataComponent;
+                    id: "invalid-id" as any,
+                };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
             });
 
@@ -69,13 +72,15 @@ describe("dataComponentSchema", () => {
         });
 
         describe("type", () => {
-            it("should reject invalid values", () => {
-                const invalidDataComponent: DataComponent = {
+            beforeEach(() => {
+                invalidDataComponent = {
                     ...minimalDataComponent,
                     type: "invalid-type" as any,
                 };
-                expect(() => dataComponentSchema
-                    .parse(invalidDataComponent)).toThrow();
+            });
+
+            it("should reject invalid values", () => {
+                expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
             });
 
             it("should reject omittance of required values", () => {
@@ -86,13 +91,15 @@ describe("dataComponentSchema", () => {
         });
 
         describe('description', () => {
-            it('should reject invalid values', () => {
-                const invalidDataComponent: DataComponent = {
+            beforeEach(() => {
+                invalidDataComponent = {
                     ...minimalDataComponent,
-                    description: 123 as any
+                    description: 123 as any,
                 };
-                expect(() => dataComponentSchema
-                    .parse(invalidDataComponent)).toThrow();
+            });
+
+            it('should reject invalid values', () => {
+                expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
             });
 
             it("should reject omittance of required values", () => {
@@ -103,20 +110,26 @@ describe("dataComponentSchema", () => {
         });
 
         describe("created_by_ref", () => {
-            it("should reject invalid values", () => {
-                const invalidDataComponent: DataComponent = {
+            let invalidDataComponent1: DataComponent;
+            let invalidDataComponent2: DataComponent;
+            beforeEach(() => {
+                invalidDataComponent1 = {
                     ...minimalDataComponent,
                     created_by_ref: "invalid-created-by-ref" as any,
                 };
-                expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
+
+                invalidDataComponent2 = {
+                    ...minimalDataComponent,
+                    created_by_ref: `malware--${uuidv4()}` as any,
+                };
             });
 
             it("should reject invalid values", () => {
-                const invalidDataComponent: DataComponent = {
-                    ...minimalDataComponent,
-                    created_by_ref: `malware--${uuidv4()}` as any
-                };
-                expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
+                expect(() => dataComponentSchema.parse(invalidDataComponent1)).toThrow();
+            });
+
+            it("should reject invalid values", () => {
+                expect(() => dataComponentSchema.parse(invalidDataComponent2)).toThrow();
             });
 
             it("should reject omittance of required values", () => {
@@ -126,30 +139,33 @@ describe("dataComponentSchema", () => {
         });
 
         describe('object_marking_refs', () => {
-            it('should reject invalid values', () => {
-                const invalidDataComponent: DataComponent = {
+            beforeEach(() => {
+                invalidDataComponent = {
                     ...minimalDataComponent,
                     object_marking_refs: 123 as any
                 };
-                expect(() => dataComponentSchema
-                    .parse(invalidDataComponent)).toThrow();
+            });
+
+            it('should reject invalid values', () => {
+                expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
             });
 
             it("should reject omittance of required values", () => {
                 const { object_marking_refs, ...dataComponentWithoutObjectMarkingRefs } = minimalDataComponent;
-                expect(() => dataComponentSchema
-                    .parse(dataComponentWithoutObjectMarkingRefs)).toThrow();
+                expect(() => dataComponentSchema.parse(dataComponentWithoutObjectMarkingRefs)).toThrow();
             });
         });
 
         describe('x_mitre_domains', () => {
-            it('should reject invalid values', () => {
-                const invalidDataComponent: DataComponent = {
+            beforeEach(() => {
+                invalidDataComponent = {
                     ...minimalDataComponent,
                     x_mitre_domains: 'not an array' as any
                 };
-                expect(() => dataComponentSchema
-                    .parse(invalidDataComponent)).toThrow();
+            });
+
+            it('should reject invalid values', () => {
+                expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
             });
 
             it('should reject omitted required values', () => {
@@ -160,11 +176,14 @@ describe("dataComponentSchema", () => {
         });
 
         describe('x_mitre_modified_by_ref', () => {
-            it('should reject invalid values', () => {
-                const invalidDataComponent: DataComponent = {
+            beforeEach(() => {
+                invalidDataComponent = {
                     ...minimalDataComponent,
                     x_mitre_modified_by_ref: 'invalid-id' as any
                 };
+            });
+
+            it('should reject invalid values', () => {
                 expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
             });
 
@@ -175,11 +194,14 @@ describe("dataComponentSchema", () => {
         });
 
         describe('x_mitre_data_source_ref', () => {
-            it('should reject invalid values', () => {
-                const invalidDataComponent: DataComponent = {
+            beforeEach(() => {
+                invalidDataComponent = {
                     ...minimalDataComponent,
                     x_mitre_data_source_ref: 'invalid-id' as any
                 };
+            });
+
+            it('should reject invalid values', () => {
                 expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
             });
 
@@ -190,29 +212,34 @@ describe("dataComponentSchema", () => {
         });
 
         describe('x_mitre_deprecated', () => {
-            it('should reject invalid values', () => {
-                const invalidDataComponent: DataComponent = {
+            beforeEach(() => {
+                invalidDataComponent = {
                     ...minimalDataComponent,
                     x_mitre_deprecated: 'not a boolean' as any
                 };
+            });
+
+            it('should reject invalid values', () => {
                 expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
             });
 
             it('should accept omitted optional values', () => {
-                const { x_mitre_deprecated, ...dataComponentWithoutDeprecated } = minimalDataComponent;
+                const { x_mitre_deprecated, ...dataComponentWithoutDeprecated } = invalidDataComponent;
                 expect(() => dataComponentSchema.parse(dataComponentWithoutDeprecated)).not.toThrow();
             });
         });
     });
 
     describe("Schema-Level Tests", () => {
-        it('should reject unknown properties', () => {
-            const dataComponentWithUnknownProperties = {
+        beforeEach(() => {
+            invalidDataComponent = {
                 ...minimalDataComponent,
                 unknown_property: true
             } as DataComponent;
-            expect(() => dataComponentSchema
-                .parse(dataComponentWithUnknownProperties)).toThrow();
+        });
+        
+        it('should reject unknown properties', () => {
+            expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
         });
     });
 

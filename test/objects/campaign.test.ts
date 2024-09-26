@@ -15,6 +15,7 @@ describe("campaignSchema", () => {
     let campaigns: any[];
 
     let minimalCampaign: Campaign;
+    let invalidCampaign: Campaign;
 
     beforeAll(() => {
         minimalCampaign = campaignSchema.parse({
@@ -78,11 +79,14 @@ describe("campaignSchema", () => {
 
     describe("Field-Specific Tests", () => {
         describe("id", () => {
-            it("should reject invalid values", () => {
-                const invalidCampaign: Campaign = {
+            beforeEach(() => {
+                invalidCampaign = {
                     ...minimalCampaign,
-                    id: "invalid-id" as StixIdentifier,
-                } as Campaign;
+                    id: "invalid-id" as any,
+                }
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
@@ -93,11 +97,14 @@ describe("campaignSchema", () => {
         });
 
         describe("type", () => {
-            it("should reject invalid values", () => {
-                const invalidCampaign: Campaign = {
+            beforeEach(() => {
+                invalidCampaign = {
                     ...minimalCampaign,
                     type: "invalid-type" as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
@@ -108,11 +115,14 @@ describe("campaignSchema", () => {
         });
 
         describe('description', () => {
-            it('should reject invalid values', () => {
-                const invalidCampaign: Campaign = {
+            beforeEach(() => {
+                invalidCampaign = {
                     ...minimalCampaign,
                     description: 123 as any
                 };
+            });
+
+            it('should reject invalid values', () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
@@ -123,12 +133,14 @@ describe("campaignSchema", () => {
         });
 
         describe('external_references', () => {
-            it('should reject invalid values', () => {
-                const invalidCampaign: Campaign = {
+            beforeEach(() => {
+                invalidCampaign = {
                     ...minimalCampaign,
                     external_references: 'not-an-array' as any
-
                 };
+            });
+
+            it('should reject invalid values', () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
@@ -139,20 +151,25 @@ describe("campaignSchema", () => {
         });
 
         describe("created_by_ref", () => {
-            it("should reject invalid values", () => {
-                const invalidCampaign: Campaign = {
+            let invalidCampaign1: Campaign;
+            let invalidCampaign2: Campaign;
+            beforeEach(() => {
+                invalidCampaign1 = {
                     ...minimalCampaign,
                     created_by_ref: "invalid-created-by-ref" as any,
                 };
-                expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
-            });
-
-            it("should reject invalid values", () => {
-                const invalidCampaign: Campaign = {
+                invalidCampaign2 = {
                     ...minimalCampaign,
                     created_by_ref: `malware--${uuidv4()}` as any
                 };
-                expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
+            });
+
+            it("should reject invalid values", () => {
+                expect(() => campaignSchema.parse(invalidCampaign1)).toThrow();
+            });
+
+            it("should reject invalid values", () => {
+                expect(() => campaignSchema.parse(invalidCampaign2)).toThrow();
             });
 
             it("should reject omittance of required values", () => {
@@ -162,11 +179,14 @@ describe("campaignSchema", () => {
         });
 
         describe('object_marking_refs', () => {
-            it('should reject invalid values', () => {
-                const invalidCampaign: Campaign = {
+            beforeEach(() => {
+                invalidCampaign = {
                     ...minimalCampaign,
-                    description: 123 as any
+                    object_marking_refs: 123 as any
                 };
+            });
+
+            it('should reject invalid values', () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
@@ -177,11 +197,14 @@ describe("campaignSchema", () => {
         });
 
         describe('x_mitre_domains', () => {
-            it('should reject invalid values', () => {
-                const invalidCampaign: Campaign = {
+            beforeEach(() => {
+                invalidCampaign = {
                     ...minimalCampaign,
                     x_mitre_domains: 'not an array' as any
                 };
+            });
+
+            it('should reject invalid values', () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
@@ -192,11 +215,14 @@ describe("campaignSchema", () => {
         });
 
         describe('x_mitre_modified_by_ref', () => {
-            it('should reject invalid values', () => {
-                const invalidCampaign: Campaign = {
+            beforeEach(() => {
+                invalidCampaign = {
                     ...minimalCampaign,
                     x_mitre_modified_by_ref: 'invalid-id' as any
                 };
+            });
+
+            it('should reject invalid values', () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
@@ -207,26 +233,32 @@ describe("campaignSchema", () => {
         });
 
         describe('x_mitre_contributors', () => {
-            it('should reject invalid values', () => {
-                const invalidCampaign: Campaign = {
+            beforeEach(() => {
+                invalidCampaign = {
                     ...minimalCampaign,
                     x_mitre_contributors: 'invalid string' as any
                 };
+            });
+
+            it('should reject invalid values', () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
             it('should accept omitted optional values', () => {
-                const { x_mitre_contributors, ...campaignWithoutContributors } = minimalCampaign;
+                const { x_mitre_contributors, ...campaignWithoutContributors } = invalidCampaign;
                 expect(() => campaignSchema.parse(campaignWithoutContributors)).not.toThrow();
             });
         });
 
         describe('aliases', () => {
-            it('should reject invalid values', () => {
-                const invalidCampaign: Campaign = {
+            beforeEach(() => {
+                invalidCampaign = {
                     ...minimalCampaign,
                     aliases: 123 as any
                 };
+            });
+
+            it('should reject invalid values', () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
@@ -237,11 +269,14 @@ describe("campaignSchema", () => {
         });
 
         describe("first_seen", () => {
-            it("should reject invalid values", () => {
-                const invalidCampaign: Campaign = {
+            beforeEach(() => {
+                invalidCampaign = {
                     ...minimalCampaign,
                     first_seen: "2017-05-31" as StixTimestamp,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
@@ -252,11 +287,14 @@ describe("campaignSchema", () => {
         });
 
         describe("last_seen", () => {
-            it("should reject invalid values", () => {
-                const invalidCampaign: Campaign = {
+            beforeEach(() => {
+                invalidCampaign = {
                     ...minimalCampaign,
                     last_seen: "2017-05-31" as StixTimestamp,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
@@ -267,11 +305,14 @@ describe("campaignSchema", () => {
         });
 
         describe("x_mitre_first_seen", () => {
-            it("should reject invalid values", () => {
-                const invalidCampaign: Campaign = {
+            beforeEach(() => {
+                invalidCampaign = {
                     ...minimalCampaign,
                     x_mitre_first_seen_citation: "invalid-citation" as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
@@ -282,11 +323,14 @@ describe("campaignSchema", () => {
         });
 
         describe("x_mitre_last_seen", () => {
-            it("should reject invalid values", () => {
-                const invalidCampaign: Campaign = {
+            beforeEach(() => {
+                invalidCampaign = {
                     ...minimalCampaign,
                     x_mitre_last_seen_citation: "invalid-citation" as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
@@ -297,11 +341,13 @@ describe("campaignSchema", () => {
         });
 
         describe('x_mitre_deprecated', () => {
-            it('should reject invalid values', () => {
-                const invalidCampaign: Campaign = {
+            beforeEach(() => {
+                invalidCampaign = {
                     ...minimalCampaign,
                     x_mitre_deprecated: 'not a boolean' as any
                 };
+            });
+            it('should reject invalid values', () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
@@ -312,11 +358,13 @@ describe("campaignSchema", () => {
         });
 
         describe('revoked', () => {
-            it('should reject invalid values', () => {
-                const invalidCampaign: Campaign = {
+            beforeEach(() => {
+                invalidCampaign = {
                     ...minimalCampaign,
                     revoked: 'not a boolean' as any
                 };
+            });
+            it('should reject invalid values', () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
@@ -410,12 +458,15 @@ describe("campaignSchema", () => {
     });
 
     describe("Schema-Level Tests", () => {
-        it('should reject unknown properties', () => {
-            const campaignWithUnknownProperties: Campaign = {
+        beforeEach(() => {
+            invalidCampaign = {
                 ...minimalCampaign,
                 unknown_property: true
             } as Campaign;
-            expect(() => campaignSchema.parse(campaignWithUnknownProperties)).toThrow();
+        });
+
+        it('should reject unknown properties', () => {
+            expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
         });
     });
 
