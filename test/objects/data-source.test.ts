@@ -164,7 +164,7 @@ describe("dataSourceSchema", () => {
             beforeEach(() => {
                 invalidDataSource = {
                     ...minimalDataSource,
-                    object_marking_refs: 123 as any
+                    object_marking_refs: ['invalid-object-marking-refs'] as any
                 };
             });
 
@@ -182,7 +182,7 @@ describe("dataSourceSchema", () => {
             beforeEach(() => {
                 invalidDataSource = {
                     ...minimalDataSource,
-                    x_mitre_platforms: 123 as any
+                    x_mitre_platforms: ['invalid-mitre-platforms'] as any
                 };
             });
 
@@ -200,7 +200,7 @@ describe("dataSourceSchema", () => {
             beforeEach(() => {
                 invalidDataSource = {
                     ...minimalDataSource,
-                    x_mitre_domains: 'not an array' as any
+                    x_mitre_domains: ['invalid-mitre-domains'] as any
                 };
             });
 
@@ -218,7 +218,7 @@ describe("dataSourceSchema", () => {
             beforeEach(() => {
                 invalidDataSource = {
                     ...minimalDataSource,
-                    x_mitre_modified_by_ref: 'invalid-id' as any
+                    x_mitre_modified_by_ref: 'invalid-modified-by-ref' as any
                 };
             });
 
@@ -236,7 +236,7 @@ describe("dataSourceSchema", () => {
             beforeEach(() => {
                 invalidDataSource = {
                     ...minimalDataSource,
-                    x_mitre_contributors: 'invalid string' as any
+                    x_mitre_contributors: 'not-an-array' as any
                 };
             });
 
@@ -254,7 +254,7 @@ describe("dataSourceSchema", () => {
             beforeEach(() => {
                 invalidDataSource = {
                     ...minimalDataSource,
-                    x_mitre_collection_layers: 'invalid-id' as any
+                    x_mitre_collection_layers: ['invalid-mitre-collection-layers'] as any
                 };
             });
 
@@ -272,7 +272,7 @@ describe("dataSourceSchema", () => {
             beforeEach(() => {
                 invalidDataSource = {
                     ...minimalDataSource,
-                    x_mitre_deprecated: 'not a boolean' as any
+                    x_mitre_deprecated: 'not-a-boolean' as any
                 };
             });
 

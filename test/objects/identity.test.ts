@@ -94,7 +94,7 @@ describe("identitySchema", () => {
             beforeEach(() => {
                 invalidIdentity = {
                     ...minimalIdentity,
-                    object_marking_refs: 123 as any
+                    object_marking_refs: ['invalid-object-marking-refs'] as any
                 };
             });
             
@@ -112,7 +112,7 @@ describe("identitySchema", () => {
             beforeEach(() => {
                 invalidIdentity = {
                     ...minimalIdentity,
-                    identity_class: "invalid" as any,
+                    identity_class: "invalid-identity-class" as any,
                 };
             });
             
@@ -130,7 +130,7 @@ describe("identitySchema", () => {
             beforeEach(() => {
                 invalidIdentity = {
                     ...minimalIdentity,
-                    x_mitre_domains: 'not an array' as any
+                    x_mitre_domains: ['invalid-mitre-domains'] as any
                 };
             });
             
@@ -166,7 +166,7 @@ describe("identitySchema", () => {
             beforeEach(() => {
                 invalidIdentity = {
                     ...minimalIdentity,
-                    roles: 123 as any,
+                    roles: 'not-an-array' as any,
                 };
             });
             
@@ -184,7 +184,7 @@ describe("identitySchema", () => {
             beforeEach(() => {
                 invalidIdentity = {
                     ...minimalIdentity,
-                    sectors: 123 as any,
+                    sectors: ['invalid-sectors'] as any,
                 };
             });
             

@@ -123,7 +123,7 @@ describe("collectionSchema", () => {
             beforeEach(() => {
                 invalidCollection = {
                     ...minimalCollection,
-                    object_marking_refs: 123 as any
+                    object_marking_refs: ['invalid-object-marking-refs'] as any
                 };
             });
 
@@ -159,7 +159,7 @@ describe("collectionSchema", () => {
             beforeEach(() => {
                 invalidCollection = {
                     ...minimalCollection,
-                    x_mitre_contents: 123 as any
+                    x_mitre_contents: ['invalid-mitre-contents'] as any
                 };
             });
 
@@ -240,11 +240,11 @@ describe("collectionSchema", () => {
     ${errorMessages}`;
                 }).join('\n');
 
-                console.warn(`The following ${errors.length} malware(s) failed validation:\n${errorReport}`);
+                console.warn(`The following ${errors.length} collection(s) failed validation:\n${errorReport}`);
             }
 
             // Log the number of errors found
-            console.log(`Total malwares with validation errors: ${errors.length}`);
+            console.log(`Total collections with validation errors: ${errors.length}`);
 
             // This expectation will always pass, but it gives us a way to surface the error count in the test results
             expect(true).toBe(true);

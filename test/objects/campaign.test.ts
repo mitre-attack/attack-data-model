@@ -181,7 +181,7 @@ describe("campaignSchema", () => {
             beforeEach(() => {
                 invalidCampaign = {
                     ...minimalCampaign,
-                    object_marking_refs: 123 as any
+                    object_marking_refs: ['invalid-object-marking-refs'] as any
                 };
             });
 
@@ -199,7 +199,7 @@ describe("campaignSchema", () => {
             beforeEach(() => {
                 invalidCampaign = {
                     ...minimalCampaign,
-                    x_mitre_domains: 'not an array' as any
+                    x_mitre_domains: ['invalid-mitre-domains'] as any
                 };
             });
 
@@ -217,7 +217,7 @@ describe("campaignSchema", () => {
             beforeEach(() => {
                 invalidCampaign = {
                     ...minimalCampaign,
-                    x_mitre_modified_by_ref: 'invalid-id' as any
+                    x_mitre_modified_by_ref: 'invalid-modified-by-ref' as any
                 };
             });
 
@@ -235,7 +235,7 @@ describe("campaignSchema", () => {
             beforeEach(() => {
                 invalidCampaign = {
                     ...minimalCampaign,
-                    x_mitre_contributors: 'invalid string' as any
+                    x_mitre_contributors: 'not-an-array' as any
                 };
             });
 
@@ -253,7 +253,7 @@ describe("campaignSchema", () => {
             beforeEach(() => {
                 invalidCampaign = {
                     ...minimalCampaign,
-                    aliases: 123 as any
+                    aliases: 'not-an-array' as any
                 };
             });
 
@@ -343,7 +343,7 @@ describe("campaignSchema", () => {
             beforeEach(() => {
                 invalidCampaign = {
                     ...minimalCampaign,
-                    x_mitre_deprecated: 'not a boolean' as any
+                    x_mitre_deprecated: 'not-a-boolean' as any
                 };
             });
 
@@ -361,7 +361,7 @@ describe("campaignSchema", () => {
             beforeEach(() => {
                 invalidCampaign = {
                     ...minimalCampaign,
-                    revoked: 'not a boolean' as any
+                    revoked: 'not-a-boolean' as any
                 };
             });
 
