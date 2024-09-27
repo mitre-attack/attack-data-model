@@ -62,6 +62,21 @@ export const collectionSchema = attackBaseObjectSchema.extend({
 	x_mitre_attack_spec_version: true,
 	x_mitre_contents: true,
 	x_mitre_version: true,
-});
+})
+.strict()
+    .superRefine((schema, ctx) => {
+        //==============================================================================
+        // Validate x_mitre_contents
+        //==============================================================================
+
+		const XMitreContents = schema.x_mitre_contents;
+		if (XMitreContents.length < 1) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				path: ["x_mitre_contents"],
+				message: "At least one STIX object reference is required",
+			});
+		}
+    });
 
 export type Collection = z.infer<typeof collectionSchema>;
