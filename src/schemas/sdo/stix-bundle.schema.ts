@@ -82,6 +82,7 @@ export const stixBundleSchema = z
 
     objects: attackObjectsSchema
   })
+  .strict()
   .superRefine((schema, ctx) => {
 
     // Verify that the first object in the bundle is the 'x-mitre-collection' object
