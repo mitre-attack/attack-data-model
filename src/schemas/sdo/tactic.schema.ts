@@ -118,6 +118,7 @@ export const tacticSchema = attackBaseObjectSchema.extend({
         x_mitre_shortname: true,
         x_mitre_version: true,
     })
+    .strict()
     .superRefine((schema, ctx) => {
 
         // Destructure relevant properties from the schema

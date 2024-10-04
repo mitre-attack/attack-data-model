@@ -1,19 +1,34 @@
+import { StixCreatedTimestamp, StixModifiedTimestamp, StixSpecVersion } from "../../src/schemas/common";
 import { groupSchema } from "../../src/schemas/sdo/group.schema";
 import { z } from "zod";
+import { v4 as uuidv4 } from 'uuid';
+
 
 /** ************************************************************************************************* */
 // Example 1: Valid Group
 /** ************************************************************************************************* */
 const validGroup = {
-  modified: "2024-04-17T16:13:43.697Z",
-  name: "TEMP.Veles",
-  x_mitre_version: "1.4",
+  id: `intrusion-set--${uuidv4()}`,
   type: "intrusion-set",
-  id: "intrusion-set--9538b1a4-4120-4e2d-bf59-3b11fcab05a4",
-  created: "2019-04-16T15:14:38.533Z",
-  x_mitre_domains: ["enterprise-attack", "ics-attack"],
-  x_mitre_attack_spec_version: "3.2.0",
   spec_version: "2.1",
+  x_mitre_attack_spec_version: "2.1.0",
+  name: "Test Name",
+  x_mitre_version: "1.0",
+  created: "2017-06-01T00:00:00.000Z" as StixCreatedTimestamp,
+  modified: "2017-06-01T00:00:00.000Z" as StixModifiedTimestamp,
+  x_mitre_domains: ["enterprise-attack"],
+  external_references: [
+    {
+      source_name: "mitre-attack",
+      external_id: "G1000",
+      url: "https://attack.mitre.org/groups/G1000",
+    },
+    {
+      source_name: "Dragos",
+      url: "https://dragos.com/resource/allanite/",
+      description: "Dragos   Allanite Retrieved. 2019/10/27 ",
+    },
+  ],
 };
 
 console.log("Example 1 - Valid Group:");
@@ -30,6 +45,7 @@ const invalidGroup = {
   id: "intrusion-set--9538b1a4-4120-4e2d-bf59-3b11fcab05a4",
   created: "2019-04-16T15:14:38.533Z",
   // missing x_mitre_domains
+  // external_references
   x_mitre_attack_spec_version: "3.2.0",
   spec_version: "2.1",
 };
@@ -44,21 +60,28 @@ try {
 }
 /**
    * Validation errors: [
-      {
-          code: 'invalid_type',
-          expected: 'array',
-          received: 'undefined',
-          path: [ 'x_mitre_domains' ],
-          message: 'Required'
-      },
-      {
-          code: 'invalid_type',
-          expected: 'string',
-          received: 'undefined',
-          path: [ 'name' ],
-          message: 'Required'
-      }
-      ]
+    {
+      code: 'invalid_type',
+      expected: 'array',
+      received: 'undefined',
+      path: [ 'external_references' ],
+      message: 'Required'
+    },
+    {
+      code: 'invalid_type',
+      expected: 'string',
+      received: 'undefined',
+      path: [ 'name' ],
+      message: 'Required'
+    },
+    {
+      code: 'invalid_type',
+      expected: 'array',
+      received: 'undefined',
+      path: [ 'x_mitre_domains' ],
+      message: 'Required'
+    }
+  ]
    */
 
 /** ************************************************************************************************* */
@@ -83,7 +106,7 @@ const groupWithOptionalFields = {
   x_mitre_contributors: ["Dragos Threat Intelligence"],
   x_mitre_deprecated: false,
   revoked: false,
-  aliases: ["TEMP.Veles", "XENOTIME"],
+  aliases: ["Test Name", "XENOTIME"],
 };
 
 console.log("\nExample 3 - Group with optional fields:");
@@ -177,5 +200,31 @@ try {
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.log("Validation errors:", error.errors);
+  }
+}
+
+/** ************************************************************************************************* */
+// Example 7: Group with unknown property
+/** ************************************************************************************************* */
+const groupWithUnknownProperty = {
+  ...validGroup,
+  foo: 'bar'
+}
+
+console.log("\nExample 7 - Parsing a group with an unknown property (foo: 'bar'):");
+try {
+  const parsedGroup = groupSchema.parse(groupWithUnknownProperty);
+  console.log("Parsed successfully. Group name:", parsedGroup.name);
+} catch (error) {
+  if (error instanceof z.ZodError) {
+      console.log("Validation errors:", error.errors);
+      // Validation errors: [
+      //     {
+      //       code: 'unrecognized_keys',
+      //       keys: [ 'foo' ],
+      //       path: [],
+      //       message: "Unrecognized key(s) in object: 'foo'"
+      //     }
+      //   ]
   }
 }

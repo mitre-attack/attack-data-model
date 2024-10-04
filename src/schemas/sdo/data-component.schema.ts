@@ -42,6 +42,7 @@ export const dataComponentSchema = attackBaseObjectSchema.extend({
   x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
   x_mitre_data_source_ref: xMitreDataSourceRefSchema,
-});
+})
+.strict();
 
 export type DataComponent = z.infer<typeof dataComponentSchema>;

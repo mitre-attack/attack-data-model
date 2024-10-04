@@ -48,6 +48,7 @@ export const matrixSchema = attackBaseObjectSchema.extend({
   x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
   tactic_refs: xMitreTacticRefsSchema,
-});
+})
+.strict();
 
 export type Matrix = z.infer<typeof matrixSchema>;

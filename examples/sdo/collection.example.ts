@@ -57,7 +57,7 @@ console.log(`SUCCESS ${collectionSchema.parse(validCollection).name}`)
 // Example 2: Invalid Collection (missing required fields)
 /****************************************************************************************************/
 const invalidCollectionMissingFields = {
-    "id": "x-mitre-collection--402e24b4-436e-4936-b19b-2038648f489",
+    "id": "x-mitre-collection--1f5f1533-f617-4ca8-9ab4-6a02367fa019",
     "type": "x-mitre-collection",
     "spec_version": "2.1",
     "x_mitre_attack_spec_version": "2.1.0",
@@ -183,3 +183,29 @@ try {
 //       path: [ 'x_mitre_contents', 2, 'object_ref' ]
 //     }
 //   ]
+
+/** ************************************************************************************************* */
+// Example 6: Collection with unknown property
+/** ************************************************************************************************* */
+const collectionWithUnknownProperty = {
+    ...validCollection,
+    foo: 'bar'
+}
+
+console.log("\nExample 6 - Parsing a collection with an unknown property (foo: 'bar'):");
+try {
+    const parsedCollection = collectionSchema.parse(collectionWithUnknownProperty);
+    console.log("Parsed successfully. Collection name:", parsedCollection.name);
+} catch (error) {
+    if (error instanceof z.ZodError) {
+        console.log("Validation errors:", error.errors);
+        // Validation errors: [
+        //     {
+        //       code: 'unrecognized_keys',
+        //       keys: [ 'foo' ],
+        //       path: [],
+        //       message: "Unrecognized key(s) in object: 'foo'"
+        //     }
+        //   ]
+    }
+}

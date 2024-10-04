@@ -112,6 +112,7 @@ export const assetSchema = attackBaseObjectSchema.extend({
 		x_mitre_domains: true,
 		x_mitre_version: true,
 	})
+	.strict()
 	// validate common fields
 	.superRefine((schema, ctx) => {
 

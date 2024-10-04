@@ -173,3 +173,30 @@ try {
     console.log("Validation errors:", error.errors);
   }
 }
+
+
+/** ************************************************************************************************* */
+// Example 6: Mitigation with unknown property
+/** ************************************************************************************************* */
+const mitigationWithUnknownProperty = {
+  ...validMitigation,
+  foo: 'bar'
+}
+
+console.log("\nExample 6 - Parsing a mitigation with an unknown property (foo: 'bar'):");
+try {
+  const parsedMitigation = mitigationSchema.parse(mitigationWithUnknownProperty);
+  console.log("Parsed successfully. Mitigation name:", parsedMitigation.name);
+} catch (error) {
+  if (error instanceof z.ZodError) {
+      console.log("Validation errors:", error.errors);
+      // Validation errors: [
+      //     {
+      //       code: 'unrecognized_keys',
+      //       keys: [ 'foo' ],
+      //       path: [],
+      //       message: "Unrecognized key(s) in object: 'foo'"
+      //     }
+      //   ]
+  }
+}

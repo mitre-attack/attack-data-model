@@ -76,6 +76,7 @@ export const dataSourceSchema = attackBaseObjectSchema.extend({
 
   x_mitre_collection_layers: xMitreCollectionLayersSchema,
 })
+.strict()
 .superRefine((schema, ctx) => {
   //==============================================================================
   // Validate external references

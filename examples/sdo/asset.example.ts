@@ -131,6 +131,11 @@ try {
 			message: 'Required'
 		},
 		{
+			code: 'custom',
+			message: "The version must be in the format 'M.N' where M and N are integers between 0 and 99",
+			path: [ 'x_mitre_version' ]
+		},
+		{
 			code: 'invalid_type',
 			expected: 'array',
 			received: 'undefined',
@@ -222,3 +227,29 @@ try {
     }
 }
 // Validation error: Related asset name is required.
+
+/** ************************************************************************************************* */
+// Example 8: Asset with unknown property
+/** ************************************************************************************************* */
+const assetWithUnknownProperty = {
+    ...validAsset,
+    foo: 'bar'
+}
+
+console.log("\nExample 8 - Parsing an asset with an unknown property (foo: 'bar'):");
+try {
+    const parsedAsset = assetSchema.parse(assetWithUnknownProperty);
+    console.log("Parsed successfully. Asset name:", parsedAsset.name);
+} catch (error) {
+    if (error instanceof z.ZodError) {
+        console.log("Validation errors:", error.errors);
+        // Validation errors: [
+        //     {
+        //       code: 'unrecognized_keys',
+        //       keys: [ 'foo' ],
+        //       path: [],
+        //       message: "Unrecognized key(s) in object: 'foo'"
+        //     }
+        //   ]
+    }
+}

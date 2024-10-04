@@ -197,3 +197,29 @@ try {
     console.log("Validation errors:", error.errors);
   }
 }
+
+/** ************************************************************************************************* */
+// Example 6: Matrix with unknown property
+/** ************************************************************************************************* */
+const matrixWithUnknownProperty = {
+  ...validMatrix,
+  foo: 'bar'
+}
+
+console.log("\nExample 6 - Parsing a matrix with an unknown property (foo: 'bar'):");
+try {
+  const parsedMatrix = matrixSchema.parse(matrixWithUnknownProperty);
+  console.log("Parsed successfully. Matrix name:", parsedMatrix.name);
+} catch (error) {
+  if (error instanceof z.ZodError) {
+      console.log("Validation errors:", error.errors);
+      // Validation errors: [
+      //     {
+      //       code: 'unrecognized_keys',
+      //       keys: [ 'foo' ],
+      //       path: [],
+      //       message: "Unrecognized key(s) in object: 'foo'"
+      //     }
+      //   ]
+  }
+}

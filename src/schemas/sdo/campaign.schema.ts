@@ -131,6 +131,7 @@ export const campaignSchema = attackBaseObjectSchema.extend({
         x_mitre_modified_by_ref: true,
         x_mitre_version: true,
     })
+    .strict()
     .superRefine((schema, ctx) => {
 
         // Destructure relevant properties from the schema

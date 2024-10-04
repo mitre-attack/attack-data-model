@@ -56,7 +56,8 @@ export const identitySchema = attackBaseObjectSchema.extend({
         .string()
         .describe("The contact information (e-mail, phone number, etc.) for this Identity.")
         .optional(),
-});
+})
+.strict();
 
 // Define the type for Identity
 export type Identity = z.infer<typeof identitySchema>;

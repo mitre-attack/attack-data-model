@@ -196,3 +196,29 @@ console.log(tacticSchema.parse(tacticWithOptionalFields));
 // 	x_mitre_shortname: 'execution',
 // 	x_mitre_modified_by_ref: 'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5'
 //   }
+
+/** ************************************************************************************************* */
+// Example 6: Tactic with unknown property
+/** ************************************************************************************************* */
+const tacticWithUnknownProperty = {
+	...validTactic,
+	foo: 'bar'
+  }
+  
+  console.log("\nExample 6 - Parsing a tactic with an unknown property (foo: 'bar'):");
+  try {
+	const parsedTactic = tacticSchema.parse(tacticWithUnknownProperty);
+	console.log("Parsed successfully. Tactic name:", parsedTactic.name);
+  } catch (error) {
+	if (error instanceof z.ZodError) {
+		console.log("Validation errors:", error.errors);
+		// Validation errors: [
+		//     {
+		//       code: 'unrecognized_keys',
+		//       keys: [ 'foo' ],
+		//       path: [],
+		//       message: "Unrecognized key(s) in object: 'foo'"
+		//     }
+		//   ]
+	}
+  }

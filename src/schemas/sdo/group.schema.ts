@@ -82,6 +82,7 @@ export const groupSchema = attackBaseObjectSchema
         "The secondary reasons, motivations, or purposes behind this Intrusion Set."
       ),
   })
+  .strict()
   .refine(
     (schema) => {
       // The object's name MUST be listed as the first alias in the aliases field

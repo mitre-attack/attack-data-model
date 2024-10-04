@@ -44,7 +44,7 @@ export const killChainPhaseSchema = z.object({
 
     kill_chain_name: killChainNameSchema
 })
-    .strict();
+.strict();
 
 export type KillChainName = z.infer<typeof killChainNameSchema>;
 export type KillChainPhase = z.infer<typeof killChainPhaseSchema>;

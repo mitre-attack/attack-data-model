@@ -33,6 +33,7 @@ export const mitigationSchema = attackBaseObjectSchema.extend({
   x_mitre_modified_by_ref: stixIdentifierSchema
     .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."),
 })
+.strict()
 .superRefine((schema, ctx) => {
   //==============================================================================
   // Validate x_mitre_old_attack_id

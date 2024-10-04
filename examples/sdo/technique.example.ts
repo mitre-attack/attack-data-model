@@ -529,3 +529,29 @@ try {
 }
 // Expected output: 
 // Validation error: x_mitre_permissions_required is only supported in the privilege - escalation tactic.
+
+/** ************************************************************************************************* */
+// Example 15: Technique with unknown property
+/** ************************************************************************************************* */
+const techniqueWithUnknownProperty = {
+	...validEnterpriseTechnique,
+	foo: 'bar'
+  }
+  
+  console.log("\nExample 15 - Parsing a technique with an unknown property (foo: 'bar'):");
+  try {
+	const parsedTechnique = techniqueSchema.parse(techniqueWithUnknownProperty);
+	console.log("Parsed successfully. Technique name:", parsedTechnique.name);
+  } catch (error) {
+	if (error instanceof z.ZodError) {
+		console.log("Validation errors:", error.errors);
+		// Validation errors: [
+		//     {
+		//       code: 'unrecognized_keys',
+		//       keys: [ 'foo' ],
+		//       path: [],
+		//       message: "Unrecognized key(s) in object: 'foo'"
+		//     }
+		//   ]
+	}
+  }
