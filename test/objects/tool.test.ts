@@ -1,4 +1,3 @@
-import { ZodError } from "zod";
 import {
     ExternalReferences,
     StixCreatedTimestamp,
@@ -11,10 +10,9 @@ import {
     toolSchema,
 } from "../../src/schemas/sdo/tool.schema";
 import { v4 as uuidv4 } from "uuid";
+import { validateAttackObjects } from './common.test';
 
 describe("toolSchema", () => {
-    let tools: any[];
-
     let minimalTool: Tool;
 
     beforeAll(() => {
@@ -398,49 +396,6 @@ describe("toolSchema", () => {
     });
 
     describe('Validate All Objects', () => {
-        it('should validate all objects in the global.attackData', () => {
-            tools = global.attackData.objectsByType["tool"];
-            const errors: { tool: Tool; error: ZodError }[] = [];
-
-            for (let tool of tools) {
-                try {
-                    if (!tool.x_mitre_deprecated && !tool.revoked) {
-                        toolSchema.parse(tool);
-                    }
-                } catch (error) {
-                    if (error instanceof ZodError) {
-                        errors.push({ tool, error });
-                    } else {
-                        throw error; // Re-throw if it's not a ZodError
-                    }
-                }
-            }
-
-            if (errors.length > 0) {
-                const errorReport = errors.map(({ tool, error }) => {
-                    const toolId = tool.external_references[0].external_id;
-                    const toolName = tool.name;
-                    const toolStixId = tool.id;
-                    const errorMessages = error.errors.map(err =>
-                        `    - ${err.path.join('.')}: ${err.message}`
-                    ).join('\n');
-
-                    return `
-    Tool ID: ${toolId}
-    Tool Name: ${toolName}
-    Tool stixID: ${toolStixId}
-    Validation Errors:
-    ${errorMessages}`;
-                }).join('\n');
-
-                console.warn(`The following ${errors.length} tool(s) failed validation:\n${errorReport}`);
-            }
-
-            // Log the number of errors found
-            console.log(`Total tools with validation errors: ${errors.length}`);
-
-            // This expectation will always pass, but it gives us a way to surface the error count in the test results
-            expect(true).toBe(true);
-        });
+        validateAttackObjects(toolSchema, "tool");
     });
 });

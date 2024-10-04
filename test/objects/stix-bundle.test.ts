@@ -189,7 +189,7 @@ describe('StixBundleSchema', () => {
                             let objectStatus = 'Active';
                             if ((errorObject as any).x_mitre_deprecated) {
                                 objectStatus = 'Deprecated';
-                            } else if (errorObject.revoked) {
+                            } else if ("revoked" in errorObject && errorObject.revoked) {
                                 objectStatus = 'Revoked';
                             }
                             errorMessage += `\n  Object Index: ${objectIndex}`;
