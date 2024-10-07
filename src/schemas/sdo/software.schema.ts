@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { attackBaseObjectSchema } from "../common/attack-base-object";
-import { descriptionSchema, xMitrePlatformsSchema, stixCreatedByRefSchema, stixIdentifierSchema, externalReferenceSchema, objectMarkingRefsSchema, xMitreDomainsSchema, aliasesSchema, xMitreModifiedByRefSchema, externalReferencesSchema } from '../common';
+import { descriptionSchema, xMitrePlatformsSchema, stixCreatedByRefSchema, objectMarkingRefsSchema, xMitreDomainsSchema, aliasesSchema, xMitreModifiedByRefSchema, externalReferencesSchema, stixTypeSchema } from '../common';
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
@@ -13,6 +13,11 @@ import '../../errors';
 /////////////////////////////////////
 
 export const softwareSchema = attackBaseObjectSchema.extend({
+
+    type: z.union([
+        z.literal(stixTypeSchema.enum.malware),
+        z.literal(stixTypeSchema.enum.tool)
+    ]),
 
     created_by_ref: stixCreatedByRefSchema
         .describe("The ID of the Source object that describes who created this object."),

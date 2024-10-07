@@ -32,7 +32,7 @@ const baseCitationSchema = z
             return true;
         },
         {
-            message: "Each citation must conform to the pattern '(Citation: <Citation Name>)'",
+            message: "Each citation must conform to the pattern '(Citation: [citation name])'",
         }
     );
 
@@ -51,15 +51,15 @@ const multipleCitationsSchema = z
                 citations.every(citation => baseCitationSchema.safeParse(citation).success);
         },
         {
-            message: "Must be one or more citations in the form '(Citation: <Citation Name>)' without any separators",
+            message: "Must be one or more citations in the form '(Citation: [citation name])' without any separators",
         }
     );
 
 export const xMitreFirstSeenCitationSchema = multipleCitationsSchema
-    .describe("One or more citations for when the object was first seen, in the form '(Citation: <citation name>)(Citation: <citation name>)...', where each <citation name> can be found as one of the source_name values in the external_references.");
+    .describe("One or more citations for when the object was first seen, in the form '(Citation: [citation name])(Citation: [citation name])...', where each [citation name] can be found as one of the source_name values in the external_references.");
 
 export const xMitreLastSeenCitationSchema = multipleCitationsSchema
-    .describe("One or more citations for when the object was last seen, in the form '(Citation: <citation name>)(Citation: <citation name>)...', where each <citation name> can be found as one of the source_name values in the external_references.");
+    .describe("One or more citations for when the object was last seen, in the form '(Citation: [citation name])(Citation: [citation name])...', where each [citation name] can be found as one of the source_name values in the external_references.");
 
 export type XMitreFirstSeenCitation = z.infer<typeof xMitreFirstSeenCitationSchema>;
 export type XMitreLastSeenCitation = z.infer<typeof xMitreLastSeenCitationSchema>;
@@ -184,7 +184,7 @@ export const campaignSchema = attackBaseObjectSchema.extend({
     // Validate citations (they must appear in external_references)
     //==============================================================================
 
-        // Verify that <citation name> can be found as one of the source_name of one of the external_references
+        // Verify that [citation name] can be found as one of the source_name of one of the external_references
 
         // Helper function to extract citation names from a citation string
         const extractCitationNames = (citations: string): string[] => {
