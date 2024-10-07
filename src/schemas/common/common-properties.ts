@@ -101,6 +101,7 @@ export type XMitreVersion = z.infer<typeof xMitreVersionSchema>;
 //
 /////////////////////////////////////
 
+// TODO fix this to support MAJOR, MINOR, and PATCH > 9
 type VersionNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 type MitreAttackSpecVersion = `${VersionNumber}.${VersionNumber}.${VersionNumber}`;
 
