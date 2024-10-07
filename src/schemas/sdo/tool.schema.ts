@@ -6,7 +6,7 @@ import { ToolTypesOpenVocabulary } from "../common/open-vocabulary";
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
-import '../../errors'; 
+import '../../errors';
 
 /////////////////////////////////////
 //
@@ -44,7 +44,7 @@ export const killChainPhaseSchema = z.object({
 
     kill_chain_name: killChainNameSchema
 })
-.strict();
+    .strict();
 
 export type KillChainName = z.infer<typeof killChainNameSchema>;
 export type KillChainPhase = z.infer<typeof killChainPhaseSchema>;
@@ -73,53 +73,53 @@ export const toolSchema = softwareSchema.extend({
         .array(killChainPhaseSchema)
         .optional()
         .describe('The list of kill chain phases for which this Tool can be used.'),
-    
+
     // Not used in ATT&CK Tool but defined in STIX
     tool_version: z
         .string()
         .optional()
         .describe('The version identifier associated with the Tool'),
 })
-.superRefine((schema, ctx) => {
-    //==============================================================================
-    // Validate external references
-    //==============================================================================
-    
-    const {
-        external_references,
-    } = schema;
-    const attackIdEntry = external_references[0];
-    if (!attackIdEntry.external_id) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "ATT&CK ID must be defined in the first external_references entry.",
-            path: ['external_references', 0, 'external_id']
-        });
-    } else {
-        const idRegex = /^S\d{4}$/;
-        if (!idRegex.test(attackIdEntry.external_id)) {
+    .superRefine((schema, ctx) => {
+        //==============================================================================
+        // Validate external references
+        //==============================================================================
+
+        const {
+            external_references,
+        } = schema;
+        const attackIdEntry = external_references[0];
+        if (!attackIdEntry.external_id) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: `The first external_reference must match the ATT&CK ID format S####}.`,
+                message: "ATT&CK ID must be defined in the first external_references entry.",
                 path: ['external_references', 0, 'external_id']
             });
+        } else {
+            const idRegex = /^S\d{4}$/;
+            if (!idRegex.test(attackIdEntry.external_id)) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: `The first external_reference must match the ATT&CK ID format S####}.`,
+                    path: ['external_references', 0, 'external_id']
+                });
+            }
         }
-    }
-    
-    //==============================================================================
-    // Validate x_mitre_aliases
-    //==============================================================================
 
-    // The object's name MUST be listed as the first alias in the x_mitre_aliases field
-    if (schema.x_mitre_aliases && schema.x_mitre_aliases.length > 0) {
-        if (!(schema.x_mitre_aliases[0] === schema.name)){
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "The first alias must match the object's name",
-            });
+        //==============================================================================
+        // Validate x_mitre_aliases
+        //==============================================================================
+
+        // The object's name MUST be listed as the first alias in the x_mitre_aliases field
+        if (schema.x_mitre_aliases && schema.x_mitre_aliases.length > 0) {
+            if (!(schema.x_mitre_aliases[0] === schema.name)) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "The first alias must match the object's name",
+                });
+            }
         }
-    }
-});
+    });
 
 // Define the type for Tool
 export type Tool = z.infer<typeof toolSchema>;
