@@ -62,10 +62,12 @@ describe('RelationshipSchema', () => {
             object_marking_refs: [`marking-definition--${uuidv4()}`],
             x_mitre_attack_spec_version: "2.1.0",
             x_mitre_modified_by_ref: xMitreIdentity,
+            x_mitre_domains: ['enterprise-attack'],
+            x_mitre_version: '1.0',
         };
     });
 
-    describe('True Positives Tests', () => {
+    describe('Valid Inputs', () => {
         it('should accept minimal valid object (only required fields)', () => {
             expect(() => relationshipSchema.parse(minimalRelationship)).not.toThrow();
         });
@@ -99,7 +101,7 @@ describe('RelationshipSchema', () => {
         });
     });
 
-    describe('True Negative Tests', () => {
+    describe('Field-Specific Tests', () => {
         describe('id', () => {
             it('should reject invalid values', () => {
                 const invalidId: Relationship = {
@@ -249,21 +251,21 @@ describe('RelationshipSchema', () => {
             } as Relationship;
             expect(() => relationshipSchema.parse(relationshipWithUnknownProperties)).toThrow();
         });
+    });
 
-        describe('Schema Refinements', () => {
-            //==============================================================================
-            // Validate relationship object combinations
-            //==============================================================================
-            validRelationships.forEach(({ sourceType, relationshipType, targetType }) => {
-                it(`should return true for valid ${sourceType} ${relationshipType} ${targetType} relationship`, () => {
-                    expect(isValidRelationship(sourceType, relationshipType as RelationshipType, targetType)).toBe(true);
-                });
+    describe('Schema Refinements', () => {
+        //==============================================================================
+        // Validate relationship object combinations
+        //==============================================================================
+        validRelationships.forEach(({ sourceType, relationshipType, targetType }) => {
+            it(`should return true for valid ${sourceType} ${relationshipType} ${targetType} relationship`, () => {
+                expect(isValidRelationship(sourceType, relationshipType as RelationshipType, targetType)).toBe(true);
             });
+        });
 
-            invalidRelationships.forEach(({ sourceType, relationshipType, targetType }) => {
-                it(`should return false for invalid ${sourceType} ${relationshipType} ${targetType} relationship`, () => {
-                    expect(isValidRelationship(sourceType, relationshipType as RelationshipType, targetType)).toBe(false);
-                });
+        invalidRelationships.forEach(({ sourceType, relationshipType, targetType }) => {
+            it(`should return false for invalid ${sourceType} ${relationshipType} ${targetType} relationship`, () => {
+                expect(isValidRelationship(sourceType, relationshipType as RelationshipType, targetType)).toBe(false);
             });
         });
     });
