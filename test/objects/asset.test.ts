@@ -3,11 +3,10 @@ import { Asset, assetSchema, RelatedAsset, XMitreSectors } from '../../src/schem
 import { Description, ExternalReferences, StixCreatedTimestamp, StixIdentifier, StixModifiedTimestamp, StixSpecVersion, StixType } from '../../src/schemas/common';
 
 describe('AssetSchema', () => {
-    let assets: any[];
+
     let minimalAsset: Asset;
 
     beforeAll(() => {
-        assets = global.attackData.objectsByType['x-mitre-asset'];
 
         minimalAsset = {
             id: `x-mitre-asset--${uuidv4()}`,
