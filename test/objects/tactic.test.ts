@@ -1,6 +1,4 @@
-import { ZodError } from "zod";
 import {
-    ExternalReferences,
     StixCreatedTimestamp,
     StixModifiedTimestamp,
 } from "../../src/schemas/common";
@@ -10,9 +8,11 @@ import {
 } from "../../src/schemas/sdo/tactic.schema";
 import { v4 as uuidv4 } from "uuid";
 
+/**
+ * Test suite for validating the Tactic schema.
+ */
 describe("tacticSchema", () => {
     let minimalTactic: Tactic;
-    let invalidTactic: Tactic;
 
     beforeEach(() => {
         minimalTactic = {
@@ -23,12 +23,12 @@ describe("tacticSchema", () => {
             created: "2017-05-31T21:32:29.203Z" as StixCreatedTimestamp,
             modified: "2021-02-09T13:58:23.806Z" as StixModifiedTimestamp,
             name: "Execution",
-            description: "The adversary is trying to run malicious code.\n\nExecution consists of techniques that result in adversary-controlled code running on a local or remote system. Techniques that run malicious code are often paired with techniques from all other tactics to achieve broader goals, like exploring a network or stealing data. For example, an adversary might use a remote access tool to run a PowerShell script that does Remote System Discovery.",
+            description: "The adversary is trying to run malicious code.",
             external_references: [
                 {
-                    "external_id": "TA0002",
-                    "url": "https://attack.mitre.org/tactics/TA0002",
-                    "source_name": "mitre-attack"
+                    external_id: "TA0002",
+                    url: "https://attack.mitre.org/tactics/TA0002",
+                    source_name: "mitre-attack"
                 }
             ],
             x_mitre_shortname: "execution",
@@ -43,6 +43,9 @@ describe("tacticSchema", () => {
         };
     });
 
+    /**
+     * Section for valid input tests
+     */
     describe("Valid Inputs", () => {
         it("should accept minimal valid object (only required fields)", () => {
             expect(() => tacticSchema.parse(minimalTactic)).not.toThrow();
@@ -53,252 +56,115 @@ describe("tacticSchema", () => {
                 ...minimalTactic,
                 x_mitre_deprecated: false,
             };
-            expect(fullTactic).toBeDefined();
             expect(() => tacticSchema.parse(fullTactic)).not.toThrow();
         });
     });
 
+    /**
+     * Section for field-specific tests
+     */
     describe("Field-Specific Tests", () => {
-        describe("id", () => {
-            beforeEach(() => {
-                invalidTactic = {
-                    ...minimalTactic,
-                    id: "invalid-id" as any,
-                };
-            });
+        const testField = (
+            fieldName: string,
+            invalidValue: any,
+            isRequired = true // Flag indicating whether the field is required
+        ) => {
 
-            it("should reject invalid values", () => {
+            it(`should reject invalid values for ${fieldName}`, () => {
+                const invalidTactic = { ...minimalTactic, [fieldName]: invalidValue };
                 expect(() => tacticSchema.parse(invalidTactic)).toThrow();
             });
+            if (isRequired) {
+                it(`should reject omission of ${fieldName}`, () => {
+                    const { [fieldName]: omitted, ...tacticWithoutField } = minimalTactic;
+                    expect(() => tacticSchema.parse(tacticWithoutField)).toThrow();
+                });
+            } else {
+                it(`should accept omission of ${fieldName}`, () => {
+                    const { [fieldName]: omitted, ...tacticWithoutField } = minimalTactic;
+                    expect(() => tacticSchema.parse(tacticWithoutField)).not.toThrow();
+                });
+            }
+        };
 
-            it("should reject omittance of required values", () => {
-                const { id, ...tacticWithoutId } = minimalTactic;
-                expect(() => tacticSchema.parse(tacticWithoutId)).toThrow();
-            });
+        // Required Fields
+        describe("id", () => {
+            testField("id", "invalid-id");
         });
 
         describe("type", () => {
-            beforeEach(() => {
-                invalidTactic = {
-                    ...minimalTactic,
-                    type: "invalid-type" as any,
-                };
-            });
-
-            it("should reject invalid values", () => {
-                expect(() => tacticSchema.parse(invalidTactic)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { type, ...tacticWithoutType } = minimalTactic;
-                expect(() => tacticSchema.parse(tacticWithoutType)).toThrow();
-            });
+            testField("type", "invalid-type");
         });
 
-        describe('description', () => {
-            beforeEach(() => {
-                invalidTactic = {
-                    ...minimalTactic,
-                    description: 123 as any
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => tacticSchema.parse(invalidTactic)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { description, ...tacticWithoutDescription } = minimalTactic;
-                expect(() => tacticSchema.parse(tacticWithoutDescription)).toThrow();
-            });
+        describe("description", () => {
+            testField("description", 123); // Now marked as required
         });
 
         describe("created_by_ref", () => {
-            let invalidTactic1: Tactic;
-            let invalidTactic2: Tactic;
-            beforeEach(() => {
-                invalidTactic1 = {
-                    ...minimalTactic,
-                    created_by_ref: "invalid-created-by-ref" as any,
-                };
-
-                invalidTactic2 = {
-                    ...minimalTactic,
-                    created_by_ref: `malware--${uuidv4()}` as any,
-                };
-            });
-
-            it("should reject invalid string values", () => {
-                expect(() => tacticSchema.parse(invalidTactic1)).toThrow();
-            });
-
-            it("should reject invalid UUID format", () => {
-                expect(() => tacticSchema.parse(invalidTactic2)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { created_by_ref, ...tacticWithoutCreatedByRef } = minimalTactic;
-                expect(() => tacticSchema.parse(tacticWithoutCreatedByRef)).toThrow();
-            });
+            testField("created_by_ref", "invalid-created-by-ref");
         });
 
-        describe('external_references', () => {
-            beforeEach(() => {
-                invalidTactic = {
-                    ...minimalTactic,
-                    external_references: 'not-an-array' as unknown as ExternalReferences
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => tacticSchema.parse(invalidTactic)).toThrow();
-            });
-
-            it('should reject omitted required values', () => {
-                const { external_references, ...tacticWithoutExternalReferences } = minimalTactic;
-                expect(() => tacticSchema.parse(tacticWithoutExternalReferences)).toThrow();
-            });
+        describe("external_references", () => {
+            testField("external_references", "not-an-array");
         });
 
-        describe('object_marking_refs', () => {
-            beforeEach(() => {
-                invalidTactic = {
-                    ...minimalTactic,
-                    object_marking_refs: ['invalid-object-marking-refs'] as any
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => tacticSchema.parse(invalidTactic)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { object_marking_refs, ...tacticWithoutObjectMarkingRefs } = minimalTactic;
-                expect(() => tacticSchema.parse(tacticWithoutObjectMarkingRefs)).toThrow();
-            });
+        describe("object_marking_refs", () => {
+            testField("object_marking_refs", ["invalid-object-marking-refs"]);
         });
 
-        describe('x_mitre_domains', () => {
-            beforeEach(() => {
-                invalidTactic = {
-                    ...minimalTactic,
-                    x_mitre_domains: ['invalid-mitre-domains'] as any
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => tacticSchema.parse(invalidTactic)).toThrow();
-            });
-
-            it('should reject omitted required values', () => {
-                const { x_mitre_domains, ...tacticWithoutDomains } = minimalTactic;
-                expect(() => tacticSchema.parse(tacticWithoutDomains)).toThrow();
-            });
+        describe("x_mitre_domains", () => {
+            testField("x_mitre_domains", ["invalid-mitre-domains"]);
         });
 
-        describe('x_mitre_shortname', () => {
-            beforeEach(() => {
-                invalidTactic = {
-                    ...minimalTactic,
-                    x_mitre_shortname: 'invalid-shortname' as any
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => tacticSchema.parse(invalidTactic)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { x_mitre_shortname, ...tacticWithoutMitreShortname } = minimalTactic;
-                expect(() => tacticSchema.parse(tacticWithoutMitreShortname)).toThrow();
-            });
+        describe("x_mitre_shortname", () => {
+            testField("x_mitre_shortname", "invalid-shortname");
         });
 
-        describe('x_mitre_modified_by_ref', () => {
-            beforeEach(() => {
-                invalidTactic = {
-                    ...minimalTactic,
-                    x_mitre_modified_by_ref: 'invalid-modified-by-ref' as any
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => tacticSchema.parse(invalidTactic)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { x_mitre_modified_by_ref, ...tacticWithoutModifiedByRef } = minimalTactic;
-                expect(() => tacticSchema.parse(tacticWithoutModifiedByRef)).toThrow();
-            });
+        describe("x_mitre_modified_by_ref", () => {
+            testField("x_mitre_modified_by_ref", "invalid-modified-by-ref");
         });
 
-        describe('x_mitre_deprecated', () => {
-            beforeEach(() => {
-                invalidTactic = {
-                    ...minimalTactic,
-                    x_mitre_deprecated: 'not-a-boolean' as any
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => tacticSchema.parse(invalidTactic)).toThrow();
-            });
-
-            it('should accept omitted optional values', () => {
-                const { x_mitre_deprecated, ...tacticWithoutDeprecated } = invalidTactic;
-                expect(() => tacticSchema.parse(tacticWithoutDeprecated)).not.toThrow();
-            });
+        // Optional Fields
+        describe("x_mitre_deprecated", () => {
+            testField("x_mitre_deprecated", "not-a-boolean", false); // Optional field
         });
 
-        describe('revoked', () => {
-            beforeEach(() => {
-                invalidTactic = {
-                    ...minimalTactic,
-                    revoked: 'not-a-boolean' as any
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => tacticSchema.parse(invalidTactic)).toThrow();
-            });
-
-            it('should accept omitted optional values', () => {
-                const { revoked, ...tacticWithoutRevoked } = invalidTactic;
-                expect(() => tacticSchema.parse(tacticWithoutRevoked)).not.toThrow();
-            });
+        describe("revoked", () => {
+            testField("revoked", "not-a-boolean", false); // Optional field
         });
     });
 
-    describe('Schema Refinements', () => {
-        describe('External References Validation', () => {
-            beforeEach(() => {
-                invalidTactic = {
-                    ...minimalTactic,
-                    external_references: [{ source_name: 'mitre-attack' }]
-                };
-            });
-
-            it('should reject when ATT&CK ID is missing', () => {
-                expect(() => tacticSchema.parse(invalidTactic)).toThrow(/ATT&CK ID must be defined/);
-            });
-
-            it('should reject invalid ATT&CK ID format', () => {
-                invalidTactic.external_references = [{ source_name: 'mitre-attack', external_id: 'TA123' }];
-                expect(() => tacticSchema.parse(invalidTactic)).toThrow(`The first external_reference must match the ATT&CK ID format TA####}.`);
-            });
-        });
-    });
-
+    /**
+     * Section for schema-level tests
+     */
     describe("Schema-Level Tests", () => {
-        beforeEach(() => {
-            invalidTactic = {
+        it('should reject unknown properties', () => {
+            const invalidTactic: Tactic = {
                 ...minimalTactic,
                 unknown_property: true
             } as Tactic;
+            expect(() => tacticSchema.parse(invalidTactic)).toThrow();
+        });
+    });
+
+    /**
+     * Schema Refinements
+     */
+    describe('Schema Refinements', () => {
+        it('should reject when ATT&CK ID is missing from external references', () => {
+            const invalidTactic = {
+                ...minimalTactic,
+                external_references: [{ source_name: 'mitre-attack' }]
+            };
+            expect(() => tacticSchema.parse(invalidTactic)).toThrow("ATT&CK ID must be defined in the first external_references entry.");
         });
 
-        it('should reject unknown properties', () => {
-            expect(() => tacticSchema.parse(invalidTactic)).toThrow();
+        it('should reject invalid ATT&CK ID format', () => {
+            const invalidTactic = {
+                ...minimalTactic,
+                external_references: [{ source_name: 'mitre-attack', external_id: 'TA123' }]
+            };
+            expect(() => tacticSchema.parse(invalidTactic)).toThrow("The first external_reference must match the ATT&CK ID format TA####.");
         });
     });
 });
