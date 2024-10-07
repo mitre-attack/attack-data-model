@@ -10,13 +10,13 @@ import {
     toolSchema,
 } from "../../src/schemas/sdo/tool.schema";
 import { v4 as uuidv4 } from "uuid";
-import { validateAttackObjects } from './common.test';
+import { validateAttackObjects } from '../utils/common';
 
 describe("toolSchema", () => {
     let minimalTool: Tool;
 
     beforeAll(() => {
-        minimalTool = toolSchema.parse({
+        minimalTool = {
             type: "tool",
             id: `tool--${uuidv4()}`,
             spec_version: "2.1",
@@ -45,7 +45,7 @@ describe("toolSchema", () => {
             x_mitre_modified_by_ref:
                 "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
             x_mitre_version: "1.2",
-        });
+        };
     });
 
     describe("Valid Inputs", () => {
@@ -84,12 +84,17 @@ describe("toolSchema", () => {
     });
 
     describe("Field-Specific Tests", () => {
+        let invalidTool: Tool;
+
         describe("id", () => {
-            it("should reject invalid values", () => {
-                const invalidTool: Tool = {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
-                    id: "invalid-id" as StixIdentifier,
-                } as Tool;
+                    id: "invalid-id" as any,
+                };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
@@ -100,11 +105,14 @@ describe("toolSchema", () => {
         });
 
         describe("type", () => {
-            it("should reject invalid values", () => {
-                const invalidTool: Tool = {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
                     type: "invalid-type" as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
@@ -115,11 +123,14 @@ describe("toolSchema", () => {
         });
 
         describe("tool_types", () => {
-            it("should reject invalid values", () => {
-                const invalidTool: Tool = {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
                     tool_types: ["invalid-tool-type"] as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
@@ -130,11 +141,14 @@ describe("toolSchema", () => {
         });
 
         describe("kill_chain_phases", () => {
-            it("should reject invalid values", () => {
-                const invalidTool: Tool = {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
                     kill_chain_phases: [{ invalid: "object" }] as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
@@ -145,11 +159,14 @@ describe("toolSchema", () => {
         });
 
         describe("tool_version", () => {
-            it("should reject invalid values", () => {
-                const invalidTool: Tool = {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
                     tool_version: 123 as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
@@ -159,12 +176,15 @@ describe("toolSchema", () => {
             });
         });
 
-        describe('aliases', () => {
-            it('should reject invalid values', () => {
-                const invalidTool: Tool = {
+        describe("aliases", () => {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
-                    aliases: 'not-an-array' as any
+                    aliases: "not-an-array" as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
@@ -175,19 +195,14 @@ describe("toolSchema", () => {
         });
 
         describe("created_by_ref", () => {
-            it("should reject invalid values", () => {
-                const invalidTool: Tool = {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
                     created_by_ref: "invalid-created-by-ref" as any,
                 };
-                expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
             it("should reject invalid values", () => {
-                const invalidTool: Tool = {
-                    ...minimalTool,
-                    created_by_ref: `malware--${uuidv4()}` as any
-                };
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
@@ -197,12 +212,15 @@ describe("toolSchema", () => {
             });
         });
 
-        describe('description', () => {
-            it('should reject invalid values', () => {
-                const invalidTool: Tool = {
+        describe("description", () => {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
-                    description: 123 as any
+                    description: 123 as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
@@ -212,28 +230,33 @@ describe("toolSchema", () => {
             });
         });
 
-        describe('external_references', () => {
-            it('should reject invalid values', () => {
-                const invalidTool: Tool = {
+        describe("external_references", () => {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
-                    external_references: 'not-an-array' as unknown as ExternalReferences
-
+                    external_references: "not-an-array" as unknown as ExternalReferences,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
-            it('should reject omitted required values', () => {
+            it("should reject omitted required values", () => {
                 const { external_references, ...toolWithoutExternalReferences } = minimalTool;
                 expect(() => toolSchema.parse(toolWithoutExternalReferences)).toThrow();
             });
         });
 
-        describe('object_marking_refs', () => {
-            it('should reject invalid values', () => {
-                const invalidTool: Tool = {
+        describe("object_marking_refs", () => {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
-                    object_marking_refs: ['invalid-object-marking-refs'] as any
+                    object_marking_refs: ["invalid-object-marking-refs"] as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
@@ -243,42 +266,51 @@ describe("toolSchema", () => {
             });
         });
 
-        describe('x_mitre_platforms', () => {
-            it('should reject invalid values', () => {
-                const invalidTool: Tool = {
+        describe("x_mitre_platforms", () => {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
-                    x_mitre_platforms: ['invalid-mitre-platforms'] as any
+                    x_mitre_platforms: ["invalid-mitre-platforms"] as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
-            it('should accept omitted optional values', () => {
+            it("should accept omitted optional values", () => {
                 const { x_mitre_platforms, ...toolWithoutPlatforms } = minimalTool;
                 expect(() => toolSchema.parse(toolWithoutPlatforms)).not.toThrow();
             });
         });
 
-        describe('x_mitre_contributors', () => {
-            it('should reject invalid values', () => {
-                const invalidTool: Tool = {
+        describe("x_mitre_contributors", () => {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
-                    x_mitre_contributors: 'not-an-array' as any
+                    x_mitre_contributors: "not-an-array" as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
-            it('should accept omitted optional values', () => {
+            it("should accept omitted optional values", () => {
                 const { x_mitre_contributors, ...toolWithoutContributors } = minimalTool;
                 expect(() => toolSchema.parse(toolWithoutContributors)).not.toThrow();
             });
         });
 
-        describe('x_mitre_aliases', () => {
-            it('should reject invalid values', () => {
-                const invalidTool: Tool = {
+        describe("x_mitre_aliases", () => {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
-                    x_mitre_aliases: 'not-an-array' as any
+                    x_mitre_aliases: "not-an-array" as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
@@ -288,12 +320,15 @@ describe("toolSchema", () => {
             });
         });
 
-        describe('x_mitre_modified_by_ref', () => {
-            it('should reject invalid values', () => {
-                const invalidTool: Tool = {
+        describe("x_mitre_modified_by_ref", () => {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
-                    x_mitre_modified_by_ref: 'invalid-modified-by-ref' as any
+                    x_mitre_modified_by_ref: "invalid-modified-by-ref" as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
@@ -303,51 +338,60 @@ describe("toolSchema", () => {
             });
         });
 
-        describe('x_mitre_domains', () => {
-            it('should reject invalid values', () => {
-                const invalidTool: Tool = {
+        describe("x_mitre_domains", () => {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
-                    x_mitre_domains: ['invalid-mitre-domains'] as any
+                    x_mitre_domains: ["invalid-mitre-domains"] as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
-            it('should reject omitted required values', () => {
+            it("should reject omitted required values", () => {
                 const { x_mitre_domains, ...toolWithoutDomains } = minimalTool;
                 expect(() => toolSchema.parse(toolWithoutDomains)).toThrow();
             });
         });
 
-        describe('x_mitre_deprecated', () => {
-            it('should reject invalid values', () => {
-                const invalidTool: Tool = {
+        describe("x_mitre_deprecated", () => {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
-                    x_mitre_deprecated: 'not-a-boolean' as any
+                    x_mitre_deprecated: "not-a-boolean" as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
-            it('should accept omitted optional values', () => {
+            it("should accept omitted optional values", () => {
                 const { x_mitre_deprecated, ...toolWithoutDeprecated } = minimalTool;
                 expect(() => toolSchema.parse(toolWithoutDeprecated)).not.toThrow();
             });
         });
 
-        describe('revoked', () => {
-            it('should reject invalid values', () => {
-                const invalidTool: Tool = {
+        describe("revoked", () => {
+            beforeEach(() => {
+                invalidTool = {
                     ...minimalTool,
-                    revoked: 'not-a-boolean' as any
+                    revoked: "not-a-boolean" as any,
                 };
+            });
+
+            it("should reject invalid values", () => {
                 expect(() => toolSchema.parse(invalidTool)).toThrow();
             });
 
-            it('should accept omitted optional values', () => {
+            it("should accept omitted optional values", () => {
                 const { revoked, ...toolWithoutRevoked } = minimalTool;
                 expect(() => toolSchema.parse(toolWithoutRevoked)).not.toThrow();
             });
         });
-    });
+    });    
 
     describe('Schema Refinements', () => {
         describe('External References Validation', () => {
