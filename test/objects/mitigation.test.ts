@@ -40,7 +40,7 @@ describe("MitigationSchema", () => {
     };
   });
 
-  describe("True Positives Tests", () => {
+  describe("Valid Inputs", () => {
     it("should accept minimal valid object (only required fields)", () => {
       expect(() => mitigationSchema.parse(minimalMitigation)).not.toThrow();
     });
@@ -64,7 +64,7 @@ describe("MitigationSchema", () => {
     });
   });
 
-  describe("True Negative Tests", () => {
+  describe("Field-Specific Tests", () => {
     const testField = (
       fieldName: string,
       invalidValue: any,
