@@ -23,26 +23,27 @@ export type XMitreDataSourceRef = z.infer<typeof xMitreDataSourceRefSchema>;
 //
 /////////////////////////////////////
 
-export const dataComponentSchema = attackBaseObjectSchema.extend({
+export const dataComponentSchema = attackBaseObjectSchema
+  .extend({
 
-  id: createStixIdentifierSchema('x-mitre-data-component'),
+    id: createStixIdentifierSchema('x-mitre-data-component'),
 
-  type: z.literal(stixTypeSchema.enum["x-mitre-data-component"]),
+    type: z.literal(stixTypeSchema.enum["x-mitre-data-component"]),
 
-  description: descriptionSchema,
+    description: descriptionSchema,
 
-  // Optional in STIX but required in ATT&CK
-  created_by_ref: stixCreatedByRefSchema,
+    // Optional in STIX but required in ATT&CK
+    created_by_ref: stixCreatedByRefSchema,
 
-  // Optional in STIX but required in ATT&CK
-  object_marking_refs: objectMarkingRefsSchema,
+    // Optional in STIX but required in ATT&CK
+    object_marking_refs: objectMarkingRefsSchema,
 
-  x_mitre_domains: xMitreDomainsSchema,
+    x_mitre_domains: xMitreDomainsSchema,
 
-  x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
+    x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
-  x_mitre_data_source_ref: xMitreDataSourceRefSchema,
-})
-.strict();
+    x_mitre_data_source_ref: xMitreDataSourceRefSchema,
+  })
+  .strict();
 
 export type DataComponent = z.infer<typeof dataComponentSchema>;
