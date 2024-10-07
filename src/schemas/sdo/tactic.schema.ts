@@ -142,7 +142,7 @@ export const tacticSchema = attackBaseObjectSchema.extend({
             if (!idRegex.test(attackIdEntry.external_id)) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
-                    message: `The first external_reference must match the ATT&CK ID format TA####}.`
+                    message: `The first external_reference must match the ATT&CK ID format TA####.`
                 });
             }
         }
