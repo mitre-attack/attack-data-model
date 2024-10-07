@@ -1,4 +1,3 @@
-import { ZodError } from "zod";
 import {
     StixCreatedTimestamp,
     StixModifiedTimestamp,
@@ -467,12 +466,6 @@ describe("campaignSchema", () => {
 
         it('should reject unknown properties', () => {
             expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
-        });
-    });
-
-    describe("Edge Cases and Special Scenarios", () => {
-        it("should handle special case X", () => {
-            // Test any schema-specific special cases
         });
     });
 });
