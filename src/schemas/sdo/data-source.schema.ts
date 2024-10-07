@@ -97,7 +97,7 @@ export const dataSourceSchema = attackBaseObjectSchema.extend({
       if (!idRegex.test(attackIdEntry.external_id)) {
           ctx.addIssue({
               code: z.ZodIssueCode.custom,
-              message: `The first external_reference must match the ATT&CK ID format DS####}.`,
+            message: `The first external_reference must match the ATT&CK ID format DS####.`,
               path: ['external_references', 0, 'external_id']
           });
       }
