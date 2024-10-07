@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { attackBaseObjectSchema } from "../common/attack-base-object";
 import { stixTypeSchema } from "../common/stix-type";
-import { createStixIdentifierSchema, externalReferencesSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, xMitreDomainsSchema } from "../common";
+import { createStixIdentifierSchema, externalReferencesSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, xMitreDomainsSchema, xMitreModifiedByRefSchema } from "../common";
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
@@ -31,8 +31,7 @@ export const mitigationSchema = attackBaseObjectSchema
 
     x_mitre_domains: xMitreDomainsSchema,
 
-    x_mitre_modified_by_ref: stixIdentifierSchema
-      .describe("The STIX ID of an identity object. Used to track the identity of the individual or organization which created the current version of the object. Previous versions of the object may have been created by other individuals or organizations."),
+    x_mitre_modified_by_ref: xMitreModifiedByRefSchema
   })
   .strict()
   .superRefine((schema, ctx) => {
