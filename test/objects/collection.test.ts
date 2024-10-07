@@ -1,4 +1,3 @@
-import { ZodError } from "zod";
 import {
     StixCreatedTimestamp,
     StixModifiedTimestamp,
@@ -9,10 +8,11 @@ import {
 } from "../../src/schemas/sdo/collection.schema";
 import { v4 as uuidv4 } from "uuid";
 
+/**
+ * Test suite for validating the Collection schema.
+ */
 describe("collectionSchema", () => {
-
     let minimalCollection: Collection;
-    let invalidCollection: Collection;
 
     beforeEach(() => {
         minimalCollection = {
@@ -34,177 +34,96 @@ describe("collectionSchema", () => {
                     object_ref: "attack-pattern--01a5a209-b94c-450b-b7f9-946497d91055",
                     object_modified: "2017-05-31T21:32:29.203Z" as StixModifiedTimestamp
                 },
-                {
-                    object_ref: "attack-pattern--0259baeb-9f63-4c69-bf10-eb038c390688",
-                    object_modified: "2021-02-09T13:58:23.806Z" as StixModifiedTimestamp
-                },
-                {
-                    object_ref: "relationship--0024d82d-97ea-4dc5-81a1-8738862e1f3b",
-                    object_modified: "2021-02-09T13:58:23.806Z" as StixModifiedTimestamp
-                }
             ]
         };
     });
 
+    /**
+     * Section for valid input tests
+     */
     describe("Valid Inputs", () => {
         it("should accept minimal valid object (only required fields)", () => {
             expect(() => collectionSchema.parse(minimalCollection)).not.toThrow();
         });
     });
 
+    /**
+     * Section for field-specific tests
+     */
     describe("Field-Specific Tests", () => {
-        describe("id", () => {
-            beforeEach(() => {
-                invalidCollection = {
-                    ...minimalCollection,
-                    id: "invalid-id" as any,
-                };
-            });
-
-            it("should reject invalid values", () => {
+        const testField = (
+            fieldName: string,
+            invalidValue: any,
+            isRequired = true // Flag indicating whether the field is required
+        ) => {
+            it(`should reject invalid values for ${fieldName}`, () => {
+                const invalidCollection = { ...minimalCollection, [fieldName]: invalidValue };
                 expect(() => collectionSchema.parse(invalidCollection)).toThrow();
             });
 
-            it("should reject omittance of required values", () => {
-                const { id, ...collectionWithoutId } = minimalCollection;
-                expect(() => collectionSchema.parse(collectionWithoutId)).toThrow();
-            });
+            if (isRequired) {
+                it(`should reject omission of ${fieldName}`, () => {
+                    const { [fieldName]: omitted, ...collectionWithoutField } = minimalCollection;
+                    expect(() => collectionSchema.parse(collectionWithoutField)).toThrow();
+                });
+            } else {
+                it(`should accept omission of ${fieldName}`, () => {
+                    const { [fieldName]: omitted, ...collectionWithoutField } = minimalCollection;
+                    expect(() => collectionSchema.parse(collectionWithoutField)).not.toThrow();
+                });
+            }
+        };
+
+        // Required Fields
+        describe("id", () => {
+            testField("id", "invalid-id");
         });
 
         describe("type", () => {
-            beforeEach(() => {
-                invalidCollection = {
-                    ...minimalCollection,
-                    type: "invalid-type" as any,
-                };
-            });
-
-            it("should reject invalid values", () => {
-                expect(() => collectionSchema.parse(invalidCollection)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { type, ...collectionWithoutType } = minimalCollection;
-                expect(() => collectionSchema.parse(collectionWithoutType)).toThrow();
-            });
+            testField("type", "invalid-type");
         });
 
         describe("created_by_ref", () => {
-            let invalidCollection1: Collection;
-            let invalidCollection2: Collection;
-
-            beforeEach(() => {
-                invalidCollection1 = {
-                    ...minimalCollection,
-                    created_by_ref: "invalid-created-by-ref" as any,
-                };
-
-                invalidCollection2 = {
-                    ...minimalCollection,
-                    created_by_ref: `malware--${uuidv4()}` as any,
-                };
-            });
-
-            it("should reject invalid string values", () => {
-                expect(() => collectionSchema.parse(invalidCollection1)).toThrow();
-            });
-
-            it("should reject invalid UUID format", () => {
-                expect(() => collectionSchema.parse(invalidCollection2)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { created_by_ref, ...collectionWithoutCreatedByRef } = minimalCollection;
-                expect(() => collectionSchema.parse(collectionWithoutCreatedByRef)).toThrow();
-            });
+            testField("created_by_ref", "invalid-created-by-ref"); // should reject invalid string values
+            testField("created_by_ref", `malware--${uuidv4()}`); // should reject invalid UUID format
         });
 
-        describe('object_marking_refs', () => {
-            beforeEach(() => {
-                invalidCollection = {
-                    ...minimalCollection,
-                    object_marking_refs: ['invalid-object-marking-refs'] as any
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => collectionSchema.parse(invalidCollection)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { object_marking_refs, ...collectionWithoutObjectMarkingRefs } = minimalCollection;
-                expect(() => collectionSchema.parse(collectionWithoutObjectMarkingRefs)).toThrow();
-            });
+        describe("object_marking_refs", () => {
+            testField("object_marking_refs", ["invalid-object-marking-refs"]);
         });
 
-        describe('description', () => {
-            beforeEach(() => {
-                invalidCollection = {
-                    ...minimalCollection,
-                    description: 123 as any
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => collectionSchema.parse(invalidCollection)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { description, ...collectionWithoutDescription } = minimalCollection;
-                expect(() => collectionSchema.parse(collectionWithoutDescription)).toThrow();
-            });
+        describe("description", () => {
+            testField("description", 123);
         });
 
-        describe('x_mitre_contents', () => {
-            beforeEach(() => {
-                invalidCollection = {
-                    ...minimalCollection,
-                    x_mitre_contents: ['invalid-mitre-contents'] as any
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => collectionSchema.parse(invalidCollection)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { x_mitre_contents, ...collectionWithoutXMitreContents } = minimalCollection;
-                expect(() => collectionSchema.parse(collectionWithoutXMitreContents)).toThrow();
-            });
+        describe("x_mitre_contents", () => {
+            testField("x_mitre_contents", ["invalid-mitre-contents"]);
         });
     });
 
-    describe('Schema Refinements', () => {
-        describe('X Mitre Contents Validation', () => {
-            beforeEach(() => {
-                invalidCollection = {
-                    ...minimalCollection,
-                    x_mitre_contents: []
-                };
-            });
-
-            it('should reject if at least one STIX object reference is not present', () => {
-                expect(() => collectionSchema.parse(invalidCollection)).toThrow(/At least one STIX object reference is required/);
-            });
-        });
-    });
-
+    /**
+     * Section for schema-level tests
+     */
     describe("Schema-Level Tests", () => {
-        beforeEach(() => {
-            invalidCollection = {
+        it('should reject unknown properties', () => {
+            const invalidCollection: Collection = {
                 ...minimalCollection,
                 unknown_property: true
             } as Collection;
-        });
-
-        it('should reject unknown properties', () => {
             expect(() => collectionSchema.parse(invalidCollection)).toThrow();
         });
     });
 
-    describe("Edge Cases and Special Scenarios", () => {
-        it("should handle special case X", () => {
-            // Test any schema-specific special cases
+    /**
+     * Schema Refinements
+     */
+    describe('Schema Refinements', () => {
+        it('should reject if x_mitre_contents array is empty', () => {
+            const invalidCollection: Collection = {
+                ...minimalCollection,
+                x_mitre_contents: []
+            };
+            expect(() => collectionSchema.parse(invalidCollection)).toThrow("At least one STIX object reference is required");
         });
     });
 });
