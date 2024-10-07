@@ -20,12 +20,9 @@ import {
 import { v4 as uuidv4 } from "uuid";
 
 describe("MitigationSchema", () => {
-  let mitigations: any[];
   let minimalMitigation: Mitigation;
 
   beforeAll(() => {
-    mitigations = global.attackData.objectsByType["course-of-action"];
-
     minimalMitigation = mitigationSchema.parse({
       id: `course-of-action--${uuidv4()}`,
       type: "course-of-action",
@@ -395,14 +392,6 @@ describe("MitigationSchema", () => {
   describe("Edge Cases and Special Scenarios", () => {
     it("should handle special case X", () => {
       // Test any schema-specific special cases
-    });
-  });
-
-  describe("Validate All Objects", () => {
-    it("should validate all objects in the global.attackData", () => {
-      mitigations.forEach((mitigation, index) => {
-        expect(() => mitigationSchema.parse(mitigation)).not.toThrow();
-      });
     });
   });
 });

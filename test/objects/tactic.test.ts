@@ -11,7 +11,6 @@ import {
 import { v4 as uuidv4 } from "uuid";
 
 describe("tacticSchema", () => {
-    let tactics: any[];
     let minimalTactic: Tactic;
     let invalidTactic: Tactic;
 
@@ -300,59 +299,6 @@ describe("tacticSchema", () => {
 
         it('should reject unknown properties', () => {
             expect(() => tacticSchema.parse(invalidTactic)).toThrow();
-        });
-    });
-
-    describe("Edge Cases and Special Scenarios", () => {
-        it("should handle special case X", () => {
-            // Test any schema-specific special cases
-        });
-    });
-
-    describe('should validate existing ATT&CK objects and report errors', () => {
-        it('should validate all objects in the global.attackData', () => {
-            tactics = global.attackData.objectsByType["x-mitre-tactic"];
-            const errors: { tactic: Tactic; error: ZodError }[] = [];
-
-            for (let tactic of tactics) {
-                try {
-                    if (!tactic.x_mitre_deprecated && !tactic.revoked) {
-                        tacticSchema.parse(tactic);
-                    }
-                } catch (error) {
-                    if (error instanceof ZodError) {
-                        errors.push({ tactic, error });
-                    } else {
-                        throw error; // Re-throw if it's not a ZodError
-                    }
-                }
-            }
-
-            if (errors.length > 0) {
-                const errorReport = errors.map(({ tactic, error }) => {
-                    const tacticId = tactic.external_references[0].external_id;
-                    const tacticStixId = tactic.id;
-                    const tacticName = tactic.name;
-                    const errorMessages = error.errors.map(err =>
-                        `    - ${err.path.join('.')}: ${err.message}`
-                    ).join('\n');
-
-                    return `
-    Tactic ID: ${tacticId}
-    Tactic Name: ${tacticName}
-    Tactic stixID: ${tacticStixId}
-    Validation Errors:
-    ${errorMessages}`;
-                }).join('\n');
-
-                console.warn(`The following ${errors.length} tactic(s) failed validation:\n${errorReport}`);
-            }
-
-            // Log the number of errors found
-            console.log(`Total tactics with validation errors: ${errors.length}`);
-
-            // This expectation will always pass, but it gives us a way to surface the error count in the test results
-            expect(true).toBe(true);
         });
     });
 });

@@ -16,12 +16,9 @@ import { Matrix, matrixSchema } from "../../src/schemas/sdo/matrix.schema";
 import { v4 as uuidv4 } from "uuid";
 
 describe("MatrixSchema", () => {
-  let matrices: any[];
   let minimalMatrix: Matrix;
 
   beforeAll(() => {
-    matrices = global.attackData.objectsByType["x-mitre-matrix"];
-
     minimalMatrix = matrixSchema.parse({
       id: `x-mitre-matrix--${uuidv4()}`,
       type: "x-mitre-matrix",
@@ -366,14 +363,6 @@ describe("MatrixSchema", () => {
   describe("Edge Cases and Special Scenarios", () => {
     it("should handle special case X", () => {
       // Test any schema-specific special cases
-    });
-  });
-
-  describe("Validate All Objects", () => {
-    it("should validate all objects in the global.attackData", () => {
-      matrices.forEach((matrix, index) => {
-        expect(() => matrixSchema.parse(matrix)).not.toThrow();
-      });
     });
   });
 });

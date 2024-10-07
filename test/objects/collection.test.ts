@@ -10,7 +10,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 
 describe("collectionSchema", () => {
-    let collections: any[];
+
     let minimalCollection: Collection;
     let invalidCollection: Collection;
 
@@ -205,49 +205,6 @@ describe("collectionSchema", () => {
     describe("Edge Cases and Special Scenarios", () => {
         it("should handle special case X", () => {
             // Test any schema-specific special cases
-        });
-    });
-
-    describe('should validate existing ATT&CK objects and report errors', () => {
-        it('should validate all objects in the global.attackData', () => {
-            collections = global.attackData.objectsByType["x-mitre-collection"];
-            const errors: { collection: Collection; error: ZodError }[] = [];
-
-            for (let collection of collections) {
-                try {
-                    collectionSchema.parse(collection);
-                } catch (error) {
-                    if (error instanceof ZodError) {
-                        errors.push({ collection, error });
-                    } else {
-                        throw error; // Re-throw if it's not a ZodError
-                    }
-                }
-            }
-
-            if (errors.length > 0) {
-                const errorReport = errors.map(({ collection, error }) => {
-                    const collectionStixId = collection.id;
-                    const collectionName = collection.name;
-                    const errorMessages = error.errors.map(err =>
-                        `    - ${err.path.join('.')}: ${err.message}`
-                    ).join('\n');
-
-                    return `
-    Collection Name: ${collectionName}
-    Collection stixID: ${collectionStixId}
-    Validation Errors:
-    ${errorMessages}`;
-                }).join('\n');
-
-                console.warn(`The following ${errors.length} collection(s) failed validation:\n${errorReport}`);
-            }
-
-            // Log the number of errors found
-            console.log(`Total collections with validation errors: ${errors.length}`);
-
-            // This expectation will always pass, but it gives us a way to surface the error count in the test results
-            expect(true).toBe(true);
         });
     });
 });

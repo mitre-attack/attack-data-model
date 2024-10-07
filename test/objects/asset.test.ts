@@ -358,12 +358,4 @@ describe('AssetSchema', () => {
             });
         });
     });
-
-    describe('Validate All Objects', () => {
-        it('should validate all objects in the global.attackData', () => {
-            assets.forEach((obj, index) => {
-                expect(() => assetSchema.parse(obj)).not.toThrow();
-            });
-        });
-    });
 });

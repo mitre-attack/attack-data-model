@@ -5,12 +5,10 @@ import { ZodError } from "zod";
 
 
 describe('TechniqueSchema', () => {
-    let techniques: any[];
 
     let minimalTechnique: Technique;
 
     beforeAll(() => {
-        techniques = global.attackData.objectsByType['attack-pattern'];
 
         minimalTechnique = {
             id: `attack-pattern--${uuidv4()}`,
@@ -608,47 +606,5 @@ describe('TechniqueSchema', () => {
             });
         });
 
-    });
-
-    it('should validate existing ATT&CK objects and report errors', () => {
-        const errors: { technique: Technique; error: ZodError }[] = [];
-
-        for (let technique of techniques) {
-            try {
-              if (!technique.x_mitre_deprecated && !technique.revoked) {
-                techniqueSchema.parse(technique);
-            }
-          } catch (error) {
-              if (error instanceof ZodError) {
-                  errors.push({ technique, error });
-              } else {
-                  throw error; // Re-throw if it's not a ZodError
-              }
-          }
-        }
-
-        if (errors.length > 0) {
-            const errorReport = errors.map(({ technique, error }) => {
-                const techniqueId = technique.external_references[0].external_id;
-                const techniqueName = technique.name;
-                const errorMessages = error.errors.map(err =>
-                    `    - ${err.path.join('.')}: ${err.message}`
-                ).join('\n');
-
-                return `
-    Technique ID: ${techniqueId}
-    Technique Name: ${techniqueName}
-    Validation Errors:
-    ${errorMessages}`;
-            }).join('\n');
-
-            console.warn(`The following ${errors.length} technique(s) failed validation:\n${errorReport}`);
-        }
-
-        // Log the number of errors found
-        console.log(`Total techniques with validation errors: ${errors.length}`);
-
-        // This expectation will always pass, but it gives us a way to surface the error count in the test results
-        expect(true).toBe(true);
     });
 });

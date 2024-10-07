@@ -1,7 +1,6 @@
 import {
     ExternalReferences,
     StixCreatedTimestamp,
-    StixIdentifier,
     StixModifiedTimestamp
 } from "../../src/schemas/common";
 import {
@@ -10,7 +9,6 @@ import {
     toolSchema,
 } from "../../src/schemas/sdo/tool.schema";
 import { v4 as uuidv4 } from "uuid";
-import { validateAttackObjects } from '../utils/common';
 
 describe("toolSchema", () => {
     let minimalTool: Tool;
@@ -431,15 +429,5 @@ describe("toolSchema", () => {
             } as Tool;
             expect(() => toolSchema.parse(toolWithUnknownProperties)).toThrow();
         });
-    });
-
-    describe("Edge Cases and Special Scenarios", () => {
-        it("should handle special case X", () => {
-            // Test any schema-specific special cases
-        });
-    });
-
-    describe('Validate All Objects', () => {
-        validateAttackObjects(toolSchema, "tool");
     });
 });

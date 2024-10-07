@@ -11,7 +11,6 @@ import {
 import { v4 as uuidv4 } from "uuid";
 
 describe("campaignSchema", () => {
-    let campaigns: any[];
 
     let minimalCampaign: Campaign;
     let invalidCampaign: Campaign;
@@ -474,53 +473,6 @@ describe("campaignSchema", () => {
     describe("Edge Cases and Special Scenarios", () => {
         it("should handle special case X", () => {
             // Test any schema-specific special cases
-        });
-    });
-
-    describe('should validate existing ATT&CK objects and report errors', () => {
-        it('should validate all objects in the global.attackData', () => {
-            campaigns = global.attackData.objectsByType["campaign"];
-            const errors: { campaign: Campaign; error: ZodError }[] = [];
-
-            for (let campaign of campaigns) {
-                try {
-                    if (!campaign.x_mitre_deprecated && !campaign.revoked) {
-                        campaignSchema.parse(campaign);
-                    }
-                } catch (error) {
-                    if (error instanceof ZodError) {
-                        errors.push({ campaign, error });
-                    } else {
-                        throw error; // Re-throw if it's not a ZodError
-                    }
-                }
-            }
-
-            if (errors.length > 0) {
-                const errorReport = errors.map(({ campaign, error }) => {
-                    const campaignId = campaign.external_references[0].external_id;
-                    const campaignStixId = campaign.id;
-                    const campaignName = campaign.name;
-                    const errorMessages = error.errors.map(err =>
-                        `    - ${err.path.join('.')}: ${err.message}`
-                    ).join('\n');
-
-                    return `
-    Campaign ID: ${campaignId}
-    Campaign Name: ${campaignName}
-    Campaign stixID: ${campaignStixId}
-    Validation Errors:
-    ${errorMessages}`;
-                }).join('\n');
-
-                console.warn(`The following ${errors.length} campaign(s) failed validation:\n${errorReport}`);
-            }
-
-            // Log the number of errors found
-            console.log(`Total campaign with validation errors: ${errors.length}`);
-
-            // This expectation will always pass, but it gives us a way to surface the error count in the test results
-            expect(true).toBe(true);
         });
     });
 });

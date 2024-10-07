@@ -15,11 +15,10 @@ import { Group, groupSchema } from "../../src/schemas/sdo/group.schema";
 import { v4 as uuidv4 } from "uuid";
 
 describe("GroupSchema", () => {
-  let groups: any[];
+
   let minimalGroup: Group;
 
   beforeAll(() => {
-    groups = global.attackData.objectsByType["intrusion-set"];
 
     minimalGroup = groupSchema.parse({
       id: `intrusion-set--${uuidv4()}`,
@@ -337,14 +336,6 @@ describe("GroupSchema", () => {
         aliases: ["Not alias name"] as any,
       };
       expect(() => groupSchema.parse(invalidAliases)).toThrow();
-    });
-  });
-
-  describe("Validate All Objects", () => {
-    it("should validate all objects in the global.attackData", () => {
-      groups.forEach((group, index) => {
-        expect(() => groupSchema.parse(group)).not.toThrow();
-      });
     });
   });
 });

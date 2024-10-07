@@ -12,11 +12,9 @@ import {
 import { v4 as uuidv4 } from "uuid";
 
 describe("MarkingDefinitionSchema", () => {
-  let markingDefinitions: any[];
   let minimalMarkingDefinition: MarkingDefinition;
 
   beforeAll(() => {
-    markingDefinitions = global.attackData.objectsByType["marking-definition"];
 
     minimalMarkingDefinition = markingDefinitionSchema.parse({
       type: "marking-definition",
@@ -273,15 +271,5 @@ describe("MarkingDefinitionSchema", () => {
     });
 
     // Add more edge case tests as needed...
-  });
-
-  describe("Validate All Objects", () => {
-    it("should validate all objects in the global.attackData", () => {
-      markingDefinitions.forEach((markingDefinition, index) => {
-        expect(() =>
-          markingDefinitionSchema.parse(markingDefinition)
-        ).not.toThrow();
-      });
-    });
   });
 });

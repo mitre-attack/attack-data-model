@@ -10,7 +10,6 @@ import {
 import { v4 as uuidv4 } from "uuid";
 
 describe("identitySchema", () => {
-    let identities: any[];
 
     let minimalIdentity: Identity;
     let invalidIdentity: Identity;
@@ -232,49 +231,6 @@ describe("identitySchema", () => {
     describe("Edge Cases and Special Scenarios", () => {
         it("should handle special case X", () => {
             // Test any schema-specific special cases
-        });
-    });
-
-    describe('Validate All Objects', () => {
-        it('should validate all objects in the global.attackData', () => {
-            identities = global.attackData.objectsByType["identity"];
-            const errors: { identity: Identity; error: ZodError }[] = [];
-
-            for (let identity of identities) {
-                try {
-                    if (!identity.x_mitre_deprecated && !identity.revoked) {
-                        identitySchema.parse(identity);
-                    }
-                } catch (error) {
-                    if (error instanceof ZodError) {
-                        errors.push({ identity, error });
-                    } else {
-                        throw error; // Re-throw if it's not a ZodError
-                    }
-                }
-            }
-
-            if (errors.length > 0) {
-                const errorReport = errors.map(({ identity, error }) => {
-                    const identityName = identity.name;
-                    const errorMessages = error.errors.map(err =>
-                        `    - ${err.path.join('.')}: ${err.message}`
-                    ).join('\n');
-
-                    return `
-    identity Name: ${identityName}
-    Validation Errors:
-    ${errorMessages}`;
-                }).join('\n');
-
-                console.warn(`The following ${errors.length} identity(s) failed validation:\n${errorReport}`);
-            }
-
-            // Log the number of errors found
-            console.log(`Total identities with validation errors: ${errors.length}`);
-
-            // This expectation will always pass, but it gives us a way to surface the error count in the test results
-            expect(true).toBe(true);
         });
     });
 });
