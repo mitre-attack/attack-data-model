@@ -207,7 +207,7 @@ describe("campaignSchema", () => {
                 ...minimalCampaign,
                 x_mitre_first_seen_citation: '(Citation: Name1), (Citation: Name2)'
             };
-            expect(() => campaignSchema.parse(invalidCampaign)).toThrow("Must be one or more citations in the form '(Citation: <Citation Name>)' without any separators");
+            expect(() => campaignSchema.parse(invalidCampaign)).toThrow("Must be one or more citations in the form '(Citation: [citation name])' without any separators");
         });
     });
 });
