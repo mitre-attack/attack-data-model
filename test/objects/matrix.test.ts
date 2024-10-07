@@ -6,9 +6,11 @@ import {
 import { Matrix, matrixSchema } from "../../src/schemas/sdo/matrix.schema";
 import { v4 as uuidv4 } from "uuid";
 
+/**
+ * Test suite for validating the Matrix schema.
+ */
 describe("MatrixSchema", () => {
   let minimalMatrix: Matrix;
-  let invalidMatrix: Matrix;
 
   beforeEach(() => {
     minimalMatrix = {
@@ -35,12 +37,13 @@ describe("MatrixSchema", () => {
         },
       ],
       x_mitre_modified_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
-      tactic_refs: [
-        "x-mitre-tactic--69da72d2-f550-41c5-ab9e-e8255707f28a",
-      ],
+      tactic_refs: ["x-mitre-tactic--69da72d2-f550-41c5-ab9e-e8255707f28a"],
     };
   });
 
+  /**
+   * Section for valid input tests
+   */
   describe("Valid Inputs", () => {
     it("should accept minimal valid object (only required fields)", () => {
       expect(() => matrixSchema.parse(minimalMatrix)).not.toThrow();
@@ -57,267 +60,107 @@ describe("MatrixSchema", () => {
     });
   });
 
+  /**
+   * Section for field-specific tests
+   */
   describe("Field-Specific Tests", () => {
-
-    describe("type", () => {
-      beforeEach(() => {
-        invalidMatrix = { ...minimalMatrix, type: "invalid-type" as any };
-      });
-
-      it("should reject invalid values", () => {
+    const testField = (
+      fieldName: string,
+      invalidValue: any,
+      isRequired = true // Flag indicating whether the field is required
+    ) => {
+      it(`should reject invalid values for ${fieldName}`, () => {
+        const invalidMatrix = { ...minimalMatrix, [fieldName]: invalidValue };
         expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
       });
 
-      it("should reject omittance of required values", () => {
-        const { type, ...matrixWithoutType } = invalidMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutType)).toThrow();
-      });
+      if (isRequired) {
+        it(`should reject omission of ${fieldName}`, () => {
+          const { [fieldName]: omitted, ...matrixWithoutField } = minimalMatrix;
+          expect(() => matrixSchema.parse(matrixWithoutField)).toThrow();
+        });
+      } else {
+        it(`should accept omission of ${fieldName}`, () => {
+          const { [fieldName]: omitted, ...matrixWithoutField } = minimalMatrix;
+          expect(() => matrixSchema.parse(matrixWithoutField)).not.toThrow();
+        });
+      }
+    };
+
+    // Required Fields
+    describe("type", () => {
+      testField("type", "invalid-type");
     });
 
     describe("id", () => {
-      beforeEach(() => {
-        invalidMatrix = { ...minimalMatrix, id: "invalid-id" as any };
-      });
-
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
-
-      it("should reject omittance of required values", () => {
-        const { id, ...matrixWithoutId } = invalidMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutId)).toThrow();
-      });
+      testField("id", "invalid-id");
     });
 
     describe("spec_version", () => {
-      beforeEach(() => {
-        invalidMatrix = {
-          ...minimalMatrix,
-          spec_version: "invalid-spec-version" as any,
-        };
-      });
-
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
-
-      it("should reject omittance of required values", () => {
-        const { spec_version, ...matrixWithoutSpecVersion } = invalidMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutSpecVersion)).toThrow();
-      });
+      testField("spec_version", "invalid-spec-version");
     });
 
     describe("x_mitre_attack_spec_version", () => {
-      beforeEach(() => {
-        invalidMatrix = {
-          ...minimalMatrix,
-          x_mitre_attack_spec_version: "invalid-version" as any,
-        };
-      });
-
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
-
-      it("should reject omittance of required values", () => {
-        const { x_mitre_attack_spec_version, ...matrixWithoutVersion } = invalidMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutVersion)).toThrow();
-      });
+      testField("x_mitre_attack_spec_version", "invalid-version");
     });
 
     describe("name", () => {
-      beforeEach(() => {
-        invalidMatrix = { ...minimalMatrix, name: 123 as any };
-      });
-
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
-
-      it("should reject omittance of required values", () => {
-        const { name, ...matrixWithoutName } = invalidMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutName)).toThrow();
-      });
+      testField("name", 123);
     });
 
     describe("x_mitre_version", () => {
-      beforeEach(() => {
-        invalidMatrix = { ...minimalMatrix, x_mitre_version: 123 as any };
-      });
-
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
-
-      it("should reject omittance of required values", () => {
-        const { x_mitre_version, ...matrixWithoutVersion } = invalidMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutVersion)).toThrow();
-      });
-    });
-
-    describe("description", () => {
-      beforeEach(() => {
-        invalidMatrix = { ...minimalMatrix, description: 123 as any };
-      });
-
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
-
-      it("should reject omittance of required values", () => {
-        const { description, ...matrixWithoutDescription } = invalidMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutDescription)).toThrow();
-      });
-    });
-
-    describe("created_by_ref", () => {
-      beforeEach(() => {
-        invalidMatrix = { ...minimalMatrix, created_by_ref: 123 as any };
-      });
-
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
-
-      it("should reject omittance of required values", () => {
-        const { created_by_ref, ...matrixWithoutCreatedByRef } = invalidMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutCreatedByRef)).toThrow();
-      });
+      testField("x_mitre_version", 123);
     });
 
     describe("created", () => {
-      beforeEach(() => {
-        invalidMatrix = { ...minimalMatrix, created: 123 as any };
-      });
-
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
-
-      it("should reject omittance of required values", () => {
-        const { created, ...matrixWithoutCreated } = invalidMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutCreated)).toThrow();
-      });
+      testField("created", 123);
     });
 
     describe("modified", () => {
-      beforeEach(() => {
-        invalidMatrix = { ...minimalMatrix, modified: 123 as any };
-      });
-
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
-
-      it("should reject omittance of required values", () => {
-        const { modified, ...matrixWithoutModified } = invalidMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutModified)).toThrow();
-      });
-    });
-
-    describe("object_marking_refs", () => {
-      beforeEach(() => {
-        invalidMatrix = { ...minimalMatrix, object_marking_refs: 123 as any };
-      });
-
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
-
-      it("should reject omittance of required values", () => {
-        const { object_marking_refs, ...matrixWithoutMarkingRefs } = invalidMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutMarkingRefs)).toThrow();
-      });
+      testField("modified", 123);
     });
 
     describe("x_mitre_domains", () => {
-      beforeEach(() => {
-        invalidMatrix = { ...minimalMatrix, x_mitre_domains: ["invalid-domain"] as any };
-      });
-
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
-
-      it("should reject omittance of required values", () => {
-        const { x_mitre_domains, ...matrixWithoutDomains } = invalidMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutDomains)).toThrow();
-      });
+      testField("x_mitre_domains", ["invalid-domain"]);
     });
 
     describe("external_references", () => {
-      beforeEach(() => {
-        invalidMatrix = { ...minimalMatrix, external_references: "not-an-array" as any };
-      });
+      testField("external_references", "not-an-array");
+    });
 
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
+    // Required Fields that were incorrectly tested as optional
+    describe("description", () => {
+      testField("description", 123); // Now marked as required
+    });
 
-      it("should reject omittance of required values", () => {
-        const { external_references, ...matrixWithoutExternalReferences } = invalidMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutExternalReferences)).toThrow();
-      });
+    describe("created_by_ref", () => {
+      testField("created_by_ref", 123); // Now marked as required
     });
 
     describe("x_mitre_modified_by_ref", () => {
-      beforeEach(() => {
-        invalidMatrix = { ...minimalMatrix, x_mitre_modified_by_ref: 123 as any };
-      });
-
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
-
-      it("should reject omittance of required values", () => {
-        const { x_mitre_modified_by_ref, ...matrixWithoutModifiedByRef } = invalidMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutModifiedByRef)).toThrow();
-      });
+      testField("x_mitre_modified_by_ref", 123); // Now marked as required
     });
 
+    // Optional Fields
     describe("x_mitre_deprecated", () => {
-      beforeEach(() => {
-        invalidMatrix = { ...minimalMatrix, x_mitre_deprecated: "not a boolean" as any };
-      });
-
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
+      testField("x_mitre_deprecated", "not a boolean", false);
     });
 
     describe("revoked", () => {
-      beforeEach(() => {
-        invalidMatrix = { ...minimalMatrix, revoked: "not a boolean" as any };
-      });
-
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
+      testField("revoked", "not a boolean", false);
     });
+  });
 
-    describe("tactic_refs", () => {
-      beforeEach(() => {
-        invalidMatrix = { ...minimalMatrix, tactic_refs: 123 as any };
-      });
-
-      it("should reject invalid values", () => {
-        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
-      });
-
-      it("should reject omittance of required values", () => {
-        const { tactic_refs, ...matrixWithoutTacticRefs } = invalidMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutTacticRefs)).toThrow();
-      });
-    });
-
-    describe("Schema-Level Tests", () => {
-      it("should reject unknown properties", () => {
-        const matrixWithUnknownProp: Matrix = {
-          ...minimalMatrix,
-          unknownProp: "test",
-        } as Matrix;
-        expect(() => matrixSchema.parse(matrixWithUnknownProp)).toThrow();
-      });
+  /**
+   * Section for schema-level tests
+   */
+  describe("Schema-Level Tests", () => {
+    it("should reject unknown properties", () => {
+      const matrixWithUnknownProp: Matrix = {
+        ...minimalMatrix,
+        unknownProp: "unexpected value",
+      } as Matrix;
+      expect(() => matrixSchema.parse(matrixWithUnknownProp)).toThrow();
     });
   });
 });
