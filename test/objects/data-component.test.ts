@@ -1,250 +1,114 @@
-import { ZodError } from "zod";
-import {
-    StixCreatedTimestamp, StixModifiedTimestamp,
-} from "../../src/schemas/common";
+import { v4 as uuidv4 } from "uuid";
 import {
     DataComponent,
     dataComponentSchema,
 } from "../../src/schemas/sdo/data-component.schema";
-import { v4 as uuidv4 } from "uuid";
+import {
+    StixCreatedTimestamp,
+    StixModifiedTimestamp,
+    xMitreIdentity,
+} from "../../src/schemas/common";
 
 describe("dataComponentSchema", () => {
-
     let minimalDataComponent: DataComponent;
-    let invalidDataComponent: DataComponent;
 
     beforeEach(() => {
         minimalDataComponent = {
-                type: "x-mitre-data-component",
-                id: `x-mitre-data-component--${uuidv4()}`,
-                description: "A user requested active directory credentials, such as a ticket or token.",
-                spec_version: "2.1",
-                created: "2017-06-01T00:00:00.000Z" as StixCreatedTimestamp,
-                created_by_ref: `identity--${uuidv4()}`,
-                modified: "2017-06-01T00:00:00.000Z" as StixModifiedTimestamp,
-                name: "Network Connection Creation",
-                object_marking_refs: [
-                    "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168",
-                ],
-                x_mitre_modified_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
-                x_mitre_data_source_ref: "x-mitre-data-source--c000cd5c-bbb3-4606-af6f-6c6d9de0bbe3",
-                x_mitre_attack_spec_version: "2.1.0",
-                x_mitre_domains: ["enterprise-attack"],
-                x_mitre_version: "1.0",
-            };
+            type: "x-mitre-data-component",
+            id: `x-mitre-data-component--${uuidv4()}`,
+            description:
+                "A user requested active directory credentials, such as a ticket or token.",
+            spec_version: "2.1",
+            created: "2017-06-01T00:00:00.000Z" as StixCreatedTimestamp,
+            created_by_ref: `identity--${uuidv4()}`,
+            modified: "2017-06-01T00:00:00.000Z" as StixModifiedTimestamp,
+            name: "Network Connection Creation",
+            object_marking_refs: [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168",
+            ],
+            x_mitre_modified_by_ref: xMitreIdentity,
+            x_mitre_data_source_ref:
+                "x-mitre-data-source--c000cd5c-bbb3-4606-af6f-6c6d9de0bbe3",
+            x_mitre_attack_spec_version: "2.1.0",
+            x_mitre_domains: ["enterprise-attack"],
+            x_mitre_version: "1.0",
+        };
     });
 
     describe("Valid Inputs", () => {
         it("should accept minimal valid object (only required fields)", () => {
-            expect(() => dataComponentSchema
-                .parse(minimalDataComponent)).not.toThrow();
+            expect(() => dataComponentSchema.parse(minimalDataComponent)).not.toThrow();
         });
 
         it("should accept fully populated valid object (required + optional ATT&CK fields)", () => {
             const fullDataComponent: DataComponent = {
                 ...minimalDataComponent,
-                x_mitre_deprecated: false
+                x_mitre_deprecated: false,
             };
-            expect(fullDataComponent).toBeDefined();
             expect(() => dataComponentSchema.parse(fullDataComponent)).not.toThrow();
         });
-    })
+    });
 
     describe("Field-Specific Tests", () => {
+        const testField = (fieldName: string, invalidValue: any, isRequired = true) => {
+            it(`should reject invalid values for ${fieldName}`, () => {
+                const invalidObject = { ...minimalDataComponent, [fieldName]: invalidValue };
+                expect(() => dataComponentSchema.parse(invalidObject)).toThrow();
+            });
+
+            if (isRequired) {
+                it(`should reject omission of ${fieldName}`, () => {
+                    const { [fieldName]: omitted, ...objectWithoutField } = minimalDataComponent;
+                    expect(() => dataComponentSchema.parse(objectWithoutField)).toThrow();
+                });
+            }
+        };
+
         describe("id", () => {
-            beforeEach(() => {
-                invalidDataComponent = {
-                    ...minimalDataComponent,
-                    id: "invalid-id" as any,
-                };
-            });
-
-            it("should reject invalid values", () => {
-                expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { id, ...dataComponentWithoutId } = minimalDataComponent;
-                expect(() => dataComponentSchema
-                    .parse(dataComponentWithoutId)).toThrow();
-            });
+            testField("id", "invalid-id");
         });
 
         describe("type", () => {
-            beforeEach(() => {
-                invalidDataComponent = {
-                    ...minimalDataComponent,
-                    type: "invalid-type" as any,
-                };
-            });
-
-            it("should reject invalid values", () => {
-                expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { type, ...dataComponentWithoutType } = minimalDataComponent;
-                expect(() => dataComponentSchema
-                    .parse(dataComponentWithoutType)).toThrow();
-            });
+            testField("type", "invalid-type");
         });
 
-        describe('description', () => {
-            beforeEach(() => {
-                invalidDataComponent = {
-                    ...minimalDataComponent,
-                    description: 123 as any,
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { description, ...dataComponentWithoutDescription } = minimalDataComponent;
-                expect(() => dataComponentSchema
-                    .parse(dataComponentWithoutDescription)).toThrow();
-            });
+        describe("description", () => {
+            testField("description", 123);
         });
 
         describe("created_by_ref", () => {
-            let invalidDataComponent1: DataComponent;
-            let invalidDataComponent2: DataComponent;
-            beforeEach(() => {
-                invalidDataComponent1 = {
-                    ...minimalDataComponent,
-                    created_by_ref: "invalid-created-by-ref" as any,
-                };
-
-                invalidDataComponent2 = {
-                    ...minimalDataComponent,
-                    created_by_ref: `malware--${uuidv4()}` as any,
-                };
-            });
-
-            it("should reject invalid values", () => {
-                expect(() => dataComponentSchema.parse(invalidDataComponent1)).toThrow();
-            });
-
-            it("should reject invalid values", () => {
-                expect(() => dataComponentSchema.parse(invalidDataComponent2)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { created_by_ref, ...dataComponentWithoutCreatedByRef } = minimalDataComponent;
-                expect(() => dataComponentSchema.parse(dataComponentWithoutCreatedByRef)).toThrow();
-            });
+            testField("created_by_ref", "invalid-created-by-ref");
         });
 
-        describe('object_marking_refs', () => {
-            beforeEach(() => {
-                invalidDataComponent = {
-                    ...minimalDataComponent,
-                    object_marking_refs: ['invalid-object-marking-refs'] as any
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { object_marking_refs, ...dataComponentWithoutObjectMarkingRefs } = minimalDataComponent;
-                expect(() => dataComponentSchema.parse(dataComponentWithoutObjectMarkingRefs)).toThrow();
-            });
+        describe("object_marking_refs", () => {
+            testField("object_marking_refs", ["invalid-object-marking-refs"]);
         });
 
-        describe('x_mitre_domains', () => {
-            beforeEach(() => {
-                invalidDataComponent = {
-                    ...minimalDataComponent,
-                    x_mitre_domains: ['invalid-mitre-domains'] as any
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
-            });
-
-            it('should reject omitted required values', () => {
-                const { x_mitre_domains, ...dataComponentWithoutDomains } = minimalDataComponent;
-                expect(() => dataComponentSchema
-                    .parse(dataComponentWithoutDomains)).toThrow();
-            });
+        describe("x_mitre_domains", () => {
+            testField("x_mitre_domains", ["invalid-mitre-domains"]);
         });
 
-        describe('x_mitre_modified_by_ref', () => {
-            beforeEach(() => {
-                invalidDataComponent = {
-                    ...minimalDataComponent,
-                    x_mitre_modified_by_ref: 'invalid-modified-by-ref' as any
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { x_mitre_modified_by_ref, ...dataComponentModifiedByRef } = minimalDataComponent;
-                expect(() => dataComponentSchema.parse(dataComponentModifiedByRef)).toThrow();
-            });
+        describe("x_mitre_modified_by_ref", () => {
+            testField("x_mitre_modified_by_ref", "invalid-modified-by-ref");
         });
 
-        describe('x_mitre_data_source_ref', () => {
-            beforeEach(() => {
-                invalidDataComponent = {
-                    ...minimalDataComponent,
-                    x_mitre_data_source_ref: 'invalid-data-source-ref' as any
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
-            });
-
-            it("should reject omittance of required values", () => {
-                const { x_mitre_modified_by_ref, ...dataComponentDataSourceRef } = minimalDataComponent;
-                expect(() => dataComponentSchema.parse(dataComponentDataSourceRef)).toThrow();
-            });
+        describe("x_mitre_data_source_ref", () => {
+            testField("x_mitre_data_source_ref", "invalid-data-source-ref");
         });
 
-        describe('x_mitre_deprecated', () => {
-            beforeEach(() => {
-                invalidDataComponent = {
-                    ...minimalDataComponent,
-                    x_mitre_deprecated: 'not-a-boolean' as any
-                };
-            });
-
-            it('should reject invalid values', () => {
-                expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
-            });
-
-            it('should accept omitted optional values', () => {
-                const { x_mitre_deprecated, ...dataComponentWithoutDeprecated } = invalidDataComponent;
-                expect(() => dataComponentSchema.parse(dataComponentWithoutDeprecated)).not.toThrow();
-            });
+        // Optional Fields Testing
+        describe("x_mitre_deprecated", () => {
+            testField("x_mitre_deprecated", "not-a-boolean", false);
         });
     });
 
     describe("Schema-Level Tests", () => {
-        beforeEach(() => {
-            invalidDataComponent = {
+        it("should reject unknown properties", () => {
+            const invalidDataComponent = {
                 ...minimalDataComponent,
-                unknown_property: true
+                unknown_property: true,
             } as DataComponent;
-        });
-
-        it('should reject unknown properties', () => {
             expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
-        });
-    });
-
-    describe("Edge Cases and Special Scenarios", () => {
-        it("should handle special case X", () => {
-            // Test any schema-specific special cases
         });
     });
 });
