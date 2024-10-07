@@ -9,7 +9,7 @@ describe('StixBundleSchema', () => {
     let minimalBundle: StixBundle;
     let minimalCollection: Collection
 
-    beforeAll(() => {
+    beforeEach(() => {
         minimalCollection = {
             id: `x-mitre-collection--${uuidv4()}`,
             type: 'x-mitre-collection',

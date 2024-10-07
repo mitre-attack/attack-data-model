@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 describe("toolSchema", () => {
     let minimalTool: Tool;
 
-    beforeAll(() => {
+    beforeEach(() => {
         minimalTool = {
             type: "tool",
             id: `tool--${uuidv4()}`,

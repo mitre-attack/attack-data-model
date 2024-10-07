@@ -13,7 +13,7 @@ describe("dataComponentSchema", () => {
     let minimalDataComponent: DataComponent;
     let invalidDataComponent: DataComponent;
 
-    beforeAll(() => {
+    beforeEach(() => {
         minimalDataComponent = {
                 type: "x-mitre-data-component",
                 id: `x-mitre-data-component--${uuidv4()}`,

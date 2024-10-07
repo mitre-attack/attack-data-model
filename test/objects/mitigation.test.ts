@@ -22,7 +22,7 @@ import { v4 as uuidv4 } from "uuid";
 describe("MitigationSchema", () => {
   let minimalMitigation: Mitigation;
 
-  beforeAll(() => {
+  beforeEach(() => {
     minimalMitigation = mitigationSchema.parse({
       id: `course-of-action--${uuidv4()}`,
       type: "course-of-action",

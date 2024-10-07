@@ -14,7 +14,7 @@ import { v4 as uuidv4 } from "uuid";
 describe("MarkingDefinitionSchema", () => {
   let minimalMarkingDefinition: MarkingDefinition;
 
-  beforeAll(() => {
+  beforeEach(() => {
 
     minimalMarkingDefinition = markingDefinitionSchema.parse({
       type: "marking-definition",

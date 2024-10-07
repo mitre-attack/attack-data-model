@@ -47,7 +47,7 @@ describe('RelationshipSchema', () => {
         }))
     ];
 
-    beforeAll(() => {
+    beforeEach(() => {
         relationships = global.attackData.objectsByType['relationship'];
 
         minimalRelationship = {

@@ -8,7 +8,7 @@ describe('TechniqueSchema', () => {
 
     let minimalTechnique: Technique;
 
-    beforeAll(() => {
+    beforeEach(() => {
 
         minimalTechnique = {
             id: `attack-pattern--${uuidv4()}`,

@@ -6,7 +6,7 @@ describe('AssetSchema', () => {
 
     let minimalAsset: Asset;
 
-    beforeAll(() => {
+    beforeEach(() => {
 
         minimalAsset = {
             id: `x-mitre-asset--${uuidv4()}`,

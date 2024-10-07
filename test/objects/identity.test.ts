@@ -14,7 +14,7 @@ describe("identitySchema", () => {
     let minimalIdentity: Identity;
     let invalidIdentity: Identity;
 
-    beforeAll(() => {
+    beforeEach(() => {
         minimalIdentity = {
             type: "identity",
             id: `identity--${uuidv4()}`,

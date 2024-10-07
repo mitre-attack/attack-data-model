@@ -4,7 +4,7 @@ describe('YourSchema', () => {
 
     let objects: any[];
 
-    beforeAll(() => {
+    beforeEach(() => {
         // TODO change index to the appropriate object type
         objects = global.attackData.objectsByType['attack-pattern'];
 

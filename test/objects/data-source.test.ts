@@ -15,7 +15,7 @@ describe("dataSourceSchema", () => {
     let minimalDataSource: DataSource;
     let invalidDataSource: DataSource;
 
-    beforeAll(() => {
+    beforeEach(() => {
         minimalDataSource = {
                 type: "x-mitre-data-source",
                 id: `x-mitre-data-source--${uuidv4()}`,

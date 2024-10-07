@@ -14,7 +14,7 @@ describe("collectionSchema", () => {
     let minimalCollection: Collection;
     let invalidCollection: Collection;
 
-    beforeAll(() => {
+    beforeEach(() => {
         minimalCollection = {
             type: "x-mitre-collection",
             id: `x-mitre-collection--${uuidv4()}`,

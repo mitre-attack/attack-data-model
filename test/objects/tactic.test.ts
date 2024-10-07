@@ -14,7 +14,7 @@ describe("tacticSchema", () => {
     let minimalTactic: Tactic;
     let invalidTactic: Tactic;
 
-    beforeAll(() => {
+    beforeEach(() => {
         minimalTactic = {
             type: "x-mitre-tactic",
             id: `x-mitre-tactic--${uuidv4()}`,

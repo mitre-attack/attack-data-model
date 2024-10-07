@@ -18,7 +18,7 @@ describe("GroupSchema", () => {
 
   let minimalGroup: Group;
 
-  beforeAll(() => {
+  beforeEach(() => {
 
     minimalGroup = groupSchema.parse({
       id: `intrusion-set--${uuidv4()}`,

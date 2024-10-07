@@ -14,7 +14,7 @@ describe("campaignSchema", () => {
     let minimalCampaign: Campaign;
     let invalidCampaign: Campaign;
 
-    beforeAll(() => {
+    beforeEach(() => {
         minimalCampaign = {
             type: "campaign",
             id: `campaign--${uuidv4()}`,
