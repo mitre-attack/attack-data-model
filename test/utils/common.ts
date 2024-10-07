@@ -1,5 +1,7 @@
 import { ZodSchema, ZodError } from 'zod';
+
 let objects: any[];
+
 export const validateAttackObjects = (schema: ZodSchema<any>, dataType: string) => {
     describe('should validate existing ATT&CK objects and report errors', () => {
         it(`should validate all objects of type ${dataType}`, () => {
