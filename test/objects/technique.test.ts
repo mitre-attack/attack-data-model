@@ -1,12 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
-import { ZodError } from "zod";
 import { Technique, techniqueSchema } from '../../src/schemas/sdo/technique.schema';
 import { StixCreatedTimestamp, StixModifiedTimestamp, xMitreIdentity } from '../../src/schemas/common';
 
 /**
  * Test suite for validating the Technique schema.
  */
-
 describe('TechniqueSchema', () => {
 
     let minimalTechnique: Technique;
@@ -82,6 +80,7 @@ describe('TechniqueSchema', () => {
             }
         };
 
+        // Testing required fields
         describe('id', () => {
             testField('id', 'invalid-id');
         });
@@ -94,20 +93,57 @@ describe('TechniqueSchema', () => {
             testField('x_mitre_is_subtechnique', 123);
         });
 
+        describe('x_mitre_domains', () => {
+            testField('x_mitre_domains', 'invalid-domains');
+        });
+
+        // Testing optional fields
         describe('description', () => {
             testField('description', 123, false);
         });
 
-        describe('external_references', () => {
-            testField('external_references', 'not-an-array');
+        describe('kill_chain_phases', () => {
+            testField('kill_chain_phases', [{ invalid: 'object' }], false);
+        });
+
+        describe('x_mitre_platforms', () => {
+            testField('x_mitre_platforms', 123, false);
         });
 
         describe('x_mitre_detection', () => {
             testField('x_mitre_detection', 123, false);
         });
 
-        describe('x_mitre_platforms', () => {
-            testField('x_mitre_platforms', 123, false);
+        describe('x_mitre_data_sources', () => {
+            testField('x_mitre_data_sources', 'invalid string', false);
+        });
+
+        describe('x_mitre_permissions_required', () => {
+            testField('x_mitre_permissions_required', ['Invalid Permission'], false);
+        });
+
+        describe('x_mitre_remote_support', () => {
+            testField('x_mitre_remote_support', 'not a boolean', false);
+        });
+
+        describe('x_mitre_system_requirements', () => {
+            testField('x_mitre_system_requirements', 'not an array', false);
+        });
+
+        describe('x_mitre_impact_type', () => {
+            testField('x_mitre_impact_type', ['Invalid Impact'], false);
+        });
+
+        describe('x_mitre_effective_permissions', () => {
+            testField('x_mitre_effective_permissions', ['Invalid Permission'], false);
+        });
+
+        describe('x_mitre_network_requirements', () => {
+            testField('x_mitre_network_requirements', 'not a boolean', false);
+        });
+
+        describe('x_mitre_modified_by_ref', () => {
+            testField('x_mitre_modified_by_ref', 'invalid-id', false);
         });
     });
 
