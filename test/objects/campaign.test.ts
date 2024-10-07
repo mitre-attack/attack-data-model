@@ -74,8 +74,8 @@ describe("campaignSchema", () => {
                 ...minimalCampaign,
                 x_mitre_contributors: ["John Doe", "Jane Smith"]
             };
-          expect(() => campaignSchema.parse(fullCampaign)).not.toThrow();
-      });
+            expect(() => campaignSchema.parse(fullCampaign)).not.toThrow();
+        });
     });
 
     /**
@@ -92,18 +92,18 @@ describe("campaignSchema", () => {
                 expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
             });
 
-          if (isRequired) {
-              it(`should reject omission of ${fieldName}`, () => {
-                  const { [fieldName]: omitted, ...campaignWithoutField } = minimalCampaign;
-                  expect(() => campaignSchema.parse(campaignWithoutField)).toThrow();
-              });
-        } else {
-            it(`should accept omission of ${fieldName}`, () => {
-                const { [fieldName]: omitted, ...campaignWithoutField } = minimalCampaign;
-                expect(() => campaignSchema.parse(campaignWithoutField)).not.toThrow();
-          });
-          }
-      };
+            if (isRequired) {
+                it(`should reject omission of ${fieldName}`, () => {
+                    const { [fieldName]: omitted, ...campaignWithoutField } = minimalCampaign;
+                    expect(() => campaignSchema.parse(campaignWithoutField)).toThrow();
+                });
+            } else {
+                it(`should accept omission of ${fieldName}`, () => {
+                    const { [fieldName]: omitted, ...campaignWithoutField } = minimalCampaign;
+                    expect(() => campaignSchema.parse(campaignWithoutField)).not.toThrow();
+                });
+            }
+        };
 
         // Required Fields
         describe("id", () => {
@@ -123,8 +123,8 @@ describe("campaignSchema", () => {
         });
 
         describe("created_by_ref", () => {
-          testField("created_by_ref", "invalid-created-by-ref");
-      });
+            testField("created_by_ref", "invalid-created-by-ref");
+        });
 
         describe("object_marking_refs", () => {
             testField("object_marking_refs", ["invalid-object-marking-refs"]);
@@ -143,12 +143,12 @@ describe("campaignSchema", () => {
         });
 
         describe("first_seen", () => {
-          testField("first_seen", "2017-05-31" as StixTimestamp);
-      });
+            testField("first_seen", "2017-05-31" as StixTimestamp);
+        });
 
         describe("last_seen", () => {
-          testField("last_seen", "2017-05-31" as StixTimestamp);
-      });
+            testField("last_seen", "2017-05-31" as StixTimestamp);
+        });
 
         describe("x_mitre_first_seen_citation", () => {
             testField("x_mitre_first_seen_citation", "invalid-citation");
@@ -179,10 +179,10 @@ describe("campaignSchema", () => {
         it('should reject unknown properties', () => {
             const invalidCampaign: Campaign = {
                 ...minimalCampaign,
-              unknown_property: true
-          } as Campaign;
-          expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
-      });
+                unknown_property: true
+            } as Campaign;
+            expect(() => campaignSchema.parse(invalidCampaign)).toThrow();
+        });
     });
 
     describe("Schema Refinements", () => {
@@ -191,24 +191,24 @@ describe("campaignSchema", () => {
                 ...minimalCampaign,
                 aliases: ["Operation Interception"]
             };
-          expect(() => campaignSchema.parse(invalidCampaign)).toThrow("The first alias must match the object's name");
-      });
+            expect(() => campaignSchema.parse(invalidCampaign)).toThrow("The first alias must match the object's name");
+        });
 
         it('should reject if citation not found in external references', () => {
             const invalidCampaign = {
                 ...minimalCampaign,
                 x_mitre_first_seen_citation: "(Citation: Not in External Reference)"
             };
-          expect(() => campaignSchema.parse(invalidCampaign)).toThrow("Citation Not in External Reference not found in external_references.");
-      });
+            expect(() => campaignSchema.parse(invalidCampaign)).toThrow("Citation Not in External Reference not found in external_references.");
+        });
 
         it('should reject invalid citation format', () => {
             const invalidCampaign = {
                 ...minimalCampaign,
                 x_mitre_first_seen_citation: '(Citation: Name1), (Citation: Name2)'
             };
-          expect(() => campaignSchema.parse(invalidCampaign)).toThrow("Must be one or more citations in the form '(Citation: <Citation Name>)' without any separators");
-      });
+            expect(() => campaignSchema.parse(invalidCampaign)).toThrow("Must be one or more citations in the form '(Citation: <Citation Name>)' without any separators");
+        });
     });
 });
 
