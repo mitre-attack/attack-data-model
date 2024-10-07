@@ -245,6 +245,13 @@ export const relationshipSchema = stixRelationshipObjectSchema
 		x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
 		x_mitre_attack_spec_version: xMitreAttackSpecVersionSchema,
+
+		x_mitre_domains: xMitreDomainsSchema,
+
+		x_mitre_version: xMitreVersionSchema,
+
+		x_mitre_deprecated: xMitreDeprecatedSchema
+			.optional()
 	})
 	.required({
 		created: true,
@@ -258,6 +265,8 @@ export const relationshipSchema = stixRelationshipObjectSchema
 		type: true,
 		x_mitre_attack_spec_version: true,
 		x_mitre_modified_by_ref: true,
+		x_mitre_domains: true,
+		x_mitre_version: true
 	})
 	.superRefine((schema, ctx) => {
 
