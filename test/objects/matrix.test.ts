@@ -1,41 +1,32 @@
 import {
   Description,
-  ExternalReferences,
-  Name,
-  ObjectMarkingRefs,
-  StixCreatedByRef,
   StixCreatedTimestamp,
   StixModifiedTimestamp,
-  StixSpecVersion,
-  XMitreAttackSpecVersion,
-  XMitreDomains,
-  XMitreModifiedByRef,
-  XMitreVersion,
 } from "../../src/schemas/common";
 import { Matrix, matrixSchema } from "../../src/schemas/sdo/matrix.schema";
 import { v4 as uuidv4 } from "uuid";
 
 describe("MatrixSchema", () => {
   let minimalMatrix: Matrix;
+  let invalidMatrix: Matrix;
 
-  beforeAll(() => {
-    minimalMatrix = matrixSchema.parse({
+  beforeEach(() => {
+    minimalMatrix = {
       id: `x-mitre-matrix--${uuidv4()}`,
       type: "x-mitre-matrix",
-      spec_version: "2.1" as StixSpecVersion,
+      spec_version: "2.1",
       created: "2017-06-01T00:00:00.000Z" as StixCreatedTimestamp,
       modified: "2017-06-01T00:00:00.000Z" as StixModifiedTimestamp,
-      x_mitre_attack_spec_version: "2.1.0" as XMitreAttackSpecVersion,
-      x_mitre_version: "1.0" as XMitreVersion,
-      name: "Test Matrix" as Name,
+      x_mitre_attack_spec_version: "2.1.0",
+      x_mitre_version: "1.0",
+      name: "Test Matrix",
       object_marking_refs: [
         "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168",
-      ] as ObjectMarkingRefs,
-      x_mitre_domains: ["ics-attack"] as XMitreDomains,
+      ],
+      x_mitre_domains: ["ics-attack"],
       description:
         "The full ATT&CK for ICS Matrix includes techniques spanning various ICS assets and can be used to navigate through the knowledge base." as Description,
-      created_by_ref:
-        "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5" as StixCreatedByRef,
+      created_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
       external_references: [
         {
           source_name: "mitre-attack",
@@ -43,26 +34,14 @@ describe("MatrixSchema", () => {
           url: "https://attack.mitre.org/matrices/ics/",
         },
       ],
-      x_mitre_modified_by_ref:
-        "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5" as XMitreModifiedByRef,
+      x_mitre_modified_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
       tactic_refs: [
         "x-mitre-tactic--69da72d2-f550-41c5-ab9e-e8255707f28a",
-        "x-mitre-tactic--93bf9a8e-b14c-4587-b6d5-9efc7c12eb45",
-        "x-mitre-tactic--78f1d2ae-a579-44c4-8fc5-3e1775c73fac",
-        "x-mitre-tactic--33752ae7-f875-4f43-bdb6-d8d02d341046",
-        "x-mitre-tactic--ddf70682-f3ce-479c-a9a4-7eadf9bfead7",
-        "x-mitre-tactic--696af733-728e-49d7-8261-75fdc590f453",
-        "x-mitre-tactic--51c25a9e-8615-40c0-8afd-1da578847924",
-        "x-mitre-tactic--b2a67b1e-913c-46f6-b219-048a90560bb9",
-        "x-mitre-tactic--97c8ff73-bd14-4b6c-ac32-3d91d2c41e3f",
-        "x-mitre-tactic--298fe907-7931-4fd2-8131-2814dd493134",
-        "x-mitre-tactic--ff048b6c-b872-4218-b68c-3735ebd1f024",
-        "x-mitre-tactic--77542f83-70d0-40c2-8a9d-ad2eb8b00279",
       ],
-    });
+    };
   });
 
-  describe("True Positives Tests", () => {
+  describe("Valid Inputs", () => {
     it("should accept minimal valid object (only required fields)", () => {
       expect(() => matrixSchema.parse(minimalMatrix)).not.toThrow();
     });
@@ -78,273 +57,255 @@ describe("MatrixSchema", () => {
     });
   });
 
-  describe("True Negative Tests", () => {
+  describe("Field-Specific Tests", () => {
+
     describe("type", () => {
-      it("should reject invalid values", () => {
-        const invalidType = {
-          ...minimalMatrix,
-          type: "invalid-type" as any,
-        };
-        expect(() => matrixSchema.parse(invalidType)).toThrow();
+      beforeEach(() => {
+        invalidMatrix = { ...minimalMatrix, type: "invalid-type" as any };
       });
 
-      it("should reject omitted required values", () => {
-        const { type, ...matrixWithoutType } = minimalMatrix;
+      it("should reject invalid values", () => {
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
+      });
+
+      it("should reject omittance of required values", () => {
+        const { type, ...matrixWithoutType } = invalidMatrix;
         expect(() => matrixSchema.parse(matrixWithoutType)).toThrow();
       });
     });
 
     describe("id", () => {
-      it("should reject invalid values", () => {
-        const invalidId = {
-          ...minimalMatrix,
-          id: "invalid-id" as any,
-        };
-        expect(() => matrixSchema.parse(invalidId)).toThrow();
-
-        const invalidMatrixId = {
-          ...minimalMatrix,
-          id: `attack-pattern--${uuidv4()}` as any,
-        };
-        expect(() => matrixSchema.parse(invalidMatrixId)).toThrow();
+      beforeEach(() => {
+        invalidMatrix = { ...minimalMatrix, id: "invalid-id" as any };
       });
 
-      it("should reject omitted required values", () => {
-        const { id, ...matrixWithoutId } = minimalMatrix;
+      it("should reject invalid values", () => {
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
+      });
+
+      it("should reject omittance of required values", () => {
+        const { id, ...matrixWithoutId } = invalidMatrix;
         expect(() => matrixSchema.parse(matrixWithoutId)).toThrow();
       });
     });
 
     describe("spec_version", () => {
-      it("should reject invalid values", () => {
-        const invalidSpecVersion = {
+      beforeEach(() => {
+        invalidMatrix = {
           ...minimalMatrix,
           spec_version: "invalid-spec-version" as any,
         };
-        expect(() => matrixSchema.parse(invalidSpecVersion)).toThrow();
       });
 
-      it("should reject omitted required values", () => {
-        const { spec_version, ...matrixWithoutSpecVersion } = minimalMatrix;
+      it("should reject invalid values", () => {
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
+      });
+
+      it("should reject omittance of required values", () => {
+        const { spec_version, ...matrixWithoutSpecVersion } = invalidMatrix;
         expect(() => matrixSchema.parse(matrixWithoutSpecVersion)).toThrow();
       });
     });
 
     describe("x_mitre_attack_spec_version", () => {
-      it("should reject invalid values", () => {
-        const invalidXMitreAttackSpecVersion = {
+      beforeEach(() => {
+        invalidMatrix = {
           ...minimalMatrix,
-          x_mitre_attack_spec_version:
-            "invalid-x_mitre_attack_spec_version" as any,
+          x_mitre_attack_spec_version: "invalid-version" as any,
         };
-        expect(() =>
-          matrixSchema.parse(invalidXMitreAttackSpecVersion)
-        ).toThrow();
       });
 
-      it("should reject omitted required values", () => {
-        const {
-          x_mitre_attack_spec_version,
-          ...matrixWithoutXMitreAttackSpecVersion
-        } = minimalMatrix;
-        expect(() =>
-          matrixSchema.parse(matrixWithoutXMitreAttackSpecVersion)
-        ).toThrow();
+      it("should reject invalid values", () => {
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
+      });
+
+      it("should reject omittance of required values", () => {
+        const { x_mitre_attack_spec_version, ...matrixWithoutVersion } = invalidMatrix;
+        expect(() => matrixSchema.parse(matrixWithoutVersion)).toThrow();
       });
     });
 
     describe("name", () => {
-      it("should reject invalid values", () => {
-        const invalidName = {
-          ...minimalMatrix,
-          name: 123 as any,
-        };
-        expect(() => matrixSchema.parse(invalidName)).toThrow();
+      beforeEach(() => {
+        invalidMatrix = { ...minimalMatrix, name: 123 as any };
       });
 
-      it("should reject omitted required values", () => {
-        const { name, ...matrixWithoutName } = minimalMatrix;
+      it("should reject invalid values", () => {
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
+      });
+
+      it("should reject omittance of required values", () => {
+        const { name, ...matrixWithoutName } = invalidMatrix;
         expect(() => matrixSchema.parse(matrixWithoutName)).toThrow();
       });
     });
 
     describe("x_mitre_version", () => {
-      it("should reject invalid values", () => {
-        const invalidXMitreVersion = {
-          ...minimalMatrix,
-          x_mitre_version: 123 as any,
-        };
-        expect(() => matrixSchema.parse(invalidXMitreVersion)).toThrow();
+      beforeEach(() => {
+        invalidMatrix = { ...minimalMatrix, x_mitre_version: 123 as any };
       });
 
-      it("should reject omitted required values", () => {
-        const { x_mitre_version, ...matrixWithoutXMitreVersion } =
-          minimalMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutXMitreVersion)).toThrow();
+      it("should reject invalid values", () => {
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
+      });
+
+      it("should reject omittance of required values", () => {
+        const { x_mitre_version, ...matrixWithoutVersion } = invalidMatrix;
+        expect(() => matrixSchema.parse(matrixWithoutVersion)).toThrow();
       });
     });
 
     describe("description", () => {
-      it("should reject invalid values", () => {
-        const invalidDescription = {
-          ...minimalMatrix,
-          description: 123 as any,
-        };
-        expect(() => matrixSchema.parse(invalidDescription)).toThrow();
+      beforeEach(() => {
+        invalidMatrix = { ...minimalMatrix, description: 123 as any };
       });
 
-      it("should reject omitted required values", () => {
-        const { description, ...matrixWithoutDescription } = minimalMatrix;
+      it("should reject invalid values", () => {
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
+      });
+
+      it("should reject omittance of required values", () => {
+        const { description, ...matrixWithoutDescription } = invalidMatrix;
         expect(() => matrixSchema.parse(matrixWithoutDescription)).toThrow();
       });
     });
 
     describe("created_by_ref", () => {
-      it("should reject invalid values", () => {
-        const invalidCreatedByRef = {
-          ...minimalMatrix,
-          created_by_ref: 123 as any,
-        };
-        expect(() => matrixSchema.parse(invalidCreatedByRef)).toThrow();
+      beforeEach(() => {
+        invalidMatrix = { ...minimalMatrix, created_by_ref: 123 as any };
       });
 
-      it("should reject omitted required values", () => {
-        const { created_by_ref, ...matrixWithoutCreatedByRef } = minimalMatrix;
+      it("should reject invalid values", () => {
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
+      });
+
+      it("should reject omittance of required values", () => {
+        const { created_by_ref, ...matrixWithoutCreatedByRef } = invalidMatrix;
         expect(() => matrixSchema.parse(matrixWithoutCreatedByRef)).toThrow();
       });
     });
 
     describe("created", () => {
-      it("should reject invalid values", () => {
-        const invalidCreated = {
-          ...minimalMatrix,
-          created: 123 as any,
-        };
-        expect(() => matrixSchema.parse(invalidCreated)).toThrow();
+      beforeEach(() => {
+        invalidMatrix = { ...minimalMatrix, created: 123 as any };
       });
 
-      it("should reject omitted required values", () => {
-        const { created, ...matrixWithoutCreated } = minimalMatrix;
+      it("should reject invalid values", () => {
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
+      });
+
+      it("should reject omittance of required values", () => {
+        const { created, ...matrixWithoutCreated } = invalidMatrix;
         expect(() => matrixSchema.parse(matrixWithoutCreated)).toThrow();
       });
     });
 
     describe("modified", () => {
-      it("should reject invalid values", () => {
-        const invalidModified = {
-          ...minimalMatrix,
-          modified: 123 as any,
-        };
-        expect(() => matrixSchema.parse(invalidModified)).toThrow();
+      beforeEach(() => {
+        invalidMatrix = { ...minimalMatrix, modified: 123 as any };
       });
 
-      it("should reject omitted required values", () => {
-        const { modified, ...matrixWithoutModified } = minimalMatrix;
+      it("should reject invalid values", () => {
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
+      });
+
+      it("should reject omittance of required values", () => {
+        const { modified, ...matrixWithoutModified } = invalidMatrix;
         expect(() => matrixSchema.parse(matrixWithoutModified)).toThrow();
       });
     });
 
     describe("object_marking_refs", () => {
-      it("should reject invalid values", () => {
-        const invalidObjectMarkingRefs = {
-          ...minimalMatrix,
-          object_marking_refs: 123 as any,
-        };
-        expect(() => matrixSchema.parse(invalidObjectMarkingRefs)).toThrow();
+      beforeEach(() => {
+        invalidMatrix = { ...minimalMatrix, object_marking_refs: 123 as any };
       });
 
-      it("should reject omitted required values", () => {
-        const { object_marking_refs, ...matrixWithoutObjectMarkingRefs } =
-          minimalMatrix;
-        expect(() =>
-          matrixSchema.parse(matrixWithoutObjectMarkingRefs)
-        ).toThrow();
+      it("should reject invalid values", () => {
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
+      });
+
+      it("should reject omittance of required values", () => {
+        const { object_marking_refs, ...matrixWithoutMarkingRefs } = invalidMatrix;
+        expect(() => matrixSchema.parse(matrixWithoutMarkingRefs)).toThrow();
       });
     });
 
     describe("x_mitre_domains", () => {
-      it("should reject invalid values", () => {
-        const invalidXMitreDomains = {
-          ...minimalMatrix,
-          x_mitre_domains: ["invalid-domain"] as any,
-        };
-        expect(() => matrixSchema.parse(invalidXMitreDomains)).toThrow();
+      beforeEach(() => {
+        invalidMatrix = { ...minimalMatrix, x_mitre_domains: ["invalid-domain"] as any };
       });
 
-      it("should reject omitted required values", () => {
-        const { x_mitre_domains, ...matrixWithoutXMitreDomains } =
-          minimalMatrix;
-        expect(() => matrixSchema.parse(matrixWithoutXMitreDomains)).toThrow();
+      it("should reject invalid values", () => {
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
+      });
+
+      it("should reject omittance of required values", () => {
+        const { x_mitre_domains, ...matrixWithoutDomains } = invalidMatrix;
+        expect(() => matrixSchema.parse(matrixWithoutDomains)).toThrow();
       });
     });
 
     describe("external_references", () => {
-      it("should reject invalid values", () => {
-        const invalidExternalReferences = {
-          ...minimalMatrix,
-          external_references: "not-an-array" as unknown as ExternalReferences,
-        };
-        expect(() => matrixSchema.parse(invalidExternalReferences)).toThrow();
+      beforeEach(() => {
+        invalidMatrix = { ...minimalMatrix, external_references: "not-an-array" as any };
       });
 
-      it("should reject omitted required values", () => {
-        const { external_references, ...matrixWithoutExternalReferences } =
-          minimalMatrix;
-        expect(() =>
-          matrixSchema.parse(matrixWithoutExternalReferences)
-        ).toThrow();
+      it("should reject invalid values", () => {
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
+      });
+
+      it("should reject omittance of required values", () => {
+        const { external_references, ...matrixWithoutExternalReferences } = invalidMatrix;
+        expect(() => matrixSchema.parse(matrixWithoutExternalReferences)).toThrow();
       });
     });
 
     describe("x_mitre_modified_by_ref", () => {
-      it("should reject invalid values", () => {
-        const invalidXMitreModifiedByRef = {
-          ...minimalMatrix,
-          x_mitre_modified_by_ref: 123 as any,
-        };
-        expect(() => matrixSchema.parse(invalidXMitreModifiedByRef)).toThrow();
+      beforeEach(() => {
+        invalidMatrix = { ...minimalMatrix, x_mitre_modified_by_ref: 123 as any };
       });
 
-      it("should reject omitted required values", () => {
-        const { x_mitre_modified_by_ref, ...matrixWithoutXMitreModifiedByRef } =
-          minimalMatrix;
-        expect(() =>
-          matrixSchema.parse(matrixWithoutXMitreModifiedByRef)
-        ).toThrow();
+      it("should reject invalid values", () => {
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
+      });
+
+      it("should reject omittance of required values", () => {
+        const { x_mitre_modified_by_ref, ...matrixWithoutModifiedByRef } = invalidMatrix;
+        expect(() => matrixSchema.parse(matrixWithoutModifiedByRef)).toThrow();
       });
     });
 
     describe("x_mitre_deprecated", () => {
+      beforeEach(() => {
+        invalidMatrix = { ...minimalMatrix, x_mitre_deprecated: "not a boolean" as any };
+      });
+
       it("should reject invalid values", () => {
-        const invalidXMitreDeprecated = {
-          ...minimalMatrix,
-          x_mitre_deprecated: "not a boolean" as any,
-        };
-        expect(() => matrixSchema.parse(invalidXMitreDeprecated)).toThrow();
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
       });
     });
 
     describe("revoked", () => {
+      beforeEach(() => {
+        invalidMatrix = { ...minimalMatrix, revoked: "not a boolean" as any };
+      });
+
       it("should reject invalid values", () => {
-        const invalidRevoked = {
-          ...minimalMatrix,
-          revoked: "not a boolean" as any,
-        };
-        expect(() => matrixSchema.parse(invalidRevoked)).toThrow();
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
       });
     });
 
     describe("tactic_refs", () => {
-      it("should reject invalid values", () => {
-        const invalidTacticRefs = {
-          ...minimalMatrix,
-          tactic_refs: 123 as any,
-        };
-        expect(() => matrixSchema.parse(invalidTacticRefs)).toThrow();
+      beforeEach(() => {
+        invalidMatrix = { ...minimalMatrix, tactic_refs: 123 as any };
       });
 
-      it("should reject omitted required values", () => {
-        const { tactic_refs, ...matrixWithoutTacticRefs } = minimalMatrix;
+      it("should reject invalid values", () => {
+        expect(() => matrixSchema.parse(invalidMatrix)).toThrow();
+      });
+
+      it("should reject omittance of required values", () => {
+        const { tactic_refs, ...matrixWithoutTacticRefs } = invalidMatrix;
         expect(() => matrixSchema.parse(matrixWithoutTacticRefs)).toThrow();
       });
     });
@@ -357,12 +318,6 @@ describe("MatrixSchema", () => {
         } as Matrix;
         expect(() => matrixSchema.parse(matrixWithUnknownProp)).toThrow();
       });
-    });
-  });
-
-  describe("Edge Cases and Special Scenarios", () => {
-    it("should handle special case X", () => {
-      // Test any schema-specific special cases
     });
   });
 });
