@@ -3,8 +3,10 @@ import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 import { v4 as uuidv4 } from 'uuid';
-import { StixBundle, stixBundleSchema, AttackObject } from './schemas/sdo/stix-bundle.schema';
-import { DataRegistration } from './data-sources/data-registration';
+import { z } from 'zod';
+import { StixBundle, stixBundleSchema, AttackObject, baseStixBundleSchema } from './schemas/sdo/stix-bundle.schema';
+import { techniqueSchema, tacticSchema, matrixSchema, mitigationSchema, relationshipSchema, dataSourceSchema, dataComponentSchema, groupSchema, malwareSchema, toolSchema, markingDefinitionSchema, identitySchema, collectionSchema, campaignSchema, assetSchema } from './schemas';
+import { DataRegistration, ParsingMode } from './data-sources/data-registration';
 import { AttackDataModel } from './classes/attack-data-model';
 
 // Initializes the custom ZodErrorMap
@@ -34,7 +36,7 @@ const dataSources: DataSourceMap = {};
  * @returns The unique ID of the registered data source.
  */
 export async function registerDataSource(registration: DataRegistration): Promise<string> {
-    const { source } = registration.options;
+    const { source, parsingMode = 'strict' } = registration.options;
 
     let rawData: StixBundle;
     let uniqueId = uuidv4(); // Generate a unique ID for the data source
@@ -60,8 +62,14 @@ export async function registerDataSource(registration: DataRegistration): Promis
             throw new Error(`Unsupported source type: ${source}`);
     }
 
-    const parsedAttackObjects = parseStixBundle(rawData);
+    console.log('Retrieved data');
+
+    const parsedAttackObjects = parseStixBundle(rawData, parsingMode);
+    console.log('Parsed data.');
+    console.log(parsedAttackObjects.length);
+
     const model = new AttackDataModel(uniqueId, parsedAttackObjects);
+    console.log('Initialized data model.');
 
     // Store the model and its unique ID in the dataSources map
     dataSources[uniqueId] = { id: uniqueId, model };
@@ -131,8 +139,12 @@ async function fetchDataFromFile(filePath: string): Promise<StixBundle> {
     try {
         const data = await readFile(filePath, 'utf8');
         return JSON.parse(data) as StixBundle;
-    } catch (error) {
-        throw new Error(`Failed to read or parse file at ${filePath}: ${error.message}`);
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to read or parse file at ${filePath}: ${error.message}`);
+        } else {
+            throw new Error(`Failed to read or parse file at ${filePath}: ${String(error)}`);
+        }
     }
 }
 
@@ -142,30 +154,118 @@ async function fetchDataFromFile(filePath: string): Promise<StixBundle> {
  * @param rawData - The raw StixBundle to parse.
  * @returns The list of parsed STIX objects.
  */
-function parseStixBundle(rawData: StixBundle): AttackObject[] {
+function parseStixBundle(rawData: any, parsingMode: ParsingMode): AttackObject[] {
     const errors: string[] = [];
+    const validObjects: AttackObject[] = [];
 
-    try {
-        // Validate the entire STIX bundle using the Zod schema
-        const parsedBundle = stixBundleSchema.parse(rawData);
+    // Validate the bundle's top-level properties
+    const baseBundleValidationResults = baseStixBundleSchema.pick({
+        id: true,
+        type: true,
+        spec_version: true,
+        // objects: true
+    }).safeParse(rawData);
 
-        // Return the objects from the parsed STIX bundle
-        return parsedBundle.objects;
+    if (!baseBundleValidationResults.success) {
+        baseBundleValidationResults.error.issues.forEach((issue) => {
+            errors.push(`Error: Path - ${issue.path.join('.')}, Message - ${issue.message}`);
+        });
 
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            // Collect validation errors from Zod
-            error.issues.forEach((issue) => {
-                errors.push(`Error: Path - ${issue.path.join('.')}, Message - ${issue.message}`);
-            });
-            console.warn(errors.join('\n\n'));  // Log validation errors, but continue
+        if (parsingMode === 'strict') {
+            throw new Error(`Bundle validation failed:\n${errors.join('\n')}`);
         } else {
-            throw new Error(`Unexpected error during STIX bundle parsing: ${error.message}`);
+            console.warn(`Bundle validation errors:\n${errors.join('\n')}`);
+        }
+        return []; // Return empty array if bundle itself is invalid
+    }
+
+    // Now process each object individually
+    const objects = rawData.objects;
+    for (let index = 0; index < objects.length; index++) {
+        const obj = objects[index];
+        let objParseResult: z.SafeParseReturnType<any, any> | null;
+
+        switch (obj.type) {
+            case "x-mitre-asset":
+                objParseResult = assetSchema.safeParse(obj);
+                break;
+            case "campaign":
+                objParseResult = campaignSchema.safeParse(obj);
+                break;
+            case "x-mitre-collection":
+                objParseResult = collectionSchema.safeParse(obj);
+                break;
+            case "x-mitre-data-component":
+                objParseResult = dataComponentSchema.safeParse(obj);
+                break;
+            case "x-mitre-data-source":
+                objParseResult = dataSourceSchema.safeParse(obj);
+                break;
+            case "intrusion-set":
+                objParseResult = groupSchema.safeParse(obj);
+                break;
+            case "identity":
+                objParseResult = identitySchema.safeParse(obj);
+                break;
+            case "malware":
+                objParseResult = malwareSchema.safeParse(obj);
+                break;
+            case "x-mitre-matrix":
+                objParseResult = matrixSchema.safeParse(obj);
+                break;
+            case "course-of-action":
+                objParseResult = mitigationSchema.safeParse(obj);
+                break;
+            case "x-mitre-tactic":
+                objParseResult = tacticSchema.safeParse(obj);
+                break;
+            case "attack-pattern":
+                objParseResult = techniqueSchema.safeParse(obj);
+                break;
+            case "tool":
+                objParseResult = toolSchema.safeParse(obj);
+                break;
+            case "marking-definition":
+                objParseResult = markingDefinitionSchema.safeParse(obj);
+                break;
+            case "relationship":
+                objParseResult = relationshipSchema.safeParse(obj);
+                break;
+            default:
+                errors.push(`Unknown object type at index ${index}: ${obj.type}`);
+                objParseResult = null;
+                break;
+        }
+
+        if (objParseResult && objParseResult.success) {
+            validObjects.push(objParseResult.data);
+        } else {
+            if (objParseResult && objParseResult.error) {
+                objParseResult.error.issues.forEach((issue) => {
+                    errors.push(
+                        `Error: Path - objects.${index}.${issue.path.join('.')}, Message - ${issue.message}`
+                    );
+                });
+            } else {
+                errors.push(`Failed to parse object at index ${index}`);
+            }
+
+            if (parsingMode === 'relaxed') {
+                // Include the original object even if it failed validation
+                validObjects.push(obj);
+            }
         }
     }
 
-    // In case of errors, return an empty array
-    return [];
+    if (errors.length > 0) {
+        if (parsingMode === 'strict') {
+            throw new Error(`Validation errors:\n${errors.join('\n')}`);
+        } else {
+            console.warn(`Validation errors:\n${errors.join('\n')}`);
+        }
+    }
+
+    return validObjects;
 }
 
 

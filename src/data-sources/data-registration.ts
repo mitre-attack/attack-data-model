@@ -1,28 +1,28 @@
-// Enum to specify valid domains
-export enum AttackDomain {
-    ENTERPRISE = 'enterprise-attack',
-    MOBILE = 'mobile-attack',
-    ICS = 'ics-attack',
-}
+import { attackDomainSchema, AttackDomain } from "../schemas";
 
-// Union type for DataSourceOptions, where 'attack' source requires a domain
+export type ParsingMode = 'strict' | 'relaxed';
+
 export type DataSourceOptions =
     | {
         source: 'attack';
         domain: AttackDomain;
         version?: string;
+        parsingMode?: ParsingMode;
     }
     | {
         source: 'file';
         path: string;
+        parsingMode?: ParsingMode;
     }
     | {
         source: 'url';
         url: string;
+        parsingMode?: ParsingMode;
     }
     | {
         source: 'taxii';
         url: string;
+        parsingMode?: ParsingMode;
     };
 
 // DataRegistration class with validation logic
@@ -37,15 +37,20 @@ export class DataRegistration {
      * Throws an error if validation fails.
      */
     private validateOptions(): void {
-        const { source } = this.options;
+        const { source, parsingMode } = this.options;
+
+        // Validate parsingMode
+        if (parsingMode && !['strict', 'relaxed'].includes(parsingMode)) {
+            throw new Error(`Invalid parsingMode: ${parsingMode}. Expected 'strict' or 'relaxed'.`);
+        }
 
         switch (source) {
             case 'attack': {
                 const { domain } = this.options as { domain: AttackDomain };
-                if (!domain || !Object.values(AttackDomain).includes(domain)) {
+                if (!domain || !Object.values(attackDomainSchema.enum).includes(domain)) {
                     throw new Error(
                         `Invalid domain provided for 'attack' source. Expected one of: ${Object.values(
-                            AttackDomain
+                            attackDomainSchema.enum
                         ).join(', ')}`
                     );
                 }

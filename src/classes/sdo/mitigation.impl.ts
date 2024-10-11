@@ -1,11 +1,12 @@
 import { Mitigation } from '../../schemas/sdo/mitigation.schema';
+import { AttackObjectImpl } from '../common/attack-object.impl';
 
-export class MitigationImpl {
+export class MitigationImpl extends AttackObjectImpl {
+
     constructor(readonly mitigation: Mitigation) {
+        super();
         Object.assign(this, mitigation);
     }
-
-    // Additional methods as needed
 }
 
 export interface MitigationImpl extends Mitigation { }

@@ -40,7 +40,11 @@ export type AttackObject =
   | Relationship
   | MarkingDefinition;
 
-export const attackObjectsSchema = z
+
+// IMPORTANT: Casting the 'attackObjectsSchema' to 'z.ZodTypeAny' is critical. Without it, the TypeScript compiler will get overwhelmed and throw the following:
+// 'error TS7056: The inferred type of this node exceeds the maximum length the compiler will serialize. An explicit type annotation is needed.'
+
+export const attackObjectsSchema: z.ZodTypeAny = z
   .array(
     z.union([
       malwareSchema,
@@ -71,17 +75,14 @@ export type AttackObjects = z.infer<typeof attackObjectsSchema>;
 //
 /////////////////////////////////////
 
-export const stixBundleSchema = z
-  .object({
+export const baseStixBundleSchema = z.object({
+  id: createStixIdentifierSchema(STIX_BUNDLE_TYPE),
+  type: z.literal(STIX_BUNDLE_TYPE),
+  spec_version: stixSpecVersionSchema,
+  objects: attackObjectsSchema,
+});
 
-    id: createStixIdentifierSchema(STIX_BUNDLE_TYPE),
-
-    type: z.literal(STIX_BUNDLE_TYPE),
-
-    spec_version: stixSpecVersionSchema,
-
-    objects: attackObjectsSchema
-  })
+export const stixBundleSchema = baseStixBundleSchema
   .strict()
   .superRefine((schema, ctx) => {
 

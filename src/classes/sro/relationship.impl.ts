@@ -1,12 +1,12 @@
 import { Relationship } from '../../schemas/sro/relationship.schema';
+import { AttackObjectImpl } from '../common/attack-object.impl';
 
-export class RelationshipImpl {
+export class RelationshipImpl extends AttackObjectImpl {
 
     constructor(readonly relationship: Relationship) {
+        super();
         Object.assign(this, relationship);
     }
-
-    // Additional methods as needed
 }
 
 export interface RelationshipImpl extends Relationship { }

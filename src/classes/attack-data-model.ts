@@ -17,6 +17,7 @@ import { Relationship } from "../schemas/sro/relationship.schema";
 import { AttackObject } from '../schemas/sdo/stix-bundle.schema';
 
 // Import ES6 Classes
+import { AnyAttackObject } from "./common/attack-object.impl";
 import { AssetImpl } from "./sdo/asset.impl";
 import { CampaignImpl } from "./sdo/campaign.impl";
 import { CollectionImpl } from "./sdo/collection.impl";
@@ -32,23 +33,6 @@ import { TechniqueImpl } from "./sdo/technique.impl";
 import { ToolImpl } from "./sdo/tool.impl";
 import { MarkingDefinitionImpl } from "./smo/marking-definition.impl";
 import { RelationshipImpl } from "./sro/relationship.impl";
-
-export type AttackObjectImpl =
-    | MalwareImpl
-    | AssetImpl
-    | CampaignImpl
-    | CollectionImpl
-    | DataComponentImpl
-    | DataSourceImpl
-    | IdentityImpl
-    | MatrixImpl
-    | ToolImpl
-    | TacticImpl
-    | TechniqueImpl
-    | GroupImpl
-    | MitigationImpl
-    | RelationshipImpl
-    | MarkingDefinitionImpl;
 
 export class AttackDataModel {
 
@@ -79,7 +63,7 @@ export class AttackDataModel {
      * Populates the class properties (e.g., techniques, groups, etc.) from the parsed objects array.
      */
     private populateData(): void {
-        const objectMap: Map<string, AttackObject> = new Map(); // Map STIX ID to ES6 class instance
+        const objectMap: Map<string, AnyAttackObject> = new Map(); // Map STIX ID to ES6 class instance
 
         // Step 1: Initialize core objects
         this.attackObjects.forEach((object) => {
@@ -199,51 +183,78 @@ export class AttackDataModel {
     /**
      * Initializes relationships between objects, such as sub-techniques, tactics, mitigations, and more.
      */
-    private initializeRelationships(objectMap: Map<string, AttackObject>): void {
+    private initializeRelationships(objectMap: Map<string, AnyAttackObject>): void {
+
         this.relationships.forEach((relationship) => {
             const sourceObj = objectMap.get(relationship.source_ref);
             const targetObj = objectMap.get(relationship.target_ref);
 
             if (sourceObj && targetObj) {
+
                 switch (relationship.relationship_type) {
+
                     case 'subtechnique-of':
                         if (sourceObj instanceof TechniqueImpl && targetObj instanceof TechniqueImpl) {
                             sourceObj.setParent(targetObj);
                             targetObj.addSubTechnique(sourceObj);
                         }
                         break;
+
                     case 'uses':
                         if (sourceObj instanceof GroupImpl && targetObj instanceof TechniqueImpl) {
                             sourceObj.addTechnique(targetObj);
                         } else if (sourceObj instanceof CampaignImpl && targetObj instanceof TechniqueImpl) {
                             sourceObj.addTechnique(targetObj);
+                        } else if (sourceObj instanceof MalwareImpl && targetObj instanceof TechniqueImpl) {
+                            sourceObj.addTechnique(targetObj);
+                        } else if (sourceObj instanceof ToolImpl && targetObj instanceof TechniqueImpl) {
+                            sourceObj.addTechnique(targetObj);
+                        } else if (sourceObj instanceof GroupImpl && (targetObj instanceof MalwareImpl || targetObj instanceof ToolImpl)) {
+                            sourceObj.addSoftware(targetObj);
+                        } else if (sourceObj instanceof CampaignImpl && (targetObj instanceof MalwareImpl || targetObj instanceof ToolImpl)) {
+                            sourceObj.addSoftware(targetObj);
                         }
                         break;
+
                     case 'mitigates':
                         if (sourceObj instanceof MitigationImpl && targetObj instanceof TechniqueImpl) {
                             targetObj.addMitigation(sourceObj);
                         }
                         break;
+
                     case 'detects':
-                        if (sourceObj instanceof DataSourceImpl && targetObj instanceof TechniqueImpl) {
-                            targetObj.addDataSource(sourceObj);
+                        if (sourceObj instanceof DataComponentImpl && targetObj instanceof TechniqueImpl) {
+                            sourceObj.addDetectedTechnique(targetObj);
+                            targetObj.addDetectingDataComponent(sourceObj);
                         }
                         break;
+
                     case 'targets':
                         if (sourceObj instanceof TechniqueImpl && targetObj instanceof AssetImpl) {
                             sourceObj.addTargetAsset(targetObj);
                         }
                         break;
+
                     case 'attributed-to':
-                        // TODO
+                        if (sourceObj instanceof CampaignImpl && targetObj instanceof GroupImpl) {
+                            sourceObj.setAttributedTo(targetObj);
+                            targetObj.addAttributedCampaign(sourceObj);
+                        }
                         break;
+
                     case 'revoked-by':
-                        // TODO
+                        if (sourceObj.constructor.name === targetObj.constructor.name) {
+                            sourceObj.setRevokedBy(targetObj);
+                        }
+                        break;
+
+                    default:
                         break;
                 }
             }
         });
     }
+
 
     // Other methods to query objects, get by ID, etc. (unchanged from previous version)
 }

@@ -1,11 +1,12 @@
 import { DataSource } from '../../schemas/sdo/data-source.schema';
+import { AttackObjectImpl } from '../common/attack-object.impl';
 
-export class DataSourceImpl {
+export class DataSourceImpl extends AttackObjectImpl {
+
     constructor(readonly dataSource: DataSource) {
+        super();
         Object.assign(this, dataSource);
     }
-
-    // Additional methods as needed
 }
 
 export interface DataSourceImpl extends DataSource { }
