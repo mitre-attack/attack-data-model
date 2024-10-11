@@ -1,29 +1,55 @@
 {
-  "name": "zod",
+  "name": "attack-data-model",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A TypeScript API for the MITRE ATT&CK data model",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "type": "module",
   "scripts": {
-    "start": "ts-node test/stix.ts",
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
     "test": "jest"
   },
-  "keywords": [],
+  "keywords": [
+    "mitre",
+    "attack",
+    "typescript",
+    "api"
+  ],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@babel/core": "^7.24.7",
-    "@babel/preset-env": "^7.24.7",
-    "@babel/preset-typescript": "^7.24.7",
-    "@types/jest": "^29.5.12",
-    "@types/uuid": "^10.0.0",
-    "babel-jest": "^29.7.0",
-    "typescript": "^5.4.5"
-  },
   "dependencies": {
     "axios": "^1.7.5",
-    "ts-node": "^10.9.2",
     "uuid": "^10.0.0",
-    "zod": "^3.23.8",
-    "zod-class": "^0.0.13"
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/uuid": "^10.0.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.6.3",
+    "ts-node": "^10.9.2"
+  },
+  "exports": {
+    "./schemas": "./lib/schemas/index.js",
+    "./classes": "./lib/classes/index.js",
+    "./data-sources": "./lib/data-sources/index.js",
+    ".": "./lib/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mitre-attack/attack-data-model.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mitre-attack/attack-data-model/issues"
+  },
+  "homepage": "https://github.com/mitre-attack/attack-data-model#readme",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   }
 }
