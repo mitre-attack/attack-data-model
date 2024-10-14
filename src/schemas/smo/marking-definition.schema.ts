@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { stixTypeSchema } from "../common/stix-type";
-import { createStixIdentifierSchema, nameSchema, stixCreatedByRefSchema, stixSpecVersionSchema, stixTimestampSchema, xMitreAttackSpecVersionSchema, xMitreDeprecatedSchema, xMitreDomainsSchema } from "../common";
+import { stixTypeSchema } from "../common/stix-type.js";
+import { createStixIdentifierSchema, nameSchema, stixCreatedByRefSchema, stixSpecVersionSchema, stixTimestampSchema, xMitreAttackSpecVersionSchema, xMitreDeprecatedSchema, xMitreDomainsSchema } from "../common/index.js";
 
 
 /////////////////////////////////////

@@ -1,7 +1,7 @@
-import { Tactic } from '../../schemas/sdo/tactic.schema';
-import { AttackObjectImpl } from '../common/attack-object.impl';
+import type { Tactic } from '../../schemas/sdo/tactic.schema.js';
+import { AttackBaseImpl } from '../common/attack-object.impl.js';
 
-export class TacticImpl extends AttackObjectImpl {
+export class TacticImpl extends AttackBaseImpl {
 
     constructor(readonly tactic: Tactic) {
         super();

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { attackBaseObjectSchema, createStixIdentifierSchema, descriptionSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, stixModifiedTimestampSchema, stixTypeSchema } from "../common";
+import { attackBaseObjectSchema, createStixIdentifierSchema, descriptionSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, stixModifiedTimestampSchema, stixTypeSchema } from "../common/index.js";
 
 
 /////////////////////////////////////

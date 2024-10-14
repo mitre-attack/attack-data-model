@@ -1,1 +1,1 @@
-export * from './data-registration'
+export * from './data-registration.js'

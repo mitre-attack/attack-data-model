@@ -1,1 +1,1 @@
-export * from './relationship.schema'
+export * from './relationship.schema.js'

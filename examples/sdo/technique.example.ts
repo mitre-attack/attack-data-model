@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { techniqueSchema } from "../../src/schemas/sdo/technique.schema";
+import { techniqueSchema } from "../../src/schemas/sdo/technique.schema.js";
 
 /*************************************************************************************************** */
 // Example 1: Valid Technique

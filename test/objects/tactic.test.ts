@@ -1,11 +1,11 @@
 import {
-    StixCreatedTimestamp,
-    StixModifiedTimestamp,
-} from "../../src/schemas/common";
+    type StixCreatedTimestamp,
+    type StixModifiedTimestamp,
+} from "../../src/schemas/common/index.js";
 import {
-    Tactic,
+    type Tactic,
     tacticSchema,
-} from "../../src/schemas/sdo/tactic.schema";
+} from "../../src/schemas/sdo/tactic.schema.js";
 import { v4 as uuidv4 } from "uuid";
 
 /**
@@ -65,7 +65,7 @@ describe("tacticSchema", () => {
      */
     describe("Field-Specific Tests", () => {
         const testField = (
-            fieldName: string,
+            fieldName: keyof Tactic,
             invalidValue: any,
             isRequired = true // Flag indicating whether the field is required
         ) => {

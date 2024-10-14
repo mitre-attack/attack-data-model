@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { attackBaseObjectSchema } from "../common/attack-base-object";
-import { StixType, stixTypeSchema } from '../common/stix-type';
-import { descriptionSchema, xMitrePlatformsSchema, attackDomainSchema, createStixIdentifierSchema, xMitreModifiedByRefSchema, xMitreDomainsSchema, xMitreContributorsSchema, externalReferencesSchema, killChainPhaseSchema } from '../common';
+import { attackBaseObjectSchema } from "../common/attack-base-object.js";
+import { type StixType, stixTypeSchema } from '../common/stix-type.js';
+import { descriptionSchema, xMitrePlatformsSchema, attackDomainSchema, createStixIdentifierSchema, xMitreModifiedByRefSchema, xMitreDomainsSchema, xMitreContributorsSchema, externalReferencesSchema, killChainPhaseSchema } from '../common/index.js';
 
 // Initializes the custom ZodErrorMap
 import '../../errors'; 

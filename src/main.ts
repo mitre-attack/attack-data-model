@@ -4,19 +4,16 @@ import path from 'path';
 import { promisify } from 'util';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
-import { StixBundle, stixBundleSchema, AttackObject, baseStixBundleSchema } from './schemas/sdo/stix-bundle.schema';
-import { techniqueSchema, tacticSchema, matrixSchema, mitigationSchema, relationshipSchema, dataSourceSchema, dataComponentSchema, groupSchema, malwareSchema, toolSchema, markingDefinitionSchema, identitySchema, collectionSchema, campaignSchema, assetSchema } from './schemas';
-import { DataRegistration, ParsingMode } from './data-sources/data-registration';
-import { AttackDataModel } from './classes/attack-data-model';
+import { type StixBundle, type AttackObject, baseStixBundleSchema } from './schemas/sdo/stix-bundle.schema.js';
+import { techniqueSchema, tacticSchema, matrixSchema, mitigationSchema, relationshipSchema, dataSourceSchema, dataComponentSchema, groupSchema, malwareSchema, toolSchema, markingDefinitionSchema, identitySchema, collectionSchema, campaignSchema, assetSchema } from './schemas/index.js';
+import { DataRegistration, type ParsingMode } from './data-sources/data-registration.js';
+import { AttackDataModel } from './classes/attack-data-model.js';
 
 // Initializes the custom ZodErrorMap
 import './errors';
 
 const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
-const CACHE_DIR = path.resolve(__dirname, '../.cached_stix_data');
-const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
-const fileExists = promisify(fs.exists);
 
 interface DataSourceMap {
     [key: string]: {

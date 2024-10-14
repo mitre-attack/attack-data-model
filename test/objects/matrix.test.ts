@@ -1,9 +1,9 @@
 import {
-  Description,
-  StixCreatedTimestamp,
-  StixModifiedTimestamp,
-} from "../../src/schemas/common";
-import { Matrix, matrixSchema } from "../../src/schemas/sdo/matrix.schema";
+  type Description,
+  type StixCreatedTimestamp,
+  type StixModifiedTimestamp,
+} from "../../src/schemas/common/index.js";
+import { type Matrix, matrixSchema } from "../../src/schemas/sdo/matrix.schema.js";
 import { v4 as uuidv4 } from "uuid";
 
 /**
@@ -65,7 +65,7 @@ describe("MatrixSchema", () => {
    */
   describe("Field-Specific Tests", () => {
     const testField = (
-      fieldName: string,
+      fieldName: keyof Matrix,
       invalidValue: any,
       isRequired = true // Flag indicating whether the field is required
     ) => {

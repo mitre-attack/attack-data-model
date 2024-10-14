@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { malwareSchema } from "../../src/schemas/sdo/malware.schema";
-import { toolSchema } from "../../src/schemas/sdo/tool.schema";
+import { malwareSchema } from "../../src/schemas/sdo/malware.schema.js";
+import { toolSchema } from "../../src/schemas/sdo/tool.schema.js";
 
 // Malware Examples - 
 console.log("****************************************************************************************************")

@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { stixDomainObjectSchema } from './stix-core';
-import { nameSchema, xMitreAttackSpecVersionSchema, xMitreDeprecatedSchema, xMitreOldAttackIdSchema, xMitreVersionSchema } from '.';
+import { stixDomainObjectSchema } from './stix-core.js';
+import { nameSchema, xMitreAttackSpecVersionSchema, xMitreDeprecatedSchema, xMitreOldAttackIdSchema, xMitreVersionSchema } from './index.js';
 
 // Define the new properties
 export const attackBaseObjectSchema = stixDomainObjectSchema.extend({

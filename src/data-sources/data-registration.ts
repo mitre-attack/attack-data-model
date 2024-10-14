@@ -1,4 +1,4 @@
-import { attackDomainSchema, AttackDomain } from "../schemas";
+import { attackDomainSchema, type AttackDomain } from "../schemas/index.js";
 
 export type ParsingMode = 'strict' | 'relaxed';
 

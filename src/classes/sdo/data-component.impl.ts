@@ -1,8 +1,8 @@
-import { DataComponent } from '../../schemas/sdo/data-component.schema';
-import { AttackObjectImpl } from '../common/attack-object.impl';
-import { TechniqueImpl } from './technique.impl';
+import type { DataComponent } from '../../schemas/sdo/data-component.schema.js';
+import { AttackBaseImpl } from '../common/attack-object.impl.js';
+import { TechniqueImpl } from './technique.impl.js';
 
-export class DataComponentImpl extends AttackObjectImpl implements DataComponent {
+export class DataComponentImpl extends AttackBaseImpl implements DataComponent {
 
     private _detectedTechniques: TechniqueImpl[] = [];
 

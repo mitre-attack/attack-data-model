@@ -1,12 +1,12 @@
-import {
+import type {
     StixCreatedTimestamp,
     StixModifiedTimestamp,
     StixTimestamp,
-} from "../../src/schemas/common";
+} from "../../src/schemas/common/index.js";
 import {
-    Campaign,
+    type Campaign,
     campaignSchema,
-} from "../../src/schemas/sdo/campaign.schema";
+} from "../../src/schemas/sdo/campaign.schema.js";
 import { v4 as uuidv4 } from "uuid";
 
 /**
@@ -83,7 +83,7 @@ describe("campaignSchema", () => {
      */
     describe("Field-Specific Tests", () => {
         const testField = (
-            fieldName: string,
+            fieldName: keyof Campaign,
             invalidValue: any,
             isRequired = true // Flag indicating whether the field is required
         ) => {

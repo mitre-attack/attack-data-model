@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { attackBaseObjectSchema, descriptionSchema, xMitrePlatformsSchema, stixIdentifierSchema, stixTypeSchema, xMitreDomainsSchema, createStixIdentifierSchema, xMitreContributorsSchema, xMitreModifiedByRefSchema, objectMarkingRefsSchema, externalReferencesSchema } from '../common';
+import { attackBaseObjectSchema, descriptionSchema, xMitrePlatformsSchema, stixIdentifierSchema, stixTypeSchema, xMitreDomainsSchema, createStixIdentifierSchema, xMitreContributorsSchema, xMitreModifiedByRefSchema, objectMarkingRefsSchema, externalReferencesSchema } from '../common/index.js';
 
 // Initializes the custom ZodErrorMap
 import '../../errors';

@@ -1,13 +1,13 @@
 import { v4 as uuidv4 } from "uuid";
 import {
-    DataComponent,
+    type DataComponent,
     dataComponentSchema,
-} from "../../src/schemas/sdo/data-component.schema";
+} from "../../src/schemas/sdo/data-component.schema.js";
 import {
-    StixCreatedTimestamp,
-    StixModifiedTimestamp,
+    type StixCreatedTimestamp,
+    type StixModifiedTimestamp,
     xMitreIdentity,
-} from "../../src/schemas/common";
+} from "../../src/schemas/common/index.js";
 
 describe("dataComponentSchema", () => {
     let minimalDataComponent: DataComponent;
@@ -50,7 +50,11 @@ describe("dataComponentSchema", () => {
     });
 
     describe("Field-Specific Tests", () => {
-        const testField = (fieldName: string, invalidValue: any, isRequired = true) => {
+        const testField = (
+            fieldName: keyof DataComponent,
+            invalidValue: any,
+            isRequired = true
+        ) => {
             it(`should reject invalid values for ${fieldName}`, () => {
                 const invalidObject = { ...minimalDataComponent, [fieldName]: invalidValue };
                 expect(() => dataComponentSchema.parse(invalidObject)).toThrow();

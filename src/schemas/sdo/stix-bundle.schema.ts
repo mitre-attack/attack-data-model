@@ -1,22 +1,22 @@
 import { z } from "zod";
-import { stixSpecVersionSchema } from "../common";
-import { stixTypeSchema } from "../common/stix-type";
-import { createStixIdentifierSchema } from "../common/stix-identifier";
-import { Malware, malwareSchema } from "./malware.schema";
-import { Asset, assetSchema } from "./asset.schema";
-import { Campaign, campaignSchema } from "./campaign.schema";
-import { DataComponent, dataComponentSchema } from "./data-component.schema";
-import { DataSource, dataSourceSchema } from "./data-source.schema";
-import { Identity, identitySchema } from "./identity.schema";
-import { Matrix, matrixSchema } from "./matrix.schema";
-import { Tool, toolSchema } from "./tool.schema";
-import { Tactic, tacticSchema } from "./tactic.schema";
-import { Technique, techniqueSchema } from "./technique.schema";
-import { Group, groupSchema } from "./group.schema";
-import { Mitigation, mitigationSchema } from "./mitigation.schema";
-import { Collection, collectionSchema } from "./collection.schema";
-import { Relationship, relationshipSchema } from "../sro/relationship.schema"
-import { MarkingDefinition, markingDefinitionSchema } from "../smo/marking-definition.schema";
+import { stixSpecVersionSchema } from "../common/index.js";
+import { stixTypeSchema } from "../common/stix-type.js";
+import { createStixIdentifierSchema } from "../common/stix-identifier.js";
+import { type Malware, malwareSchema } from "./malware.schema.js";
+import { type Asset, assetSchema } from "./asset.schema.js";
+import { type Campaign, campaignSchema } from "./campaign.schema.js";
+import { type DataComponent, dataComponentSchema } from "./data-component.schema.js";
+import { type DataSource, dataSourceSchema } from "./data-source.schema.js";
+import { type Identity, identitySchema } from "./identity.schema.js";
+import { type Matrix, matrixSchema } from "./matrix.schema.js";
+import { type Tool, toolSchema } from "./tool.schema.js";
+import { type Tactic, tacticSchema } from "./tactic.schema.js";
+import { type Technique, techniqueSchema } from "./technique.schema.js";
+import { type Group, groupSchema } from "./group.schema.js";
+import { type Mitigation, mitigationSchema } from "./mitigation.schema.js";
+import { type Collection, collectionSchema } from "./collection.schema.js";
+import { type Relationship, relationshipSchema } from "../sro/relationship.schema.js"
+import { type MarkingDefinition, markingDefinitionSchema } from "../smo/marking-definition.schema.js";
 
 import '../../errors';
 

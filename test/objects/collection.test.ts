@@ -1,11 +1,11 @@
-import {
+import type {
     StixCreatedTimestamp,
     StixModifiedTimestamp,
-} from "../../src/schemas/common";
+} from "../../src/schemas/common/index.js";
 import {
-    Collection,
+    type Collection,
     collectionSchema
-} from "../../src/schemas/sdo/collection.schema";
+} from "../../src/schemas/sdo/collection.schema.js";
 import { v4 as uuidv4 } from "uuid";
 
 /**
@@ -52,7 +52,7 @@ describe("collectionSchema", () => {
      */
     describe("Field-Specific Tests", () => {
         const testField = (
-            fieldName: string,
+            fieldName: keyof Collection,
             invalidValue: any,
             isRequired = true // Flag indicating whether the field is required
         ) => {

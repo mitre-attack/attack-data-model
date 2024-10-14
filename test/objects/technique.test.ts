@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Technique, techniqueSchema } from '../../src/schemas/sdo/technique.schema';
-import { StixCreatedTimestamp, StixModifiedTimestamp, xMitreIdentity } from '../../src/schemas/common';
+import { type Technique, techniqueSchema } from '../../src/schemas/sdo/technique.schema.js';
+import { type StixCreatedTimestamp, type StixModifiedTimestamp, xMitreIdentity } from '../../src/schemas/common/index.js';
 
 /**
  * Test suite for validating the Technique schema.
@@ -58,7 +58,7 @@ describe('TechniqueSchema', () => {
      */
     describe('Field-Specific Tests', () => {
         const testField = (
-            fieldName: string,
+            fieldName: keyof Technique,
             invalidValue: any,
             isRequired = true // Flag indicating whether the field is required
         ) => {

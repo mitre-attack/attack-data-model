@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import { markingDefinitionSchema } from "../../src/schemas/smo/marking-definition.schema";
-import { StixCreatedTimestamp } from "../../src/schemas/common";
+import { markingDefinitionSchema } from "../../src/schemas/smo/marking-definition.schema.js";
+import { type StixCreatedTimestamp } from "../../src/schemas/common/index.js";
 
 /**
  * Test suite for validating MarkingDefinition schema with "statement" type.

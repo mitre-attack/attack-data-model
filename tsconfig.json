@@ -1,23 +1,33 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "declaration": true, // generates type declaration files
-    "declarationDir": "lib/types", // store declarations in a separate directory
-    "outDir": "lib",
+    "module": "node16",
+    "target": "es2020", // set to the *lowest* target you support
     "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "sourceMap": true
+    "verbatimModuleSyntax": true,
+    /**
+     * This tells TypeScript to emit an .d.ts definitions file along with your compiled JavaScript, which is what TypeScript will use for type checking. 
+     * Note that at this point, when you run the TypeScript compiler, it will complain if you’re using a private type (i.e. not export-ed). 
+     * This is because your types that are part of any public facing API (and that aren’t inline types) have to be exported so that users of your library can get type checking goodness. 
+     * They don’t need to be in a separate file or anything, they just need that export keyword in front of them.
+     */
+    "declaration": true,
+    "sourceMap": true,
+    "declarationMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
   },
   "include": [
     "src/**/*.ts"
   ],
   "exclude": [
     "node_modules",
-    "lib"
+    "dist",
+    "test",
+    "examples"
   ]
 }

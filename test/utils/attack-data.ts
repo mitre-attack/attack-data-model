@@ -2,10 +2,10 @@ import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
-import { AttackObject, StixBundle } from '../../src/schemas/sdo/stix-bundle.schema';
-import { Relationship } from '../../src/schemas/sro/relationship.schema';
-import { MarkingDefinition } from '../../src/schemas/smo/marking-definition.schema';
-import { attackDomainSchema, AttackDomain } from '../../src/schemas/common/common-properties';
+import { type AttackObject, type StixBundle } from '../../src/schemas/sdo/stix-bundle.schema.js';
+import { type Relationship } from '../../src/schemas/sro/relationship.schema.js';
+import { type MarkingDefinition } from '../../src/schemas/smo/marking-definition.schema.js';
+import { attackDomainSchema, type AttackDomain } from '../../src/schemas/common/common-properties.js';
 
 const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
 const CACHE_DIR = path.resolve(__dirname, '../.cached_stix_data');

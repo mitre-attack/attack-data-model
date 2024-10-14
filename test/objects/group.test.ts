@@ -1,12 +1,9 @@
-import {
+import type {
   Description,
   StixCreatedTimestamp,
   StixModifiedTimestamp,
-  ExternalReferences,
-  XMitreContributors,
-  XMitreModifiedByRef,
-} from "../../src/schemas/common";
-import { Group, groupSchema } from "../../src/schemas/sdo/group.schema";
+} from "../../src/schemas/common/index.js";
+import { type Group, groupSchema } from "../../src/schemas/sdo/group.schema.js";
 import { v4 as uuidv4 } from "uuid";
 
 /**
@@ -71,7 +68,7 @@ describe("GroupSchema", () => {
    */
   describe("Field-Specific Tests", () => {
     const testField = (
-      fieldName: string,
+      fieldName: keyof Group,
       invalidValue: any,
       isRequired = true  // Add a flag for required fields
     ) => {
@@ -130,7 +127,7 @@ describe("GroupSchema", () => {
     });
 
     describe("external_references", () => {
-      testField("external_references", "not-an-array" as ExternalReferences);
+      testField("external_references", "not-an-array" as unknown);
     });
 
     // Optional Fields:

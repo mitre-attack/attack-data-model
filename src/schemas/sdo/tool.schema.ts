@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { stixTypeSchema } from "../common/stix-type";
-import { softwareSchema } from "./software.schema";
-import { createStixIdentifierSchema, killChainPhaseSchema } from "../common";
-import { ToolTypesOpenVocabulary } from "../common/open-vocabulary";
+import { stixTypeSchema } from "../common/stix-type.js";
+import { softwareSchema } from "./software.schema.js";
+import { createStixIdentifierSchema, killChainPhaseSchema } from "../common/index.js";
+import { ToolTypesOpenVocabulary } from "../common/open-vocabulary.js";
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
@@ -15,38 +15,38 @@ import '../../errors';
 //
 /////////////////////////////////////
 
-export const toolSchema = softwareSchema.extend({
+export const toolSchema = softwareSchema
+    .extend({
 
-    id: createStixIdentifierSchema(stixTypeSchema.enum.tool),
+        id: createStixIdentifierSchema(stixTypeSchema.enum.tool),
 
-    type: z.literal(stixTypeSchema.enum.tool),
+        type: z.literal(stixTypeSchema.enum.tool),
 
-    // Not used in ATT&CK Tool but defined in STIX
-    tool_types: z
-        .array(ToolTypesOpenVocabulary)
-        .optional()
-        .describe('The kind(s) of tool(s) being described.'),
+        // Not used in ATT&CK Tool but defined in STIX
+        tool_types: z
+            .array(ToolTypesOpenVocabulary)
+            .optional()
+            .describe('The kind(s) of tool(s) being described.'),
 
-    // Not used in ATT&CK Tool but defined in STIX
-    kill_chain_phases: z
-        .array(killChainPhaseSchema)
-        .optional()
-        .describe('The list of kill chain phases for which this Tool can be used.'),
+        // Not used in ATT&CK Tool but defined in STIX
+        kill_chain_phases: z
+            .array(killChainPhaseSchema)
+            .optional()
+            .describe('The list of kill chain phases for which this Tool can be used.'),
 
-    // Not used in ATT&CK Tool but defined in STIX
-    tool_version: z
-        .string()
-        .optional()
-        .describe('The version identifier associated with the Tool'),
-})
+        // Not used in ATT&CK Tool but defined in STIX
+        tool_version: z
+            .string()
+            .optional()
+            .describe('The version identifier associated with the Tool'),
+    })
+    .strict()
     .superRefine((schema, ctx) => {
         //==============================================================================
         // Validate external references
         //==============================================================================
 
-        const {
-            external_references,
-        } = schema;
+        const { external_references } = schema;
         const attackIdEntry = external_references[0];
         if (!attackIdEntry.external_id) {
             ctx.addIssue({

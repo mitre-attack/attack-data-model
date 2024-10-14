@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Asset, assetSchema } from '../../src/schemas/sdo/asset.schema';
-import { StixCreatedTimestamp, StixModifiedTimestamp, xMitreIdentity } from '../../src/schemas/common';
+import { type Asset, assetSchema } from '../../src/schemas/sdo/asset.schema.js';
+import { type StixCreatedTimestamp, type StixModifiedTimestamp, xMitreIdentity } from '../../src/schemas/common/index.js';
 
 /**
  * Test suite for validating the Asset schema.
@@ -64,7 +64,7 @@ describe('AssetSchema', () => {
      */
     describe('Field-Specific Tests', () => {
         const testField = (
-            fieldName: string,
+            fieldName: keyof Asset,
             invalidValue: any,
             isRequired = true // Flag indicating whether the field is required
         ) => {

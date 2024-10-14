@@ -1,7 +1,7 @@
-import { Identity } from '../../schemas/sdo/identity.schema';
-import { AttackObjectImpl } from '../common/attack-object.impl';
+import type { Identity } from '../../schemas/sdo/identity.schema.js';
+import { AttackBaseImpl } from '../common/attack-object.impl.js';
 
-export class IdentityImpl extends AttackObjectImpl {
+export class IdentityImpl extends AttackBaseImpl {
 
     constructor(readonly identity: Identity) {
         super();

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { xMitreDomainsSchema } from '../../src/schemas/common';
+import { xMitreDomainsSchema } from '../../src/schemas/common/index.js';
 
 
 const ExampleObjectSchema = z.object({

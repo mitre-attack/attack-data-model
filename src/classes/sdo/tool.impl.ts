@@ -1,8 +1,8 @@
-import { Tool } from '../../schemas/sdo/tool.schema';
-import { AttackObjectImpl } from '../common/attack-object.impl';
-import { TechniqueImpl } from './technique.impl';
+import type { Tool } from '../../schemas/sdo/tool.schema.js';
+import { AttackBaseImpl } from '../common/attack-object.impl.js';
+import { TechniqueImpl } from './technique.impl.js';
 
-export class ToolImpl extends AttackObjectImpl implements Tool {
+export class ToolImpl extends AttackBaseImpl implements Tool {
 
     private _techniques: TechniqueImpl[] = [];
 

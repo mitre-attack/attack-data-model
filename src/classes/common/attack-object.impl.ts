@@ -1,29 +1,19 @@
-import { AssetImpl, CampaignImpl, CollectionImpl, DataComponentImpl, DataSourceImpl, GroupImpl, IdentityImpl, MalwareImpl, MatrixImpl, MitigationImpl, TacticImpl, TechniqueImpl, ToolImpl } from "../sdo";
-import { MarkingDefinitionImpl } from "../smo";
-import { RelationshipImpl } from "../sro";
+export class AttackBaseImpl {
 
-export type AnyAttackObject =
-    | MalwareImpl
-    | AssetImpl
-    | CampaignImpl
-    | CollectionImpl
-    | DataComponentImpl
-    | DataSourceImpl
-    | IdentityImpl
-    | MatrixImpl
-    | ToolImpl
-    | TacticImpl
-    | TechniqueImpl
-    | GroupImpl
-    | MitigationImpl
-    | RelationshipImpl
-    | MarkingDefinitionImpl;
+    private revokedBy?: any;
 
-export class AttackObjectImpl {
-
-    private revokedBy?: AnyAttackObject;
-
-    setRevokedBy(obj: AnyAttackObject): void {
+    /**
+     * Sets the object that revokes the current object.
+     * @param obj - The object that revokes this object.
+     */
+    setRevokedBy(obj: any): void {
         this.revokedBy = obj;
+    }
+
+    /**
+     * Returns the object that revoked this object.
+     */
+    getRevokedBy(): any {
+        return this.revokedBy;
     }
 }

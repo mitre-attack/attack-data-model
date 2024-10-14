@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
-import { stixIdentifierSchema } from './stix-identifier';
-import { stixTypeSchema } from "./stix-type";
-import { stixSpecVersionSchema } from './stix-spec-version';
-import { stixCreatedTimestampSchema, stixModifiedTimestampSchema } from './stix-timestamp';
-import { stixCreatedByRefSchema, externalReferenceSchema, granularMarkingSchema, extensionsSchema, externalReferencesSchema } from './misc';
-import { objectMarkingRefsSchema } from './common-properties';
+import { stixIdentifierSchema } from './stix-identifier.js';
+import { stixTypeSchema } from "./stix-type.js";
+import { stixSpecVersionSchema } from './stix-spec-version.js';
+import { stixCreatedTimestampSchema, stixModifiedTimestampSchema } from './stix-timestamp.js';
+import { stixCreatedByRefSchema, externalReferenceSchema, granularMarkingSchema, extensionsSchema, externalReferencesSchema } from './misc.js';
+import { objectMarkingRefsSchema } from './common-properties.js';
 
 
 const stixBaseObjectSchema = z

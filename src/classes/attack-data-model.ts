@@ -1,38 +1,37 @@
 // Import Types
-import { Asset } from "../schemas/sdo/asset.schema";
-import { Campaign } from "../schemas/sdo/campaign.schema";
-import { Collection } from "../schemas/sdo/collection.schema";
-import { DataComponent } from "../schemas/sdo/data-component.schema";
-import { DataSource } from "../schemas/sdo/data-source.schema";
-import { Group } from "../schemas/sdo/group.schema";
-import { Identity } from "../schemas/sdo/identity.schema";
-import { Malware } from "../schemas/sdo/malware.schema";
-import { Matrix } from "../schemas/sdo/matrix.schema";
-import { Mitigation } from "../schemas/sdo/mitigation.schema";
-import { Tactic } from "../schemas/sdo/tactic.schema";
-import { Technique } from "../schemas/sdo/technique.schema";
-import { Tool } from "../schemas/sdo/tool.schema";
-import { MarkingDefinition } from "../schemas/smo/marking-definition.schema";
-import { Relationship } from "../schemas/sro/relationship.schema";
-import { AttackObject } from '../schemas/sdo/stix-bundle.schema';
+import type { Asset } from "../schemas/sdo/asset.schema.js";
+import type { Campaign } from "../schemas/sdo/campaign.schema.js";
+import type { Collection } from "../schemas/sdo/collection.schema.js";
+import type { DataComponent } from "../schemas/sdo/data-component.schema.js";
+import type { DataSource } from "../schemas/sdo/data-source.schema.js";
+import type { Group } from "../schemas/sdo/group.schema.js";
+import type { Identity } from "../schemas/sdo/identity.schema.js";
+import type { Malware } from "../schemas/sdo/malware.schema.js";
+import type { Matrix } from "../schemas/sdo/matrix.schema.js";
+import type { Mitigation } from "../schemas/sdo/mitigation.schema.js";
+import type { Tactic } from "../schemas/sdo/tactic.schema.js";
+import type { Technique } from "../schemas/sdo/technique.schema.js";
+import type { Tool } from "../schemas/sdo/tool.schema.js";
+import type { MarkingDefinition } from "../schemas/smo/marking-definition.schema.js";
+import type { Relationship } from "../schemas/sro/relationship.schema.js";
+import type { AttackObject } from '../schemas/sdo/stix-bundle.schema.js';
 
 // Import ES6 Classes
-import { AnyAttackObject } from "./common/attack-object.impl";
-import { AssetImpl } from "./sdo/asset.impl";
-import { CampaignImpl } from "./sdo/campaign.impl";
-import { CollectionImpl } from "./sdo/collection.impl";
-import { DataComponentImpl } from "./sdo/data-component.impl";
-import { DataSourceImpl } from "./sdo/data-source.impl";
-import { GroupImpl } from "./sdo/group.impl";
-import { IdentityImpl } from "./sdo/identity.impl";
-import { MalwareImpl } from "./sdo/malware.impl";
-import { MatrixImpl } from "./sdo/matrix.impl";
-import { MitigationImpl } from "./sdo/mitigation.impl";
-import { TacticImpl } from "./sdo/tactic.impl";
-import { TechniqueImpl } from "./sdo/technique.impl";
-import { ToolImpl } from "./sdo/tool.impl";
-import { MarkingDefinitionImpl } from "./smo/marking-definition.impl";
-import { RelationshipImpl } from "./sro/relationship.impl";
+import { AssetImpl } from "./sdo/asset.impl.js";
+import { CampaignImpl } from "./sdo/campaign.impl.js";
+import { CollectionImpl } from "./sdo/collection.impl.js";
+import { DataComponentImpl } from "./sdo/data-component.impl.js";
+import { DataSourceImpl } from "./sdo/data-source.impl.js";
+import { GroupImpl } from "./sdo/group.impl.js";
+import { IdentityImpl } from "./sdo/identity.impl.js";
+import { MalwareImpl } from "./sdo/malware.impl.js";
+import { MatrixImpl } from "./sdo/matrix.impl.js";
+import { MitigationImpl } from "./sdo/mitigation.impl.js";
+import { TacticImpl } from "./sdo/tactic.impl.js";
+import { TechniqueImpl } from "./sdo/technique.impl.js";
+import { ToolImpl } from "./sdo/tool.impl.js";
+import { MarkingDefinitionImpl } from "./smo/marking-definition.impl.js";
+import { RelationshipImpl } from "./sro/relationship.impl.js";
 
 export class AttackDataModel {
 
@@ -258,3 +257,20 @@ export class AttackDataModel {
 
     // Other methods to query objects, get by ID, etc. (unchanged from previous version)
 }
+
+export type AnyAttackObject = MalwareImpl |
+    AssetImpl |
+    CampaignImpl |
+    CollectionImpl |
+    DataComponentImpl |
+    DataSourceImpl |
+    IdentityImpl |
+    MatrixImpl |
+    ToolImpl |
+    TacticImpl |
+    TechniqueImpl |
+    GroupImpl |
+    MitigationImpl |
+    RelationshipImpl |
+    MarkingDefinitionImpl;
+

@@ -1,11 +1,11 @@
-import { Group } from '../../schemas/sdo/group.schema';
-import { AttackObjectImpl } from '../common/attack-object.impl';
-import { CampaignImpl } from './campaign.impl';
-import { MalwareImpl } from './malware.impl';
-import { TechniqueImpl } from './technique.impl';
-import { ToolImpl } from './tool.impl';
+import type { Group } from '../../schemas/sdo/group.schema.js';
+import { AttackBaseImpl } from '../common/attack-object.impl.js';
+import { CampaignImpl } from './campaign.impl.js';
+import { MalwareImpl } from './malware.impl.js';
+import { TechniqueImpl } from './technique.impl.js';
+import { ToolImpl } from './tool.impl.js';
 
-export class GroupImpl extends AttackObjectImpl implements Group {
+export class GroupImpl extends AttackBaseImpl implements Group {
 
     private _techniques: TechniqueImpl[] = [];
     private _software: (MalwareImpl | ToolImpl)[] = [];

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { tacticSchema } from "../../src/schemas/sdo/tactic.schema";
+import { tacticSchema } from "../../src/schemas/sdo/tactic.schema.js";
 
 /****************************************************************************************************/
 // Example 1: Valid Tactic

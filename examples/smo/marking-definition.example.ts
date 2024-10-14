@@ -1,4 +1,4 @@
-import { markingDefinitionSchema } from "../../src/schemas/smo/marking-definition.schema";
+import { markingDefinitionSchema } from "../../src/schemas/smo/marking-definition.schema.js";
 import { z } from "zod";
 
 /** ************************************************************************************************* */

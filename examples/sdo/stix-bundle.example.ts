@@ -1,22 +1,22 @@
 import { z } from "zod";
-import { stixBundleSchema } from '../../src/schemas/sdo/stix-bundle.schema';
-import { StixCreatedTimestamp, StixModifiedTimestamp } from "../../src/schemas/common";
+import { stixBundleSchema } from '../../src/schemas/sdo/stix-bundle.schema.js';
+import type { StixCreatedTimestamp, StixModifiedTimestamp } from "../../src/schemas/common/index.js";
 import { v4 as uuidv4 } from 'uuid';
-import { identitySchema } from "../../src/schemas/sdo/identity.schema";
-import { assetSchema } from "../../src/schemas/sdo/asset.schema";
-import { campaignSchema } from "../../src/schemas/sdo/campaign.schema";
-import { malwareSchema } from "../../src/schemas/sdo/malware.schema";
-import { matrixSchema } from "../../src/schemas/sdo/matrix.schema";
-import { toolSchema } from "../../src/schemas/sdo/tool.schema";
-import { groupSchema } from "../../src/schemas/sdo/group.schema";
-import { mitigationSchema } from "../../src/schemas/sdo/mitigation.schema";
-import { dataComponentSchema } from "../../src/schemas/sdo/data-component.schema";
-import { dataSourceSchema } from "../../src/schemas/sdo/data-source.schema";
-import { tacticSchema } from "../../src/schemas/sdo/tactic.schema";
-import { techniqueSchema } from "../../src/schemas/sdo/technique.schema";
-import { collectionSchema } from "../../src/schemas/sdo/collection.schema";
-import { markingDefinitionSchema } from "../../src/schemas/smo/marking-definition.schema";
-import { relationshipSchema } from "../../src/schemas/sro/relationship.schema";
+import { identitySchema } from "../../src/schemas/sdo/identity.schema.js";
+import { assetSchema } from "../../src/schemas/sdo/asset.schema.js";
+import { campaignSchema } from "../../src/schemas/sdo/campaign.schema.js";
+import { malwareSchema } from "../../src/schemas/sdo/malware.schema.js";
+import { matrixSchema } from "../../src/schemas/sdo/matrix.schema.js";
+import { toolSchema } from "../../src/schemas/sdo/tool.schema.js";
+import { groupSchema } from "../../src/schemas/sdo/group.schema.js";
+import { mitigationSchema } from "../../src/schemas/sdo/mitigation.schema.js";
+import { dataComponentSchema } from "../../src/schemas/sdo/data-component.schema.js";
+import { dataSourceSchema } from "../../src/schemas/sdo/data-source.schema.js";
+import { tacticSchema } from "../../src/schemas/sdo/tactic.schema.js";
+import { techniqueSchema } from "../../src/schemas/sdo/technique.schema.js";
+import { collectionSchema } from "../../src/schemas/sdo/collection.schema.js";
+import { markingDefinitionSchema } from "../../src/schemas/smo/marking-definition.schema.js";
+import { relationshipSchema } from "../../src/schemas/sro/relationship.schema.js";
 
 const StixObjectSchema: {[key: string]: z.ZodSchema} = {
     "x-mitre-asset": assetSchema,

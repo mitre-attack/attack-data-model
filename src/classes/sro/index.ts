@@ -1,1 +1,1 @@
-export * from './relationship.impl'
+export * from './relationship.impl.js'

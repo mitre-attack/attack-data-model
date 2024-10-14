@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { toolSchema } from "../../src/schemas/sdo/tool.schema";
+import { toolSchema } from "../../src/schemas/sdo/tool.schema.js";
 
 /** ************************************************************************************************* */
 // Example 1: Valid Tool

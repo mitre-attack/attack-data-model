@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import { Tool, toolSchema } from "../../src/schemas/sdo/tool.schema";
-import { StixCreatedTimestamp, StixModifiedTimestamp, xMitreIdentity } from "../../src/schemas/common";
+import { type Tool, toolSchema } from "../../src/schemas/sdo/tool.schema.js";
+import { type StixCreatedTimestamp, type StixModifiedTimestamp, xMitreIdentity } from "../../src/schemas/common/index.js";
 
 /**
  * Test suite for validating the Tool schema.
@@ -79,7 +79,7 @@ describe("ToolSchema", () => {
      */
     describe("Field-Specific Tests", () => {
         const testField = (
-            fieldName: string,
+            fieldName: keyof Tool,
             invalidValue: any,
             isRequired = true // Flag indicating whether the field is required
         ) => {

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { attackBaseObjectSchema } from "../common/attack-base-object";
-import { stixTypeSchema, stixTimestampSchema, stixCreatedByRefSchema, descriptionSchema, xMitreDomainsSchema, createStixIdentifierSchema, aliasesSchema, externalReferencesSchema, xMitreModifiedByRefSchema, xMitreContributorsSchema, objectMarkingRefsSchema } from "../common";
+import { attackBaseObjectSchema } from "../common/attack-base-object.js";
+import { stixTypeSchema, stixTimestampSchema, stixCreatedByRefSchema, descriptionSchema, xMitreDomainsSchema, createStixIdentifierSchema, aliasesSchema, externalReferencesSchema, xMitreModifiedByRefSchema, xMitreContributorsSchema, objectMarkingRefsSchema } from "../common/index.js";
 
 import '../../errors';
 

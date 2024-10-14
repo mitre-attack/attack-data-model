@@ -1,1 +1,1 @@
-export * from './marking-definition.schema'
+export * from './marking-definition.schema.js'

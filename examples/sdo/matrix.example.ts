@@ -1,4 +1,4 @@
-import { matrixSchema } from "../../src/schemas/sdo/matrix.schema";
+import { matrixSchema } from "../../src/schemas/sdo/matrix.schema.js";
 import { z } from "zod";
 
 /** ************************************************************************************************* */

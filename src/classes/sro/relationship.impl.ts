@@ -1,7 +1,7 @@
-import { Relationship } from '../../schemas/sro/relationship.schema';
-import { AttackObjectImpl } from '../common/attack-object.impl';
+import type { Relationship } from '../../schemas/sro/relationship.schema.js';
+import { AttackBaseImpl } from '../common/attack-object.impl.js';
 
-export class RelationshipImpl extends AttackObjectImpl {
+export class RelationshipImpl extends AttackBaseImpl {
 
     constructor(readonly relationship: Relationship) {
         super();

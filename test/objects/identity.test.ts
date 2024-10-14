@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import { Identity, identitySchema } from "../../src/schemas/sdo/identity.schema";
-import { StixCreatedTimestamp, StixModifiedTimestamp } from "../../src/schemas/common";
+import { type Identity, identitySchema } from "../../src/schemas/sdo/identity.schema.js";
+import { type StixCreatedTimestamp, type StixModifiedTimestamp } from "../../src/schemas/common/index.js";
 
 describe("IdentitySchema", () => {
     let minimalIdentity: Identity;
@@ -42,7 +42,7 @@ describe("IdentitySchema", () => {
 
     describe("Field-Specific Tests", () => {
         const testField = (
-            fieldName: string,
+            fieldName: keyof Identity,
             invalidValue: any,
             isRequired = true // Flag indicating whether the field is required
         ) => {

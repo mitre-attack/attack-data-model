@@ -2,8 +2,8 @@ import {
   stixCreatedByRefSchema,
   stixCreatedTimestampSchema,
   stixModifiedTimestampSchema,
-} from "../../src/schemas/common";
-import { dataSourceSchema } from "../../src/schemas/sdo/data-source.schema";
+} from "../../src/schemas/common/index.js";
+import { dataSourceSchema } from "../../src/schemas/sdo/data-source.schema.js";
 import { z } from "zod";
 
 /** ************************************************************************************************* */

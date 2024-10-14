@@ -1,7 +1,7 @@
-import { MarkingDefinition } from '../../schemas/smo/marking-definition.schema';
-import { AttackObjectImpl } from '../common/attack-object.impl';
+import type { MarkingDefinition } from '../../schemas/smo/marking-definition.schema.js';
+import { AttackBaseImpl } from '../common/attack-object.impl.js';
 
-export class MarkingDefinitionImpl extends AttackObjectImpl {
+export class MarkingDefinitionImpl extends AttackBaseImpl {
 
     constructor(readonly markingDefinition: MarkingDefinition) {
         super();

@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { stixRelationshipObjectSchema } from '../common/stix-core';
-import { createStixIdentifierSchema, descriptionSchema, objectMarkingRefsSchema, stixIdentifierSchema, StixType, stixTypeSchema, xMitreAttackSpecVersionSchema, xMitreDeprecatedSchema, xMitreDomainsSchema, xMitreModifiedByRefSchema, xMitreVersionSchema } from '../common';
+import { stixRelationshipObjectSchema } from '../common/stix-core.js';
+import { createStixIdentifierSchema, descriptionSchema, objectMarkingRefsSchema, stixIdentifierSchema, type StixType, stixTypeSchema, xMitreAttackSpecVersionSchema, xMitreDeprecatedSchema, xMitreDomainsSchema, xMitreModifiedByRefSchema, xMitreVersionSchema } from '../common/index.js';
 
 // Initializes the custom ZodErrorMap
 import '../../errors';
@@ -196,9 +196,9 @@ export type RelationshipCombination = {
  * This includes every combination of source type, relationship type, and target type,
  * regardless of whether the combination is valid according to the STIX specification.
  */
-const allRelationships: RelationshipCombination[] = stixTypeSchema.options.flatMap(source =>
-	stixTypeSchema.options.flatMap(target =>
-		relationshipTypeSchema.options.map(relType => ({
+const allRelationships: RelationshipCombination[] = stixTypeSchema.options.flatMap((source: any) =>
+	stixTypeSchema.options.flatMap((target: any) =>
+		relationshipTypeSchema.options.map((relType: any) => ({
 			sourceType: source,
 			relationshipType: relType,
 			targetType: target

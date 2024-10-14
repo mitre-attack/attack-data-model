@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
-import { StixBundle, stixBundleSchema } from '../../src/schemas/sdo/stix-bundle.schema';
-import { StixCreatedTimestamp, StixModifiedTimestamp, xMitreIdentity } from '../../src/schemas/common';
-import { Collection } from '../../src/schemas/sdo/collection.schema';
-import { Technique } from '../../src/schemas/sdo/technique.schema';
+import { type StixBundle, stixBundleSchema } from '../../src/schemas/sdo/stix-bundle.schema.js';
+import { type StixCreatedTimestamp, type StixModifiedTimestamp, xMitreIdentity } from '../../src/schemas/common/index.js';
+import type { Collection } from '../../src/schemas/sdo/collection.schema.js';
+import type { Technique } from '../../src/schemas/sdo/technique.schema.js';
 import { z } from 'zod';
 
 /**
@@ -88,7 +88,7 @@ describe('StixBundleSchema', () => {
      */
     describe('Field-Specific Tests', () => {
         const testField = (
-            fieldName: string,
+            fieldName: keyof StixBundle,
             invalidValue: any,
             isRequired = true // Flag indicating whether the field is required
         ) => {

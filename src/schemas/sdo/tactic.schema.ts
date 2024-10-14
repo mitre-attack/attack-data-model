@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { attackBaseObjectSchema, createStixIdentifierSchema, descriptionSchema, externalReferenceSchema, xMitreDeprecatedSchema, xMitreModifiedByRefSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, xMitreDomainsSchema, externalReferencesSchema } from "../common";
-import { stixTypeSchema } from "../common/stix-type";
+import { attackBaseObjectSchema, createStixIdentifierSchema, descriptionSchema, externalReferenceSchema, xMitreDeprecatedSchema, xMitreModifiedByRefSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, xMitreDomainsSchema, externalReferencesSchema } from "../common/index.js";
+import { stixTypeSchema } from "../common/stix-type.js";
 
 // Initializes the custom ZodErrorMap
 import '../../errors'; 

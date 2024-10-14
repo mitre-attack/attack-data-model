@@ -1,18 +1,18 @@
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import {
-    Relationship, relationshipSchema,
-    RelationshipType, relationshipTypeSchema,
+    type Relationship, relationshipSchema,
+    type RelationshipType, relationshipTypeSchema,
     validRelationshipObjectTypes,
     invalidRelationships,
     isValidRelationship
-} from '../../src/schemas/sro/relationship.schema';
+} from '../../src/schemas/sro/relationship.schema.js';
 import {
-    Description, ExternalReferences, StixCreatedTimestamp, StixIdentifier,
-    StixModifiedTimestamp, StixSpecVersion, StixType,
+    type Description, type ExternalReferences, type StixCreatedTimestamp, type StixIdentifier,
+    type StixModifiedTimestamp, type StixSpecVersion, type StixType,
     stixTypeSchema,
     xMitreIdentity
-} from '../../src/schemas/common';
+} from '../../src/schemas/common/index.js';
 
 
 describe('RelationshipSchema', () => {

@@ -1,7 +1,7 @@
-import { Asset } from '../../schemas/sdo/asset.schema';
-import { AttackObjectImpl } from '../common/attack-object.impl';
+import type { Asset } from '../../schemas/sdo/asset.schema.js';
+import { AttackBaseImpl } from '../common/attack-object.impl.js';
 
-export class AssetImpl extends AttackObjectImpl {
+export class AssetImpl extends AttackBaseImpl {
 
     constructor(readonly asset: Asset) {
         super();

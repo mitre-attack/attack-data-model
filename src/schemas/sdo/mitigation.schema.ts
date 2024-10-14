@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { attackBaseObjectSchema } from "../common/attack-base-object";
-import { stixTypeSchema } from "../common/stix-type";
-import { createStixIdentifierSchema, externalReferencesSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, xMitreDomainsSchema, xMitreModifiedByRefSchema } from "../common";
+import { attackBaseObjectSchema } from "../common/attack-base-object.js";
+import { stixTypeSchema } from "../common/stix-type.js";
+import { createStixIdentifierSchema, externalReferencesSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, xMitreDomainsSchema, xMitreModifiedByRefSchema } from "../common/index.js";
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module

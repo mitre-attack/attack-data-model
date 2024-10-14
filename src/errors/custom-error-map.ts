@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { StixType } from '../schemas/common/stix-type';
+import type { StixType } from '../schemas/common/stix-type.js';
 
 
 /**

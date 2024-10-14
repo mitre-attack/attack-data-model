@@ -1,14 +1,14 @@
 import { v4 as uuidv4 } from "uuid";
 import {
-  Mitigation,
+  type Mitigation,
   mitigationSchema,
-} from "../../src/schemas/sdo/mitigation.schema";
+} from "../../src/schemas/sdo/mitigation.schema.js";
 import {
-  StixCreatedTimestamp,
-  StixModifiedTimestamp,
-  ExternalReferences,
+  type StixCreatedTimestamp,
+  type StixModifiedTimestamp,
+  type ExternalReferences,
   xMitreIdentity,
-} from "../../src/schemas/common";
+} from "../../src/schemas/common/index.js";
 
 describe("MitigationSchema", () => {
   let minimalMitigation: Mitigation;
@@ -66,7 +66,7 @@ describe("MitigationSchema", () => {
 
   describe("Field-Specific Tests", () => {
     const testField = (
-      fieldName: string,
+      fieldName: keyof Mitigation,
       invalidValue: any,
       isRequired = true
     ) => {

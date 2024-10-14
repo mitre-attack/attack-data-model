@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { stixIdentifierSchema, createStixIdentifierSchema } from './stix-identifier';
-import { stixTypeSchema } from "./stix-type";
+import { stixIdentifierSchema, createStixIdentifierSchema } from './stix-identifier.js';
+import { stixTypeSchema } from "./stix-type.js";
 
 //==============================================================================
 // ExternalReference schema

@@ -1,12 +1,12 @@
-import { Technique } from '../../schemas/sdo/technique.schema';
-import { TacticImpl } from './tactic.impl';
-import { MitigationImpl } from './mitigation.impl';
-import { DataSourceImpl } from './data-source.impl';
-import { AssetImpl } from './asset.impl';
-import { AttackObjectImpl } from '../common/attack-object.impl';
-import { DataComponentImpl } from './data-component.impl';
+import type { Technique } from '../../schemas/sdo/technique.schema.js';
+import { TacticImpl } from './tactic.impl.js';
+import { MitigationImpl } from './mitigation.impl.js';
+import { DataSourceImpl } from './data-source.impl.js';
+import { AssetImpl } from './asset.impl.js';
+import { AttackBaseImpl } from '../common/attack-object.impl.js';
+import { DataComponentImpl } from './data-component.impl.js';
 
-export class TechniqueImpl extends AttackObjectImpl {
+export class TechniqueImpl extends AttackBaseImpl {
 
     private _subTechniques: TechniqueImpl[] = [];
     private _tactics: TacticImpl[] = [];

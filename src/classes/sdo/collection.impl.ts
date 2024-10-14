@@ -1,7 +1,7 @@
-import { Collection } from '../../schemas/sdo/collection.schema';
-import { AttackObjectImpl } from '../common/attack-object.impl';
+import type { Collection } from '../../schemas/sdo/collection.schema.js';
+import { AttackBaseImpl } from '../common/attack-object.impl.js';
 
-export class CollectionImpl extends AttackObjectImpl {
+export class CollectionImpl extends AttackBaseImpl {
 
     constructor(readonly collection: Collection) {
         super();

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { attackBaseObjectSchema } from "../common/attack-base-object";
-import { stixTypeSchema } from "../common/stix-type";
+import { attackBaseObjectSchema } from "../common/attack-base-object.js";
+import { stixTypeSchema } from "../common/stix-type.js";
 import {
   aliasesSchema,
   createStixIdentifierSchema,
@@ -8,11 +8,11 @@ import {
   stixTimestampSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
-} from "../common";
+} from "../common/index.js";
 import {
   attackMotivationOpenVocabulary,
   attackResourceLevelOpenVocabulary,
-} from "../common/open-vocabulary";
+} from "../common/open-vocabulary.js";
 
 // Group Schema
 export const groupSchema = attackBaseObjectSchema

@@ -1,14 +1,14 @@
 import { v4 as uuidv4 } from "uuid";
 import {
-    DataSource,
+    type DataSource,
     dataSourceSchema,
-} from "../../src/schemas/sdo/data-source.schema";
+} from "../../src/schemas/sdo/data-source.schema.js";
 import {
-    StixCreatedTimestamp,
-    StixModifiedTimestamp,
-    ExternalReferences,
+    type StixCreatedTimestamp,
+    type StixModifiedTimestamp,
+    type ExternalReferences,
     xMitreIdentity,
-} from "../../src/schemas/common";
+} from "../../src/schemas/common/index.js";
 
 describe("dataSourceSchema", () => {
     let minimalDataSource: DataSource;
@@ -59,7 +59,7 @@ describe("dataSourceSchema", () => {
 
     describe("Field-Specific Tests", () => {
         const testField = (
-            fieldName: string,
+            fieldName: keyof DataSource,
             invalidValue: any,
             isRequired = true
         ) => {

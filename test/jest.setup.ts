@@ -1,4 +1,4 @@
-import { getAttackObjects } from './utils/attack-data';
+import { getAttackObjects } from './utils/attack-data.js';
 
 declare global {
     var attackData: Awaited<ReturnType<typeof getAttackObjects>>;

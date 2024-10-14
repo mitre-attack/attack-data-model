@@ -1,5 +1,5 @@
-import { StixCreatedTimestamp, StixModifiedTimestamp, StixSpecVersion } from "../../src/schemas/common";
-import { groupSchema } from "../../src/schemas/sdo/group.schema";
+import type { StixCreatedTimestamp, StixModifiedTimestamp } from "../../src/schemas/common/index.js";
+import { groupSchema } from "../../src/schemas/sdo/group.schema.js";
 import { z } from "zod";
 import { v4 as uuidv4 } from 'uuid';
 

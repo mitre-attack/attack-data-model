@@ -1,10 +1,10 @@
-import { Relationship } from '../schemas/sro/relationship.schema';
-import { AttackObject } from '../schemas/sdo/stix-bundle.schema';
-import { Technique } from '../schemas/sdo/technique.schema';
-import { TacticImpl } from './sdo/tactic.impl';
-import { MitigationImpl } from './sdo/mitigation.impl';
-import { DataSourceImpl } from './sdo/data-source.impl';
-import { XMitrePlatforms } from '../schemas/common';
+import type { Relationship } from '../schemas/sro/relationship.schema.js';
+import type { AttackObject } from '../schemas/sdo/stix-bundle.schema.js';
+import type { Technique } from '../schemas/sdo/technique.schema.js';
+import { TacticImpl } from './sdo/tactic.impl.js';
+import { MitigationImpl } from './sdo/mitigation.impl.js';
+import { DataSourceImpl } from './sdo/data-source.impl.js';
+import type { XMitrePlatforms } from '../schemas/common/index.js';
 
 export function getSubTechniques(technique: Technique, relationships: Relationship[], attackObjects: AttackObject[]): Technique[] {
     return relationships

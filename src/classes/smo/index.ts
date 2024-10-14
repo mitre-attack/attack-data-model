@@ -1,1 +1,1 @@
-export * from './marking-definition.impl'
+export * from './marking-definition.impl.js'

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { stixTypeSchema, StixType } from './stix-type';
+import { stixTypeSchema, type StixType } from './stix-type.js';
 
 // Define the STIX Identifier type
 type StixIdentifier = `${StixType}--${string}`;

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { StixIdentifier, stixIdentifierSchema } from './stix-identifier';
+import { type StixIdentifier, stixIdentifierSchema } from './stix-identifier.js';
 
 
 /////////////////////////////////////
