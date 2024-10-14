@@ -1,13 +1,14 @@
+import { describe, beforeEach, it, expect } from 'vitest';
 import { v4 as uuidv4 } from "uuid";
 import {
     type DataComponent,
     dataComponentSchema,
-} from "../../src/schemas/sdo/data-component.schema.js";
+} from "../../src/schemas/sdo/data-component.schema";
 import {
     type StixCreatedTimestamp,
     type StixModifiedTimestamp,
     xMitreIdentity,
-} from "../../src/schemas/common/index.js";
+} from "../../src/schemas/common/index";
 
 describe("dataComponentSchema", () => {
     let minimalDataComponent: DataComponent;

@@ -1,6 +1,7 @@
+import { describe, beforeEach, it, expect } from 'vitest';
 import { v4 as uuidv4 } from "uuid";
-import { markingDefinitionSchema } from "../../src/schemas/smo/marking-definition.schema.js";
-import { type StixCreatedTimestamp } from "../../src/schemas/common/index.js";
+import { markingDefinitionSchema } from "../../src/schemas/smo/marking-definition.schema";
+import { type StixCreatedTimestamp } from "../../src/schemas/common/index";
 
 /**
  * Test suite for validating MarkingDefinition schema with "statement" type.

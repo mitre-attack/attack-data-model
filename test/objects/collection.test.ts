@@ -1,11 +1,12 @@
+import { describe, beforeEach, it, expect } from 'vitest';
 import type {
     StixCreatedTimestamp,
     StixModifiedTimestamp,
-} from "../../src/schemas/common/index.js";
+} from "../../src/schemas/common/index";
 import {
     type Collection,
     collectionSchema
-} from "../../src/schemas/sdo/collection.schema.js";
+} from "../../src/schemas/sdo/collection.schema";
 import { v4 as uuidv4 } from "uuid";
 
 /**

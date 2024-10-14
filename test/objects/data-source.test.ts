@@ -1,14 +1,15 @@
+import { describe, beforeEach, it, expect } from 'vitest';
 import { v4 as uuidv4 } from "uuid";
 import {
     type DataSource,
     dataSourceSchema,
-} from "../../src/schemas/sdo/data-source.schema.js";
+} from "../../src/schemas/sdo/data-source.schema";
 import {
     type StixCreatedTimestamp,
     type StixModifiedTimestamp,
     type ExternalReferences,
     xMitreIdentity,
-} from "../../src/schemas/common/index.js";
+} from "../../src/schemas/common/index";
 
 describe("dataSourceSchema", () => {
     let minimalDataSource: DataSource;

@@ -1,14 +1,15 @@
+import { describe, beforeEach, it, expect } from 'vitest';
 import { v4 as uuidv4 } from "uuid";
 import {
   type Mitigation,
   mitigationSchema,
-} from "../../src/schemas/sdo/mitigation.schema.js";
+} from "../../src/schemas/sdo/mitigation.schema";
 import {
   type StixCreatedTimestamp,
   type StixModifiedTimestamp,
   type ExternalReferences,
   xMitreIdentity,
-} from "../../src/schemas/common/index.js";
+} from "../../src/schemas/common/index";
 
 describe("MitigationSchema", () => {
   let minimalMitigation: Mitigation;

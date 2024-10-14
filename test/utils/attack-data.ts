@@ -2,13 +2,17 @@ import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
+import { fileURLToPath } from 'url';
 import { type AttackObject, type StixBundle } from '../../src/schemas/sdo/stix-bundle.schema.js';
 import { type Relationship } from '../../src/schemas/sro/relationship.schema.js';
 import { type MarkingDefinition } from '../../src/schemas/smo/marking-definition.schema.js';
 import { attackDomainSchema, type AttackDomain } from '../../src/schemas/common/common-properties.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
-const CACHE_DIR = path.resolve(__dirname, '../.cached_stix_data');
+const CACHE_DIR = path.resolve(__dirname, '../../.cached_stix_data');
 
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);

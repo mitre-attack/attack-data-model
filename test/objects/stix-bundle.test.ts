@@ -1,8 +1,9 @@
+import { describe, beforeEach, it, expect } from 'vitest';
 import { v4 as uuidv4 } from 'uuid';
-import { type StixBundle, stixBundleSchema } from '../../src/schemas/sdo/stix-bundle.schema.js';
-import { type StixCreatedTimestamp, type StixModifiedTimestamp, xMitreIdentity } from '../../src/schemas/common/index.js';
-import type { Collection } from '../../src/schemas/sdo/collection.schema.js';
-import type { Technique } from '../../src/schemas/sdo/technique.schema.js';
+import { type StixBundle, stixBundleSchema } from '../../src/schemas/sdo/stix-bundle.schema';
+import { type StixCreatedTimestamp, type StixModifiedTimestamp, xMitreIdentity } from '../../src/schemas/common/index';
+import type { Collection } from '../../src/schemas/sdo/collection.schema';
+import type { Technique } from '../../src/schemas/sdo/technique.schema';
 import { z } from 'zod';
 
 /**
@@ -177,15 +178,8 @@ describe('StixBundleSchema', () => {
         });
     });
 
-    /**
-     * Edge cases and special scenario tests
-     */
-    describe('Edge Cases and Special Scenarios', () => {
-        // Add additional edge case tests as needed
-    });
-
     it('should validate existing ATT&CK bundles and report errors', () => {
-        const bundles = global.attackData.bundles as StixBundle[];
+        const bundles = globalThis.attackData.bundles as StixBundle[];
         const bundlesWithErrors: { bundleIndex: number; errors: string[] }[] = [];
 
         bundles.forEach((bundle, bundleIndex) => {

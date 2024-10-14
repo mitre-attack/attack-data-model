@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
-import { type Asset, assetSchema } from '../../src/schemas/sdo/asset.schema.js';
-import { type StixCreatedTimestamp, type StixModifiedTimestamp, xMitreIdentity } from '../../src/schemas/common/index.js';
+import { describe, beforeEach, it, expect } from 'vitest';
+import { type Asset, assetSchema } from '../../src/schemas/sdo/asset.schema';
+import { type StixCreatedTimestamp, type StixModifiedTimestamp, xMitreIdentity } from '../../src/schemas/common/index';
 
 /**
  * Test suite for validating the Asset schema.

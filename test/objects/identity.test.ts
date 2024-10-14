@@ -1,6 +1,7 @@
+import { describe, beforeEach, it, expect } from 'vitest';
 import { v4 as uuidv4 } from "uuid";
-import { type Identity, identitySchema } from "../../src/schemas/sdo/identity.schema.js";
-import { type StixCreatedTimestamp, type StixModifiedTimestamp } from "../../src/schemas/common/index.js";
+import { type Identity, identitySchema } from "../../src/schemas/sdo/identity.schema";
+import { type StixCreatedTimestamp, type StixModifiedTimestamp } from "../../src/schemas/common/index";
 
 describe("IdentitySchema", () => {
     let minimalIdentity: Identity;

@@ -1,9 +1,10 @@
+import { describe, beforeEach, it, expect } from 'vitest';
 import {
   type Description,
   type StixCreatedTimestamp,
   type StixModifiedTimestamp,
-} from "../../src/schemas/common/index.js";
-import { type Matrix, matrixSchema } from "../../src/schemas/sdo/matrix.schema.js";
+} from "../../src/schemas/common/index";
+import { type Matrix, matrixSchema } from "../../src/schemas/sdo/matrix.schema";
 import { v4 as uuidv4 } from "uuid";
 
 /**

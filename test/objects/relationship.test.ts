@@ -1,3 +1,4 @@
+import { describe, beforeEach, it, expect } from 'vitest';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -6,13 +7,13 @@ import {
     validRelationshipObjectTypes,
     invalidRelationships,
     isValidRelationship
-} from '../../src/schemas/sro/relationship.schema.js';
+} from '../../src/schemas/sro/relationship.schema';
 import {
     type Description, type ExternalReferences, type StixCreatedTimestamp, type StixIdentifier,
     type StixModifiedTimestamp, type StixSpecVersion, type StixType,
     stixTypeSchema,
     xMitreIdentity
-} from '../../src/schemas/common/index.js';
+} from '../../src/schemas/common/index';
 
 
 describe('RelationshipSchema', () => {

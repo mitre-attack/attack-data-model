@@ -1,6 +1,7 @@
+import { describe, beforeEach, it, expect } from 'vitest';
 import { v4 as uuidv4 } from 'uuid';
-import { type Technique, techniqueSchema } from '../../src/schemas/sdo/technique.schema.js';
-import { type StixCreatedTimestamp, type StixModifiedTimestamp, xMitreIdentity } from '../../src/schemas/common/index.js';
+import { type Technique, techniqueSchema } from '../../src/schemas/sdo/technique.schema';
+import { type StixCreatedTimestamp, type StixModifiedTimestamp, xMitreIdentity } from '../../src/schemas/common/index';
 
 /**
  * Test suite for validating the Technique schema.
