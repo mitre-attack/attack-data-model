@@ -1,0 +1,5 @@
+# Exclude tests and examples from the package
+test/
+examples/
+docs/
+notebooks/
