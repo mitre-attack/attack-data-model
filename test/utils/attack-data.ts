@@ -42,27 +42,34 @@ async function fetchAttackData(domain: AttackDomain, version?: string): Promise<
  * @returns A Promise that resolves to a StixBundle.
  */
 async function getCachedOrFetchAttackData(domain: AttackDomain, version?: string): Promise<StixBundle> {
-    // Create a file path for the cached data
     const fileName = version ? `${domain}-${version}.json` : `${domain}.json`;
     const filePath = path.join(CACHE_DIR, fileName);
 
-    // Check if the file already exists locally
-    if (await fileExists(filePath)) {
-        // If file exists, read it from disk
+    try {
+        if (await fileExists(filePath)) {
         const data = await readFile(filePath, 'utf8');
-        return JSON.parse(data) as StixBundle;
-    } else {
-        // If file does not exist, fetch the data from the remote server
+          console.log(`Successfully read cached file: ${filePath}`);
+          try {
+            return JSON.parse(data) as StixBundle;
+        } catch (parseError) {
+            console.error(`Error parsing JSON from cached file: ${filePath}`, parseError);
+            throw parseError;
+        }
+      } else {
+          console.log(`Fetching data for ${domain} from remote server`);
         const stixData = await fetchAttackData(domain, version);
 
-        // Ensure the cache directory exists
         if (!await fileExists(CACHE_DIR)) {
-            fs.mkdirSync(CACHE_DIR, { recursive: true });
+            await fs.promises.mkdir(CACHE_DIR, { recursive: true });
         }
 
-        // Cache the fetched data locally
         await writeFile(filePath, JSON.stringify(stixData, null, 2), 'utf8');
+          console.log(`Successfully cached data for ${domain} at ${filePath}`);
         return stixData;
+        }
+    } catch (error) {
+        console.error(`Error in getCachedOrFetchAttackData for ${domain}:`, error);
+        throw error;
     }
 }
 

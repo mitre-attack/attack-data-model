@@ -22,6 +22,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Clear cache
+        run: rm -rf .cached_stix_data
+  
       - name: Run tests
         run: npm test
 
