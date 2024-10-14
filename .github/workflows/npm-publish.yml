@@ -1,37 +1,24 @@
-name: Publish to GitHub Packages
-
+name: Publish package to GitHub Packages
 on:
   push:
     branches:
       - main
-
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
+      packages: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '22.x'
           registry-url: 'https://npm.pkg.github.com'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Clear cache
-        run: rm -rf .cached_stix_data
-  
-      - name: Run tests
-        run: npm test
-
-      - name: Build the package
-        run: npm ci
-
-      - name: Publish to GitHub Packages
-        run: npm publish --provenance --access public
+          scope: '@mitre-attack'
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
