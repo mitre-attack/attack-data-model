@@ -1,3 +1,9 @@
+# TypeScript artifacts
+*.d.ts
+*.ts.map
+*.js
+*.js.map
+
 # Files tagged with .ignore
 *.ignore
 
