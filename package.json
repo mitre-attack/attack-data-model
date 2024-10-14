@@ -2,7 +2,7 @@
   "name": "@mitre-attack/attack-data-model",
   "version": "1.0.1-rc.0",
   "description": "A TypeScript API for the MITRE ATT&CK data model",
-  "license": "APACHE 2.0",
+  "license": "APACHE-2.0",
   "private": false,
   "keywords": [
     "mitre, attack, typescript, api, adm, attack-data-model, cti, "
