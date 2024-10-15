@@ -1,4 +1,4 @@
-import { attackDomainSchema, type AttackDomain } from "../schemas/common/common-properties.js";
+import { attackDomainSchema, type AttackDomain } from "../index.js";
 import { fetchAttackVersions } from "./fetch-attack-versions.js";
 
 export type ParsingMode = 'strict' | 'relaxed';
@@ -29,9 +29,9 @@ export type DataSourceOptions =
 /**
  * Represents a data source registration with validation logic.
  */
-export class DataSource {
+export class DataSourceRegistration {
     /**
-     * Creates a new DataSource instance.
+     * Creates a new DataSourceRegistration instance.
      * @param options - The data source options to register.
      */
     constructor(public readonly options: DataSourceOptions) {

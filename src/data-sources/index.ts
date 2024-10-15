@@ -1,1 +1,1 @@
-export * from './data-source.js'
+export * from './data-source-registration.js'

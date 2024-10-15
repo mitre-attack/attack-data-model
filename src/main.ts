@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import { type StixBundle, type AttackObject, baseStixBundleSchema } from './schemas/sdo/stix-bundle.schema.js';
 import { techniqueSchema, tacticSchema, matrixSchema, mitigationSchema, relationshipSchema, dataSourceSchema, dataComponentSchema, groupSchema, malwareSchema, toolSchema, markingDefinitionSchema, identitySchema, collectionSchema, campaignSchema, assetSchema } from './schemas/index.js';
-import { DataSource, type ParsingMode } from './data-sources/data-source.js';
+import { DataSourceRegistration, type ParsingMode } from './data-sources/data-source-registration.js';
 import { AttackDataModel } from './classes/attack-data-model.js';
 
 // Initializes the custom ZodErrorMap
@@ -28,10 +28,10 @@ const dataSources: DataSourceMap = {};
  * Registers a new data source by fetching and caching ATT&CK data based on the provided options.
  * Generates a unique ID for each registered data source.
  * 
- * @param registration - A DataSource object containing the source, domain, version, etc.
+ * @param registration - A DataSourceRegistration object containing the source, domain, version, etc.
  * @returns The unique ID of the registered data source.
  */
-export async function registerDataSource(registration: DataSource): Promise<string> {
+export async function registerDataSource(registration: DataSourceRegistration): Promise<string> {
     const { source, parsingMode = 'strict' } = registration.options;
 
     let rawData: StixBundle;
