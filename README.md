@@ -27,6 +27,34 @@ To install ADM in your project, run:
 npm install attack-data-model
 ```
 
+1. Set up a scoped registry for GitHub packages:
+
+```
+npm config set @mitre-attack:registry https://npm.pkg.github.com
+```
+
+2. Now, when you run the install command, npm will use the GitHub registry for `@mitre-attack` scoped packages and the default npmjs.org registry for other packages:
+
+```
+npm install @mitre-attack/attack-data-model@1.0.0-rc.0
+```
+
+This setup should allow npm to resolve `@mitre-attack/attack-data-model` from the GitHub Package Registry while fetching other dependencies like `axios` from the default npmjs.org registry.
+
+If you still encounter issues, you might need to explicitly add the npmjs.org registry for non-scoped packages:
+
+```
+npm config set registry https://registry.npmjs.org/
+```
+
+These configurations will be saved in your npm config file (usually located at `~/.npmrc`), so you only need to set them once.
+
+If you want to verify your current configuration, you can use:
+
+```
+npm config list
+```
+
 #### Example Usage
 
 Here’s an example script that demonstrates how to use the ADM library to load ATT&CK data from the official MITRE ATT&CK GitHub repository:
