@@ -33,29 +33,37 @@ Here’s an example script that demonstrates how to use the ADM library to load 
 
 ```ts
 // test.ts
-import { registerDataSource, load, DataRegistration } from '@mitre-attack/attack-data-model';
+import { registerDataSource, loadDataModel, DataSource } from '@mitre-attack/attack-data-model';
 
 (async () => {
-    const options = new DataRegistration({
-        source: 'attack',
+    
+    // Instantiating a DataSource object will validate that the data source is accessible and readable
+    const dataSource = new DataSource({
+        source: 'attack', // Built-in index to retrieve ATT&CK content from the official MITRE ATT&CK STIX 2.1 GitHub repository
         domain: 'enterprise-attack',
-        version: '15.1',
-        parsingMode: 'relaxed'
+        version: '15.1', // Omitting 'version' will default to the latest version available in the repository
+        parsingMode: 'relaxed' // 'strict' or 'relaxed' - 'relaxed' mode will attempt to parse and serialize data even if it contains errors or warnings
     });
 
     try {
         // Register the data source and retrieve the unique ID
-        const uuid = await registerDataSource(options);
+        const uuid = await registerDataSource(dataSource);
         if (uuid) {
             // Load the dataset using the unique ID
-            const attackEnterpriseLatest = load(uuid);
+            const attackEnterpriseLatest = loadDataModel(uuid);
 
-            // Access techniques and related objects
+            // Access ATT&CK objects by type using object properties
             const techniques = attackEnterpriseLatest.techniques;
-            console.log(techniques[0]);
+            const tactics = attackEnterpriseLatest.tactics;
 
-            const tactics = attackEnterpriseLatest?.tactics;
-            // console.log(tactics[0]);
+            const technique = techniques[0];
+
+            // Type hinting is supported for all object properties
+            if (technique.x_mitre_is_subtechnique) {
+                
+                // Access related objects with helpful getter methods
+                console.log(technique.getParentTechnique());
+            }
         }
     } catch (error) {
         console.error(error);
