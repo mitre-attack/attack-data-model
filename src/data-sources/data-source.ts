@@ -29,9 +29,9 @@ export type DataSourceOptions =
 /**
  * Represents a data source registration with validation logic.
  */
-export class DataRegistration {
+export class DataSource {
     /**
-     * Creates a new DataRegistration instance.
+     * Creates a new DataSource instance.
      * @param options - The data source options to register.
      */
     constructor(public readonly options: DataSourceOptions) {

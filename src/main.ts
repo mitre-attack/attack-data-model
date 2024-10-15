@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import { type StixBundle, type AttackObject, baseStixBundleSchema } from './schemas/sdo/stix-bundle.schema.js';
 import { techniqueSchema, tacticSchema, matrixSchema, mitigationSchema, relationshipSchema, dataSourceSchema, dataComponentSchema, groupSchema, malwareSchema, toolSchema, markingDefinitionSchema, identitySchema, collectionSchema, campaignSchema, assetSchema } from './schemas/index.js';
-import { DataRegistration, type ParsingMode } from './data-sources/data-registration.js';
+import { DataSource, type ParsingMode } from './data-sources/data-source.js';
 import { AttackDataModel } from './classes/attack-data-model.js';
 
 // Initializes the custom ZodErrorMap
@@ -28,10 +28,10 @@ const dataSources: DataSourceMap = {};
  * Registers a new data source by fetching and caching ATT&CK data based on the provided options.
  * Generates a unique ID for each registered data source.
  * 
- * @param registration - A DataRegistration object containing the source, domain, version, etc.
+ * @param registration - A DataSource object containing the source, domain, version, etc.
  * @returns The unique ID of the registered data source.
  */
-export async function registerDataSource(registration: DataRegistration): Promise<string> {
+export async function registerDataSource(registration: DataSource): Promise<string> {
     const { source, parsingMode = 'strict' } = registration.options;
 
     let rawData: StixBundle;
@@ -267,12 +267,12 @@ function parseStixBundle(rawData: any, parsingMode: ParsingMode): AttackObject[]
 
 
 /**
- * Returns the registered data source by its unique ID.
+ * Returns the data model of the registered data source, given the data source's unique ID.
  * 
- * @param id - The unique ID of the source to retrieve.
+ * @param id - The unique ID of the data model to retrieve.
  * @returns The corresponding AttackDataModel instance.
  */
-export function load(id: string): AttackDataModel {
+export function loadDataModel(id: string): AttackDataModel {
     const dataSource = dataSources[id];
     if (!dataSource) {
         throw new Error(`Data source with ID ${id} not found.`);
