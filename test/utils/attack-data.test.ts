@@ -1,3 +1,5 @@
+import { describe, it, expect } from 'vitest';
+
 describe('Global Tests', () => {
     describe('ATT&CK Testing Data', () => {
         it('should have loaded ATT&CK data', () => {
