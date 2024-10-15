@@ -54,12 +54,27 @@ Add any other context or screenshots about the feature request here.
 
 When submitting a pull request:
 
-1. Fork the repository and create your branch from `develop`.
+1. Fork the repository and create your branch from `main`.
 2. Ensure your code adheres to the existing style of the project to maintain consistency.
 3. Include comments in your code where necessary.
-4. Update the `README.md` with details of changes to the interface, if applicable.
-5. Increase the version numbers in any examples files and the `README.md` to the new version that this Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
+4. Update the README.md with details of changes to the interface, if applicable.
+5. Increase the version numbers in any examples files and the README.md to the new version that this Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
 6. Include a description of your changes and why they're necessary.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For version bumps, use the following npm commands:
+
+### For pre-release versions (e.g., 1.0.0-rc.0):
+- To increment to the next pre-release (e.g., 1.0.0-rc.1): `npm version prerelease`
+- To bump to the release version (e.g., 1.0.0): `npm version minor` (or `npm version major` if it's a major release)
+
+### For release versions (e.g., 1.0.0):
+- To bump the patch version (e.g., 1.0.0 to 1.0.1): `npm version patch`
+- To bump the minor version (e.g., 1.0.0 to 1.1.0): `npm version minor`
+- To bump the major version (e.g., 1.0.0 to 2.0.0): `npm version major`
+
+Please ensure you update the version number appropriately with your changes.
 
 ## Questions?
 
