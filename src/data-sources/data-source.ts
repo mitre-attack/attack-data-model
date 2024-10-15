@@ -1,4 +1,4 @@
-import { attackDomainSchema, type AttackDomain } from "../schemas/index.js";
+import { attackDomainSchema, type AttackDomain } from "../schemas/common/common-properties.js";
 import { fetchAttackVersions } from "./fetch-attack-versions.js";
 
 export type ParsingMode = 'strict' | 'relaxed';
