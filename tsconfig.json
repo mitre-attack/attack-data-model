@@ -1,29 +1,37 @@
-{
+{ 
+  // These settings were informed by the TypeScript documentation for writing TypeScript libraries:
+  // https://www.typescriptlang.org/docs/handbook/modules/guides/choosing-compiler-options.html#im-writing-a-library
   "compilerOptions": {
+    // Uses Node.js 16+ module resolution strategy
     "module": "node16",
+    // Targets ECMAScript 2020 features, ensuring compatibility with older environments
     "target": "es2020", // set to the *lowest* target you support
+    // Enables all strict type checking options for better code quality
     "strict": true,
+    // Ensures that import/export syntax is treated verbatim, preventing automatic type-only imports
     "verbatimModuleSyntax": true,
-    /**
-     * This tells TypeScript to emit an .d.ts definitions file along with your compiled JavaScript, which is what TypeScript will use for type checking. 
-     * Note that at this point, when you run the TypeScript compiler, it will complain if you’re using a private type (i.e. not export-ed). 
-     * This is because your types that are part of any public facing API (and that aren’t inline types) have to be exported so that users of your library can get type checking goodness. 
-     * They don’t need to be in a separate file or anything, they just need that export keyword in front of them.
-     */
+    // Generates corresponding .d.ts files for TypeScript definitions
     "declaration": true,
+    // Generates source map files for debugging
     "sourceMap": true,
+    // Generates source maps for declaration files, useful for debugging
     "declarationMap": true,
+    // Specifies the output directory for compiled files
     "outDir": "dist",
+    // Specifies the root directory of input files
     "rootDir": "src",
+    // Configures module resolution paths, allowing "@/" to resolve to "./src/"
     "paths": {
       "@/*": [
         "./src/*"
       ]
     },
   },
+  // Specifies which files to include in the compilation
   "include": [
     "src/**/*.ts"
   ],
+  // Specifies which files/folders to exclude from compilation
   "exclude": [
     "node_modules",
     "dist",
