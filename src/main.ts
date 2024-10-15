@@ -1,6 +1,5 @@
 import axios from 'axios';
 import fs from 'fs';
-import path from 'path';
 import { promisify } from 'util';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
@@ -83,7 +82,8 @@ export async function registerDataSource(registration: DataRegistration): Promis
  */
 async function fetchAttackDataFromGitHub(domain: string, version?: string): Promise<StixBundle> {
     let url = `${GITHUB_BASE_URL}/${domain}/`;
-    url += version ? `${domain}-${version}.json` : `${domain}.json`;
+    const normalizedVersion = version ? version.replace(/^v/, '') : version; // Remove leading 'v' if present
+    url += normalizedVersion ? `${domain}-${normalizedVersion}.json` : `${domain}.json`;
 
     try {
         const response = await axios.get<StixBundle>(url, {
