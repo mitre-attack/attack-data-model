@@ -33,7 +33,7 @@ Here’s an example script that demonstrates how to use the ADM library to load 
 
 ```ts
 // test.ts
-import { registerDataSource, load, DataRegistration } from 'attack-data-model';
+import { registerDataSource, load, DataRegistration } from '@mitre-attack/attack-data-model';
 
 (async () => {
     const options = new DataRegistration({
