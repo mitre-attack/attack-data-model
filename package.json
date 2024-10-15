@@ -5,7 +5,7 @@
   "license": "APACHE-2.0",
   "private": false,
   "keywords": [
-    "mitre, attack, typescript, api, adm, attack-data-model, cti, "
+    "mitre", "attack", "typescript", "api", "adm", "attack-data-model", "cti"
   ],
   "homepage": "https://github.com/mitre-attack/attack-data-model#readme",
   "bugs": {
