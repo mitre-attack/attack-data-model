@@ -43,7 +43,11 @@ To verify your current configuration:
 npm config list
 ```
 
-## Usage
+## Documentation
+
+For detailed API documentation and usage examples, please refer to the [ATT&CK Data Model TypeScript API Documentation](docs/USAGE.md).
+
+## Basic Usage
 
 ### Loading the ADM
 
