@@ -28,7 +28,7 @@ npm config set @mitre-attack:registry https://npm.pkg.github.com
 Then, install the package:
 
 ```bash
-npm install @mitre-attack/attack-data-model@1.0.0-rc.0
+npm install @mitre-attack/attack-data-model
 ```
 
 If you encounter issues, you might need to explicitly add the npmjs.org registry for non-scoped packages:
