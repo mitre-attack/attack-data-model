@@ -61,6 +61,29 @@ When submitting a pull request:
 5. Increase the version numbers in any examples files and the README.md to the new version that this Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
 6. Include a description of your changes and why they're necessary.
 
+## Developer Workflow
+
+To maintain code quality and consistency, we use **ESLint**, **Prettier**, and **Husky** as part of the development workflow. Below is an overview of how each tool is configured and how it affects the contribution process:
+
+### ESLint and Prettier Configuration
+
+- **ESLint**: ESLint is used to enforce code quality rules and catch potential errors in JavaScript and TypeScript. It checks for both syntax issues and best practices.
+- **Prettier**: Prettier is used for code formatting to ensure a consistent code style across the entire codebase. Prettier takes care of formatting such as indentation, quotes, and line length.
+
+We use **eslint-config-prettier** to disable any formatting rules in ESLint that might conflict with Prettier. This setup ensures that **ESLint** focuses on code quality while **Prettier** takes care of formatting.
+
+### How They Differ
+- **ESLint**: Focuses on finding problematic patterns and enforcing best practices in the code. For example, it catches unused variables, enforces type safety in TypeScript, and flags potential bugs.
+- **Prettier**: Focuses solely on formatting code (e.g., indentation, semicolons, line wrapping) without caring about the logic of the code.
+
+### Husky and Git Hooks
+
+- **Husky**: We use Husky to add Git hooks that automate certain tasks before commits and pushes.
+  - **Pre-Commit Hook**: Husky runs `npm run format` before every commit. This command runs both Prettier and ESLint in fix mode to ensure all code is properly formatted and adheres to linting rules before it is committed.
+  - **Pre-Push Hook**: Husky also runs `npm run test` before pushing to the repository. This ensures that all tests pass before the code is pushed, preventing broken code from entering the remote branches.
+
+These hooks help enforce code quality and consistency across all contributions, making it easier to maintain the project over time.
+
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For version bumps, use the following npm commands:
