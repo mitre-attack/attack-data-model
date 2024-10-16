@@ -32,7 +32,8 @@
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "rm -rf dist && npm run build",
-    "test": "vitest",
+    "test": "vitest --run",
+    "test:interactive": "vitest",
     "export": "npm pack",
     "clean": "rm -rf test/**/*.js test/**/*.js.map test/**/*.d.ts test/**/*.ts.map src/**/*.js src/**/*.js.map src/**/*.d.ts",
     "prepare": "husky install",
