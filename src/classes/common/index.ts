@@ -1,1 +1,1 @@
-export * from './attack-object.impl.js'
+export * from './attack-object.impl.js';

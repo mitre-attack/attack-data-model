@@ -2,9 +2,9 @@
  * Represents a GitHub release object.
  */
 interface GitHubRelease {
-    tag_name: string;
-    name: string;
-    published_at: string;
+  tag_name: string;
+  name: string;
+  published_at: string;
 }
 
 /**
@@ -13,7 +13,7 @@ interface GitHubRelease {
  * @returns The normalized version string.
  */
 function normalizeVersion(version: string): string {
-    return version.replace(/^v/, '');
+  return version.replace(/^v/, '');
 }
 
 /**
@@ -22,31 +22,31 @@ function normalizeVersion(version: string): string {
  * @throws An error if the HTTP request fails.
  */
 export async function fetchAttackVersions(): Promise<string[]> {
-    const url = 'https://api.github.com/repos/mitre-attack/attack-stix-data/releases';
+  const url = 'https://api.github.com/repos/mitre-attack/attack-stix-data/releases';
 
-    // Make a GET request to the GitHub API
-    const response = await fetch(url, {
-        headers: {
-            'Accept': 'application/vnd.github+json',
-            'X-GitHub-Api-Version': '2022-11-28'
-        }
+  // Make a GET request to the GitHub API
+  const response = await fetch(url, {
+    headers: {
+      Accept: 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const releases: GitHubRelease[] = await response.json();
+
+  // Extract and normalize version numbers, then sort them in descending order
+  const versions = releases
+    .map((release) => normalizeVersion(release.tag_name))
+    .sort((a, b) => {
+      const [aMajor, aMinor] = a.split('.').map(Number);
+      const [bMajor, bMinor] = b.split('.').map(Number);
+      if (bMajor !== aMajor) return bMajor - aMajor;
+      return bMinor - aMinor;
     });
 
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const releases: GitHubRelease[] = await response.json();
-
-    // Extract and normalize version numbers, then sort them in descending order
-    const versions = releases
-        .map(release => normalizeVersion(release.tag_name))
-        .sort((a, b) => {
-            const [aMajor, aMinor] = a.split('.').map(Number);
-            const [bMajor, bMinor] = b.split('.').map(Number);
-            if (bMajor !== aMajor) return bMajor - aMajor;
-            return bMinor - aMinor;
-        });
-
-    return versions;
+  return versions;
 }

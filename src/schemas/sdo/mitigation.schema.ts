@@ -1,37 +1,44 @@
-import { z } from "zod";
-import { attackBaseObjectSchema } from "../common/attack-base-object.js";
-import { stixTypeSchema } from "../common/stix-type.js";
-import { createStixIdentifierSchema, externalReferencesSchema, objectMarkingRefsSchema, stixCreatedByRefSchema, stixIdentifierSchema, xMitreDomainsSchema, xMitreModifiedByRefSchema } from "../common/index.js";
+import { z } from 'zod';
+import { attackBaseObjectSchema } from '../common/attack-base-object.js';
+import { stixTypeSchema } from '../common/stix-type.js';
+import {
+  createStixIdentifierSchema,
+  externalReferencesSchema,
+  objectMarkingRefsSchema,
+  stixCreatedByRefSchema,
+  stixIdentifierSchema,
+  xMitreDomainsSchema,
+  xMitreModifiedByRefSchema,
+} from '../common/index.js';
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
 import '../../errors';
 
-
 export const mitigationSchema = attackBaseObjectSchema
   .extend({
+    id: createStixIdentifierSchema(stixTypeSchema.enum['course-of-action']),
 
-    id: createStixIdentifierSchema(stixTypeSchema.enum["course-of-action"]),
-
-    type: z.literal(stixTypeSchema.enum["course-of-action"]),
+    type: z.literal(stixTypeSchema.enum['course-of-action']),
 
     // Optional in STIX but required in ATT&CK
     created_by_ref: stixCreatedByRefSchema,
 
     description: z
       .string()
-      .describe("A description that provides more details and context about the Mitigation."),
+      .describe('A description that provides more details and context about the Mitigation.'),
 
     // Optional in STIX but required in ATT&CK
-    external_references: externalReferencesSchema
-      .describe("A list of external references which refers to non-STIX information."),
+    external_references: externalReferencesSchema.describe(
+      'A list of external references which refers to non-STIX information.',
+    ),
 
     // Optional in STIX but required in ATT&CK
     object_marking_refs: objectMarkingRefsSchema,
 
     x_mitre_domains: xMitreDomainsSchema,
 
-    x_mitre_modified_by_ref: xMitreModifiedByRefSchema
+    x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
   })
   .strict()
   .superRefine((schema, ctx) => {
@@ -44,7 +51,7 @@ export const mitigationSchema = attackBaseObjectSchema
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: `x_mitre_old_attack_id for mitigation need to be in the format MOB-M####}.`,
-        path: ['x_mitre_old_attack_id']
+        path: ['x_mitre_old_attack_id'],
       });
     }
   });
