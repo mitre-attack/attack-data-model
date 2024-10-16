@@ -397,7 +397,7 @@ export const techniqueSchema = attackBaseObjectSchema
      */
     function validateEnterpriseOnlyField(
       fieldName: string,
-      value: any,
+      value: boolean | string[] | undefined,
       requiredTactic: string | null = null,
     ) {
       if (value !== undefined) {

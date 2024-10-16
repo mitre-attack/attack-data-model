@@ -99,7 +99,7 @@ const relationshipMap: RelationshipMap = {
 } as const;
 
 // Invalid "uses" combinations
-const invalidUsesRelationships = [
+const invalidUsesRelationships: [StixType, StixType][] = [
   [stixTypeSchema.Enum.malware, stixTypeSchema.Enum.malware],
   [stixTypeSchema.Enum.malware, stixTypeSchema.Enum.tool],
   [stixTypeSchema.Enum.tool, stixTypeSchema.Enum.malware],
@@ -209,12 +209,12 @@ export type RelationshipCombination = {
  * This includes every combination of source type, relationship type, and target type,
  * regardless of whether the combination is valid according to the STIX specification.
  */
-const allRelationships: RelationshipCombination[] = stixTypeSchema.options.flatMap((source: any) =>
-  stixTypeSchema.options.flatMap((target: any) =>
-    relationshipTypeSchema.options.map((relType: any) => ({
-      sourceType: source,
-      relationshipType: relType,
-      targetType: target,
+const allRelationships: RelationshipCombination[] = stixTypeSchema.options.flatMap((source) =>
+  stixTypeSchema.options.flatMap((target) =>
+    relationshipTypeSchema.options.map((relType) => ({
+      sourceType: source as StixType,
+      relationshipType: relType as RelationshipType,
+      targetType: target as StixType,
     })),
   ),
 );
@@ -279,8 +279,8 @@ export const relationshipSchema = stixRelationshipObjectSchema
   .superRefine((schema, ctx) => {
     const { relationship_type, source_ref, target_ref } = schema;
 
-    const [sourceType, _srcUuidIgnore] = source_ref.split('--') as [StixType, string];
-    const [targetType, _trgtUuidIgnore] = target_ref.split('--') as [StixType, string];
+    const [sourceType] = source_ref.split('--') as [StixType];
+    const [targetType] = target_ref.split('--') as [StixType];
 
     isValidRelationship(sourceType, relationship_type, targetType, (issue) => {
       ctx.addIssue(issue);

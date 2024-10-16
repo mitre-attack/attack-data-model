@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
+
 import type { Group } from '../../schemas/sdo/group.schema.js';
 import { AttackBaseImpl } from '../common/attack-object.impl.js';
 import { CampaignImpl } from './campaign.impl.js';
@@ -43,4 +45,8 @@ export class GroupImpl extends AttackBaseImpl implements Group {
   }
 }
 
+// Suppress the lint error for the empty interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface GroupImpl extends Group {}
+
+/* eslint-enable @typescript-eslint/no-unsafe-declaration-merging */

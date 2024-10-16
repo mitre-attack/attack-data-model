@@ -3,7 +3,6 @@ import {
   attackBaseObjectSchema,
   descriptionSchema,
   xMitrePlatformsSchema,
-  stixIdentifierSchema,
   stixTypeSchema,
   xMitreDomainsSchema,
   createStixIdentifierSchema,

@@ -83,109 +83,121 @@ export class AttackDataModel {
     this.attackObjects.forEach((object) => {
       switch (object.type) {
         // ASSET
-        case 'x-mitre-asset':
+        case 'x-mitre-asset': {
           const asset = new AssetImpl(object as Asset);
           this.assets.push(asset);
           objectMap.set(object.id, asset);
           break;
-
+        }
         // CAMPAIGN
-        case 'campaign':
+        case 'campaign': {
           const campaign = new CampaignImpl(object as Campaign);
           this.campaigns.push(campaign);
           objectMap.set(object.id, campaign);
           break;
-
+        }
         // COLLECTION
-        case 'x-mitre-collection':
+        case 'x-mitre-collection': {
           const collection = new CollectionImpl(object as Collection);
           this.collections.push(collection);
           objectMap.set(object.id, collection);
           break;
-
+        }
         // DATA COMPONENT
-        case 'x-mitre-data-component':
+        case 'x-mitre-data-component': {
           const dataComponent = new DataComponentImpl(object as DataComponent);
           this.dataComponents.push(dataComponent);
           objectMap.set(object.id, dataComponent);
           break;
+        }
 
         // DATA SOURCE
-        case 'x-mitre-data-source':
+        case 'x-mitre-data-source': {
           const dataSource = new DataSourceImpl(object as DataSource);
           this.dataSources.push(dataSource);
           objectMap.set(object.id, dataSource);
           break;
+        }
 
         // GROUP
-        case 'intrusion-set':
+        case 'intrusion-set': {
           const group = new GroupImpl(object as Group);
           this.groups.push(group);
           objectMap.set(object.id, group);
           break;
+        }
 
         // IDENTITY
-        case 'identity':
+        case 'identity': {
           const identity = new IdentityImpl(object as Identity);
           this.identities.push(identity);
           objectMap.set(object.id, identity);
           break;
+        }
 
         // MALWARE
-        case 'malware':
+        case 'malware': {
           const malware = new MalwareImpl(object as Malware);
           this.malware.push(malware);
           objectMap.set(object.id, malware);
           break;
+        }
 
         // MATRIX
-        case 'x-mitre-matrix':
+        case 'x-mitre-matrix': {
           const matrix = new MatrixImpl(object as Matrix);
           this.matrices.push(matrix);
           objectMap.set(object.id, matrix);
           break;
+        }
 
         // MITIGATION
-        case 'course-of-action':
+        case 'course-of-action': {
           const mitigation = new MitigationImpl(object as Mitigation);
           this.mitigations.push(mitigation);
           objectMap.set(object.id, mitigation);
           break;
+        }
 
         // TACTIC
-        case 'x-mitre-tactic':
+        case 'x-mitre-tactic': {
           const tactic = new TacticImpl(object as Tactic);
           this.tactics.push(tactic);
           objectMap.set(object.id, tactic);
           break;
+        }
 
         // TECHNIQUE
-        case 'attack-pattern':
+        case 'attack-pattern': {
           const technique = new TechniqueImpl(object as Technique);
           this.techniques.push(technique);
           objectMap.set(object.id, technique);
           break;
+        }
 
         // TOOL
-        case 'tool':
+        case 'tool': {
           const tool = new ToolImpl(object as Tool);
           this.tools.push(tool);
           objectMap.set(object.id, tool);
           break;
+        }
 
         // MARKING DEFINITION
-        case 'marking-definition':
+        case 'marking-definition': {
           const markingDefinition = new MarkingDefinitionImpl(object as MarkingDefinition);
           this.markingDefinitions.push(markingDefinition);
           objectMap.set(object.id, markingDefinition);
           break;
+        }
 
         // RELATIONSHIP
-        case 'relationship':
+        case 'relationship': {
           const relationship = new RelationshipImpl(object as Relationship);
           this.relationships.push(relationship);
           objectMap.set(object.id, relationship);
           break;
+        }
       }
     });
 

@@ -1,18 +1,20 @@
+import type { AnyAttackObject } from '../attack-data-model.js';
+
 export class AttackBaseImpl {
-  private revokedBy?: any;
+  private revokedBy?: AnyAttackObject;
 
   /**
    * Sets the object that revokes the current object.
    * @param obj - The object that revokes this object.
    */
-  setRevokedBy(obj: any): void {
+  setRevokedBy(obj: AnyAttackObject): void {
     this.revokedBy = obj;
   }
 
   /**
    * Returns the object that revoked this object.
    */
-  getRevokedBy(): any {
+  getRevokedBy(): AnyAttackObject | undefined {
     return this.revokedBy;
   }
 }

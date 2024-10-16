@@ -7,7 +7,6 @@ import {
   stixSpecVersionSchema,
   stixTimestampSchema,
   xMitreAttackSpecVersionSchema,
-  xMitreDeprecatedSchema,
   xMitreDomainsSchema,
 } from '../common/index.js';
 
@@ -18,7 +17,7 @@ import {
 /////////////////////////////////////
 
 // TLP Marking Object type
-const TlpMarkingObjectSchema = z
+export const tlpMarkingObjectSchema = z
   .object({
     tlp: z
       .string()
@@ -29,14 +28,14 @@ const TlpMarkingObjectSchema = z
   .strict();
 
 // Base schema for all TLP marking definitions
-const BaseMarkingDefinitionSchema = z.object({
+export const baseMarkingDefinitionSchema = z.object({
   type: z.literal('marking-definition'),
   spec_version: z.literal('2.1'),
   id: z.string().uuid(),
   created: z.string().datetime(),
   definition_type: z.literal('tlp'),
   name: z.string(),
-  definition: TlpMarkingObjectSchema,
+  definition: tlpMarkingObjectSchema,
 });
 
 // The following standard marking definitions MUST be used to reference or represent TLP markings.
@@ -44,51 +43,59 @@ const BaseMarkingDefinitionSchema = z.object({
 // definitions permitted are those defined here).
 
 // TLP:WHITE schema
-const TlpWhiteSchema = BaseMarkingDefinitionSchema.extend({
-  id: z.literal('marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9'),
-  name: z.literal('TLP:WHITE'),
-  definition: z.object({
-    tlp: z.literal('white'),
-  }),
-}).strict();
+export const tlpWhiteSchema = baseMarkingDefinitionSchema
+  .extend({
+    id: z.literal('marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9'),
+    name: z.literal('TLP:WHITE'),
+    definition: z.object({
+      tlp: z.literal('white'),
+    }),
+  })
+  .strict();
 
 // TLP:GREEN schema
-const TlpGreenSchema = BaseMarkingDefinitionSchema.extend({
-  id: z.literal('marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da'),
-  name: z.literal('TLP:GREEN'),
-  definition: z.object({
-    tlp: z.literal('green'),
-  }),
-}).strict();
+export const tlpGreenSchema = baseMarkingDefinitionSchema
+  .extend({
+    id: z.literal('marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da'),
+    name: z.literal('TLP:GREEN'),
+    definition: z.object({
+      tlp: z.literal('green'),
+    }),
+  })
+  .strict();
 
 // TLP:AMBER schema
-const TlpAmberSchema = BaseMarkingDefinitionSchema.extend({
-  id: z.literal('marking-definition--f88d31f6-486f-44da-b317-01333bde0b82'),
-  name: z.literal('TLP:AMBER'),
-  definition: z.object({
-    tlp: z.literal('amber'),
-  }),
-}).strict();
+export const tlpAmberSchema = baseMarkingDefinitionSchema
+  .extend({
+    id: z.literal('marking-definition--f88d31f6-486f-44da-b317-01333bde0b82'),
+    name: z.literal('TLP:AMBER'),
+    definition: z.object({
+      tlp: z.literal('amber'),
+    }),
+  })
+  .strict();
 
 // TLP:RED schema
-const TlpRedSchema = BaseMarkingDefinitionSchema.extend({
-  id: z.literal('marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed'),
-  name: z.literal('TLP:RED'),
-  definition: z.object({
-    tlp: z.literal('red'),
-  }),
-}).strict();
+export const tlpRedSchema = baseMarkingDefinitionSchema
+  .extend({
+    id: z.literal('marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed'),
+    name: z.literal('TLP:RED'),
+    definition: z.object({
+      tlp: z.literal('red'),
+    }),
+  })
+  .strict();
 
 // Union type for all TLP marking definitions
-const TlpMarkingDefinitionSchema = z.union([
-  TlpWhiteSchema,
-  TlpGreenSchema,
-  TlpAmberSchema,
-  TlpRedSchema,
+export const tlpMarkingDefinitionSchema = z.union([
+  tlpWhiteSchema,
+  tlpGreenSchema,
+  tlpAmberSchema,
+  tlpRedSchema,
 ]);
 
-export type TlpMarkingDefinition = z.infer<typeof TlpMarkingDefinitionSchema>;
-export type TlpMarkingObjectType = z.infer<typeof TlpMarkingObjectSchema>;
+export type TlpMarkingDefinition = z.infer<typeof tlpMarkingDefinitionSchema>;
+export type TlpMarkingObject = z.infer<typeof tlpMarkingObjectSchema>;
 
 /////////////////////////////////////
 //
@@ -96,7 +103,7 @@ export type TlpMarkingObjectType = z.infer<typeof TlpMarkingObjectSchema>;
 //
 /////////////////////////////////////
 
-export const StatementMarkingObjectSchema = z
+export const statementMarkingObjectSchema = z
   .object({
     statement: z
       .string()
@@ -147,7 +154,7 @@ export const markingDefinitionSchema = z
 
     // Deprecated in STIX
     definition: z
-      .union([TlpMarkingObjectSchema, StatementMarkingObjectSchema])
+      .union([tlpMarkingObjectSchema, statementMarkingObjectSchema])
       .describe(
         'The definition property contains the marking object itself (e.g., the TLP marking as defined in section 7.2.1.4, the Statement marking as defined in section 7.2.1.3). Any new marking definitions SHOULD be specified using the extension facility described in section 7.3. If the extensions property is not present, this property MUST be present.',
       ),

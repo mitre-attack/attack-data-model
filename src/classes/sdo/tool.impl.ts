@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
+
 import type { Tool } from '../../schemas/sdo/tool.schema.js';
 import { AttackBaseImpl } from '../common/attack-object.impl.js';
 import { TechniqueImpl } from './technique.impl.js';
@@ -21,4 +23,8 @@ export class ToolImpl extends AttackBaseImpl implements Tool {
   }
 }
 
+// Suppress the lint error for the empty interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ToolImpl extends Tool {}
+
+/* eslint-enable @typescript-eslint/no-unsafe-declaration-merging */

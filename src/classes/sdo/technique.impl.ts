@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
+
 import type { Technique } from '../../schemas/sdo/technique.schema.js';
 import { TacticImpl } from './tactic.impl.js';
 import { MitigationImpl } from './mitigation.impl.js';
@@ -88,7 +90,8 @@ export class TechniqueImpl extends AttackBaseImpl {
   }
 }
 
-// Extend the class with the SimpleTechnique interface to maintain type hints
-// This informs TypeScript that TechniqueImpl instances have all the properties of SimpleTechnique.
-// This approach preserves type hints and ensures that we don't have to manually redeclare all properties from SimpleTechnique in the class.
+// Suppress the lint error for the empty interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface TechniqueImpl extends Technique {}
+
+/* eslint-enable @typescript-eslint/no-unsafe-declaration-merging */

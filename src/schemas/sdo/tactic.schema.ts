@@ -3,12 +3,9 @@ import {
   attackBaseObjectSchema,
   createStixIdentifierSchema,
   descriptionSchema,
-  externalReferenceSchema,
-  xMitreDeprecatedSchema,
   xMitreModifiedByRefSchema,
   objectMarkingRefsSchema,
   stixCreatedByRefSchema,
-  stixIdentifierSchema,
   xMitreDomainsSchema,
   externalReferencesSchema,
 } from '../common/index.js';

@@ -1,6 +1,6 @@
 import type { Relationship } from '../schemas/sro/relationship.schema.js';
 import type { AttackObject } from '../schemas/sdo/stix-bundle.schema.js';
-import type { Technique } from '../schemas/sdo/technique.schema.js';
+import type { Technique, Tactic } from '../schemas/sdo/index.js';
 import { TacticImpl } from './sdo/tactic.impl.js';
 import { MitigationImpl } from './sdo/mitigation.impl.js';
 import { DataSourceImpl } from './sdo/data-source.impl.js';
@@ -13,7 +13,11 @@ export function getSubTechniques(
 ): Technique[] {
   return relationships
     .filter((rel) => rel.relationship_type === 'subtechnique-of' && rel.source_ref === technique.id)
-    .map((rel) => attackObjects.find((obj) => obj.id === rel.target_ref)) as Technique[];
+    .map((rel) => {
+      const subTech = attackObjects.find((obj) => obj.id === rel.target_ref);
+      return subTech as Technique;
+    })
+    .filter((subTech): subTech is Technique => subTech !== undefined);
 }
 
 export function getTactics(
@@ -24,12 +28,11 @@ export function getTactics(
   const killChainPhaseIds = technique.kill_chain_phases?.map((phase) => phase.phase_name) ?? [];
   return attackObjects
     .filter((obj) => obj.type === 'x-mitre-tactic' && killChainPhaseIds.includes(obj.id))
-    .map((obj) => new TacticImpl(obj as any)); // Casting as TacticImpl
+    .map((obj) => new TacticImpl(obj as Tactic));
 }
 
 export function getPlatforms(technique: Technique): XMitrePlatforms {
-  const platformNames = technique.x_mitre_platforms ?? [];
-  return platformNames;
+  return technique.x_mitre_platforms ?? [];
 }
 
 export function getMitigations(
@@ -39,9 +42,14 @@ export function getMitigations(
 ): MitigationImpl[] {
   return relationships
     .filter((rel) => rel.relationship_type === 'mitigates' && rel.target_ref === technique.id)
-    .map(
-      (rel) => new MitigationImpl(attackObjects.find((obj) => obj.id === rel.source_ref) as any),
-    );
+    .map((rel) => {
+      const mitigation = attackObjects.find((obj) => obj.id === rel.source_ref);
+      if (mitigation && mitigation.type === 'course-of-action') {
+        return new MitigationImpl(mitigation);
+      }
+      return null;
+    })
+    .filter((mitigation): mitigation is MitigationImpl => mitigation !== null);
 }
 
 export function getDataSources(
@@ -51,7 +59,12 @@ export function getDataSources(
 ): DataSourceImpl[] {
   return relationships
     .filter((rel) => rel.relationship_type === 'detects' && rel.target_ref === technique.id)
-    .map(
-      (rel) => new DataSourceImpl(attackObjects.find((obj) => obj.id === rel.source_ref) as any),
-    );
+    .map((rel) => {
+      const dataSource = attackObjects.find((obj) => obj.id === rel.source_ref);
+      if (dataSource && dataSource.type === 'x-mitre-data-source') {
+        return new DataSourceImpl(dataSource);
+      }
+      return null;
+    })
+    .filter((dataSource): dataSource is DataSourceImpl => dataSource !== null);
 }

@@ -6,7 +6,6 @@ import { stixSpecVersionSchema } from './stix-spec-version.js';
 import { stixCreatedTimestampSchema, stixModifiedTimestampSchema } from './stix-timestamp.js';
 import {
   stixCreatedByRefSchema,
-  externalReferenceSchema,
   granularMarkingSchema,
   extensionsSchema,
   externalReferencesSchema,

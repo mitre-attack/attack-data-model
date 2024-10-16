@@ -174,7 +174,7 @@ async function fetchDataFromFile(filePath: string): Promise<StixBundle> {
  * @param rawData - The raw StixBundle to parse.
  * @returns The list of parsed STIX objects.
  */
-function parseStixBundle(rawData: any, parsingMode: ParsingMode): AttackObject[] {
+function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackObject[] {
   const errors: string[] = [];
   const validObjects: AttackObject[] = [];
 
@@ -184,7 +184,6 @@ function parseStixBundle(rawData: any, parsingMode: ParsingMode): AttackObject[]
       id: true,
       type: true,
       spec_version: true,
-      // objects: true
     })
     .safeParse(rawData);
 
@@ -202,10 +201,10 @@ function parseStixBundle(rawData: any, parsingMode: ParsingMode): AttackObject[]
   }
 
   // Now process each object individually
-  const objects = rawData.objects;
+  const objects = rawData.objects as AttackObject[];
   for (let index = 0; index < objects.length; index++) {
     const obj = objects[index];
-    let objParseResult: z.SafeParseReturnType<any, any> | null;
+    let objParseResult: z.SafeParseReturnType<unknown, AttackObject> | null;
 
     switch (obj.type) {
       case 'x-mitre-asset':

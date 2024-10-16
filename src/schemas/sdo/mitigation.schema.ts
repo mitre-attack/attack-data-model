@@ -6,7 +6,6 @@ import {
   externalReferencesSchema,
   objectMarkingRefsSchema,
   stixCreatedByRefSchema,
-  stixIdentifierSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
 } from '../common/index.js';
