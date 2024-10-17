@@ -152,7 +152,7 @@ For more detailed examples, please refer to the [examples](./examples/) folder i
 
 ## Contributing
 
-We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) file for details on how to contribute to this project.
+We welcome contributions! Please see our [CONTRIBUTING.md](docs/CONTRIBUTING.md) file for details on how to contribute to this project.
 
 ## License
 
