@@ -150,9 +150,13 @@ For more detailed examples, please refer to the [examples](./examples/) folder i
 - **Strict Mode**: Data must pass all validation checks to be ingested. If any objects are rejected, the registration is aborted.
 - **Relaxed Mode**: Invalid objects are logged, but the library will ignore parsing errors and attempt to load the dataset anyway. Use with caution, as this may cause unexpected downstream usage errors.
 
+## Compatibility Matrix
+
+Our [COMPATIBILITY.md](./docs/COMPATIBILITY.md) document tracks the compatibility between versions of the ATT&CK Data Model (ADM) TypeScript API (`@mitre-attack/attack-data-model`) and versions of the MITRE ATT&CK® dataset (`mitre-attack/attack-stix-data`).
+
 ## Contributing
 
-We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) file for details on how to contribute to this project.
+We welcome contributions! Please see our [CONTRIBUTING.md](./docs/CONTRIBUTING.md) file for details on how to contribute to this project.
 
 ## License
 
