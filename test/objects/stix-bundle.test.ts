@@ -1,4 +1,4 @@
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, beforeEach, it, expect, afterAll } from 'vitest';
 import { v4 as uuidv4 } from 'uuid';
 import { type StixBundle, stixBundleSchema } from '../../src/schemas/sdo/stix-bundle.schema';
 import {
@@ -9,6 +9,7 @@ import {
 import type { Collection } from '../../src/schemas/sdo/collection.schema';
 import type { Technique } from '../../src/schemas/sdo/technique.schema';
 import { z } from 'zod';
+import { logger } from '../utils/logger';
 
 /**
  * Test suite for validating StixBundle schema.
@@ -220,16 +221,21 @@ describe('StixBundleSchema', () => {
           });
 
           bundlesWithErrors.push({ bundleIndex, errors });
-          console.warn(errors.join('\n\n'));
+          logger.warn(errors.join('\n\n'));
         }
       }
     });
 
     // Log a summary of the validation results
-    console.log(`Validated ${bundles.length} bundles`);
-    console.log(`Found errors in ${bundlesWithErrors.length} bundles`);
+    logger.log(`Validated ${bundles.length} bundles`);
+    logger.log(`Found errors in ${bundlesWithErrors.length} bundles`);
 
     // This expectation will always pass, but it gives us a way to surface the error count in the test results
     expect(bundlesWithErrors.length).toBeLessThanOrEqual(bundles.length);
+  });
+
+  // Close the logger after all tests are complete
+  afterAll(() => {
+    logger.close();
   });
 });

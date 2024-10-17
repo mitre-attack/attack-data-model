@@ -1,4 +1,4 @@
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, beforeEach, it, expect, afterAll } from 'vitest';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -21,6 +21,8 @@ import {
   stixTypeSchema,
   xMitreIdentity,
 } from '../../src/schemas/common/index';
+import { logger } from '../utils/logger';
+
 
 describe('RelationshipSchema', () => {
   let relationships: any[];
@@ -327,12 +329,12 @@ describe('RelationshipSchema', () => {
     };
 
     if (errors.length > 0) {
-      console.warn(
+      logger.warn(
         `The following ${errors.length} relationship(s) failed validation:\n${formatErrorReport(errors)}`,
       );
     }
 
-    console.log(`
+    logger.log(`
         Total relationships: ${relationships.length}
         Valid relationships: ${validRelationships.length}
         Relationships with errors: ${errors.length}
@@ -340,5 +342,9 @@ describe('RelationshipSchema', () => {
 
     // This expectation will always pass, but it gives us a way to surface the error count in the test results
     expect(true).toBe(true);
+  });
+
+  afterAll(() => {
+    logger.close();
   });
 });

@@ -4,6 +4,9 @@
 *.js
 *.js.map
 
+# Test logs
+test-logs/**/*
+
 # Files tagged with .ignore
 *.ignore
 
