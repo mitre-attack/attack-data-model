@@ -1,0 +1,1 @@
+{"version":3,"file":"stix-spec-version.d.ts","sourceRoot":"","sources":["../../../src/schemas/common/stix-spec-version.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,CAAC,EAAE,MAAM,KAAK,CAAC;AASxB,eAAO,MAAM,qBAAqB,2BAA0D,CAAC;AAE7F,MAAM,MAAM,eAAe,GAAG,CAAC,CAAC,KAAK,CAAC,OAAO,qBAAqB,CAAC,CAAC"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"collection.impl.d.ts","sourceRoot":"","sources":["../../../src/classes/sdo/collection.impl.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,wCAAwC,CAAC;AACzE,OAAO,EAAE,cAAc,EAAE,MAAM,iCAAiC,CAAC;AAEjE,qBAAa,cAAe,SAAQ,cAAc;IACpC,QAAQ,CAAC,UAAU,EAAE,UAAU;gBAAtB,UAAU,EAAE,UAAU;CAI5C;AAID,MAAM,WAAW,cAAe,SAAQ,UAAU;CAAG"}
