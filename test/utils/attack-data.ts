@@ -54,7 +54,7 @@ async function getCachedOrFetchAttackData(
   try {
     if (await fileExists(filePath)) {
       const data = await readFile(filePath, 'utf8');
-      console.log(`Successfully read cached file: ${filePath}`);
+      // console.log(`Successfully read cached file: ${filePath}`);
       try {
         return JSON.parse(data) as StixBundle;
       } catch (parseError) {
