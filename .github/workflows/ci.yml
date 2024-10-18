@@ -89,13 +89,19 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://npm.pkg.github.com'
           scope: '@mitre-attack'
+      # - name: Semantic Release
+      #   uses: cycjimmy/semantic-release-action@v4
+      #   with:
+      #     extra_plugins: |
+      #       @semantic-release/commit-analyzer
+      #       @semantic-release/release-notes-generator
+      #       @semantic-release/npm
+      #       @semantic-release/github
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
+        run: npm audit signatures
       - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-          extra_plugins: |
-            @semantic-release/commit-analyzer
-            @semantic-release/release-notes-generator
-            @semantic-release/npm
-            @semantic-release/github
+        run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
