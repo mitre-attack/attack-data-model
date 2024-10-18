@@ -1,1 +1,0 @@
-{"version":3,"file":"attack-object.impl.js","sourceRoot":"","sources":["../../../src/classes/common/attack-object.impl.ts"],"names":[],"mappings":"AAEA,MAAM,OAAO,cAAc;IAGzB;;;OAGG;IACH,YAAY,CAAC,GAAoB;QAC/B,IAAI,CAAC,SAAS,GAAG,GAAG,CAAC;IACvB,CAAC;IAED;;OAEG;IACH,YAAY;QACV,OAAO,IAAI,CAAC,SAAS,CAAC;IACxB,CAAC;CACF"}

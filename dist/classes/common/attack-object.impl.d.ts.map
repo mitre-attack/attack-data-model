@@ -1,1 +1,0 @@
-{"version":3,"file":"attack-object.impl.d.ts","sourceRoot":"","sources":["../../../src/classes/common/attack-object.impl.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,yBAAyB,CAAC;AAE/D,qBAAa,cAAc;IACzB,OAAO,CAAC,SAAS,CAAC,CAAkB;IAEpC;;;OAGG;IACH,YAAY,CAAC,GAAG,EAAE,eAAe,GAAG,IAAI;IAIxC;;OAEG;IACH,YAAY,IAAI,eAAe,GAAG,SAAS;CAG5C"}
