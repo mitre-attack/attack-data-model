@@ -1,0 +1,45 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - docusaurus
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+        contents: write
+    concurrency:
+        group: ${{ github.workflow }}-${{ github.ref }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install parent-level dependencies
+        run: npm install
+        working-directory: ./
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./docusaurus
+
+      - name: Generate schema documentation
+        run: npm run autodocs
+        working-directory: ./docusaurus
+
+      - name: Build Docusaurus site
+        run: npm run build
+        working-directory: ./docusaurus
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.DEPLOY_KEY }}
+          publish_dir: ./docusaurus/build

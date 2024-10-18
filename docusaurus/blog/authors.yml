@@ -1,0 +1,9 @@
+mitreattack:
+  name: MITRE ATT&CK
+  title: A knowledge base for describing the behavior of adversaries
+  url: https://attack.mitre.org
+  image_url: img/attack.jpg
+  page: false
+  socials:
+    x: https://twitter.com/mitreattack
+    github: https://github.com/mitre-attack
