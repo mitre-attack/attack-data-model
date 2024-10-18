@@ -1,4 +1,4 @@
-name: Build and Deploy to GitHub Pages
+name: Generate Docs and Deploy Docusaurus
 
 on:
   push:
@@ -41,5 +41,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.DEPLOY_KEY }}
+          deploy_key: ${{ secrets.DEPLOY_KEY }}
           publish_dir: ./docusaurus/build
