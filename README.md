@@ -13,8 +13,8 @@ The ATT&CK Data Model (ADM) is a TypeScript library that provides a structured w
 ## Supported Data Sources
 
 - **`attack`**: Load ATT&CK data from the official MITRE ATT&CK STIX 2.1 GitHub repository. This serves as the source of truth for MITRE ATT&CK content.
-- **`file`**: (Coming soon) Load ATT&CK data from a local JSON file containing a STIX 2.1 bundle.
-- **`url`**: (Coming soon) Load ATT&CK data from a URL endpoint serving STIX 2.1 content.
+- **`file`**: Load ATT&CK data from a local JSON file containing a STIX 2.1 bundle.
+- **`url`**: Load ATT&CK data from a URL endpoint serving STIX 2.1 content.
 - **`taxii`**: (Coming soon) Load ATT&CK data from a TAXII 2.1 server.
 
 ## Installation
