@@ -1,7 +1,7 @@
 name: CI
 
 on:
-  push: # Run commitlint on every push to any branch
+  pull_request:
 
 permissions:
   contents: read # for checkout
