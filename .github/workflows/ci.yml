@@ -64,6 +64,7 @@ jobs:
         with:
           name: test-logs
           path: .test-logs/**
+          include-hidden-files: true
       - name: Verify integrity of dependencies
         run: npm audit signatures
 
