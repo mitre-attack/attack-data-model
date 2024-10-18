@@ -31,7 +31,7 @@ jobs:
         working-directory: ./docusaurus
 
       - name: Generate schema documentation
-        run: npm run autodocs
+        run: npm run gendocs
         working-directory: ./docusaurus
 
       - name: Build Docusaurus site
