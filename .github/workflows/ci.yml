@@ -99,7 +99,11 @@ jobs:
       #       @semantic-release/github
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
+      - name: Install
+        run: npm clean-install
+      - name: Build
+        run: npm run build
+      - name: Verify Provenance
         run: npm audit signatures
       - name: Semantic Release
         run: npx semantic-release
