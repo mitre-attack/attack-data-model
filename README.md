@@ -43,6 +43,20 @@ To verify your current configuration:
 npm config list
 ```
 
+## ATT&CK Specification
+
+The ADM is built upon the MITRE ATT&CK® Specification, which formally defines the structure, properties, and relationships of ATT&CK objects. The ATT&CK Specification serves as the authoritative source for how ATT&CK data should be represented and interacted with.
+
+The ADM provides a codified expression of the ATT&CK Specification using Zod schemas and TypeScript types. By implementing the specification in code, the ADM ensures that all data parsed and manipulated through the library adheres to the defined standards of the ATT&CK data model. This includes strict validation of object structures, types, and required properties, providing developers with confidence in the integrity and consistency of the data they work with.
+
+While the ATT&CK Specification defines the data model itself, the ADM includes additional software engineering elements such as utility functions, classes, and methods to facilitate easier interaction with ATT&CK data. As such, the ADM is subject to its own development lifecycle and versioning, independent of the ATT&CK Specification.
+
+The version of the ATT&CK Specification that the ADM is based on is indicated in the [ATTACK_SPEC_VERSION](./ATTACK_SPEC_VERSION) file located in the repository. This file contains a single line specifying the semantic version of the ATT&CK Specification that the current ADM release is pinned to.
+
+It's important to note that the ADM's versioning may not directly align with the versioning of the ATT&CK Specification. The ADM follows its own semantic versioning release cadence to accommodate ongoing software engineering changes, enhancements, and fixes that may occur more frequently than updates to the ATT&CK Specification itself.
+
+By maintaining separate versioning, the ADM can evolve as a software library while remaining aligned with the underlying ATT&CK data model defined by the specification. This approach ensures that developers have access to the latest features and improvements in the ADM without being constrained by the update schedule of the ATT&CK Specification.
+
 ## Documentation
 
 For detailed API documentation and usage examples, please refer to the [ATT&CK Data Model TypeScript API Documentation](docs/USAGE.md).
