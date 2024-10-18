@@ -1,5 +1,4 @@
-// commitlint.config.js
-export default {
+module.exports = {
     extends: ['@commitlint/config-conventional'],
     ignores: [
         // Ignore commits starting with "chore(release):" (semantic-release commits)
