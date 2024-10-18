@@ -56,12 +56,14 @@ jobs:
         run: npm run build
       - name: Test
         run: npm run test
+      - name: List test logs
+        run: ls -la .test-logs/
       - name: Upload test logs
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-logs
-          path: .test-logs/
+          path: .test-logs/**
       - name: Verify integrity of dependencies
         run: npm audit signatures
 
