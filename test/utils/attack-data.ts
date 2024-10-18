@@ -70,7 +70,7 @@ async function getCachedOrFetchAttackData(
       }
 
       await writeFile(filePath, JSON.stringify(stixData, null, 2), 'utf8');
-      console.log(`Successfully cached data for ${domain} at ${filePath}`);
+      // console.log(`Successfully cached data for ${domain} at ${filePath}`);
       return stixData;
     }
   } catch (error) {
