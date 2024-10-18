@@ -1,6 +1,6 @@
 {
   "name": "@mitre-attack/attack-data-model",
-  "version": "0.1.0",
+  "version": "0.0.0-semantically-released",
   "description": "A TypeScript API for the MITRE ATT&CK data model",
   "license": "APACHE-2.0",
   "private": false,
