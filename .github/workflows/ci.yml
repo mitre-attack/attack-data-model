@@ -42,7 +42,7 @@ jobs:
         run: npx commitlint --from ${{ github.event.pull_request.base.sha || github.event.before }} --to ${{ github.event.pull_request.head.sha || github.sha }} --verbose
 
   # Job 2: Build and Test
-  build:
+  test:
     runs-on: ubuntu-latest
     needs: [commitlint]
     steps:
@@ -80,7 +80,7 @@ jobs:
 
   # Job 3: Publish
   publish:
-    needs: [build]
+    needs: [test]
     runs-on: ubuntu-latest
     permissions:
       contents: write         # To publish a GitHub release
