@@ -84,6 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write         # To publish a GitHub release
+      packages: write         # To publish to GitHub Package registry
       issues: write           # To comment on released issues
       pull-requests: write    # To comment on released pull requests
       id-token: write         # To enable OIDC for npm provenance
