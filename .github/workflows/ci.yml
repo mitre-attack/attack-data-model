@@ -110,4 +110,5 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HUSKY_SKIP_HOOKS: '1'
         run: npx semantic-release
