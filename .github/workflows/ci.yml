@@ -103,9 +103,7 @@ jobs:
           scope: '@mitre-attack'
 
       - name: Install dependencies
-        run: npm clean-install --omit=dev
-        env:
-          HUSKY: '0'  # Disable Husky installation
+        run: npm clean-install
 
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: npm audit signatures
