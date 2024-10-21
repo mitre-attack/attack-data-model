@@ -118,3 +118,41 @@ jobs:
           # NPM_TOKEN: ${{ secrets.NPM_TOKEN }} DO NOT USE
           HUSKY: 0  # Temporarily disables all Git hooks
         run: npx semantic-release
+
+  autodocs:
+    needs: [publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: Install schema dependencies
+        run: npm install
+        working-directory: ./
+
+      - name: Install docusaurus dependencies
+        run: npm install
+        working-directory: ./docusaurus
+
+      - name: Generate schema documentation
+        run: npm run gendocs
+        working-directory: ./docusaurus
+
+      - name: Build Docusaurus site
+        run: npm run build
+        working-directory: ./docusaurus
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.DEPLOY_KEY }}
+          publish_dir: ./docusaurus/build
