@@ -36,7 +36,7 @@
     "test:interactive": "vitest",
     "export": "npm pack",
     "clean": "rm -rf test/**/*.js test/**/*.js.map test/**/*.d.ts test/**/*.ts.map src/**/*.js src/**/*.js.map src/**/*.d.ts",
-    "prepare": "husky",
+    "prepare": "husky || true",
     "lint": "npx eslint src",
     "lint:fix": "npm run lint -- --fix",
     "prettier": "npx prettier src --check",

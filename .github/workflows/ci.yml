@@ -1,23 +1,120 @@
-name: CI
+name: CI and Release
 
 on:
+  push:
+    branches:
+      - main
+      - next
+      - beta
+      - alpha
+      - '*.*.x'   # Matches branches like '1.2.x', '2.3.x'
+      - '*.x'     # Matches branches like '1.x', '2.x'
   pull_request:
+    branches:
+      - main
+      - next
+      - beta
+      - alpha
+      - '*.*.x'   # Matches PRs targeting '1.2.x', '2.3.x'
+      - '*.x'     # Matches PRs targeting '1.x', '2.x'
 
 permissions:
-  contents: read # for checkout
+  contents: read
 
 jobs:
+  # Job 1: Commit Linting
   commitlint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch full history to check commit differences
+          fetch-depth: 0  # Fetch full history to check commit differences
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
+
       - name: Install dependencies
         run: npm ci
-      - name: Validate all commits from push
-        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
+      - name: Validate all commits
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha || github.event.before }} --to ${{ github.event.pull_request.head.sha || github.sha }} --verbose
+
+  # Job 2: Build and Test
+  test:
+    runs-on: ubuntu-latest
+    needs: [commitlint]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm run test
+
+      - name: List test logs
+        run: ls -la .test-logs/
+
+      - name: Upload test logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-logs
+          path: .test-logs/**
+          include-hidden-files: true
+
+      - name: Verify integrity of dependencies
+        run: npm audit signatures
+
+  # Job 3: Publish
+  publish:
+    needs: [test]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write         # To publish a GitHub release
+      packages: write         # To publish to GitHub Package registry
+      issues: write           # To comment on released issues
+      pull-requests: write    # To comment on released pull requests
+      id-token: write         # To enable OIDC for npm provenance
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@mitre-attack'
+
+      - name: Install dependencies
+        run: npm clean-install
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
+        run: npm audit signatures
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # NPM_TOKEN: ${{ secrets.NPM_TOKEN }} DO NOT USE
+          HUSKY: 0  # Temporarily disables all Git hooks
+        run: npx semantic-release
