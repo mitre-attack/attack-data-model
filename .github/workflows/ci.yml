@@ -103,7 +103,7 @@ jobs:
           scope: '@mitre-attack'
 
       - name: Install dependencies
-        run: npm clean-install
+        run: npm clean-install --only=production
 
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: npm audit signatures
