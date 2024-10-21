@@ -103,7 +103,7 @@ jobs:
           scope: '@mitre-attack'
 
       - name: Install dependencies
-        run: npm clean-install --only=production
+        run: npm clean-install --omit=dev
         env:
           HUSKY: '0'  # Disable Husky installation
 
