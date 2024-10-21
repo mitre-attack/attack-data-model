@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://mitre-attack.github.io/attack-data-model/blog</id>
+    <title>MITRE ATT&amp;CK Data Model Blog</title>
+    <updated>2024-10-21T19:57:53.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://mitre-attack.github.io/attack-data-model/blog"/>
+    <subtitle>MITRE ATT&amp;CK Data Model Blog</subtitle>
+    <icon>https://mitre-attack.github.io/attack-data-model/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[known-issues]]></title>
+        <id>https://mitre-attack.github.io/attack-data-model/blog/known-issues</id>
+        <link href="https://mitre-attack.github.io/attack-data-model/blog/known-issues"/>
+        <updated>2024-10-21T19:57:53.000Z</updated>
+        <summary type="html"><![CDATA[<!-- ---]]></summary>
+    </entry>
+</feed>
