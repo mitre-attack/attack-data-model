@@ -104,6 +104,8 @@ jobs:
 
       - name: Install dependencies
         run: npm clean-install --only=production
+        env:
+          HUSKY: '0'  # Disable Husky installation
 
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: npm audit signatures
@@ -112,5 +114,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          HUSKY_SKIP_HOOKS: '1'
+          HUSKY: 0  # Temporarily disables all Git hooks
         run: npx semantic-release
