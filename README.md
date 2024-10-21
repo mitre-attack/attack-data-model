@@ -2,6 +2,12 @@
 
 The ATT&CK Data Model (ADM) is a TypeScript library that provides a structured way to interact with MITRE ATT&CK datasets. It uses Zod schemas, TypeScript types, and ES6 classes to create a type-safe, object-oriented interface for navigating the ATT&CK data model. This library is designed to parse, validate, and serialize STIX 2.1 formatted content, making it easy to work with ATT&CK-related data in a programmatic and intuitive way.
 
+You can browse the ATT&CK schemas in a user-friendly interface at:
+
+https://mitre-attack.github.io/attack-data-model/. 
+
+This site is dynamically generated from the contents of the `@latest` distribution channel / `main` branch. Please note that we do not currently maintain separate documentation for previous releases.
+
 ## Features
 
 - **Type-Safe Data Parsing**: ADM validates STIX 2.1 bundles using Zod schemas, ensuring data model compliance and type safety.
