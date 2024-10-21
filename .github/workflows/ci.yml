@@ -119,7 +119,7 @@ jobs:
           HUSKY: 0  # Temporarily disables all Git hooks
         run: npx semantic-release
 
-  autodocs:
+  deploy-docs:
     needs: [publish]
     runs-on: ubuntu-latest
     permissions:
