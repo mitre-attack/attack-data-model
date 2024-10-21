@@ -19,8 +19,7 @@
     "email": "attack@mitre.org"
   },
   "repository": {
-    "type": "git",
-    "url": "https://github.com/mitre-attack/attack-data-model.git"
+    "url": "git+https://github.com/mitre-attack/attack-data-model.git"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
