@@ -42,10 +42,8 @@ const FeatureList: FeatureItem[] = [
       <>
         Currently, the ATT&CK knowledge base does not fully conform to the defined Zod schemas, and
         there are known discrepancies that need to be addressed. We are actively working on aligning
-        our data with the schemas to ensure complete compliance. This process involves identifying
-        and rectifying inconsistencies to enhance the accuracy and reliability of our data. For a
-        detailed list of known issues, please visit our{' '}
-        <a href="/attack-data-model/blog/known-issues">Known Issues Page</a>.
+        our data with the schemas to ensure complete compliance. Your understanding and patience are
+        appreciated as we work to make improvements.
       </>
     ),
   },

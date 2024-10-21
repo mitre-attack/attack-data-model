@@ -36,17 +36,12 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
         },
-        blog: {
-          showReadingTime: false,
-          feedOptions: {
-            type: ['rss'],
-            xslt: true,
-          },
-          // Useful options to enforce blogging best practices
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
-        },
+        // blog: {
+        //   showReadingTime: false,
+        //   path: 'blog',
+        //   routeBasePath: 'known-issues',
+        //   blogTitle: 'Known Issues',
+        // },
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -68,11 +63,11 @@ const config: Config = {
           position: 'left',
           label: 'ATT&CK Schemas',
         },
-        {
-          to: '/blog',
-          label: 'Known Issues',
-          position: 'left',
-        },
+        // {
+        //   to: '/known-issues',
+        //   label: 'Known Issues',
+        //   position: 'left',
+        // },
         {
           href: 'https://github.com/mitre-attack/attack-data-model',
           label: 'GitHub',
