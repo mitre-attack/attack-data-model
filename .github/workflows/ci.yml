@@ -104,6 +104,8 @@ jobs:
 
       - name: Install dependencies
         run: npm clean-install
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: npm audit signatures
@@ -111,6 +113,7 @@ jobs:
       - name: Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # NPM_TOKEN: ${{ secrets.NPM_TOKEN }} DO NOT USE
           HUSKY: 0  # Temporarily disables all Git hooks
         run: npx semantic-release
