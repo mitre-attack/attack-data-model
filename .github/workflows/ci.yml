@@ -111,6 +111,6 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # NPM_TOKEN: ${{ secrets.NPM_TOKEN }} DO NOT USE
           HUSKY: 0  # Temporarily disables all Git hooks
         run: npx semantic-release
