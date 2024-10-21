@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Fetch full history to check commit differences
-          
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -101,16 +101,13 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@mitre-attack'
 
-      - name: Install
+      - name: Install dependencies
         run: npm clean-install
 
-      - name: Build
-        run: npm run build
-
-      - name: Verify Provenance
+      - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: npm audit signatures
 
-      - name: Semantic Release
-        run: npx semantic-release
+      - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
