@@ -24,6 +24,8 @@ find $SCHEMA_DIR -name "*.schema.ts" | while read schemaFile; do
 
 	# skip stix-bundle for now
 	if [[ "${fileName}" == "stix-bundle.schema.ts" ]]; then
+		# add to overview
+		echo "| STIX Bundle | SDO | [Schema](/docs/sdo/stix-bundle.schema) |" >> $OVERVIEW
 		continue
 	fi
 
@@ -32,13 +34,14 @@ find $SCHEMA_DIR -name "*.schema.ts" | while read schemaFile; do
 
 	# get schema title
 	title=$(sed -e 's/-/ /g' <<< "${fileName%%.*}")
-	title="$(tr '[:lower:]' '[:upper:]' <<< "${title:0:1}")${title:1}"
+	title=$(echo "$title" | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')
+	# title="$(tr '[:lower:]' '[:upper:]' <<< "${title:0:1}")${title:1}"
 
 	# set output file path
 	outputFile="$OUTPUT_DIR/${relativePath/.ts/.md}"
 
 	# convert zod schemas to md
-	npx zod2md --entry $schemaFile --title "$title schema" --output "$outputFile"
+	npx zod2md --entry $schemaFile --title "$title Schema" --output "$outputFile"
 
 	# add schema to overview table
 	schemaLink="${relativePath/.ts/.md}"
