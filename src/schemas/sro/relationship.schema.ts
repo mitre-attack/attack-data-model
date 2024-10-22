@@ -8,7 +8,7 @@ import {
   type StixType,
   stixTypeSchema,
   xMitreAttackSpecVersionSchema,
-  xMitreDeprecatedSchema,
+  // xMitreDeprecatedSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
   xMitreVersionSchema,
@@ -259,7 +259,7 @@ export const relationshipSchema = stixRelationshipObjectSchema
 
     x_mitre_version: xMitreVersionSchema,
 
-    x_mitre_deprecated: xMitreDeprecatedSchema.optional(),
+    // x_mitre_deprecated: xMitreDeprecatedSchema.optional(),
   })
   .required({
     created: true,
