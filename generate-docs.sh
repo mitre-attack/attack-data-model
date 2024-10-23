@@ -22,9 +22,13 @@ echo "|----------------|------------------|------|" >> $OVERVIEW
 find $SCHEMA_DIR -name "*.schema.ts" | while read schemaFile; do
 	fileName="$(basename "$schemaFile")"
 
-	# skip stix-bundle for now
+	# skip software (covered by malware/tool)
+	if [[ "${fileName}" == "software.schema.ts" ]]; then
+		continue
+	fi
+
+	# skip stix-bundle (manually generated) and add to overview page
 	if [[ "${fileName}" == "stix-bundle.schema.ts" ]]; then
-		# add to overview
 		echo "| STIX Bundle | SDO | [Schema](/docs/sdo/stix-bundle.schema) |" >> $OVERVIEW
 		continue
 	fi
