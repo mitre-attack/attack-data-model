@@ -441,7 +441,7 @@ This project is licensed under the Apache 2.0 License.
 
 ## Notice
 
-© 2020-2024 The MITRE Corporation.
+© 2020-2025 The MITRE Corporation.
 
 This project makes use of ATT&CK®.
 

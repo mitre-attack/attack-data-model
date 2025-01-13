@@ -59,7 +59,7 @@ For questions or support regarding compatibility:
 
 ---
 
-© 2020-2024 The MITRE Corporation.
+© 2020-2025 The MITRE Corporation.
 
 This project makes use of ATT&CK®.
 
