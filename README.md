@@ -25,16 +25,19 @@ This site is dynamically generated from the contents of the `@latest` distributi
 
 ## Installation
 
-To use ADM in your TypeScript project, you must first set up a scoped registry for GitHub packages:
+### Pre-requisites
+
+To use the ATT&CK Data Model in your TypeScript project, you must first do two setup steps.
+
+1. Create a GitHub Personal Access Token with the `read:packages` scope. Full details can be found in this [GitHub documentation](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#authenticating-to-github-packages). The critical detail from that page is the following:
+
+> To authenticate by adding your personal access token (classic) to your ~/.npmrc file, edit the ~/.npmrc file for your project to include the following line, replacing TOKEN with your personal access token. Create a new ~/.npmrc file if one doesn't exist.
+> ```//npm.pkg.github.com/:_authToken=TOKEN```
+
+2. Second, set up a scoped registry for GitHub packages:
 
 ```bash
 npm config set @mitre-attack:registry https://npm.pkg.github.com
-```
-
-Then, install the package:
-
-```bash
-npm install @mitre-attack/attack-data-model
 ```
 
 If you encounter issues, you might need to explicitly add the npmjs.org registry for non-scoped packages:
@@ -47,6 +50,14 @@ To verify your current configuration:
 
 ```bash
 npm config list
+```
+
+### Install
+
+Now you can install the package:
+
+```bash
+npm install @mitre-attack/attack-data-model
 ```
 
 ## ATT&CK Specification
