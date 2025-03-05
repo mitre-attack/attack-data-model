@@ -47,6 +47,7 @@ export const dataComponentSchema = attackBaseObjectSchema
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
+    // TODO replace with x_mitre_data_log_ref: xMitreLogSourceRefSchema
     x_mitre_data_source_ref: xMitreDataSourceRefSchema,
   })
   .strict();
