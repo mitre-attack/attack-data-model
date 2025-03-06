@@ -1,1 +1,1 @@
-import './custom-error-map';
+import './custom-error-map.js';

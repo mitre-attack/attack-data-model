@@ -32,7 +32,7 @@ import {
 import { AttackDataModel } from './classes/attack-data-model.js';
 
 // Initializes the custom ZodErrorMap
-import './errors';
+import './errors/index.js';
 
 const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
 const readFile = promisify(fs.readFile);

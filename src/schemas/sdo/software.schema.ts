@@ -14,7 +14,7 @@ import {
 
 // Initializes the custom ZodErrorMap
 // TODO migrate to loading this in a globally scoped module
-import '../../errors';
+import '../../errors/index.js';
 
 /////////////////////////////////////
 //
