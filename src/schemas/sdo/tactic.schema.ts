@@ -12,7 +12,7 @@ import {
 import { stixTypeSchema } from '../common/stix-type.js';
 
 // Initializes the custom ZodErrorMap
-import '../../errors';
+import '../../errors/index.js';
 
 /////////////////////////////////////
 //
