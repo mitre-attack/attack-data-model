@@ -11,7 +11,6 @@ const supportedStixTypes = [
   'malware',
   'tool',
   'marking-definition',
-  'x-mitre-analytic', // TODO this is not locked in yet
   'x-mitre-data-component',
   'x-mitre-detection', // TODO this is not locked in yet
   'x-mitre-tactic',
