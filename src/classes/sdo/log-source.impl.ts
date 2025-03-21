@@ -12,6 +12,6 @@ export class LogSourceImpl extends AttackBaseImpl {
 
 // Suppress the lint error for the empty interface
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface LogSourceImpl extends LogSource { }
+export interface LogSourceImpl extends LogSource {}
 
 /* eslint-enable @typescript-eslint/no-unsafe-declaration-merging */
