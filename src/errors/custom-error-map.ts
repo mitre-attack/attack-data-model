@@ -12,12 +12,14 @@ const stixTypeToSchemaName: Record<StixType, string> = {
   campaign: 'Campaign',
   'course-of-action': 'CourseOfAction',
   identity: 'Identity',
+  indicator: 'Indicator',
   'intrusion-set': 'IntrusionSet',
   malware: 'Malware',
   tool: 'Tool',
   'marking-definition': 'MarkingDefinition',
   'x-mitre-data-component': 'DataComponent',
-  'x-mitre-data-source': 'DataSource',
+  'x-mitre-detection': 'Detection',
+  'x-mitre-log-source': 'LogSource',
   'x-mitre-tactic': 'Tactic',
   'x-mitre-asset': 'Asset',
   'x-mitre-matrix': 'Matrix',
@@ -25,7 +27,6 @@ const stixTypeToSchemaName: Record<StixType, string> = {
   relationship: 'RelationshipSchema',
   file: '', // not used in ATT&CK but used in sample_refs for Malware
   artifact: '', // not used in ATT&CK but used in sample_refs for Malware
-  // "indicator": "Indicator",            // not used in ATT&CK
   // "observed-data": "ObservedData",     // not used in ATT&CK
   // "report": "Report",                  // not used in ATT&CK
   // "threat-actor": "ThreatActor",       // not used in ATT&CK

@@ -3,7 +3,7 @@
 import type { Technique } from '../../schemas/sdo/technique.schema.js';
 import { TacticImpl } from './tactic.impl.js';
 import { MitigationImpl } from './mitigation.impl.js';
-import { DataSourceImpl } from './data-source.impl.js';
+import { LogSourceImpl } from './log-source.impl.js';
 import { AssetImpl } from './asset.impl.js';
 import { AttackBaseImpl } from '../common/attack-object.impl.js';
 import { DataComponentImpl } from './data-component.impl.js';
@@ -12,7 +12,7 @@ export class TechniqueImpl extends AttackBaseImpl {
   private _subTechniques: TechniqueImpl[] = [];
   private _tactics: TacticImpl[] = [];
   private _mitigations: MitigationImpl[] = [];
-  private _dataSources: DataSourceImpl[] = [];
+  private _logSources: LogSourceImpl[] = [];
   private _parentTechnique?: TechniqueImpl;
   private _relatedTechniques: TechniqueImpl[] = [];
   private _targetAssets: AssetImpl[] = [];
@@ -40,8 +40,8 @@ export class TechniqueImpl extends AttackBaseImpl {
     this._mitigations.push(mitigation);
   }
 
-  addDataSource(dataSource: DataSourceImpl): void {
-    this._dataSources.push(dataSource);
+  addLogSource(logSource: LogSourceImpl): void {
+    this._logSources.push(logSource);
   }
 
   addRelatedTechnique(technique: TechniqueImpl): void {
@@ -69,8 +69,8 @@ export class TechniqueImpl extends AttackBaseImpl {
     return this._mitigations;
   }
 
-  getDataSources(): DataSourceImpl[] {
-    return this._dataSources;
+  getLogSources(): LogSourceImpl[] {
+    return this._logSources;
   }
 
   getParentTechnique(): TechniqueImpl | undefined {

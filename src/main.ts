@@ -14,7 +14,7 @@ import {
   matrixSchema,
   mitigationSchema,
   relationshipSchema,
-  dataSourceSchema,
+  logSourceSchema,
   dataComponentSchema,
   groupSchema,
   malwareSchema,
@@ -219,8 +219,8 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
       case 'x-mitre-data-component':
         objParseResult = dataComponentSchema.safeParse(obj);
         break;
-      case 'x-mitre-data-source':
-        objParseResult = dataSourceSchema.safeParse(obj);
+      case 'x-mitre-log-source':
+        objParseResult = logSourceSchema.safeParse(obj);
         break;
       case 'intrusion-set':
         objParseResult = groupSchema.safeParse(obj);

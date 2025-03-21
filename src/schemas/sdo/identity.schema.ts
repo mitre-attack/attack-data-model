@@ -3,10 +3,7 @@ import { stixTypeSchema } from '../common/stix-type.js';
 import { objectMarkingRefsSchema, xMitreDomainsSchema } from '../common/common-properties.js';
 import { attackBaseObjectSchema } from '../common/attack-base-object.js';
 import { createStixIdentifierSchema } from '../common/stix-identifier.js';
-import {
-  identityClassOpenVocabulary,
-  industrySectorOpenVocabulary,
-} from '../common/open-vocabulary.js';
+import { IdentityClassOV, IndustrySectorOV } from '../common/open-vocabulary.js';
 
 // TODO migrate to loading this in a globally scoped module
 import '../../errors';
@@ -25,7 +22,7 @@ export const identitySchema = attackBaseObjectSchema
 
     object_marking_refs: objectMarkingRefsSchema,
 
-    identity_class: identityClassOpenVocabulary.describe(
+    identity_class: IdentityClassOV.describe(
       'The type of entity that this Identity describes, e.g., an individual or organization. This is an open vocabulary and the values SHOULD come from the identity-class-ov vocabulary.',
     ),
 
@@ -43,7 +40,7 @@ export const identitySchema = attackBaseObjectSchema
 
     // Not used in ATT&CK Identity but defined in STIX
     sectors: z
-      .array(industrySectorOpenVocabulary)
+      .array(IndustrySectorOV)
       .describe(
         'The list of industry sectors that this Identity belongs to. This is an open vocabulary and values SHOULD come from the industry-sector-ov vocabulary.',
       )

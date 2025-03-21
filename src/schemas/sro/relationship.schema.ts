@@ -36,6 +36,7 @@ const supportedRelationshipTypes = [
   'attributed-to',
   'targets',
   'revoked-by',
+  'found-in', // used by x-mitre-data-component + x-mitre-log-source
 ] as const;
 
 export const relationshipTypeSchema = z
