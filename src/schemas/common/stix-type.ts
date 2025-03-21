@@ -6,13 +6,14 @@ const supportedStixTypes = [
   'campaign',
   'course-of-action',
   'identity',
+  'indicator',
   'intrusion-set',
   'malware',
   'tool',
   'marking-definition',
+  'x-mitre-analytic', // TODO this is not locked in yet
   'x-mitre-data-component',
-  // 'x-mitre-data-source',
-  'x-mitre-detection',
+  'x-mitre-detection', // TODO this is not locked in yet
   'x-mitre-tactic',
   'x-mitre-asset',
   'x-mitre-log-source',
