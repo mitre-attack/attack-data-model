@@ -9,10 +9,7 @@ import {
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
 } from '../common/index.js';
-import {
-  attackMotivationOpenVocabulary,
-  attackResourceLevelOpenVocabulary,
-} from '../common/open-vocabulary.js';
+import { AttackMotivationOV, AttackResourceLevelOV } from '../common/open-vocabulary.js';
 
 // Group Schema
 export const groupSchema = attackBaseObjectSchema
@@ -61,18 +58,16 @@ export const groupSchema = attackBaseObjectSchema
       .describe('The high-level goals of this Intrusion Set, namely, what are they trying to do.'),
 
     // Not used in ATT&CK Group but defined in STIX
-    resource_level: attackResourceLevelOpenVocabulary
-      .optional()
-      .describe(
-        'This property specifies the organizational level at which this Intrusion Set typically works, which in turn determines the resources available to this Intrusion Set for use in an attack.',
-      ),
+    resource_level: AttackResourceLevelOV.optional().describe(
+      'This property specifies the organizational level at which this Intrusion Set typically works, which in turn determines the resources available to this Intrusion Set for use in an attack.',
+    ),
 
-    primary_motivation: attackMotivationOpenVocabulary
-      .optional()
-      .describe('The primary reason, motivation, or purpose behind this Intrusion Set.'),
+    primary_motivation: AttackMotivationOV.optional().describe(
+      'The primary reason, motivation, or purpose behind this Intrusion Set.',
+    ),
 
     secondary_motivations: z
-      .array(attackMotivationOpenVocabulary)
+      .array(AttackMotivationOV)
       .optional()
       .describe('The secondary reasons, motivations, or purposes behind this Intrusion Set.'),
   })
