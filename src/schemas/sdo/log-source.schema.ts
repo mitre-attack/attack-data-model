@@ -8,7 +8,7 @@ import {
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
 } from '../common/common-properties.js';
-import { externalReferenceSchema, stixCreatedByRefSchema } from '../common/misc.js';
+import { externalReferencesSchema, stixCreatedByRefSchema } from '../common/misc.js';
 import { createStixIdentifierSchema } from '../common/stix-identifier.js';
 import { stixTypeSchema } from '../common/stix-type.js';
 import { MitreCollectionLayersOV } from '../common/open-vocabulary.js';
@@ -47,7 +47,7 @@ export const logSourceSchema = attackBaseObjectSchema
 
     description: descriptionSchema,
 
-    external_references: externalReferenceSchema,
+    external_references: externalReferencesSchema,
 
     // Optional in STIX but required in ATT&CK
     object_marking_refs: objectMarkingRefsSchema,
