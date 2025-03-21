@@ -1,6 +1,6 @@
 import { describe, beforeEach, it, expect } from 'vitest';
 import { v4 as uuidv4 } from 'uuid';
-import { type DataSource, dataSourceSchema } from '../../src/schemas/sdo/data-source.schema';
+import { type LogSource, logSourceSchema } from '../../src/schemas/sdo/log-source.schema';
 import {
   type StixCreatedTimestamp,
   type StixModifiedTimestamp,
@@ -8,14 +8,14 @@ import {
   xMitreIdentity,
 } from '../../src/schemas/common/index';
 
-describe('dataSourceSchema', () => {
-  let minimalDataSource: DataSource;
+describe('logSourceSchema', () => {
+  let minimalLogSource: LogSource;
 
   beforeEach(() => {
-    minimalDataSource = {
-      type: 'x-mitre-data-source',
-      id: `x-mitre-data-source--${uuidv4()}`,
-      description: 'Test data source description',
+    minimalLogSource = {
+      type: 'x-mitre-log-source',
+      id: `x-mitre-log-source--${uuidv4()}`,
+      description: 'Test log source description',
       spec_version: '2.1',
       created: '2017-06-01T00:00:00.000Z' as StixCreatedTimestamp,
       created_by_ref: `identity--${uuidv4()}`,
@@ -26,7 +26,7 @@ describe('dataSourceSchema', () => {
       external_references: [
         {
           source_name: 'mitre-attack',
-          url: 'https://attack.mitre.org/datasources/DS0014',
+          url: 'https://attack.mitre.org/datasources/DS0014', // TODO change this after website updates to use logsources
           external_id: 'DS0014',
         },
       ],
@@ -39,31 +39,31 @@ describe('dataSourceSchema', () => {
 
   describe('Valid Inputs', () => {
     it('should accept minimal valid object (only required fields)', () => {
-      expect(() => dataSourceSchema.parse(minimalDataSource)).not.toThrow();
+      expect(() => logSourceSchema.parse(minimalLogSource)).not.toThrow();
     });
 
     it('should accept fully populated valid object (required + optional ATT&CK fields)', () => {
-      const fullDataSource: DataSource = {
-        ...minimalDataSource,
+      const LogDataSource: LogSource = {
+        ...minimalLogSource,
         x_mitre_platforms: ['Windows'],
         x_mitre_contributors: ['Contributor'],
         x_mitre_deprecated: false,
       };
-      expect(() => dataSourceSchema.parse(fullDataSource)).not.toThrow();
+      expect(() => logSourceSchema.parse(LogDataSource)).not.toThrow();
     });
   });
 
   describe('Field-Specific Tests', () => {
-    const testField = (fieldName: keyof DataSource, invalidValue: any, isRequired = true) => {
+    const testField = (fieldName: keyof LogSource, invalidValue: any, isRequired = true) => {
       it(`should reject invalid values for ${fieldName}`, () => {
-        const invalidObject = { ...minimalDataSource, [fieldName]: invalidValue };
-        expect(() => dataSourceSchema.parse(invalidObject)).toThrow();
+        const invalidObject = { ...minimalLogSource, [fieldName]: invalidValue };
+        expect(() => logSourceSchema.parse(invalidObject)).toThrow();
       });
 
       if (isRequired) {
         it(`should reject omission of ${fieldName}`, () => {
-          const { [fieldName]: omitted, ...objectWithoutField } = minimalDataSource;
-          expect(() => dataSourceSchema.parse(objectWithoutField)).toThrow();
+          const { [fieldName]: omitted, ...objectWithoutField } = minimalLogSource;
+          expect(() => logSourceSchema.parse(objectWithoutField)).toThrow();
         });
       }
     };
@@ -121,21 +121,21 @@ describe('dataSourceSchema', () => {
   describe('Schema Refinements', () => {
     describe('External References Validation', () => {
       it('should reject when ATT&CK ID is missing', () => {
-        const invalidDataSource = {
-          ...minimalDataSource,
+        const invalidLogSource = {
+          ...minimalLogSource,
           external_references: [{ source_name: 'mitre-attack' }],
         };
-        expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow(
+        expect(() => logSourceSchema.parse(invalidLogSource)).toThrow(
           /ATT&CK ID must be defined/,
         );
       });
 
       it('should reject invalid ATT&CK ID format', () => {
-        const invalidDataSource = {
-          ...minimalDataSource,
+        const invalidLogSource = {
+          ...minimalLogSource,
           external_references: [{ source_name: 'mitre-attack', external_id: 'DS123' }],
         };
-        expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow(
+        expect(() => logSourceSchema.parse(invalidLogSource)).toThrow(
           `The first external_reference must match the ATT&CK ID format DS####.`,
         );
       });
@@ -144,11 +144,11 @@ describe('dataSourceSchema', () => {
 
   describe('Schema-Level Tests', () => {
     it('should reject unknown properties', () => {
-      const invalidDataSource = {
-        ...minimalDataSource,
+      const invalidLogSource = {
+        ...minimalLogSource,
         unknown_property: true,
-      } as DataSource;
-      expect(() => dataSourceSchema.parse(invalidDataSource)).toThrow();
+      } as LogSource;
+      expect(() => logSourceSchema.parse(invalidLogSource)).toThrow();
     });
   });
 

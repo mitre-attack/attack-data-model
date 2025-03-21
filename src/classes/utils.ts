@@ -52,7 +52,7 @@ export function getMitigations(
     .filter((mitigation): mitigation is MitigationImpl => mitigation !== null);
 }
 
-export function getDataSources(
+export function getLogSources(
   technique: Technique,
   relationships: Relationship[],
   attackObjects: AttackObject[],
@@ -60,11 +60,11 @@ export function getDataSources(
   return relationships
     .filter((rel) => rel.relationship_type === 'detects' && rel.target_ref === technique.id)
     .map((rel) => {
-      const dataSource = attackObjects.find((obj) => obj.id === rel.source_ref);
-      if (dataSource && dataSource.type === 'x-mitre-log-source') {
-        return new LogSourceImpl(dataSource);
+      const logSource = attackObjects.find((obj) => obj.id === rel.source_ref);
+      if (logSource && logSource.type === 'x-mitre-log-source') {
+        return new LogSourceImpl(logSource);
       }
       return null;
     })
-    .filter((dataSource): dataSource is LogSourceImpl => dataSource !== null);
+    .filter((logSource): logSource is LogSourceImpl => logSource !== null);
 }

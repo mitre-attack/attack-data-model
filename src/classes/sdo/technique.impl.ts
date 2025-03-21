@@ -12,7 +12,7 @@ export class TechniqueImpl extends AttackBaseImpl {
   private _subTechniques: TechniqueImpl[] = [];
   private _tactics: TacticImpl[] = [];
   private _mitigations: MitigationImpl[] = [];
-  private _dataSources: LogSourceImpl[] = [];
+  private _logSources: LogSourceImpl[] = [];
   private _parentTechnique?: TechniqueImpl;
   private _relatedTechniques: TechniqueImpl[] = [];
   private _targetAssets: AssetImpl[] = [];
@@ -40,8 +40,8 @@ export class TechniqueImpl extends AttackBaseImpl {
     this._mitigations.push(mitigation);
   }
 
-  addDataSource(dataSource: LogSourceImpl): void {
-    this._dataSources.push(dataSource);
+  addLogSource(logSource: LogSourceImpl): void {
+    this._logSources.push(logSource);
   }
 
   addRelatedTechnique(technique: TechniqueImpl): void {
@@ -69,8 +69,8 @@ export class TechniqueImpl extends AttackBaseImpl {
     return this._mitigations;
   }
 
-  getDataSources(): LogSourceImpl[] {
-    return this._dataSources;
+  getLogSources(): LogSourceImpl[] {
+    return this._logSources;
   }
 
   getParentTechnique(): TechniqueImpl | undefined {

@@ -43,7 +43,7 @@ export class AttackDataModel {
   public tools: ToolImpl[] = [];
   public markingDefinitions: MarkingDefinitionImpl[] = [];
   public dataComponents: DataComponentImpl[] = [];
-  public dataSources: LogSourceImpl[] = [];
+  public logSources: LogSourceImpl[] = [];
   public tactics: TacticImpl[] = [];
   public assets: AssetImpl[] = [];
   public matrices: MatrixImpl[] = [];
@@ -111,11 +111,11 @@ export class AttackDataModel {
           break;
         }
 
-        // DATA SOURCE
+        // LOG SOURCE
         case 'x-mitre-log-source': {
-          const dataSource = new LogSourceImpl(object as LogSource);
-          this.dataSources.push(dataSource);
-          objectMap.set(object.id, dataSource);
+          const logSource = new LogSourceImpl(object as LogSource);
+          this.logSources.push(logSource);
+          objectMap.set(object.id, logSource);
           break;
         }
 

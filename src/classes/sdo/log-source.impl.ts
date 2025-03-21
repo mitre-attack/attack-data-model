@@ -4,9 +4,9 @@ import type { LogSource } from '../../schemas/sdo/log-source.schema.js';
 import { AttackBaseImpl } from '../common/attack-object.impl.js';
 
 export class LogSourceImpl extends AttackBaseImpl {
-  constructor(readonly dataSource: LogSource) {
+  constructor(readonly logSource: LogSource) {
     super();
-    Object.assign(this, dataSource);
+    Object.assign(this, logSource);
   }
 }
 
