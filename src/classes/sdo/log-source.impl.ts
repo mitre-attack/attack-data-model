@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 
-import type { DataSource } from '../../schemas/sdo/data-source.schema.js';
+import type { LogSource } from '../../schemas/sdo/log-source.schema.js';
 import { AttackBaseImpl } from '../common/attack-object.impl.js';
 
-export class DataSourceImpl extends AttackBaseImpl {
-  constructor(readonly dataSource: DataSource) {
+export class LogSourceImpl extends AttackBaseImpl {
+  constructor(readonly dataSource: LogSource) {
     super();
     Object.assign(this, dataSource);
   }
@@ -12,6 +12,6 @@ export class DataSourceImpl extends AttackBaseImpl {
 
 // Suppress the lint error for the empty interface
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface DataSourceImpl extends DataSource {}
+export interface LogSourceImpl extends LogSource { }
 
 /* eslint-enable @typescript-eslint/no-unsafe-declaration-merging */

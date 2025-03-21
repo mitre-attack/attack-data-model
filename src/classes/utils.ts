@@ -3,7 +3,7 @@ import type { AttackObject } from '../schemas/sdo/stix-bundle.schema.js';
 import type { Technique, Tactic } from '../schemas/sdo/index.js';
 import { TacticImpl } from './sdo/tactic.impl.js';
 import { MitigationImpl } from './sdo/mitigation.impl.js';
-import { DataSourceImpl } from './sdo/data-source.impl.js';
+import { LogSourceImpl } from './sdo/log-source.impl.js';
 import type { XMitrePlatforms } from '../schemas/common/index.js';
 
 export function getSubTechniques(
@@ -56,15 +56,15 @@ export function getDataSources(
   technique: Technique,
   relationships: Relationship[],
   attackObjects: AttackObject[],
-): DataSourceImpl[] {
+): LogSourceImpl[] {
   return relationships
     .filter((rel) => rel.relationship_type === 'detects' && rel.target_ref === technique.id)
     .map((rel) => {
       const dataSource = attackObjects.find((obj) => obj.id === rel.source_ref);
-      if (dataSource && dataSource.type === 'x-mitre-data-source') {
-        return new DataSourceImpl(dataSource);
+      if (dataSource && dataSource.type === 'x-mitre-log-source') {
+        return new LogSourceImpl(dataSource);
       }
       return null;
     })
-    .filter((dataSource): dataSource is DataSourceImpl => dataSource !== null);
+    .filter((dataSource): dataSource is LogSourceImpl => dataSource !== null);
 }
