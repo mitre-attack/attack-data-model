@@ -227,3 +227,50 @@ export const IndustrySectorOV = z.enum([
   'transportation',
   'utilities',
 ]);
+
+// Used by x_mitre_collection_layers
+export const MitreCollectionLayersOV = z.enum([
+  'Cloud Control Plane',
+  'Host',
+  'Report',
+  'Container',
+  'Device',
+  'OSINT',
+  'Network',
+]);
+
+/////////////////////////////////////
+//
+// Pattern Type Vocabulary
+// https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_9lfdvxnyofxw
+//
+// At the time of adoption (May-2025), ATT&CK only uses 'spl' and 'stix'
+//
+/////////////////////////////////////
+
+export const PatternTypeOV = z
+  .enum(['spl', 'stix', 'pcre', 'sigma', 'snort', 'suricata', 'yara'])
+  .describe(
+    'This is a non-exhaustive, open vocabulary that covers common pattern languages and is intended to characterize the pattern language that the indicator pattern is expressed in.',
+  );
+
+/////////////////////////////////////
+//
+// Indicator Type Vocabulary
+// https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_cvhfwe3t9vuo
+//
+/////////////////////////////////////
+
+export const IndicatorTypeOV = z
+  .enum([
+    'anomalous-activity',
+    'anonymization',
+    'benign',
+    'compromised',
+    'malicious-activity',
+    'attribution',
+    'unknown',
+  ])
+  .describe(
+    "Indicator type is an open vocabulary used to categorize Indicators. It is intended to be high-level to promote consistent practices. Indicator types should not be used to capture information that can be better captured via related Malware or Attack Pattern objects. It is better to link an Indicator to a Malware object describing Poison Ivy rather than simply providing a type or label of 'poison-ivy.'",
+  );
