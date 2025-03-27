@@ -36,7 +36,7 @@ const supportedRelationshipTypes = [
   'attributed-to',
   'targets',
   'revoked-by',
-  'found-in', // used by x-mitre-data-component + x-mitre-log-source
+  'found-in',
 ] as const;
 
 export const relationshipTypeSchema = z
@@ -55,6 +55,7 @@ export const validRelationshipObjectTypes = [
   stixTypeSchema.Enum['tool'],
   stixTypeSchema.Enum['x-mitre-data-component'],
   stixTypeSchema.Enum['x-mitre-asset'],
+  stixTypeSchema.Enum['x-mitre-log-source'],
 ];
 
 type RelationshipMap = Record<RelationshipType, { source: StixType[]; target: StixType[] }>;
@@ -96,6 +97,10 @@ const relationshipMap: RelationshipMap = {
   'revoked-by': {
     source: validRelationshipObjectTypes,
     target: validRelationshipObjectTypes,
+  },
+  'found-in': {
+    source: [stixTypeSchema.Enum['x-mitre-data-component']],
+    target: [stixTypeSchema.Enum['x-mitre-log-source']],
   },
 } as const;
 
