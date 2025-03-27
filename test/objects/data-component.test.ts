@@ -25,7 +25,7 @@ describe('dataComponentSchema', () => {
       name: 'Network Connection Creation',
       object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
       x_mitre_modified_by_ref: xMitreIdentity,
-      x_mitre_data_source_ref: 'x-mitre-data-source--c000cd5c-bbb3-4606-af6f-6c6d9de0bbe3',
+      x_mitre_log_source_ref: 'x-mitre-log-source--c000cd5c-bbb3-4606-af6f-6c6d9de0bbe3',
       x_mitre_attack_spec_version: '2.1.0',
       x_mitre_domains: ['enterprise-attack'],
       x_mitre_version: '1.0',
@@ -89,8 +89,8 @@ describe('dataComponentSchema', () => {
       testField('x_mitre_modified_by_ref', 'invalid-modified-by-ref');
     });
 
-    describe('x_mitre_data_source_ref', () => {
-      testField('x_mitre_data_source_ref', 'invalid-data-source-ref');
+    describe('x_mitre_log_source_ref', () => {
+      testField('x_mitre_log_source_ref', 'invalid-log-source-ref');
     });
 
     // Optional Fields Testing

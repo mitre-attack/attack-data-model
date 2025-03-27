@@ -3,7 +3,7 @@ import type { Asset } from '../schemas/sdo/asset.schema.js';
 import type { Campaign } from '../schemas/sdo/campaign.schema.js';
 import type { Collection } from '../schemas/sdo/collection.schema.js';
 import type { DataComponent } from '../schemas/sdo/data-component.schema.js';
-import type { DataSource } from '../schemas/sdo/data-source.schema.js';
+import type { LogSource } from '../schemas/sdo/log-source.schema.js';
 import type { Group } from '../schemas/sdo/group.schema.js';
 import type { Identity } from '../schemas/sdo/identity.schema.js';
 import type { Malware } from '../schemas/sdo/malware.schema.js';
@@ -21,7 +21,7 @@ import { AssetImpl } from './sdo/asset.impl.js';
 import { CampaignImpl } from './sdo/campaign.impl.js';
 import { CollectionImpl } from './sdo/collection.impl.js';
 import { DataComponentImpl } from './sdo/data-component.impl.js';
-import { DataSourceImpl } from './sdo/data-source.impl.js';
+import { LogSourceImpl } from './sdo/log-source.impl.js';
 import { GroupImpl } from './sdo/group.impl.js';
 import { IdentityImpl } from './sdo/identity.impl.js';
 import { MalwareImpl } from './sdo/malware.impl.js';
@@ -43,7 +43,7 @@ export class AttackDataModel {
   public tools: ToolImpl[] = [];
   public markingDefinitions: MarkingDefinitionImpl[] = [];
   public dataComponents: DataComponentImpl[] = [];
-  public dataSources: DataSourceImpl[] = [];
+  public logSources: LogSourceImpl[] = [];
   public tactics: TacticImpl[] = [];
   public assets: AssetImpl[] = [];
   public matrices: MatrixImpl[] = [];
@@ -111,11 +111,11 @@ export class AttackDataModel {
           break;
         }
 
-        // DATA SOURCE
-        case 'x-mitre-data-source': {
-          const dataSource = new DataSourceImpl(object as DataSource);
-          this.dataSources.push(dataSource);
-          objectMap.set(object.id, dataSource);
+        // LOG SOURCE
+        case 'x-mitre-log-source': {
+          const logSource = new LogSourceImpl(object as LogSource);
+          this.logSources.push(logSource);
+          objectMap.set(object.id, logSource);
           break;
         }
 
@@ -292,7 +292,7 @@ export type AnyAttackObject =
   | CampaignImpl
   | CollectionImpl
   | DataComponentImpl
-  | DataSourceImpl
+  | LogSourceImpl
   | IdentityImpl
   | MatrixImpl
   | ToolImpl

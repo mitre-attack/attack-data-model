@@ -2,7 +2,7 @@ export * from './asset.impl.js';
 export * from './campaign.impl.js';
 export * from './collection.impl.js';
 export * from './data-component.impl.js';
-export * from './data-source.impl.js';
+export * from './log-source.impl.js';
 export * from './group.impl.js';
 export * from './identity.impl.js';
 export * from './malware.impl.js';

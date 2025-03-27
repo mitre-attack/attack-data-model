@@ -6,7 +6,7 @@ import { type Malware, malwareSchema } from './malware.schema.js';
 import { type Asset, assetSchema } from './asset.schema.js';
 import { type Campaign, campaignSchema } from './campaign.schema.js';
 import { type DataComponent, dataComponentSchema } from './data-component.schema.js';
-import { type DataSource, dataSourceSchema } from './data-source.schema.js';
+import { type LogSource, logSourceSchema } from './log-source.schema.js';
 import { type Identity, identitySchema } from './identity.schema.js';
 import { type Matrix, matrixSchema } from './matrix.schema.js';
 import { type Tool, toolSchema } from './tool.schema.js';
@@ -15,6 +15,8 @@ import { type Technique, techniqueSchema } from './technique.schema.js';
 import { type Group, groupSchema } from './group.schema.js';
 import { type Mitigation, mitigationSchema } from './mitigation.schema.js';
 import { type Collection, collectionSchema } from './collection.schema.js';
+import { type Detection, detectionSchema } from './detection.schema.js';
+import { type Indicator, indicatorSchema } from './indicator.schema.js';
 import { type Relationship, relationshipSchema } from '../sro/relationship.schema.js';
 import {
   type MarkingDefinition,
@@ -31,7 +33,7 @@ export type AttackObject =
   | Campaign
   | Collection
   | DataComponent
-  | DataSource
+  | LogSource
   | Identity
   | Matrix
   | Tool
@@ -39,6 +41,8 @@ export type AttackObject =
   | Technique
   | Group
   | Mitigation
+  | Detection
+  | Indicator
   | Relationship
   | MarkingDefinition;
 
@@ -53,7 +57,7 @@ export const attackObjectsSchema: z.ZodTypeAny = z
       campaignSchema,
       collectionSchema,
       dataComponentSchema,
-      dataSourceSchema,
+      logSourceSchema,
       identitySchema,
       matrixSchema,
       toolSchema,
@@ -61,6 +65,8 @@ export const attackObjectsSchema: z.ZodTypeAny = z
       techniqueSchema,
       groupSchema,
       mitigationSchema,
+      detectionSchema,
+      indicatorSchema,
       relationshipSchema,
       markingDefinitionSchema,
     ]),
