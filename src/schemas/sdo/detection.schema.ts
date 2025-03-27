@@ -18,3 +18,5 @@ export const detectionSchema = attackBaseObjectSchema
   .describe(
     'The detection logic and patterns used to identify malicious activities based on the collected data.',
   );
+
+export type Detection = z.infer<typeof detectionSchema>;
