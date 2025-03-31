@@ -51,7 +51,7 @@ export function getMitigations(
       }
       return null;
     })
-    .filter((mitigation): mitigation is MitigationImpl => mitigation !== null);
+    .filter((mitigation) => mitigation !== null);
 }
 
 export function getLogSources(
@@ -70,5 +70,5 @@ export function getLogSources(
       }
       return null;
     })
-    .filter((logSource): logSource is LogSourceImpl => logSource !== null);
+    .filter((logSource) => logSource !== null);
 }
