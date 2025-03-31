@@ -1,6 +1,6 @@
 import type { Relationship } from '../schemas/sro/relationship.schema.js';
 import type { AttackObject } from '../schemas/sdo/stix-bundle.schema.js';
-import type { Technique, Tactic } from '../schemas/sdo/index.js';
+import type { Technique, Tactic, Mitigation, LogSource } from '../schemas/sdo/index.js';
 import { TacticImpl } from './sdo/tactic.impl.js';
 import { MitigationImpl } from './sdo/mitigation.impl.js';
 import { LogSourceImpl } from './sdo/log-source.impl.js';
@@ -43,8 +43,10 @@ export function getMitigations(
   return relationships
     .filter((rel) => rel.relationship_type === 'mitigates' && rel.target_ref === technique.id)
     .map((rel) => {
-      const mitigation = attackObjects.find((obj) => obj.id === rel.source_ref);
-      if (mitigation && mitigation.type === 'course-of-action') {
+      const mitigation = attackObjects.find(
+        (obj): obj is Mitigation => obj.id === rel.source_ref && obj.type === 'course-of-action',
+      );
+      if (mitigation) {
         return new MitigationImpl(mitigation);
       }
       return null;
@@ -60,8 +62,10 @@ export function getLogSources(
   return relationships
     .filter((rel) => rel.relationship_type === 'detects' && rel.target_ref === technique.id)
     .map((rel) => {
-      const logSource = attackObjects.find((obj) => obj.id === rel.source_ref);
-      if (logSource && logSource.type === 'x-mitre-log-source') {
+      const logSource = attackObjects.find(
+        (obj): obj is LogSource => obj.id === rel.source_ref && obj.type === 'x-mitre-log-source',
+      );
+      if (logSource) {
         return new LogSourceImpl(logSource);
       }
       return null;
