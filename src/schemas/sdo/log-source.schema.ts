@@ -11,7 +11,7 @@ import {
 import { externalReferencesSchema, stixCreatedByRefSchema } from '../common/misc.js';
 import { createStixIdentifierSchema } from '../common/stix-identifier.js';
 import { stixTypeSchema } from '../common/stix-type.js';
-import { MitreCollectionLayersOV } from '../common/open-vocabulary.js';
+import { MitreCollectionLayerOV } from '../common/open-vocabulary.js';
 
 /////////////////////////////////////
 //
@@ -21,7 +21,7 @@ import { MitreCollectionLayersOV } from '../common/open-vocabulary.js';
 /////////////////////////////////////
 
 export const xMitreCollectionLayersSchema = z
-  .array(MitreCollectionLayersOV, {
+  .array(MitreCollectionLayerOV, {
     invalid_type_error:
       'x_mitre_collection_layers must be an array of supported collection layers.',
   })

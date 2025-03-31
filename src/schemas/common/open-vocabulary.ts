@@ -229,7 +229,7 @@ export const IndustrySectorOV = z.enum([
 ]);
 
 // Used by x_mitre_collection_layers
-export const MitreCollectionLayersOV = z.enum([
+export const MitreCollectionLayerOV = z.enum([
   'Cloud Control Plane',
   'Host',
   'Report',
