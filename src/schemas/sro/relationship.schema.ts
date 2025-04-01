@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { stixRelationshipObjectSchema } from '../common/stix-core.js';
 import {
-  createStixIdentifierSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
   descriptionSchema,
   objectMarkingRefsSchema,
   stixIdentifierSchema,
@@ -230,9 +231,9 @@ export const invalidRelationships: RelationshipCombination[] = allRelationships.
 
 export const relationshipSchema = stixRelationshipObjectSchema
   .extend({
-    id: createStixIdentifierSchema(RELATIONSHIP_TYPE),
+    id: createStixIdValidator('relationship'),
 
-    type: z.literal(RELATIONSHIP_TYPE),
+    type: createStixTypeValidator('relationship'),
 
     relationship_type: relationshipTypeSchema,
 

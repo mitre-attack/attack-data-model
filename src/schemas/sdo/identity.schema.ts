@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { stixTypeSchema } from '../common/stix-type.js';
+import { createStixTypeValidator } from '../common/stix-type.js';
 import { objectMarkingRefsSchema, xMitreDomainsSchema } from '../common/common-properties.js';
 import { attackBaseObjectSchema } from '../common/attack-base-object.js';
-import { createStixIdentifierSchema } from '../common/stix-identifier.js';
+import { createStixIdValidator } from '../common/stix-identifier.js';
 import {
   identityClassOpenVocabulary,
   industrySectorOpenVocabulary,
@@ -16,9 +16,9 @@ import {
 
 export const identitySchema = attackBaseObjectSchema
   .extend({
-    id: createStixIdentifierSchema(stixTypeSchema.enum.identity),
+    id: createStixIdValidator('identity'),
 
-    type: z.literal(stixTypeSchema.enum.identity),
+    type: createStixTypeValidator('identity'),
 
     object_marking_refs: objectMarkingRefsSchema,
 

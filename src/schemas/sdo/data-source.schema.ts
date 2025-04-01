@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import { attackBaseObjectSchema } from '../common/attack-base-object.js';
-import { stixTypeSchema } from '../common/stix-type.js';
+import { createStixIdValidator } from '../common/stix-identifier.js';
+import { createStixTypeValidator } from '../common/stix-type.js';
 import {
   xMitrePlatformsSchema,
   xMitreDomainsSchema,
-  createStixIdentifierSchema,
   descriptionSchema,
   xMitreModifiedByRefSchema,
   xMitreContributorsSchema,
@@ -47,9 +47,9 @@ export type XMitreCollectionLayers = z.infer<typeof xMitreCollectionLayersSchema
 
 export const dataSourceSchema = attackBaseObjectSchema
   .extend({
-    id: createStixIdentifierSchema('x-mitre-data-source'),
+    id: createStixIdValidator('x-mitre-data-source'),
 
-    type: z.literal(stixTypeSchema.enum['x-mitre-data-source']),
+    type: createStixTypeValidator('x-mitre-data-source'),
 
     // Optional in STIX but required in ATT&CK
     created_by_ref: stixCreatedByRefSchema,

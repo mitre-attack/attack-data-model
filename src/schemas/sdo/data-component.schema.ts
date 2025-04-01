@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { attackBaseObjectSchema } from '../common/attack-base-object.js';
-import { stixTypeSchema } from '../common/stix-type.js';
+import { createStixTypeValidator } from '../common/stix-type.js';
 import {
-  createStixIdentifierSchema,
+  createStixIdValidator,
   descriptionSchema,
   objectMarkingRefsSchema,
   stixCreatedByRefSchema,
@@ -17,7 +17,7 @@ import {
 //
 /////////////////////////////////////
 
-export const xMitreDataSourceRefSchema = createStixIdentifierSchema('x-mitre-data-source').describe(
+export const xMitreDataSourceRefSchema = createStixIdValidator('x-mitre-data-source').describe(
   'STIX ID of the data source this component is a part of.',
 );
 
@@ -31,9 +31,9 @@ export type XMitreDataSourceRef = z.infer<typeof xMitreDataSourceRefSchema>;
 
 export const dataComponentSchema = attackBaseObjectSchema
   .extend({
-    id: createStixIdentifierSchema('x-mitre-data-component'),
+    id: createStixIdValidator('x-mitre-data-component'),
 
-    type: z.literal(stixTypeSchema.enum['x-mitre-data-component']),
+    type: createStixTypeValidator('x-mitre-data-component'),
 
     description: descriptionSchema,
 
