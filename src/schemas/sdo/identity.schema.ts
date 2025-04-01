@@ -8,9 +8,6 @@ import {
   industrySectorOpenVocabulary,
 } from '../common/open-vocabulary.js';
 
-// TODO migrate to loading this in a globally scoped module
-import '../../errors/index.js';
-
 /////////////////////////////////////
 //
 // Identity Schema

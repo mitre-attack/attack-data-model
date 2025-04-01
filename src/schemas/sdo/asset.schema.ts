@@ -12,9 +12,6 @@ import {
   externalReferencesSchema,
 } from '../common/index.js';
 
-// Initializes the custom ZodErrorMap
-import '../../errors/index.js';
-
 /////////////////////////////////////
 //
 // MITRE Asset Sectors

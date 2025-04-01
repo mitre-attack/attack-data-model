@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { attackBaseObjectSchema } from '../common/attack-base-object.js';
-import { type StixType, stixTypeSchema } from '../common/stix-type.js';
 import {
   descriptionSchema,
   xMitrePlatformsSchema,
@@ -12,12 +11,6 @@ import {
   externalReferencesSchema,
   killChainPhaseSchema,
 } from '../common/index.js';
-
-// Initializes the custom ZodErrorMap
-import '../../errors/index.js';
-
-// read only type reference
-const TECHNIQUE_TYPE: StixType = stixTypeSchema.enum['attack-pattern'];
 
 /////////////////////////////////////
 //

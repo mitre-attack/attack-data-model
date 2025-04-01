@@ -10,9 +10,11 @@ import {
   xMitreModifiedByRefSchema,
 } from '../common/index.js';
 
-// Initializes the custom ZodErrorMap
-// TODO migrate to loading this in a globally scoped module
-import '../../errors/index.js';
+/////////////////////////////////////
+//
+// Mitigation (Course of Action) Schema
+//
+/////////////////////////////////////
 
 export const mitigationSchema = attackBaseObjectSchema
   .extend({

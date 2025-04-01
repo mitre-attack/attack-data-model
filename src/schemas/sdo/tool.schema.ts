@@ -4,10 +4,6 @@ import { softwareSchema } from './software.schema.js';
 import { createStixIdentifierSchema, killChainPhaseSchema } from '../common/index.js';
 import { ToolTypesOpenVocabulary } from '../common/open-vocabulary.js';
 
-// Initializes the custom ZodErrorMap
-// TODO migrate to loading this in a globally scoped module
-import '../../errors/index.js';
-
 /////////////////////////////////////
 //
 // Tool Schema

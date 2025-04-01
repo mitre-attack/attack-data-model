@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { stixSpecVersionSchema } from '../common/index.js';
-import { stixTypeSchema } from '../common/stix-type.js';
 import { createStixIdentifierSchema } from '../common/stix-identifier.js';
 import { type Malware, malwareSchema } from './malware.schema.js';
 import { type Asset, assetSchema } from './asset.schema.js';
@@ -20,10 +19,6 @@ import {
   type MarkingDefinition,
   markingDefinitionSchema,
 } from '../smo/marking-definition.schema.js';
-
-import '../../errors/index.js';
-
-const STIX_BUNDLE_TYPE = stixTypeSchema.enum.bundle;
 
 export type AttackObject =
   | Malware
