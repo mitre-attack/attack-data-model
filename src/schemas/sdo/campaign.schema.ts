@@ -1,17 +1,17 @@
 import { z } from 'zod';
 import { attackBaseObjectSchema } from '../common/attack-base-object.js';
 import {
-  stixTypeSchema,
   stixTimestampSchema,
   stixCreatedByRefSchema,
   descriptionSchema,
   xMitreDomainsSchema,
-  createStixIdentifierSchema,
+  createStixIdValidator,
   aliasesSchema,
   externalReferencesSchema,
   xMitreModifiedByRefSchema,
   xMitreContributorsSchema,
   objectMarkingRefsSchema,
+  createStixTypeValidator,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -84,9 +84,9 @@ export type XMitreLastSeenCitation = z.infer<typeof xMitreLastSeenCitationSchema
 
 export const campaignSchema = attackBaseObjectSchema
   .extend({
-    id: createStixIdentifierSchema(stixTypeSchema.enum.campaign),
+    id: createStixIdValidator('campaign'),
 
-    type: z.literal(stixTypeSchema.enum.campaign),
+    type: createStixTypeValidator('campaign'),
 
     description: descriptionSchema,
 

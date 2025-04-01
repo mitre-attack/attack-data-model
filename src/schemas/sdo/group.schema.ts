@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { attackBaseObjectSchema } from '../common/attack-base-object.js';
-import { stixTypeSchema } from '../common/stix-type.js';
+import { createStixTypeValidator } from '../common/stix-type.js';
 import {
   aliasesSchema,
-  createStixIdentifierSchema,
+  createStixIdValidator,
   externalReferencesSchema,
   stixTimestampSchema,
   xMitreDomainsSchema,
@@ -14,9 +14,9 @@ import { AttackMotivationOV, AttackResourceLevelOV } from '../common/open-vocabu
 // Group Schema
 export const groupSchema = attackBaseObjectSchema
   .extend({
-    id: createStixIdentifierSchema(stixTypeSchema.enum['intrusion-set']),
+    id: createStixIdValidator('intrusion-set'),
 
-    type: z.literal(stixTypeSchema.enum['intrusion-set']),
+    type: createStixTypeValidator('intrusion-set'),
 
     // Not used in ATT&CK Group but defined in STIX
     description: z

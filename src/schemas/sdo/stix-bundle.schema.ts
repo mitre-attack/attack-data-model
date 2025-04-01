@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { stixSpecVersionSchema } from '../common/index.js';
-import { stixTypeSchema } from '../common/stix-type.js';
-import { createStixIdentifierSchema } from '../common/stix-identifier.js';
+import { createStixTypeValidator } from '../common/stix-type.js';
+import { createStixIdValidator } from '../common/stix-identifier.js';
 import { type Malware, malwareSchema } from './malware.schema.js';
 import { type Asset, assetSchema } from './asset.schema.js';
 import { type Campaign, campaignSchema } from './campaign.schema.js';
@@ -78,8 +78,8 @@ export type AttackObjects = z.infer<typeof attackObjectsSchema>;
 /////////////////////////////////////
 
 export const baseStixBundleSchema = z.object({
-  id: createStixIdentifierSchema(STIX_BUNDLE_TYPE),
-  type: z.literal(STIX_BUNDLE_TYPE),
+  id: createStixIdValidator('bundle'),
+  type: createStixTypeValidator('bundle'),
   spec_version: stixSpecVersionSchema,
   objects: attackObjectsSchema,
 });

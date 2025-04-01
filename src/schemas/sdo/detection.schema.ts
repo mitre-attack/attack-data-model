@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { attackBaseObjectSchema } from '../common/attack-base-object.js';
-import { createStixIdentifierSchema } from '../common/stix-identifier.js';
-import { stixTypeSchema } from '../common/stix-type.js';
+import { createStixIdValidator } from '../common/stix-identifier.js';
+import { createStixTypeValidator } from '../common/stix-type.js';
 
 /////////////////////////////////////
 //
@@ -11,8 +11,8 @@ import { stixTypeSchema } from '../common/stix-type.js';
 
 export const detectionSchema = attackBaseObjectSchema
   .extend({
-    id: createStixIdentifierSchema('x-mitre-detection'),
-    type: z.literal(stixTypeSchema.enum['x-mitre-detection']),
+    id: createStixIdValidator('x-mitre-detection'),
+    type: createStixTypeValidator('x-mitre-detection'),
     name: z.string(),
   })
   .describe(

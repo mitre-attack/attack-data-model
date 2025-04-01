@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { attackBaseObjectSchema } from '../common/attack-base-object.js';
-import { type StixType, stixTypeSchema } from '../common/stix-type.js';
 import {
+  attackBaseObjectSchema,
   descriptionSchema,
   xMitrePlatformsSchema,
   attackDomainSchema,
-  createStixIdentifierSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
   xMitreModifiedByRefSchema,
   xMitreDomainsSchema,
   xMitreContributorsSchema,
@@ -272,9 +272,9 @@ export type XMitreDetection = z.infer<typeof xMitreDetectionSchema>;
 
 export const techniqueSchema = attackBaseObjectSchema
   .extend({
-    id: createStixIdentifierSchema(TECHNIQUE_TYPE),
+    id: createStixIdValidator('attack-pattern'),
 
-    type: z.literal(TECHNIQUE_TYPE),
+    type: createStixTypeValidator('attack-pattern'),
 
     // Optional in STIX but required in ATT&CK
     external_references: externalReferencesSchema,

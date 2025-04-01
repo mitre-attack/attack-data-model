@@ -9,8 +9,8 @@ import {
   xMitrePlatformsSchema,
 } from '../common/common-properties.js';
 import { externalReferencesSchema, stixCreatedByRefSchema } from '../common/misc.js';
-import { createStixIdentifierSchema } from '../common/stix-identifier.js';
-import { stixTypeSchema } from '../common/stix-type.js';
+import { createStixIdValidator } from '../common/stix-identifier.js';
+import { createStixTypeValidator } from '../common/stix-type.js';
 import { MitreCollectionLayerOV } from '../common/open-vocabulary.js';
 
 /////////////////////////////////////
@@ -38,9 +38,9 @@ export type XMitreCollectionLayers = z.infer<typeof xMitreCollectionLayersSchema
 
 export const logSourceSchema = attackBaseObjectSchema
   .extend({
-    id: createStixIdentifierSchema('x-mitre-log-source'),
+    id: createStixIdValidator('x-mitre-log-source'),
 
-    type: z.literal(stixTypeSchema.enum['x-mitre-log-source']),
+    type: createStixTypeValidator('x-mitre-log-source'),
 
     // Optional in STIX but required in ATT&CK
     created_by_ref: stixCreatedByRefSchema,

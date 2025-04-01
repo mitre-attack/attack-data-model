@@ -3,6 +3,8 @@ import { stixTimestampSchema } from '../common/stix-timestamp.js';
 import { killChainPhaseSchema } from '../common/common-properties.js';
 import { attackBaseObjectSchema } from '../common/attack-base-object.js';
 import { PatternTypeOV, IndicatorTypeOV } from '../common/open-vocabulary.js';
+import { createStixIdValidator } from '../common/stix-identifier.js';
+import { createStixTypeValidator } from '../common/stix-type.js';
 
 /////////////////////////////////////
 //
@@ -12,6 +14,10 @@ import { PatternTypeOV, IndicatorTypeOV } from '../common/open-vocabulary.js';
 
 export const indicatorSchema = attackBaseObjectSchema
   .extend({
+    id: createStixIdValidator('indicator'),
+
+    type: createStixTypeValidator('indicator'),
+
     name: z
       .string()
       .optional()
