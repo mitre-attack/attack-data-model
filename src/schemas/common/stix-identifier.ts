@@ -21,7 +21,8 @@ const createStixIdError = (id: string, errorType: 'format' | 'type' | 'uuid'): z
   const stixType = parts.length > 0 ? parts[0] : '';
 
   // Get a readable type name if available
-  const typeName = stixType in stixTypeToTypeName ? stixTypeToTypeName[stixType] : 'STIX';
+  const typeName =
+    stixType in stixTypeToTypeName ? stixTypeToTypeName[stixType as StixType] : 'STIX';
 
   let message: string;
 
