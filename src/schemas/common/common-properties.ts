@@ -202,7 +202,7 @@ export type XMitreDeprecated = z.infer<typeof xMitreDeprecatedSchema>;
 
 const supportedMitrePlatforms = [
   'Field Controller/RTU/PLC/IED',
-  'Network',
+  'Network Devices',
   'Data Historian',
   'Google Workspace',
   'Office 365',
