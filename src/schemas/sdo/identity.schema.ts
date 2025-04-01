@@ -5,9 +5,6 @@ import { attackBaseObjectSchema } from '../common/attack-base-object.js';
 import { createStixIdentifierSchema } from '../common/stix-identifier.js';
 import { IdentityClassOV, IndustrySectorOV } from '../common/open-vocabulary.js';
 
-// TODO migrate to loading this in a globally scoped module
-import '../../errors';
-
 /////////////////////////////////////
 //
 // Identity Schema

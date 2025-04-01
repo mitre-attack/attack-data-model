@@ -9,10 +9,6 @@ import {
   xMitreDomainsSchema,
   externalReferencesSchema,
 } from '../common/index.js';
-import { stixTypeSchema } from '../common/stix-type.js';
-
-// Initializes the custom ZodErrorMap
-import '../../errors';
 
 /////////////////////////////////////
 //

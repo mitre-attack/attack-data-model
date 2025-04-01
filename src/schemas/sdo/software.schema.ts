@@ -12,10 +12,6 @@ import {
   stixTypeSchema,
 } from '../common/index.js';
 
-// Initializes the custom ZodErrorMap
-// TODO migrate to loading this in a globally scoped module
-import '../../errors';
-
 /////////////////////////////////////
 //
 // Software Schema

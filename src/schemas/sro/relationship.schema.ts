@@ -14,12 +14,6 @@ import {
   xMitreVersionSchema,
 } from '../common/index.js';
 
-// Initializes the custom ZodErrorMap
-import '../../errors';
-
-// read only type reference
-const RELATIONSHIP_TYPE: StixType = stixTypeSchema.enum.relationship;
-
 /////////////////////////////////////
 //
 // Relationship Types

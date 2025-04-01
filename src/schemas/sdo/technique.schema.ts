@@ -13,12 +13,6 @@ import {
   killChainPhaseSchema,
 } from '../common/index.js';
 
-// Initializes the custom ZodErrorMap
-import '../../errors';
-
-// read only type reference
-const TECHNIQUE_TYPE: StixType = stixTypeSchema.enum['attack-pattern'];
-
 /////////////////////////////////////
 //
 // MITRE Network Requirements (x_mitre_network_requirements)

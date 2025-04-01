@@ -23,10 +23,6 @@ import {
   markingDefinitionSchema,
 } from '../smo/marking-definition.schema.js';
 
-import '../../errors';
-
-const STIX_BUNDLE_TYPE = stixTypeSchema.enum.bundle;
-
 export type AttackObject =
   | Malware
   | Asset

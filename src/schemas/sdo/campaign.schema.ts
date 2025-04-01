@@ -14,8 +14,6 @@ import {
   objectMarkingRefsSchema,
 } from '../common/index.js';
 
-import '../../errors';
-
 /////////////////////////////////////
 //
 // Mitre Citations
