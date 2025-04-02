@@ -6,25 +6,26 @@ This document tracks the compatibility between versions of the ATT&CK® Data Mod
 
 | ADM Version (`@mitre-attack/attack-data-model`) | ATT&CK Specification Version (`ATTACK_SPEC_VERSION`) | Supported ATT&CK Releases (`mitre-attack/attack-stix-data`) |
 |-------------------------------------------------|------------------------------------------------------|-------------------------------------------------------------|
-| 1.0.0                                           | 3.2.0                                                | 15.1                                                        |
+| 1.0.0                                           | 3.2.0                                                | 15.1, 16.1                                                  |
+| 2.0.0                                           | 4.0.0                                                | 17.0                                                        |
 
 <sup>1</sup>Other versions of ATT&CK or the ATT&CK Specification may work with the specified ADM release, but are not officially supported.
 
 ## Compatibility Details
 
-- **ADM Version 1.0.0**: Officially supports ATT&CK Specification Version **3.2.0** and ATT&CK Release Version **15.1**.
+- **ADM Version 2.0.0**: Officially supports ATT&CK Specification Version **4.0.0** and ATT&CK Release Version **17.x**.
   - **Features**:
-    - Full parsing and validation support for all objects and properties defined in the ATT&CK Specification v3.2.0.
-    - Supports all content introduced in ATT&CK Release v15.1, including new techniques, tactics, and relationships.
+    - Full parsing and validation support for all objects and properties defined in the ATT&CK Specification v4.0.0.
+    - Supports all content introduced in ATT&CK Release v17.x, including new techniques, tactics, and relationships.
   - **Notes**:
     - Ensure that you are using the correct domain (e.g., `enterprise-attack`, `mobile-attack`) when loading data to avoid inconsistencies.
-    - The ADM's Zod schemas and TypeScript types are aligned with the ATT&CK Specification v3.2.0, providing a codified expression of the specification.
+    - The ADM's Zod schemas and TypeScript types are aligned with the ATT&CK Specification v4.0.0, providing a codified expression of the specification.
 
 ## Using Other Versions
 
 While the ADM may function with other versions of the ATT&CK dataset or ATT&CK Specification, the following considerations apply:
 
-- **Older ATT&CK Releases**: May lack properties or objects that the ADM expects based on the ATT&CK Specification v3.2.0, potentially causing validation errors or missing data when parsing.
+- **Older ATT&CK Releases**: May lack properties or objects that the ADM expects based on the latest ATT&CK Specification, potentially causing validation errors or missing data when parsing.
 - **Newer ATT&CK Releases**: May introduce new objects or properties not recognized by the current ADM version, leading to incomplete data mapping or parsing failures.
 - **Different ATT&CK Specification Versions**: Using a different specification version may result in discrepancies between the expected and actual data model, affecting validation and data integrity.
 
