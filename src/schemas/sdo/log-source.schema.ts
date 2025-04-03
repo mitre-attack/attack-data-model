@@ -1,17 +1,17 @@
 import { z } from 'zod';
 import { attackBaseObjectSchema } from '../common/attack-base-object.js';
-import { stixTypeSchema } from '../common/stix-type.js';
 import {
-  xMitrePlatformsSchema,
-  xMitreDomainsSchema,
-  createStixIdentifierSchema,
   descriptionSchema,
-  xMitreModifiedByRefSchema,
-  xMitreContributorsSchema,
   objectMarkingRefsSchema,
-  externalReferencesSchema,
-  stixCreatedByRefSchema,
-} from '../common/index.js';
+  xMitreContributorsSchema,
+  xMitreDomainsSchema,
+  xMitreModifiedByRefSchema,
+  xMitrePlatformsSchema,
+} from '../common/common-properties.js';
+import { externalReferencesSchema, stixCreatedByRefSchema } from '../common/misc.js';
+import { createStixIdValidator } from '../common/stix-identifier.js';
+import { createStixTypeValidator } from '../common/stix-type.js';
+import { MitreCollectionLayerOV } from '../common/open-vocabulary.js';
 
 /////////////////////////////////////
 //
@@ -20,18 +20,8 @@ import {
 //
 /////////////////////////////////////
 
-const supportedMitreCollectionLayers = [
-  'Cloud Control Plane',
-  'Host',
-  'Report',
-  'Container',
-  'Device',
-  'OSINT',
-  'Network',
-] as const;
-
 export const xMitreCollectionLayersSchema = z
-  .array(z.enum(supportedMitreCollectionLayers), {
+  .array(MitreCollectionLayerOV, {
     invalid_type_error:
       'x_mitre_collection_layers must be an array of supported collection layers.',
   })
@@ -41,22 +31,22 @@ export type XMitreCollectionLayers = z.infer<typeof xMitreCollectionLayersSchema
 
 /////////////////////////////////////
 //
-// MITRE Data Source
+// MITRE Log Source SDO
+// (x-mitre-log-source)
 //
 /////////////////////////////////////
 
-export const dataSourceSchema = attackBaseObjectSchema
+export const logSourceSchema = attackBaseObjectSchema
   .extend({
-    id: createStixIdentifierSchema('x-mitre-data-source'),
+    id: createStixIdValidator('x-mitre-log-source'),
 
-    type: z.literal(stixTypeSchema.enum['x-mitre-data-source']),
+    type: createStixTypeValidator('x-mitre-log-source'),
 
     // Optional in STIX but required in ATT&CK
     created_by_ref: stixCreatedByRefSchema,
 
     description: descriptionSchema,
 
-    // Optional in STIX but required in ATT&CK
     external_references: externalReferencesSchema,
 
     // Optional in STIX but required in ATT&CK
@@ -98,5 +88,4 @@ export const dataSourceSchema = attackBaseObjectSchema
     }
   });
 
-// Define the type for DataSource
-export type DataSource = z.infer<typeof dataSourceSchema>;
+export type LogSource = z.infer<typeof logSourceSchema>;

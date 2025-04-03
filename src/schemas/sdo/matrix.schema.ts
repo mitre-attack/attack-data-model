@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { attackBaseObjectSchema } from '../common/attack-base-object.js';
-import { stixTypeSchema } from '../common/stix-type.js';
+import { createStixTypeValidator } from '../common/stix-type.js';
 import {
-  createStixIdentifierSchema,
+  createStixIdValidator,
   descriptionSchema,
   externalReferencesSchema,
   objectMarkingRefsSchema,
@@ -19,7 +19,7 @@ import {
 /////////////////////////////////////
 
 export const xMitreTacticRefsSchema = z
-  .array(createStixIdentifierSchema('x-mitre-tactic'))
+  .array(createStixIdValidator('x-mitre-tactic'))
   .describe(
     'An ordered list of x-mitre-tactic STIX IDs corresponding to the tactics of the matrix. The order determines the appearance within the matrix.',
   );
@@ -34,9 +34,9 @@ export type XMitreTacticRefs = z.infer<typeof xMitreTacticRefsSchema>;
 
 export const matrixSchema = attackBaseObjectSchema
   .extend({
-    id: createStixIdentifierSchema('x-mitre-matrix'),
+    id: createStixIdValidator('x-mitre-matrix'),
 
-    type: z.literal(stixTypeSchema.enum['x-mitre-matrix']),
+    type: createStixTypeValidator('x-mitre-matrix'),
 
     // Optional in STIX but required in ATT&CK
     created_by_ref: stixCreatedByRefSchema,

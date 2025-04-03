@@ -1,56 +1,95 @@
 import { z } from 'zod';
-import { stixTypeSchema, type StixType } from './stix-type.js';
+import { stixTypeSchema, type StixType, stixTypeToTypeName } from './stix-type.js';
 
 // Define the STIX Identifier type
 type StixIdentifier = `${StixType}--${string}`;
 
-// Custom error messages
-const StixIdentifierError = {
-  InvalidFormat: {
-    code: z.ZodIssueCode.custom,
-    message: "Invalid STIX Identifier: must comply with format 'type--UUIDv4'",
-  },
-  InvalidType: {
-    code: z.ZodIssueCode.custom,
-    message: 'Invalid STIX Identifier: must contain a valid STIX type',
-  },
-  InvalidUuid: {
-    code: z.ZodIssueCode.custom,
-    message: 'Invalid STIX Identifier: must contain a valid UUIDv4',
-  },
-};
-
-// Helper function to validate UUID
+/**
+ * Helper function to validate UUID
+ * Validates that the string is a valid UUIDv4
+ */
 const isValidUuid = (uuid: string): boolean => {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(uuid);
 };
 
+/**
+ * Helper function to create descriptive error messages for STIX ID validation failures
+ */
+const createStixIdError = (id: string, errorType: 'format' | 'type' | 'uuid'): z.ZodIssue => {
+  // Extract the STIX type from the ID if possible
+  const parts = id.split('--');
+  const stixType = parts.length > 0 ? parts[0] : '';
+
+  // Get a readable type name if available
+  const typeName =
+    stixType in stixTypeToTypeName ? stixTypeToTypeName[stixType as StixType] : 'STIX';
+
+  let message: string;
+
+  switch (errorType) {
+    case 'format':
+      message = `Invalid STIX Identifier for ${typeName} object: must comply with format 'type--UUIDv4'`;
+      break;
+    case 'type':
+      message = `Invalid STIX Identifier for ${typeName} object: contains invalid STIX type '${stixType}'`;
+      break;
+    case 'uuid':
+      message = `Invalid STIX Identifier for ${typeName} object: contains invalid UUIDv4 format`;
+      break;
+  }
+
+  return {
+    code: z.ZodIssueCode.custom,
+    message,
+    path: ['id'],
+  };
+};
+
 // Base STIX Identifier Schema
 export const stixIdentifierSchema = z
-  .custom<StixIdentifier>(
+  .string()
+  .refine(
     (val): val is StixIdentifier => {
       if (typeof val !== 'string') return false;
+
+      // Check basic format
+      if (!val.includes('--')) return false;
+
       const [type, uuid] = val.split('--');
-      return stixTypeSchema.safeParse(type).success && isValidUuid(uuid);
+
+      // Validate STIX type
+      const isValidType = stixTypeSchema.safeParse(type).success;
+
+      // Validate UUID
+      const isValidUuidValue = isValidUuid(uuid);
+
+      return isValidType && isValidUuidValue;
     },
-    {
-      message: 'Invalid STIX Identifier',
-    },
-  )
-  .refine(
     (val) => {
+      // If it's not a string, return general format error
+      if (typeof val !== 'string') {
+        return createStixIdError(String(val), 'format');
+      }
+
+      // Check if it has the basic format with --
+      if (!val.includes('--')) {
+        return createStixIdError(val, 'format');
+      }
+
       const [type, uuid] = val.split('--');
-      return stixTypeSchema.safeParse(type).success && isValidUuid(uuid);
-    },
-    (val) => {
-      const [type, uuid] = val.split('--');
+
+      // Check STIX type validity
       if (!stixTypeSchema.safeParse(type).success) {
-        return StixIdentifierError.InvalidType;
+        return createStixIdError(val, 'type');
       }
+
+      // Check UUID validity
       if (!isValidUuid(uuid)) {
-        return StixIdentifierError.InvalidUuid;
+        return createStixIdError(val, 'uuid');
       }
-      return StixIdentifierError.InvalidFormat;
+
+      // This shouldn't be reached, but just in case
+      return createStixIdError(val, 'format');
     },
   )
   .describe(
@@ -58,13 +97,15 @@ export const stixIdentifierSchema = z
   );
 
 // Type-specific STIX Identifier Schema
-export function createStixIdentifierSchema<T extends StixType>(expectedType: T) {
+export function createStixIdValidator<T extends StixType>(expectedType: T) {
   type TypeSpecificStixIdentifier = `${T}--${string}`;
+
+  const typeName = stixTypeToTypeName[expectedType] || expectedType;
 
   return stixIdentifierSchema.refine(
     (val): val is TypeSpecificStixIdentifier => val.startsWith(`${expectedType}--`),
     {
-      message: `Invalid STIX Identifier: must start with '${expectedType}--'`,
+      message: `Invalid STIX Identifier for ${typeName}: must start with '${expectedType}--'`,
       path: ['id'],
     },
   );

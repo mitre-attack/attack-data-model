@@ -9,12 +9,8 @@ import {
   aliasesSchema,
   xMitreModifiedByRefSchema,
   externalReferencesSchema,
-  stixTypeSchema,
+  createMultiStixTypeValidator,
 } from '../common/index.js';
-
-// Initializes the custom ZodErrorMap
-// TODO migrate to loading this in a globally scoped module
-import '../../errors';
 
 /////////////////////////////////////
 //
@@ -23,7 +19,7 @@ import '../../errors';
 /////////////////////////////////////
 
 export const softwareSchema = attackBaseObjectSchema.extend({
-  type: z.union([z.literal(stixTypeSchema.enum.malware), z.literal(stixTypeSchema.enum.tool)]),
+  type: createMultiStixTypeValidator(['malware', 'tool']),
 
   created_by_ref: stixCreatedByRefSchema.describe(
     'The ID of the Source object that describes who created this object.',

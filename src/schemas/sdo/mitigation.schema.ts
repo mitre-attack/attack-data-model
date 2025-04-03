@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { attackBaseObjectSchema } from '../common/attack-base-object.js';
-import { stixTypeSchema } from '../common/stix-type.js';
+import { createStixTypeValidator } from '../common/stix-type.js';
 import {
-  createStixIdentifierSchema,
+  createStixIdValidator,
   externalReferencesSchema,
   objectMarkingRefsSchema,
   stixCreatedByRefSchema,
@@ -10,15 +10,17 @@ import {
   xMitreModifiedByRefSchema,
 } from '../common/index.js';
 
-// Initializes the custom ZodErrorMap
-// TODO migrate to loading this in a globally scoped module
-import '../../errors';
+/////////////////////////////////////
+//
+// Mitigation (Course of Action) Schema
+//
+/////////////////////////////////////
 
 export const mitigationSchema = attackBaseObjectSchema
   .extend({
-    id: createStixIdentifierSchema(stixTypeSchema.enum['course-of-action']),
+    id: createStixIdValidator('course-of-action'),
 
-    type: z.literal(stixTypeSchema.enum['course-of-action']),
+    type: createStixTypeValidator('course-of-action'),
 
     // Optional in STIX but required in ATT&CK
     created_by_ref: stixCreatedByRefSchema,

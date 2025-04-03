@@ -14,7 +14,7 @@ import {
   matrixSchema,
   mitigationSchema,
   relationshipSchema,
-  dataSourceSchema,
+  logSourceSchema,
   dataComponentSchema,
   groupSchema,
   malwareSchema,
@@ -30,9 +30,6 @@ import {
   type ParsingMode,
 } from './data-sources/data-source-registration.js';
 import { AttackDataModel } from './classes/attack-data-model.js';
-
-// Initializes the custom ZodErrorMap
-import './errors';
 
 const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
 const readFile = promisify(fs.readFile);
@@ -219,8 +216,8 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
       case 'x-mitre-data-component':
         objParseResult = dataComponentSchema.safeParse(obj);
         break;
-      case 'x-mitre-data-source':
-        objParseResult = dataSourceSchema.safeParse(obj);
+      case 'x-mitre-log-source':
+        objParseResult = logSourceSchema.safeParse(obj);
         break;
       case 'intrusion-set':
         objParseResult = groupSchema.safeParse(obj);

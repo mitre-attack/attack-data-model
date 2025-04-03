@@ -1,12 +1,11 @@
 import { z } from 'zod';
-import { stixTypeSchema } from '../common/stix-type.js';
 import { softwareSchema } from './software.schema.js';
-import { createStixIdentifierSchema, killChainPhaseSchema } from '../common/index.js';
-import { ToolTypesOpenVocabulary } from '../common/open-vocabulary.js';
-
-// Initializes the custom ZodErrorMap
-// TODO migrate to loading this in a globally scoped module
-import '../../errors';
+import {
+  createStixIdValidator,
+  createStixTypeValidator,
+  killChainPhaseSchema,
+} from '../common/index.js';
+import { ToolTypeOV } from '../common/open-vocabulary.js';
 
 /////////////////////////////////////
 //
@@ -16,15 +15,12 @@ import '../../errors';
 
 export const toolSchema = softwareSchema
   .extend({
-    id: createStixIdentifierSchema(stixTypeSchema.enum.tool),
+    id: createStixIdValidator('tool'),
 
-    type: z.literal(stixTypeSchema.enum.tool),
+    type: createStixTypeValidator('tool'),
 
     // Not used in ATT&CK Tool but defined in STIX
-    tool_types: z
-      .array(ToolTypesOpenVocabulary)
-      .optional()
-      .describe('The kind(s) of tool(s) being described.'),
+    tool_types: z.array(ToolTypeOV).optional().describe('The kind(s) of tool(s) being described.'),
 
     // Not used in ATT&CK Tool but defined in STIX
     kill_chain_phases: z

@@ -3,17 +3,14 @@ import {
   attackBaseObjectSchema,
   descriptionSchema,
   xMitrePlatformsSchema,
-  stixTypeSchema,
   xMitreDomainsSchema,
-  createStixIdentifierSchema,
+  createStixIdValidator,
   xMitreContributorsSchema,
   xMitreModifiedByRefSchema,
   objectMarkingRefsSchema,
   externalReferencesSchema,
+  createStixTypeValidator,
 } from '../common/index.js';
-
-// Initializes the custom ZodErrorMap
-import '../../errors';
 
 /////////////////////////////////////
 //
@@ -73,9 +70,9 @@ export type RelatedAssets = z.infer<typeof relatedAssetsSchema>;
 
 export const assetSchema = attackBaseObjectSchema
   .extend({
-    id: createStixIdentifierSchema('x-mitre-asset'),
+    id: createStixIdValidator('x-mitre-asset'),
 
-    type: z.literal(stixTypeSchema.enum['x-mitre-asset']),
+    type: createStixTypeValidator('x-mitre-asset'),
 
     description: descriptionSchema.optional(),
 

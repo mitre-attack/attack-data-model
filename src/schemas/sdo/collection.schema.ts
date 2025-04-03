@@ -1,13 +1,13 @@
 import { z } from 'zod';
 import {
   attackBaseObjectSchema,
-  createStixIdentifierSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
   descriptionSchema,
   objectMarkingRefsSchema,
   stixCreatedByRefSchema,
   stixIdentifierSchema,
   stixModifiedTimestampSchema,
-  stixTypeSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -40,9 +40,9 @@ export type ObjectVersionReference = z.infer<typeof objectVersionReferenceSchema
 
 export const collectionSchema = attackBaseObjectSchema
   .extend({
-    id: createStixIdentifierSchema('x-mitre-collection'),
+    id: createStixIdValidator('x-mitre-collection'),
 
-    type: z.literal(stixTypeSchema.enum['x-mitre-collection']),
+    type: createStixTypeValidator('x-mitre-collection'),
 
     // Optional in STIX but required in ATT&CK
     created_by_ref: stixCreatedByRefSchema,

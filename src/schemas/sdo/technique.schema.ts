@@ -1,23 +1,17 @@
 import { z } from 'zod';
-import { attackBaseObjectSchema } from '../common/attack-base-object.js';
-import { type StixType, stixTypeSchema } from '../common/stix-type.js';
 import {
+  attackBaseObjectSchema,
   descriptionSchema,
   xMitrePlatformsSchema,
   attackDomainSchema,
-  createStixIdentifierSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
   xMitreModifiedByRefSchema,
   xMitreDomainsSchema,
   xMitreContributorsSchema,
   externalReferencesSchema,
   killChainPhaseSchema,
 } from '../common/index.js';
-
-// Initializes the custom ZodErrorMap
-import '../../errors';
-
-// read only type reference
-const TECHNIQUE_TYPE: StixType = stixTypeSchema.enum['attack-pattern'];
 
 /////////////////////////////////////
 //
@@ -126,37 +120,37 @@ export type XMitrePermissionsRequired = z.infer<typeof xMitrePermissionsRequired
 
 /////////////////////////////////////
 //
-// MITRE Data Sources (x_mitre_data_sources)
+// MITRE Log Sources (x_mitre_log_sources)
 //
 /////////////////////////////////////
 
-// a singular data source
-type DataSourceString = `${string}: ${string}`;
+// a singular log source
+type LogSourceString = `${string}: ${string}`;
 
-export const xMitreDataSourceSchema = z
-  .custom<DataSourceString>(
-    (value): value is DataSourceString => {
+export const xMitreLogSourceSchema = z
+  .custom<LogSourceString>(
+    (value): value is LogSourceString => {
       if (typeof value !== 'string') return false;
       const parts = value.split(':');
       return parts.length === 2 && parts[0].trim() !== '' && parts[1].trim() !== '';
     },
     {
-      message: "Each entry must conform to the pattern '<Data Source Name>: <Data Component Name>'",
+      message: "Each entry must conform to the pattern '<Log Source Name>: <Data Component Name>'",
     },
   )
-  .describe("A single data source in the format 'Data Source Name: Data Component Name'.");
+  .describe("A single log source in the format 'Log Source Name: Data Component Name'.");
 
-// list of data sources
-export const xMitreDataSourcesSchema = z
-  .array(xMitreDataSourceSchema, {
-    invalid_type_error: 'x_mitre_data_sources must be an array of strings.',
+// list of log sources
+export const xMitreLogSourcesSchema = z
+  .array(xMitreLogSourceSchema, {
+    invalid_type_error: 'x_mitre_log_sources must be an array of strings.',
   })
   .describe(
     'Sources of information that may be used to identify the action or result of the action being performed.',
   );
 
-export type XMitreDataSource = z.infer<typeof xMitreDataSourceSchema>;
-export type XMitreDataSources = z.infer<typeof xMitreDataSourcesSchema>;
+export type XMitreLogSource = z.infer<typeof xMitreLogSourceSchema>;
+export type XMitreLogSources = z.infer<typeof xMitreLogSourcesSchema>;
 
 /////////////////////////////////////
 //
@@ -278,9 +272,9 @@ export type XMitreDetection = z.infer<typeof xMitreDetectionSchema>;
 
 export const techniqueSchema = attackBaseObjectSchema
   .extend({
-    id: createStixIdentifierSchema(TECHNIQUE_TYPE),
+    id: createStixIdValidator('attack-pattern'),
 
-    type: z.literal(TECHNIQUE_TYPE),
+    type: createStixTypeValidator('attack-pattern'),
 
     // Optional in STIX but required in ATT&CK
     external_references: externalReferencesSchema,
@@ -295,7 +289,7 @@ export const techniqueSchema = attackBaseObjectSchema
 
     x_mitre_is_subtechnique: xMitreIsSubtechniqueSchema,
 
-    x_mitre_data_sources: xMitreDataSourcesSchema.optional(),
+    x_mitre_log_sources: xMitreLogSourcesSchema.optional(),
 
     x_mitre_defense_bypassed: xMitreDefenseBypassesSchema.optional(),
 
@@ -346,7 +340,7 @@ export const techniqueSchema = attackBaseObjectSchema
       x_mitre_impact_type,
       x_mitre_is_subtechnique,
       x_mitre_tactic_type,
-      x_mitre_data_sources,
+      x_mitre_log_sources,
     } = schema;
 
     // Helper variables for domain checks
@@ -452,10 +446,10 @@ export const techniqueSchema = attackBaseObjectSchema
       });
     }
 
-    if (x_mitre_data_sources && inMobileDomain) {
+    if (x_mitre_log_sources && inMobileDomain) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "x_mitre_data_sources is not supported in the 'mobile-attack' domain.",
+        message: "x_mitre_log_sources is not supported in the 'mobile-attack' domain.",
       });
     }
   });

@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { stixTypeSchema } from '../common/stix-type.js';
 import {
-  createStixIdentifierSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
   nameSchema,
   stixCreatedByRefSchema,
   stixSpecVersionSchema,
@@ -122,9 +122,9 @@ export const statementMarkingObjectSchema = z
 // MarkingDefinition Schema
 export const markingDefinitionSchema = z
   .object({
-    id: createStixIdentifierSchema(stixTypeSchema.enum['marking-definition']),
+    id: createStixIdValidator('marking-definition'),
 
-    type: z.literal(stixTypeSchema.enum['marking-definition']),
+    type: createStixTypeValidator('marking-definition'),
 
     // Listed in STIX 2.1 spec but not used in ATT&CK
     name: nameSchema.optional(),

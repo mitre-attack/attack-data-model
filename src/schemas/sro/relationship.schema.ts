@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { stixRelationshipObjectSchema } from '../common/stix-core.js';
 import {
-  createStixIdentifierSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
   descriptionSchema,
   objectMarkingRefsSchema,
   stixIdentifierSchema,
@@ -13,12 +14,6 @@ import {
   xMitreModifiedByRefSchema,
   xMitreVersionSchema,
 } from '../common/index.js';
-
-// Initializes the custom ZodErrorMap
-import '../../errors';
-
-// read only type reference
-const RELATIONSHIP_TYPE: StixType = stixTypeSchema.enum.relationship;
 
 /////////////////////////////////////
 //
@@ -36,6 +31,7 @@ const supportedRelationshipTypes = [
   'attributed-to',
   'targets',
   'revoked-by',
+  'found-in',
 ] as const;
 
 export const relationshipTypeSchema = z
@@ -54,6 +50,7 @@ export const validRelationshipObjectTypes = [
   stixTypeSchema.Enum['tool'],
   stixTypeSchema.Enum['x-mitre-data-component'],
   stixTypeSchema.Enum['x-mitre-asset'],
+  stixTypeSchema.Enum['x-mitre-log-source'],
 ];
 
 type RelationshipMap = Record<RelationshipType, { source: StixType[]; target: StixType[] }>;
@@ -95,6 +92,10 @@ const relationshipMap: RelationshipMap = {
   'revoked-by': {
     source: validRelationshipObjectTypes,
     target: validRelationshipObjectTypes,
+  },
+  'found-in': {
+    source: [stixTypeSchema.Enum['x-mitre-data-component']],
+    target: [stixTypeSchema.Enum['x-mitre-log-source']],
   },
 } as const;
 
@@ -236,9 +237,9 @@ export const invalidRelationships: RelationshipCombination[] = allRelationships.
 
 export const relationshipSchema = stixRelationshipObjectSchema
   .extend({
-    id: createStixIdentifierSchema(RELATIONSHIP_TYPE),
+    id: createStixIdValidator('relationship'),
 
-    type: z.literal(RELATIONSHIP_TYPE),
+    type: createStixTypeValidator('relationship'),
 
     relationship_type: relationshipTypeSchema,
 

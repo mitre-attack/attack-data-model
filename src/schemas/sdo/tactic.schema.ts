@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import {
   attackBaseObjectSchema,
-  createStixIdentifierSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
   descriptionSchema,
   xMitreModifiedByRefSchema,
   objectMarkingRefsSchema,
@@ -9,10 +10,6 @@ import {
   xMitreDomainsSchema,
   externalReferencesSchema,
 } from '../common/index.js';
-import { stixTypeSchema } from '../common/stix-type.js';
-
-// Initializes the custom ZodErrorMap
-import '../../errors';
 
 /////////////////////////////////////
 //
@@ -73,24 +70,15 @@ export type XMitreShortName = z.infer<typeof xMitreShortNameSchema>;
 
 /////////////////////////////////////
 //
-// Tactic ID
-//
-/////////////////////////////////////
-
-const tacticIdSchema = createStixIdentifierSchema('x-mitre-tactic');
-export type TacticId = z.infer<typeof tacticIdSchema>; // Will be "x-mitre-tactic--${string}"
-
-/////////////////////////////////////
-//
 // MITRE Tactic
 //
 /////////////////////////////////////
 
 export const tacticSchema = attackBaseObjectSchema
   .extend({
-    id: tacticIdSchema,
+    id: createStixIdValidator('x-mitre-tactic'),
 
-    type: z.literal(stixTypeSchema.enum['x-mitre-tactic']),
+    type: createStixTypeValidator('x-mitre-tactic'),
 
     description: descriptionSchema,
 
