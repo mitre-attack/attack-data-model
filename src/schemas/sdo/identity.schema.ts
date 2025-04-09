@@ -9,7 +9,7 @@ import {
 } from '../common/open-vocabulary.js';
 
 // TODO migrate to loading this in a globally scoped module
-import '../../errors';
+import '../../errors/index.js';
 
 /////////////////////////////////////
 //

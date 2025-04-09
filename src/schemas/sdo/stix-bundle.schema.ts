@@ -21,7 +21,7 @@ import {
   markingDefinitionSchema,
 } from '../smo/marking-definition.schema.js';
 
-import '../../errors';
+import '../../errors/index.js';
 
 const STIX_BUNDLE_TYPE = stixTypeSchema.enum.bundle;
 
