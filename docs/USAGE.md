@@ -49,6 +49,41 @@ npm config list
 npm install @mitre-attack/attack-data-model
 ```
 
+## Module Format Support
+
+The ATT&CK Data Model is built using [tsup](https://github.com/egoist/tsup), which compiles the TypeScript code to both ESM (ECMAScript Modules) and CJS (CommonJS) formats. This dual-format approach allows the library to be used in various JavaScript environments:
+
+- **ESM**: Modern environments that support ES modules (Node.js with `"type": "module"` in package.json, or modern bundlers like Webpack, Rollup, etc.)
+- **CJS**: Traditional Node.js applications and environments that use CommonJS modules (Node.js with `"type": "commonjs"` in package.json)
+
+### ESM Usage Example
+
+```javascript
+// In a package with "type": "module" in package.json
+import { AttackDataModel } from '@mitre-attack/attack-data-model';
+
+// Create an instance with a UUID and an empty array of attack objects
+const uuid = "my-unique-id";
+const attackObjects = [];
+const attackDataModel = new AttackDataModel(uuid, attackObjects);
+
+console.log('AttackDataModel instance created with UUID:', attackDataModel.getUuid());
+```
+
+### CommonJS Usage Example
+
+```javascript
+// In a package with "type": "commonjs" in package.json
+const { AttackDataModel } = require('@mitre-attack/attack-data-model');
+
+// Create an instance with a UUID and an empty array of attack objects
+const uuid = "my-unique-id";
+const attackObjects = [];
+const attackDataModel = new AttackDataModel(uuid, attackObjects);
+
+console.log('AttackDataModel instance created with UUID:', attackDataModel.getUuid());
+```
+
 ## Package Structure
 
 Understanding the package structure will help you locate and use various components of the API effectively.
