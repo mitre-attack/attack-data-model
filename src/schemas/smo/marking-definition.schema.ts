@@ -6,7 +6,6 @@ import {
   stixCreatedByRefSchema,
   stixSpecVersionSchema,
   stixTimestampSchema,
-  xMitreAttackSpecVersionSchema,
   xMitreDomainsSchema,
 } from '../common/index.js';
 
@@ -161,8 +160,6 @@ export const markingDefinitionSchema = z
 
     // TODO flagged for removal in ATT&CK Release x.y.z
     x_mitre_domains: xMitreDomainsSchema,
-
-    x_mitre_attack_spec_version: xMitreAttackSpecVersionSchema,
   })
   .strict();
 
