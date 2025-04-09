@@ -38,28 +38,79 @@ export type AttackObject =
   | Relationship
   | MarkingDefinition;
 
+// Create a schema mapping object to map types to their schemas
+const schemaMap = {
+  malware: malwareSchema,
+  'x-mitre-asset': assetSchema,
+  campaign: campaignSchema,
+  'x-mitre-collection': collectionSchema,
+  'x-mitre-data-component': dataComponentSchema,
+  'x-mitre-data-source': dataSourceSchema,
+  identity: identitySchema,
+  'x-mitre-matrix': matrixSchema,
+  tool: toolSchema,
+  'x-mitre-tactic': tacticSchema,
+  'attack-pattern': techniqueSchema,
+  'intrusion-set': groupSchema,
+  'course-of-action': mitigationSchema,
+  relationship: relationshipSchema,
+  'marking-definition': markingDefinitionSchema,
+};
+
 // IMPORTANT: Casting the 'attackObjectsSchema' to 'z.ZodTypeAny' is critical. Without it, the TypeScript compiler will get overwhelmed and throw the following:
 // 'error TS7056: The inferred type of this node exceeds the maximum length the compiler will serialize. An explicit type annotation is needed.'
 
 export const attackObjectsSchema: z.ZodTypeAny = z
   .array(
-    z.union([
-      malwareSchema,
-      assetSchema,
-      campaignSchema,
-      collectionSchema,
-      dataComponentSchema,
-      dataSourceSchema,
-      identitySchema,
-      matrixSchema,
-      toolSchema,
-      tacticSchema,
-      techniqueSchema,
-      groupSchema,
-      mitigationSchema,
-      relationshipSchema,
-      markingDefinitionSchema,
-    ]),
+    z
+      .object({
+        // Basic structure validation to ensure we have a type field
+        type: z.string({
+          required_error: "Object must have a 'type' property",
+          invalid_type_error: "Object 'type' must be a string",
+        }),
+        id: z.string({
+          required_error: "Object must have an 'id' property",
+          invalid_type_error: "Object 'id' must be a string",
+        }),
+      })
+      .passthrough()
+      .superRefine((obj, ctx) => {
+        const type = obj.type;
+
+        // Uncomment for debugging
+        // console.log(`Validating object of type: ${type}, ID: ${obj.id}`);
+
+        // Get the schema based on the type
+        const schema = schemaMap[type as keyof typeof schemaMap];
+
+        if (!schema) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Unknown STIX type: ${type}`,
+            path: ['type'],
+          });
+          return;
+        }
+
+        // Validate the object against the appropriate schema
+        try {
+          schema.parse(obj);
+        } catch (error) {
+          if (error instanceof z.ZodError) {
+            // Forward all validation issues from the schema
+            error.issues.forEach((issue) => {
+              ctx.addIssue(issue);
+            });
+          } else {
+            // Handle unexpected errors
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: `Validation error: ${error instanceof Error ? error.message : String(error)}`,
+            });
+          }
+        }
+      }),
   )
   .min(1, { message: 'The STIX bundle must contain at least one object.' });
 
