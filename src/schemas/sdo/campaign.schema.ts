@@ -14,7 +14,7 @@ import {
   objectMarkingRefsSchema,
 } from '../common/index.js';
 
-import '../../errors';
+import '../../errors/index.js';
 
 /////////////////////////////////////
 //

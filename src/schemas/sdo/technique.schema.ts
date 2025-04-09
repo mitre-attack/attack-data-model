@@ -14,7 +14,7 @@ import {
 } from '../common/index.js';
 
 // Initializes the custom ZodErrorMap
-import '../../errors';
+import '../../errors/index.js';
 
 // read only type reference
 const TECHNIQUE_TYPE: StixType = stixTypeSchema.enum['attack-pattern'];
