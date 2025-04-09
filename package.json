@@ -30,7 +30,7 @@
     "email": "attack@mitre.org"
   },
   "scripts": {
-    "build": "npx tsup --format esm,cjs",
+    "build": "npx tsup --format esm,cjs src",
     "prepublishOnly": "rm -rf dist && npm run build",
     "test": "vitest --run",
     "test:interactive": "vitest",
