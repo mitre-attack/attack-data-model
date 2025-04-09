@@ -58,7 +58,7 @@ jobs:
           node-version: '22.x'
 
       - name: Install
-        run: npm ci
+        run: npm ci --include=dev
 
       - name: Build
         run: npm run build
