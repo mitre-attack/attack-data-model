@@ -9,6 +9,7 @@ import {
   stixCreatedByRefSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
+  xMitreVersionSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -52,6 +53,8 @@ export const matrixSchema = attackBaseObjectSchema
     x_mitre_domains: xMitreDomainsSchema,
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
+
+    x_mitre_version: xMitreVersionSchema,
 
     tactic_refs: xMitreTacticRefsSchema,
   })

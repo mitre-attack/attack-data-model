@@ -8,6 +8,7 @@ import {
   stixCreatedByRefSchema,
   xMitreDomainsSchema,
   externalReferencesSchema,
+  xMitreVersionSchema,
 } from '../common/index.js';
 import { stixTypeSchema } from '../common/stix-type.js';
 
@@ -108,6 +109,8 @@ export const tacticSchema = attackBaseObjectSchema
     x_mitre_shortname: xMitreShortNameSchema,
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
+
+    x_mitre_version: xMitreVersionSchema,
   })
   .required({
     created: true,

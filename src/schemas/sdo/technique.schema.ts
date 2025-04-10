@@ -11,6 +11,7 @@ import {
   xMitreContributorsSchema,
   externalReferencesSchema,
   killChainPhaseSchema,
+  xMitreVersionSchema,
 } from '../common/index.js';
 
 // Initializes the custom ZodErrorMap
@@ -318,6 +319,8 @@ export const techniqueSchema = attackBaseObjectSchema
     x_mitre_domains: xMitreDomainsSchema,
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
+
+    x_mitre_version: xMitreVersionSchema,
   })
   .required({
     created: true,

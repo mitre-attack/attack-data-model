@@ -154,8 +154,7 @@ const bundleWithInvalidCollection = {
             ],
             //Missing identity_class
             x_mitre_attack_spec_version: "2.1.0",
-            x_mitre_domains: ["enterprise-attack"],
-            x_mitre_version: "1.0"
+            x_mitre_domains: ["enterprise-attack"]
         }
     ]
 };

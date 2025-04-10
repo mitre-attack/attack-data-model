@@ -8,6 +8,7 @@ import {
   stixCreatedByRefSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
+  xMitreVersionSchema,
 } from '../common/index.js';
 
 // Initializes the custom ZodErrorMap
@@ -38,6 +39,8 @@ export const mitigationSchema = attackBaseObjectSchema
     x_mitre_domains: xMitreDomainsSchema,
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
+
+    x_mitre_version: xMitreVersionSchema,
   })
   .strict()
   .superRefine((schema, ctx) => {

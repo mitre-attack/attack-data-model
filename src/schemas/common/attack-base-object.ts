@@ -5,7 +5,6 @@ import {
   xMitreAttackSpecVersionSchema,
   xMitreDeprecatedSchema,
   xMitreOldAttackIdSchema,
-  xMitreVersionSchema,
 } from './common-properties.js';
 
 // Define the new properties
@@ -13,8 +12,6 @@ export const attackBaseObjectSchema = stixDomainObjectSchema.extend({
   name: nameSchema,
 
   x_mitre_attack_spec_version: xMitreAttackSpecVersionSchema,
-
-  x_mitre_version: xMitreVersionSchema,
 
   x_mitre_old_attack_id: xMitreOldAttackIdSchema.optional(),
 

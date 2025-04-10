@@ -11,7 +11,6 @@ import {
   xMitreDeprecatedSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
-  xMitreVersionSchema,
 } from '../common/index.js';
 
 // Initializes the custom ZodErrorMap
@@ -257,8 +256,6 @@ export const relationshipSchema = stixRelationshipObjectSchema
 
     x_mitre_domains: xMitreDomainsSchema,
 
-    x_mitre_version: xMitreVersionSchema,
-
     x_mitre_deprecated: xMitreDeprecatedSchema.optional(),
   })
   .required({
@@ -274,7 +271,6 @@ export const relationshipSchema = stixRelationshipObjectSchema
     x_mitre_attack_spec_version: true,
     x_mitre_modified_by_ref: true,
     x_mitre_domains: true,
-    x_mitre_version: true,
   })
   .superRefine((schema, ctx) => {
     const { relationship_type, source_ref, target_ref } = schema;

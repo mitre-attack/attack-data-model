@@ -11,6 +11,7 @@ import {
   objectMarkingRefsSchema,
   externalReferencesSchema,
   stixCreatedByRefSchema,
+  xMitreVersionSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -71,6 +72,8 @@ export const dataSourceSchema = attackBaseObjectSchema
     x_mitre_contributors: xMitreContributorsSchema.optional(),
 
     x_mitre_collection_layers: xMitreCollectionLayersSchema,
+
+    x_mitre_version: xMitreVersionSchema,
   })
   .strict()
   .superRefine((schema, ctx) => {

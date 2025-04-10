@@ -8,6 +8,7 @@ import {
   stixIdentifierSchema,
   stixModifiedTimestampSchema,
   stixTypeSchema,
+  xMitreVersionSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -55,6 +56,8 @@ export const collectionSchema = attackBaseObjectSchema
     ),
 
     x_mitre_contents: xMitreContentsSchema,
+
+    x_mitre_version: xMitreVersionSchema,
   })
   .required({
     created: true,
