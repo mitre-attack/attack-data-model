@@ -10,6 +10,7 @@ import {
   xMitreModifiedByRefSchema,
   externalReferencesSchema,
   stixTypeSchema,
+  xMitreVersionSchema,
 } from '../common/index.js';
 
 // Initializes the custom ZodErrorMap
@@ -50,6 +51,8 @@ export const softwareSchema = attackBaseObjectSchema.extend({
   x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
   x_mitre_domains: xMitreDomainsSchema,
+
+  x_mitre_version: xMitreVersionSchema,
 
   // Not used in ATT&CK Malware or Tool but defined in STIX
   aliases: aliasesSchema.optional().describe('Alternative names used to identify this software.'),

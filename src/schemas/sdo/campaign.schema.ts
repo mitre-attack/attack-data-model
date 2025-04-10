@@ -12,6 +12,7 @@ import {
   xMitreModifiedByRefSchema,
   xMitreContributorsSchema,
   objectMarkingRefsSchema,
+  xMitreVersionSchema,
 } from '../common/index.js';
 
 import '../../errors/index.js';
@@ -118,6 +119,8 @@ export const campaignSchema = attackBaseObjectSchema
     x_mitre_first_seen_citation: xMitreFirstSeenCitationSchema,
 
     x_mitre_last_seen_citation: xMitreLastSeenCitationSchema,
+
+    x_mitre_version: xMitreVersionSchema,
   })
   .required({
     aliases: true,

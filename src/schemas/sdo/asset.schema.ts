@@ -10,6 +10,7 @@ import {
   xMitreModifiedByRefSchema,
   objectMarkingRefsSchema,
   externalReferencesSchema,
+  xMitreVersionSchema,
 } from '../common/index.js';
 
 // Initializes the custom ZodErrorMap
@@ -96,6 +97,8 @@ export const assetSchema = attackBaseObjectSchema
     x_mitre_related_assets: relatedAssetsSchema.optional(),
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
+
+    x_mitre_version: xMitreVersionSchema,
   })
   .required({
     created: true,

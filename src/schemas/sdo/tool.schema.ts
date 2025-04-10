@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { stixTypeSchema } from '../common/stix-type.js';
 import { softwareSchema } from './software.schema.js';
-import { createStixIdentifierSchema, killChainPhaseSchema } from '../common/index.js';
+import { createStixIdentifierSchema, killChainPhaseSchema, xMitreVersionSchema } from '../common/index.js';
 import { ToolTypesOpenVocabulary } from '../common/open-vocabulary.js';
 
 // Initializes the custom ZodErrorMap
@@ -19,6 +19,8 @@ export const toolSchema = softwareSchema
     id: createStixIdentifierSchema(stixTypeSchema.enum.tool),
 
     type: z.literal(stixTypeSchema.enum.tool),
+
+    x_mitre_version: xMitreVersionSchema,
 
     // Not used in ATT&CK Tool but defined in STIX
     tool_types: z

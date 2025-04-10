@@ -17,7 +17,6 @@ const validIdentity = {
     x_mitre_domains:["enterprise-attack"],
     name: "The MITRE Corporation",
     x_mitre_attack_spec_version: "3.2.0",
-	x_mitre_version: "1.0",
     spec_version: "2.1"
 };
 
@@ -38,7 +37,6 @@ const invalidIdentity = {
     x_mitre_domains:["enterprise-attack"],
     name: "The MITRE Corporation",
     x_mitre_attack_spec_version: "3.2.0",
-	x_mitre_version: "1.0",
     spec_version: "2.1"
 };
 
@@ -110,7 +108,6 @@ console.log(identitySchema.parse(identityWithStixFields));
     object_marking_refs: [ 'marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168' ],
     name: 'The MITRE Corporation',
     x_mitre_attack_spec_version: '2.0.0',
-    x_mitre_version: '2.1',
     identity_class: 'organization',
     description: 'identity object description',
     roles: [ 'administrator' ],
@@ -134,7 +131,6 @@ const exampleOfRealIdentity = {
         "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
     ],
     "x_mitre_attack_spec_version": "3.2.0",
-	"x_mitre_version": "1.0",
     "spec_version": "2.1",
     "x_mitre_domains":["enterprise-attack"],
 }

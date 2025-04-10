@@ -8,6 +8,7 @@ import {
   stixTimestampSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
+  xMitreVersionSchema,
 } from '../common/index.js';
 import {
   attackMotivationOpenVocabulary,
@@ -37,6 +38,8 @@ export const groupSchema = attackBaseObjectSchema
     x_mitre_contributors: z.array(z.string()).optional(),
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
+
+    x_mitre_version: xMitreVersionSchema,
 
     aliases: aliasesSchema
       .optional()
