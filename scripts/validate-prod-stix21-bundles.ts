@@ -12,7 +12,7 @@
  * - Provides detailed error reporting for debugging
  *
  * Behavior:
- * 1. Fetches STIX bundles for all domains (enterprise, mobile, and ics) from the MITRE ATT&CK GitHub repository
+ * 1. Fetches STIX bundles for all domains (enterprise, mobile, and ics) from the MITRE ATT&CK STIX 2.1 GitHub repository
  * 2. Validates each bundle against our schema definitions
  * 3. Formats and groups validation errors by object
  * 4. Writes detailed error reports to a file for analysis
@@ -21,8 +21,6 @@
  * Usage:
  * ```
  * npm run validate-bundles
- * # or
- * npx ts-node scripts/validate-prod-stix21-bundles.ts
  * ```
  *
  * Options:
@@ -38,15 +36,12 @@
 
 import axios from 'axios';
 import fs from 'fs/promises';
-import path from 'path';
 import { z } from 'zod';
 
-// Import your schema
 import { stixBundleSchema, type StixBundle } from '../src/schemas/sdo/stix-bundle.schema';
+import { type AttackDomain, attackDomainSchema } from '../src/schemas/common';
 
-// Define supported domains
-const SUPPORTED_DOMAINS = ['enterprise-attack', 'mobile-attack', 'ics-attack'] as const;
-type AttackDomain = (typeof SUPPORTED_DOMAINS)[number];
+const SUPPORTED_DOMAINS = attackDomainSchema.options;
 
 /**
  * Formats a ZodError into a readable string with context about the failing objects
@@ -96,7 +91,7 @@ function formatZodError(error: z.ZodError, bundle: StixBundle): string {
   // Format bundle-level issues
   if (issuesByObject['bundle']) {
     const bundleIssues = issuesByObject['bundle']
-      .map((issue) => `  Path: ${issue.path.join('.')}\n  Error: ${issue.message}`)
+      .map((issue) => `  Path: ${issue.path.join('.')}\n  Error: ${formatError(issue)}`)
       .join('\n\n');
 
     formattedErrors.push(
@@ -107,7 +102,7 @@ function formatZodError(error: z.ZodError, bundle: StixBundle): string {
   // Format general object array issues
   if (issuesByObject['general']) {
     const generalIssues = issuesByObject['general']
-      .map((issue) => `  Path: ${issue.path.join('.')}\n  Error: ${issue.message}`)
+      .map((issue) => `  Path: ${issue.path.join('.')}\n  Error: ${formatError(issue)}`)
       .join('\n\n');
 
     formattedErrors.push(
@@ -138,7 +133,7 @@ function formatZodError(error: z.ZodError, bundle: StixBundle): string {
         .map((issue) => {
           // Remove the 'objects.X' prefix from the path for cleaner output
           const relativePath = issue.path.slice(issue.path.indexOf(objectIndex) + 1);
-          return `  Path: ${relativePath.length ? relativePath.join('.') : '<object root>'}\n  Error: ${issue.message}`;
+          return `  Path: ${relativePath.length ? relativePath.join('.') : '<object root>'}\n  Error: ${formatError(issue)}`;
         })
         .join('\n\n');
 
@@ -150,9 +145,37 @@ function formatZodError(error: z.ZodError, bundle: StixBundle): string {
 }
 
 /**
- * Fetches a STIX bundle from the MITRE ATT&CK GitHub repository
+ * Enhances the Zod error message to include more helpful context
  */
-async function fetchStixBundle(domain: AttackDomain): Promise<StixBundle> {
+function formatError(issue: z.ZodIssue): string {
+  // For enum validation errors, reformat to include the received value clearly
+  if (issue.code === 'invalid_enum_value' && issue.received) {
+    return `Invalid enum value. Received '${issue.received}' but expected one of: ${issue.options.map(opt => `'${opt}'`).join(' | ')}`;
+  }
+  
+  // For invalid arguments, include value clearly
+  if (issue.code === 'invalid_arguments' && issue.argumentsError) {
+    return `Invalid arguments: ${issue.message}`;
+  }
+
+  // For custom validation errors that contain 'Expected X, received Y' format
+  if (issue.code === 'custom' && issue.message.includes('Expected') && issue.message.includes('received')) {
+    return issue.message;
+  }
+  
+  // Handle invalid types more clearly
+  if (issue.code === 'invalid_type') {
+    return `Invalid type. Expected ${issue.expected}, received ${issue.received}`;
+  }
+  
+  // Return the original message for other types of errors
+  return issue.message;
+}
+
+/**
+ * Fetches a STIX bundle from the MITRE ATT&CK STIX 2.1 GitHub repository
+ */
+async function fetchStix21Bundle(domain: AttackDomain): Promise<StixBundle> {
   const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
   const url = `${GITHUB_BASE_URL}/${domain}/${domain}.json`;
 
@@ -169,15 +192,16 @@ async function fetchStixBundle(domain: AttackDomain): Promise<StixBundle> {
 /**
  * Validates a STIX bundle and returns validation results
  */
-async function validateBundle(domain: AttackDomain): Promise<{
+async function validateStix21Bundle(domain: AttackDomain): Promise<{
   domain: AttackDomain;
   bundle: StixBundle;
   isValid: boolean;
   errorCount: number;
   formattedError: string | null;
+  error?: z.ZodError;
 }> {
   try {
-    const bundle = await fetchStixBundle(domain);
+    const bundle = await fetchStix21Bundle(domain);
 
     try {
       stixBundleSchema.parse(bundle);
@@ -203,6 +227,7 @@ async function validateBundle(domain: AttackDomain): Promise<{
           isValid: false,
           errorCount: error.issues.length,
           formattedError,
+          error: error,
         };
       } else {
         throw error;
@@ -212,6 +237,206 @@ async function validateBundle(domain: AttackDomain): Promise<{
     console.error(`Error processing ${domain} bundle:`, error);
     throw error;
   }
+}
+
+/**
+ * Collects error statistics from a ZodError
+ * @returns Structured data about validation errors for analysis
+ */
+function collectErrorStatistics(
+  error: z.ZodError, 
+  bundle: StixBundle
+): {
+  invalidEnumValues: Map<string, {value: string, objectId: string, objectName: string, objectType: string, objectStatus: string}[]>,
+  errorsByPath: Map<string, number>,
+  errorsByStatus: Record<string, number>,
+  errorsByType: Record<string, number>
+} {
+  const invalidEnumValues = new Map<string, {value: string, objectId: string, objectName: string, objectType: string, objectStatus: string}[]>();
+  const errorsByPath = new Map<string, number>();
+  const errorsByStatus: Record<string, number> = {
+    'Active': 0,
+    'Deprecated': 0,
+    'Revoked': 0
+  };
+  const errorsByType: Record<string, number> = {};
+
+  error.issues.forEach((issue) => {
+    // Get object information if this is an object-level error
+    let objectId = "unknown";
+    let objectName = "unknown";
+    let objectType = "unknown";
+    let objectStatus = "unknown";
+    
+    const objectsIndex = issue.path.findIndex((segment) => segment === 'objects');
+    if (objectsIndex !== -1 && objectsIndex + 1 < issue.path.length) {
+      const objectIndex = issue.path[objectsIndex + 1];
+      if (typeof objectIndex === 'number' && objectIndex < bundle.objects.length) {
+        const errorObject = bundle.objects[objectIndex];
+        
+        objectId = errorObject.id;
+        objectType = errorObject.type;
+        objectName = (errorObject as any).name || 'Unnamed';
+        
+        // Determine object status
+        objectStatus = 'Active';
+        if ((errorObject as any).x_mitre_deprecated) {
+          objectStatus = 'Deprecated';
+        } else if ('revoked' in errorObject && (errorObject as any).revoked) {
+          objectStatus = 'Revoked';
+        }
+        
+        // Count by status
+        errorsByStatus[objectStatus] = (errorsByStatus[objectStatus] || 0) + 1;
+        
+        // Count by type
+        errorsByType[objectType] = (errorsByType[objectType] || 0) + 1;
+      }
+    }
+
+    // Track invalid enum values with object information
+    if (issue.code === 'invalid_enum_value' && issue.received) {
+      const pathKey = issue.path.join('.');
+      if (!invalidEnumValues.has(pathKey)) {
+        invalidEnumValues.set(pathKey, []);
+      }
+      
+      invalidEnumValues.get(pathKey)?.push({
+        value: String(issue.received),
+        objectId,
+        objectName,
+        objectType,
+        objectStatus
+      });
+    }
+
+    // Track errors by path
+    const pathKey = issue.path.join('.');
+    errorsByPath.set(pathKey, (errorsByPath.get(pathKey) || 0) + 1);
+  });
+
+  return { invalidEnumValues, errorsByPath, errorsByStatus, errorsByType };
+}
+
+/**
+ * Format aggregate error statistics for reporting
+ */
+function formatErrorAggregateReport(
+  stats: {
+    invalidEnumValues: Map<string, {value: string, objectId: string, objectName: string, objectType: string, objectStatus: string}[]>,
+    errorsByPath: Map<string, number>,
+    errorsByStatus: Record<string, number>,
+    errorsByType: Record<string, number>
+  },
+  totalErrorCount: number
+): string {
+  const report: string[] = [];
+  
+  report.push(`\n=== ERROR AGGREGATION REPORT ===`);
+  report.push(`Total validation issues: ${totalErrorCount}\n`);
+  
+  // Report errors by status
+  report.push(`Errors by object status:`);
+  for (const [status, count] of Object.entries(stats.errorsByStatus)) {
+    const percentage = (count / totalErrorCount * 100).toFixed(1);
+    report.push(`  ${status}: ${count} (${percentage}%)`);
+  }
+  report.push('');
+  
+  // Report errors by type
+  report.push(`Errors by object type:`);
+  const sortedTypeEntries = Object.entries(stats.errorsByType)
+    .sort(([, countA], [, countB]) => countB - countA);
+  
+  for (const [type, count] of sortedTypeEntries) {
+    const percentage = (count / totalErrorCount * 100).toFixed(1);
+    report.push(`  ${type}: ${count} (${percentage}%)`);
+  }
+  report.push('');
+  
+  // Report top error paths
+  report.push(`Top error paths:`);
+  const sortedPathEntries = [...stats.errorsByPath.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10);
+  
+  for (const [path, count] of sortedPathEntries) {
+    const percentage = (count / totalErrorCount * 100).toFixed(1);
+    report.push(`  ${path}: ${count} (${percentage}%)`);
+  }
+  report.push('');
+  
+  // Report invalid enum values
+  report.push(`Invalid enum values by property:`);
+  
+  // Group by property first
+  const propertiesByEnumValue = new Map<string, {value: string, objects: {id: string, name: string, type: string, status: string}[]}>();
+  
+  for (const [path, values] of stats.invalidEnumValues.entries()) {
+    // Extract the property name from the path
+    const pathParts = path.split('.');
+    const propertyName = pathParts.slice(2).join('.');
+    
+    for (const valueInfo of values) {
+      const valueKey = `${propertyName}|${valueInfo.value}`;
+      
+      if (!propertiesByEnumValue.has(valueKey)) {
+        propertiesByEnumValue.set(valueKey, {
+          value: valueInfo.value,
+          objects: []
+        });
+      }
+      
+      // Only add this object if it's not already in the list
+      const existingObjects = propertiesByEnumValue.get(valueKey)!.objects;
+      if (!existingObjects.some(obj => obj.id === valueInfo.objectId)) {
+        existingObjects.push({
+          id: valueInfo.objectId,
+          name: valueInfo.objectName,
+          type: valueInfo.objectType,
+          status: valueInfo.objectStatus
+        });
+      }
+    }
+  }
+  
+  // Group properties by their name
+  const groupedProperties = new Map<string, {value: string, objects: {id: string, name: string, type: string, status: string}[]}[]>();
+  
+  for (const [key, valueInfo] of propertiesByEnumValue.entries()) {
+    const propertyName = key.split('|')[0];
+    
+    if (!groupedProperties.has(propertyName)) {
+      groupedProperties.set(propertyName, []);
+    }
+    
+    groupedProperties.get(propertyName)!.push(valueInfo);
+  }
+  
+  // Output the grouped invalid enum values
+  for (const [propertyName, valueInfos] of groupedProperties.entries()) {
+    report.push(`  Property: ${propertyName}`);
+    
+    for (const valueInfo of valueInfos) {
+      report.push(`    Invalid value: '${valueInfo.value}'`);
+      report.push(`    Found in ${valueInfo.objects.length} objects:`);
+      
+      // Sort objects by name for more consistent output
+      const sortedObjects = [...valueInfo.objects].sort((a, b) => a.name.localeCompare(b.name));
+      
+      for (const obj of sortedObjects.slice(0, 10)) { // Limit to first 10 objects for brevity
+        report.push(`      - ${obj.name} (${obj.id}) [${obj.type}, ${obj.status}]`);
+      }
+      
+      if (sortedObjects.length > 10) {
+        report.push(`      ... and ${sortedObjects.length - 10} more objects`);
+      }
+      
+      report.push('');
+    }
+  }
+  
+  return report.join('\n');
 }
 
 /**
@@ -238,28 +463,80 @@ async function validateStixBundles() {
     // Create a timestamp for the error log file
     const timestamp = new Date().toISOString().replace(/[:]/g, '-').replace(/\..+/, '');
     const errorFilePath = `./validation-errors-${timestamp}.txt`;
+    const statsFilePath = `./validation-stats-${timestamp}.txt`;
 
     // Validate each domain
-    const results = await Promise.all(requestedDomains.map((domain) => validateBundle(domain)));
+    const results = await Promise.all(requestedDomains.map((domain) => validateStix21Bundle(domain)));
 
     // Collect all error messages
     const allErrors: string[] = [];
     let totalErrorCount = 0;
+    
+    // For collecting aggregate error statistics
+    const allInvalidEnumValues = new Map<string, Set<string>>();
+    const allErrorsByPath = new Map<string, number>();
+    const allErrorsByStatus: Record<string, number> = {
+      'Active': 0,
+      'Deprecated': 0,
+      'Revoked': 0
+    };
+    const allErrorsByType: Record<string, number> = {};
 
-    results.forEach((result) => {
+    // Process validation results
+    for (const result of results) {
       if (!result.isValid && result.formattedError) {
         allErrors.push(
           `\n\n${'='.repeat(100)}\n\nDOMAIN: ${result.domain}\n\n${'='.repeat(100)}\n\n`,
         );
         allErrors.push(result.formattedError);
         totalErrorCount += result.errorCount;
+        
+        // Use the stored error from validation
+        if (result.error) {
+          // Collect statistics from the domain
+          const domainStats = collectErrorStatistics(result.error, result.bundle);
+          
+          // Merge into overall statistics
+          for (const [path, values] of domainStats.invalidEnumValues.entries()) {
+            if (!allInvalidEnumValues.has(path)) {
+              allInvalidEnumValues.set(path, new Set<string>());
+            }
+            values.forEach(value => allInvalidEnumValues.get(path)?.add(value));
+          }
+          
+          for (const [path, count] of domainStats.errorsByPath.entries()) {
+            allErrorsByPath.set(path, (allErrorsByPath.get(path) || 0) + count);
+          }
+          
+          for (const [status, count] of Object.entries(domainStats.errorsByStatus)) {
+            allErrorsByStatus[status] = (allErrorsByStatus[status] || 0) + count;
+          }
+          
+          for (const [type, count] of Object.entries(domainStats.errorsByType)) {
+            allErrorsByType[type] = (allErrorsByType[type] || 0) + count;
+          }
+        }
       }
-    });
+    }
 
     // Write errors to file if any exist
     if (allErrors.length > 0) {
       await fs.writeFile(errorFilePath, allErrors.join('\n'));
       console.log(`Full error details written to: ${errorFilePath}`);
+      
+      // Generate and write aggregate statistics report
+      const statsReport = formatErrorAggregateReport(
+        { 
+          invalidEnumValues: allInvalidEnumValues, 
+          errorsByPath: allErrorsByPath,
+          errorsByStatus: allErrorsByStatus,
+          errorsByType: allErrorsByType
+        },
+        totalErrorCount
+      );
+      await fs.writeFile(statsFilePath, statsReport);
+      console.log(`Aggregate error statistics written to: ${statsFilePath}`);
+      console.log(statsReport); // Also print to console
     }
 
     // Print summary statistics
