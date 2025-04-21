@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import {
   stixTimestampSchema,
-  stixCreatedByRefSchema,
   descriptionSchema,
   xMitreDomainsSchema,
   createStixIdValidator,
@@ -10,7 +9,6 @@ import {
   externalReferencesSchema,
   xMitreModifiedByRefSchema,
   xMitreContributorsSchema,
-  objectMarkingRefsSchema,
   createStixTypeValidator,
 } from '../common/index.js';
 
@@ -92,10 +90,8 @@ export const campaignSchema = attackBaseDomainObjectSchema
 
     external_references: externalReferencesSchema,
 
-    created_by_ref: stixCreatedByRefSchema,
-
     // Optional in STIX but required in ATT&CK
-    object_marking_refs: objectMarkingRefsSchema,
+    // object_marking_refs: objectMarkingRefsSchema,
 
     x_mitre_domains: xMitreDomainsSchema,
 
@@ -116,6 +112,12 @@ export const campaignSchema = attackBaseDomainObjectSchema
     x_mitre_first_seen_citation: xMitreFirstSeenCitationSchema,
 
     x_mitre_last_seen_citation: xMitreLastSeenCitationSchema,
+  })
+  .required({
+    created_by_ref: true,
+    external_references: true,
+    object_marking_refs: true,
+    revoked: true,
   })
   .strict()
   .superRefine((schema, ctx) => {
