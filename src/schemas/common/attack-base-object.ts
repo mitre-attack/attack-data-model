@@ -12,13 +12,23 @@ import {
 export const attackBaseObjectSchema = stixDomainObjectSchema.extend({
   name: nameSchema,
 
-  x_mitre_attack_spec_version: xMitreAttackSpecVersionSchema,
+  /**
+   * Required on all ATT&CK schemas except:
+   *  - Marking Definition
+   */
+  x_mitre_attack_spec_version: xMitreAttackSpecVersionSchema.optional(),
 
-  x_mitre_version: xMitreVersionSchema,
+  /**
+   * Required on all ATT&CK schemas except:
+   *  - Marking Definition
+   *  - Identity
+   *  - Relationship
+   */
+  x_mitre_version: xMitreVersionSchema.optional(),
 
   x_mitre_old_attack_id: xMitreOldAttackIdSchema.optional(),
 
-  x_mitre_deprecated: xMitreDeprecatedSchema.optional(),
+  x_mitre_deprecated: xMitreDeprecatedSchema,
 });
 
 // Define the type for the ATT&CK Core SDO
