@@ -33,7 +33,9 @@ const attackBaseObjectSchema = stixDomainObjectSchema.extend({
 
 export const attackBaseDomainObjectSchema = attackBaseObjectSchema.extend({});
 export const attackBaseRelationshipObjectSchema = attackBaseObjectSchema.extend({});
-export const attackBaseMetaObjectSchema = attackBaseObjectSchema.extend({});
+export const attackBaseMetaObjectSchema = attackBaseObjectSchema
+  .extend({})
+  .omit({ modified: true });
 
 // Define the type for the ATT&CK Core SDO and SRO
 export type AttackBaseSDO = z.infer<typeof attackBaseDomainObjectSchema>;
