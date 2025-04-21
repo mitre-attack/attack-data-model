@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { attackBaseObjectSchema } from '../common/attack-base-object.js';
+import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import {
   stixTimestampSchema,
   stixCreatedByRefSchema,
@@ -82,7 +82,7 @@ export type XMitreLastSeenCitation = z.infer<typeof xMitreLastSeenCitationSchema
 //
 /////////////////////////////////////
 
-export const campaignSchema = attackBaseObjectSchema
+export const campaignSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('campaign'),
 
@@ -116,29 +116,6 @@ export const campaignSchema = attackBaseObjectSchema
     x_mitre_first_seen_citation: xMitreFirstSeenCitationSchema,
 
     x_mitre_last_seen_citation: xMitreLastSeenCitationSchema,
-  })
-  .required({
-    aliases: true,
-    created: true,
-    created_by_ref: true,
-    description: true,
-    external_references: true,
-    first_seen: true,
-    id: true,
-    last_seen: true,
-    modified: true,
-    name: true,
-    object_marking_refs: true,
-    revoked: true,
-    spec_version: true,
-    type: true,
-    x_mitre_attack_spec_version: true,
-    x_mitre_deprecated: true,
-    x_mitre_domains: true,
-    x_mitre_first_seen_citation: true,
-    x_mitre_last_seen_citation: true,
-    x_mitre_modified_by_ref: true,
-    x_mitre_version: true,
   })
   .strict()
   .superRefine((schema, ctx) => {

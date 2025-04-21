@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import {
-  attackBaseObjectSchema,
+  attackBaseDomainObjectSchema,
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
@@ -74,7 +74,7 @@ export type XMitreShortName = z.infer<typeof xMitreShortNameSchema>;
 //
 /////////////////////////////////////
 
-export const tacticSchema = attackBaseObjectSchema
+export const tacticSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-tactic'),
 
@@ -96,23 +96,6 @@ export const tacticSchema = attackBaseObjectSchema
     x_mitre_shortname: xMitreShortNameSchema,
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
-  })
-  .required({
-    created: true,
-    created_by_ref: true,
-    description: true,
-    external_references: true,
-    id: true,
-    modified: true,
-    name: true,
-    object_marking_refs: true,
-    spec_version: true,
-    type: true,
-    x_mitre_attack_spec_version: true,
-    x_mitre_domains: true,
-    x_mitre_modified_by_ref: true,
-    x_mitre_shortname: true,
-    x_mitre_version: true,
   })
   .strict()
   .superRefine((schema, ctx) => {

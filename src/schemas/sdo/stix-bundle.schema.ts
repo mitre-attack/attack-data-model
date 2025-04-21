@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { stixSpecVersionSchema } from '../common/index.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 import { createStixIdValidator } from '../common/stix-identifier.js';
 import { type Malware, malwareSchema } from './malware.schema.js';
@@ -125,7 +124,7 @@ export type AttackObjects = z.infer<typeof attackObjectsSchema>;
 export const baseStixBundleSchema = z.object({
   id: createStixIdValidator('bundle'),
   type: createStixTypeValidator('bundle'),
-  spec_version: stixSpecVersionSchema,
+  spec_version: z.literal('2.1'), // TODO figure out how to set this to a subset of stixSpecVersionSchema (2.0 not supported)
   objects: attackObjectsSchema,
 });
 

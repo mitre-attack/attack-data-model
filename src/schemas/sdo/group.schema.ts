@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { attackBaseObjectSchema } from '../common/attack-base-object.js';
+import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 import {
   aliasesSchema,
@@ -15,7 +15,7 @@ import {
 } from '../common/open-vocabulary.js';
 
 // Group Schema
-export const groupSchema = attackBaseObjectSchema
+export const groupSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('intrusion-set'),
 

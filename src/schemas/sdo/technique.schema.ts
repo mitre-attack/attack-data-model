@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import {
-  attackBaseObjectSchema,
+  attackBaseDomainObjectSchema,
   descriptionSchema,
   xMitrePlatformsSchema,
   attackDomainSchema,
@@ -270,7 +270,7 @@ export type XMitreDetection = z.infer<typeof xMitreDetectionSchema>;
 //
 /////////////////////////////////////
 
-export const techniqueSchema = attackBaseObjectSchema
+export const techniqueSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('attack-pattern'),
 
@@ -312,19 +312,6 @@ export const techniqueSchema = attackBaseObjectSchema
     x_mitre_domains: xMitreDomainsSchema,
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
-  })
-  .required({
-    created: true,
-    external_references: true,
-    id: true,
-    modified: true,
-    name: true,
-    spec_version: true,
-    type: true,
-    x_mitre_attack_spec_version: true,
-    x_mitre_domains: true,
-    x_mitre_is_subtechnique: true,
-    x_mitre_version: true,
   })
   .superRefine((schema, ctx) => {
     // Destructure relevant properties from the schema

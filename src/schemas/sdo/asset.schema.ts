@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import {
-  attackBaseObjectSchema,
+  attackBaseDomainObjectSchema,
   descriptionSchema,
   xMitrePlatformsSchema,
   xMitreDomainsSchema,
@@ -68,7 +68,7 @@ export type RelatedAssets = z.infer<typeof relatedAssetsSchema>;
 //
 /////////////////////////////////////
 
-export const assetSchema = attackBaseObjectSchema
+export const assetSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-asset'),
 
@@ -93,20 +93,6 @@ export const assetSchema = attackBaseObjectSchema
     x_mitre_related_assets: relatedAssetsSchema.optional(),
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
-  })
-  .required({
-    created: true,
-    created_by_ref: true,
-    external_references: true,
-    id: true,
-    modified: true,
-    name: true,
-    object_marking_refs: true,
-    spec_version: true,
-    type: true,
-    x_mitre_attack_spec_version: true,
-    x_mitre_domains: true,
-    x_mitre_version: true,
   })
   .strict()
   // validate common fields

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { attackBaseObjectSchema } from '../common/attack-base-object.js';
+import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 import {
   createStixIdValidator,
@@ -29,7 +29,7 @@ export type XMitreDataSourceRef = z.infer<typeof xMitreDataSourceRefSchema>;
 //
 /////////////////////////////////////
 
-export const dataComponentSchema = attackBaseObjectSchema
+export const dataComponentSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-data-component'),
 

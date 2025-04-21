@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { attackBaseObjectSchema } from '../common/attack-base-object.js';
+import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import {
   descriptionSchema,
   xMitrePlatformsSchema,
@@ -18,7 +18,7 @@ import {
 //
 /////////////////////////////////////
 
-export const softwareSchema = attackBaseObjectSchema.extend({
+export const softwareSchema = attackBaseDomainObjectSchema.extend({
   type: createMultiStixTypeValidator(['malware', 'tool']),
 
   created_by_ref: stixCreatedByRefSchema.describe(

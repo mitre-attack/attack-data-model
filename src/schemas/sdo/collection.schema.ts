@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import {
-  attackBaseObjectSchema,
+  attackBaseDomainObjectSchema,
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
@@ -38,7 +38,7 @@ export type ObjectVersionReference = z.infer<typeof objectVersionReferenceSchema
 //
 /////////////////////////////////////
 
-export const collectionSchema = attackBaseObjectSchema
+export const collectionSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-collection'),
 
@@ -55,20 +55,6 @@ export const collectionSchema = attackBaseObjectSchema
     ),
 
     x_mitre_contents: xMitreContentsSchema,
-  })
-  .required({
-    created: true,
-    created_by_ref: true,
-    description: true,
-    id: true,
-    modified: true,
-    name: true,
-    object_marking_refs: true,
-    spec_version: true,
-    type: true,
-    x_mitre_attack_spec_version: true,
-    x_mitre_contents: true,
-    x_mitre_version: true,
   })
   .strict()
   .superRefine((schema, ctx) => {

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { attackBaseObjectSchema } from '../common/attack-base-object.js';
+import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 import {
   createStixIdValidator,
@@ -16,7 +16,7 @@ import {
 //
 /////////////////////////////////////
 
-export const mitigationSchema = attackBaseObjectSchema
+export const mitigationSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('course-of-action'),
 
