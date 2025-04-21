@@ -8,7 +8,6 @@ import {
   stixIdentifierSchema,
   type StixType,
   stixTypeSchema,
-  xMitreAttackSpecVersionSchema,
   xMitreModifiedByRefSchema,
 } from '../common/index.js';
 
@@ -244,8 +243,6 @@ export const relationshipSchema = attackBaseRelationshipObjectSchema
     target_ref: stixIdentifierSchema.describe('The ID of the target (to) object.'),
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
-
-    x_mitre_attack_spec_version: xMitreAttackSpecVersionSchema,
   })
   .omit({
     name: true,
