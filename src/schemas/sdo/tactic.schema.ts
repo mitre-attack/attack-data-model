@@ -9,6 +9,7 @@ import {
   stixCreatedByRefSchema,
   xMitreDomainsSchema,
   externalReferencesSchema,
+  xMitreContributorsSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -96,6 +97,8 @@ export const tacticSchema = attackBaseDomainObjectSchema
     x_mitre_shortname: xMitreShortNameSchema,
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
+
+    x_mitre_contributors: xMitreContributorsSchema.optional()
   })
   .strict()
   .superRefine((schema, ctx) => {
