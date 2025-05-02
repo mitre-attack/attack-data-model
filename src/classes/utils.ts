@@ -1,6 +1,6 @@
 import type { Relationship } from '../schemas/sro/relationship.schema.js';
 import type { AttackObject } from '../schemas/sdo/stix-bundle.schema.js';
-import type { Technique, Tactic } from '../schemas/sdo/index.js';
+import type { Technique, Tactic, Mitigation, DataSource } from '../schemas/sdo/index.js';
 import { TacticImpl } from './sdo/tactic.impl.js';
 import { MitigationImpl } from './sdo/mitigation.impl.js';
 import { DataSourceImpl } from './sdo/data-source.impl.js';
@@ -45,7 +45,7 @@ export function getMitigations(
     .map((rel) => {
       const mitigation = attackObjects.find((obj) => obj.id === rel.source_ref);
       if (mitigation && mitigation.type === 'course-of-action') {
-        return new MitigationImpl(mitigation);
+        return new MitigationImpl(mitigation as Mitigation);
       }
       return null;
     })
@@ -62,7 +62,7 @@ export function getDataSources(
     .map((rel) => {
       const dataSource = attackObjects.find((obj) => obj.id === rel.source_ref);
       if (dataSource && dataSource.type === 'x-mitre-data-source') {
-        return new DataSourceImpl(dataSource);
+        return new DataSourceImpl(dataSource as DataSource);
       }
       return null;
     })
