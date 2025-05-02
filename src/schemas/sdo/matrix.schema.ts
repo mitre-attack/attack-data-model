@@ -32,7 +32,7 @@ export type XMitreTacticRefs = z.infer<typeof xMitreTacticRefsSchema>;
 //
 /////////////////////////////////////
 
-export const matrixSchema = attackBaseDomainObjectSchema
+export const extensibleMatrixSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-matrix'),
 
@@ -44,7 +44,7 @@ export const matrixSchema = attackBaseDomainObjectSchema
     description: descriptionSchema,
 
     // Optional in STIX but required in ATT&CK
-    external_references: externalReferencesSchema,
+    external_references: externalReferencesSchema, // TODO check that first ext ref is "enterprise-attack" linked to attack website
 
     // Optional in STIX but required in ATT&CK
     object_marking_refs: objectMarkingRefsSchema,
@@ -57,4 +57,7 @@ export const matrixSchema = attackBaseDomainObjectSchema
   })
   .strict();
 
-export type Matrix = z.infer<typeof matrixSchema>;
+// Alias unless/until matrices require at least one refinement
+export const matrixSchema = extensibleMatrixSchema;
+
+export type Matrix = z.infer<typeof extensibleMatrixSchema>;

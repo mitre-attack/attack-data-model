@@ -247,7 +247,6 @@ export const relationshipSchema = attackBaseRelationshipObjectSchema
   .omit({
     name: true,
     x_mitre_version: true,
-    x_mitre_deprecated: true,
   })
   .strict()
   .superRefine((schema, ctx) => {

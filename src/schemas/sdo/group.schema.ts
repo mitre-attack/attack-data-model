@@ -1,10 +1,11 @@
 import { z } from 'zod';
-import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
-import { createStixTypeValidator } from '../common/stix-type.js';
+import { attackBaseDomainObjectSchema } from '@/schemas/common/attack-base-object.js';
+import { createStixTypeValidator } from '@/schemas/common/stix-type.js';
+import { createFirstAliasRefinement } from '@/refinements/index.js';
 import {
   aliasesSchema,
   createStixIdValidator,
-  externalReferencesSchema,
+  createAttackExternalReferencesSchema,
   stixTimestampSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
@@ -15,7 +16,7 @@ import {
 } from '../common/open-vocabulary.js';
 
 // Group Schema
-export const groupSchema = attackBaseDomainObjectSchema
+export const extensibleGroupSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('intrusion-set'),
 
@@ -30,7 +31,7 @@ export const groupSchema = attackBaseDomainObjectSchema
       ),
 
     // Optional in STIX but required in ATT&CK
-    external_references: externalReferencesSchema,
+    external_references: createAttackExternalReferencesSchema('intrusion-set'),
 
     x_mitre_domains: xMitreDomainsSchema,
 
@@ -76,20 +77,12 @@ export const groupSchema = attackBaseDomainObjectSchema
       .optional()
       .describe('The secondary reasons, motivations, or purposes behind this Intrusion Set.'),
   })
-  .strict()
-  .refine(
-    (schema) => {
-      // The object's name MUST be listed as the first alias in the aliases field
-      if (schema.aliases && schema.aliases.length > 0) {
-        return schema.aliases[0] === schema.name;
-      }
-      return true;
-    },
-    {
-      message: "The first alias must match the object's name",
-      path: ['aliases'],
-    },
-  );
+  .strict();
 
-// Define the type for SchemaName
-export type Group = z.infer<typeof groupSchema>;
+export const groupSchema = extensibleGroupSchema.superRefine((schema, ctx) => {
+  // validate that when aliases are present, the first alias must match the object's name
+  createFirstAliasRefinement()(schema, ctx);
+});
+
+// Define the TypeScript type
+export type Group = z.infer<typeof extensibleGroupSchema>;

@@ -18,7 +18,7 @@ import {
 //
 /////////////////////////////////////
 
-export const softwareSchema = attackBaseDomainObjectSchema.extend({
+export const extensibleSoftwareSchema = attackBaseDomainObjectSchema.extend({
   type: createMultiStixTypeValidator(['malware', 'tool']),
 
   created_by_ref: stixCreatedByRefSchema.describe(
@@ -51,5 +51,8 @@ export const softwareSchema = attackBaseDomainObjectSchema.extend({
   aliases: aliasesSchema.optional().describe('Alternative names used to identify this software.'),
 });
 
+// Alias unless/until software requires at least one refinement
+export const softwareSchema = extensibleSoftwareSchema;
+
 // Define the type for Software
-export type Software = z.infer<typeof softwareSchema>;
+export type Software = z.infer<typeof extensibleSoftwareSchema>;

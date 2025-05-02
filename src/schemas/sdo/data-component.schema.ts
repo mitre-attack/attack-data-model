@@ -29,7 +29,7 @@ export type XMitreDataSourceRef = z.infer<typeof xMitreDataSourceRefSchema>;
 //
 /////////////////////////////////////
 
-export const dataComponentSchema = attackBaseDomainObjectSchema
+export const extensibleDataComponentSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-data-component'),
 
@@ -51,4 +51,7 @@ export const dataComponentSchema = attackBaseDomainObjectSchema
   })
   .strict();
 
-export type DataComponent = z.infer<typeof dataComponentSchema>;
+// No refinements currently exist on data components, so just export an alias
+export const dataComponentSchema = extensibleDataComponentSchema;
+
+export type DataComponent = z.infer<typeof extensibleDataComponentSchema>;

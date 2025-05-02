@@ -14,7 +14,7 @@ import {
 //
 /////////////////////////////////////
 
-export const identitySchema = attackBaseDomainObjectSchema
+export const extensibleIdentitySchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('identity'),
 
@@ -55,5 +55,8 @@ export const identitySchema = attackBaseDomainObjectSchema
   })
   .strict();
 
+// Alias because identities currently don't have any refinements
+export const identitySchema = extensibleIdentitySchema;
+
 // Define the type for Identity
-export type Identity = z.infer<typeof identitySchema>;
+export type Identity = z.infer<typeof extensibleIdentitySchema>;

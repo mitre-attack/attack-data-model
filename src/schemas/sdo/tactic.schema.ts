@@ -8,8 +8,8 @@ import {
   objectMarkingRefsSchema,
   stixCreatedByRefSchema,
   xMitreDomainsSchema,
-  externalReferencesSchema,
   xMitreContributorsSchema,
+  createAttackExternalReferencesSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -75,7 +75,7 @@ export type XMitreShortName = z.infer<typeof xMitreShortNameSchema>;
 //
 /////////////////////////////////////
 
-export const tacticSchema = attackBaseDomainObjectSchema
+export const extensibleTacticSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-tactic'),
 
@@ -87,7 +87,7 @@ export const tacticSchema = attackBaseDomainObjectSchema
     created_by_ref: stixCreatedByRefSchema,
 
     // Optional in STIX but required in ATT&CK
-    external_references: externalReferencesSchema,
+    external_references: createAttackExternalReferencesSchema('x-mitre-tactic'),
 
     // Optional in STIX but required in ATT&CK
     object_marking_refs: objectMarkingRefsSchema,
@@ -100,33 +100,9 @@ export const tacticSchema = attackBaseDomainObjectSchema
 
     x_mitre_contributors: xMitreContributorsSchema.optional(),
   })
-  .strict()
-  .superRefine((schema, ctx) => {
-    // Destructure relevant properties from the schema
-    const { external_references } = schema;
+  .strict();
 
-    //==============================================================================
-    // Validate external references
-    //==============================================================================
+// Alias unless/until tactics require at least one refinement
+export const tacticSchema = extensibleTacticSchema;
 
-    // Verify that first external reference is an ATT&CK ID
-    const attackIdEntry = external_references[0];
-    if (!attackIdEntry.external_id) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'ATT&CK ID must be defined in the first external_references entry.',
-        path: ['external_references', 0, 'external_id'],
-      });
-    } else {
-      // Check if the ATT&CK ID format is correct
-      const idRegex = /TA\d{4}$/;
-      if (!idRegex.test(attackIdEntry.external_id)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `The first external_reference must match the ATT&CK ID format TA####.`,
-        });
-      }
-    }
-  });
-
-export type Tactic = z.infer<typeof tacticSchema>;
+export type Tactic = z.infer<typeof extensibleTacticSchema>;

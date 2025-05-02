@@ -19,6 +19,8 @@ import {
   type MarkingDefinition,
   markingDefinitionSchema,
 } from '../smo/marking-definition.schema.js';
+import { createFirstBundleObjectRefinement } from '@/refinements/index.js';
+import { stixSpecVersionSchema, type StixSpecVersion } from '../common/stix-spec-version.js';
 
 export type AttackObject =
   | Malware
@@ -121,26 +123,27 @@ export type AttackObjects = z.infer<typeof attackObjectsSchema>;
 //
 /////////////////////////////////////
 
-export const baseStixBundleSchema = z.object({
-  id: createStixIdValidator('bundle'),
-  type: createStixTypeValidator('bundle'),
-  spec_version: z.literal('2.1'), // TODO figure out how to set this to a subset of stixSpecVersionSchema (2.0 not supported)
-  objects: attackObjectsSchema,
+export const extensibleStixBundleSchema = z
+  .object({
+    id: createStixIdValidator('bundle'),
+
+    type: createStixTypeValidator('bundle'),
+
+    spec_version: z
+      .literal(stixSpecVersionSchema.enum['2.1'] as StixSpecVersion)
+      .describe('Only STIX 2.1 specification version is allowed'),
+
+    objects: attackObjectsSchema,
+  })
+  .strict();
+
+// Create refinement instance
+const validateFirstBundleObject = createFirstBundleObjectRefinement();
+
+// Apply the refinement
+export const stixBundleSchema = extensibleStixBundleSchema.superRefine((schema, ctx) => {
+  validateFirstBundleObject(schema, ctx);
 });
 
-export const stixBundleSchema = baseStixBundleSchema.strict().superRefine((schema, ctx) => {
-  // Verify that the first object in the bundle is the 'x-mitre-collection' object
-  const firstObject = schema.objects[0];
-
-  if (firstObject.type !== 'x-mitre-collection') {
-    // first object is not a collection object! record an error ...
-
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "The first object in the 'objects' array must be of type 'x-mitre-collection'",
-      path: ['objects', 0, 'type'],
-    });
-  }
-});
-
-export type StixBundle = z.infer<typeof stixBundleSchema>;
+// Define the type for StixBundle
+export type StixBundle = z.infer<typeof extensibleStixBundleSchema>;

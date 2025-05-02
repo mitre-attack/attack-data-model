@@ -38,7 +38,7 @@ export type ObjectVersionReference = z.infer<typeof objectVersionReferenceSchema
 //
 /////////////////////////////////////
 
-export const collectionSchema = attackBaseDomainObjectSchema
+export const extensibleCollectionSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-collection'),
 
@@ -54,22 +54,11 @@ export const collectionSchema = attackBaseDomainObjectSchema
       'Details, context, and explanation about the purpose or contents of the collection.',
     ),
 
-    x_mitre_contents: xMitreContentsSchema,
+    x_mitre_contents: xMitreContentsSchema.min(1, 'At least one STIX object reference is required'),
   })
-  .strict()
-  .superRefine((schema, ctx) => {
-    //==============================================================================
-    // Validate x_mitre_contents
-    //==============================================================================
+  .strict();
 
-    const XMitreContents = schema.x_mitre_contents;
-    if (XMitreContents.length < 1) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['x_mitre_contents'],
-        message: 'At least one STIX object reference is required',
-      });
-    }
-  });
+// No refinements currently exist on collections, so just export an alias
+export const collectionSchema = extensibleCollectionSchema;
 
-export type Collection = z.infer<typeof collectionSchema>;
+export type Collection = z.infer<typeof extensibleCollectionSchema>;

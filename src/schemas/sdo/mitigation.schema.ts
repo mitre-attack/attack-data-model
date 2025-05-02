@@ -2,10 +2,12 @@ import { z } from 'zod';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 import {
+  createAttackExternalReferencesSchema,
+  createOldMitreAttackIdSchema,
   createStixIdValidator,
-  externalReferencesSchema,
   objectMarkingRefsSchema,
   stixCreatedByRefSchema,
+  xMitreContributorsSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
 } from '../common/index.js';
@@ -16,7 +18,7 @@ import {
 //
 /////////////////////////////////////
 
-export const mitigationSchema = attackBaseDomainObjectSchema
+export const extensibleMitigationSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('course-of-action'),
 
@@ -30,9 +32,7 @@ export const mitigationSchema = attackBaseDomainObjectSchema
       .describe('A description that provides more details and context about the Mitigation.'),
 
     // Optional in STIX but required in ATT&CK
-    external_references: externalReferencesSchema.describe(
-      'A list of external references which refers to non-STIX information.',
-    ),
+    external_references: createAttackExternalReferencesSchema('course-of-action'),
 
     // Optional in STIX but required in ATT&CK
     object_marking_refs: objectMarkingRefsSchema,
@@ -40,22 +40,15 @@ export const mitigationSchema = attackBaseDomainObjectSchema
     x_mitre_domains: xMitreDomainsSchema,
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
-  })
-  .strict()
-  .superRefine((schema, ctx) => {
-    //==============================================================================
-    // Validate x_mitre_old_attack_id
-    //==============================================================================
-    const idRegex = /^MOB-M\d{4}$/;
-    const oldAttackId = schema.x_mitre_old_attack_id;
-    if (typeof oldAttackId === 'string' && !idRegex.test(oldAttackId)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `x_mitre_old_attack_id for mitigation need to be in the format MOB-M####}.`,
-        path: ['x_mitre_old_attack_id'],
-      });
-    }
-  });
 
-// Define the type for SchemaName
-export type Mitigation = z.infer<typeof mitigationSchema>;
+    x_mitre_contributors: xMitreContributorsSchema.min(1).optional(),
+
+    x_mitre_old_attack_id: createOldMitreAttackIdSchema('course-of-action').optional(),
+  })
+  .strict();
+
+// Alias unless/until mitigations require at least one refinement
+export const mitigationSchema = extensibleMitigationSchema;
+
+// Define the type for Mitigation
+export type Mitigation = z.infer<typeof extensibleMitigationSchema>;

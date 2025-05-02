@@ -9,7 +9,7 @@ import {
   xMitreModifiedByRefSchema,
   xMitreContributorsSchema,
   objectMarkingRefsSchema,
-  externalReferencesSchema,
+  createAttackExternalReferencesSchema,
   stixCreatedByRefSchema,
 } from '../common/index.js';
 
@@ -57,7 +57,7 @@ export const dataSourceSchema = attackBaseDomainObjectSchema
     description: descriptionSchema,
 
     // Optional in STIX but required in ATT&CK
-    external_references: externalReferencesSchema,
+    external_references: createAttackExternalReferencesSchema('x-mitre-data-source'),
 
     // Optional in STIX but required in ATT&CK
     object_marking_refs: objectMarkingRefsSchema,
@@ -72,31 +72,7 @@ export const dataSourceSchema = attackBaseDomainObjectSchema
 
     x_mitre_collection_layers: xMitreCollectionLayersSchema,
   })
-  .strict()
-  .superRefine((schema, ctx) => {
-    //==============================================================================
-    // Validate external references
-    //==============================================================================
-
-    const { external_references } = schema;
-    const attackIdEntry = external_references[0];
-    if (!attackIdEntry.external_id) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'ATT&CK ID must be defined in the first external_references entry.',
-        path: ['external_references', 0, 'external_id'],
-      });
-    } else {
-      const idRegex = /^DS\d{4}$/;
-      if (!idRegex.test(attackIdEntry.external_id)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `The first external_reference must match the ATT&CK ID format DS####.`,
-          path: ['external_references', 0, 'external_id'],
-        });
-      }
-    }
-  });
+  .strict();
 
 // Define the type for DataSource
 export type DataSource = z.infer<typeof dataSourceSchema>;

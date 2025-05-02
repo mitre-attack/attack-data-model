@@ -8,7 +8,7 @@ import {
   xMitreContributorsSchema,
   xMitreModifiedByRefSchema,
   objectMarkingRefsSchema,
-  externalReferencesSchema,
+  createAttackExternalReferencesSchema,
   createStixTypeValidator,
 } from '../common/index.js';
 
@@ -68,7 +68,7 @@ export type RelatedAssets = z.infer<typeof relatedAssetsSchema>;
 //
 /////////////////////////////////////
 
-export const assetSchema = attackBaseDomainObjectSchema
+export const extensibleAssetSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-asset'),
 
@@ -77,7 +77,7 @@ export const assetSchema = attackBaseDomainObjectSchema
     description: descriptionSchema.optional(),
 
     // Optional in STIX but required in ATT&CK
-    external_references: externalReferencesSchema,
+    external_references: createAttackExternalReferencesSchema('x-mitre-asset'),
 
     // Optional in STIX but required in ATT&CK
     object_marking_refs: objectMarkingRefsSchema,
@@ -94,34 +94,9 @@ export const assetSchema = attackBaseDomainObjectSchema
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
   })
-  .strict()
-  // validate common fields
-  .superRefine((schema, ctx) => {
-    const { external_references } = schema;
+  .strict();
 
-    // ATT&CK ID format
-    if (!external_references?.length) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'At least one external_reference must be specified.',
-      });
-    } else {
-      const attackIdEntry = external_references[0];
-      if (!attackIdEntry.external_id) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'ATT&CK ID must be defined in the first external_references entry.',
-        });
-      } else {
-        const idRegex = /A\d{4}$/;
-        if (!idRegex.test(attackIdEntry.external_id)) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'The first external_reference must match the ATT&CK ID format A####.',
-          });
-        }
-      }
-    }
-  });
+// No refinements currently exist on assets, so just export an alias
+export const assetSchema = extensibleAssetSchema;
 
-export type Asset = z.infer<typeof assetSchema>;
+export type Asset = z.infer<typeof extensibleAssetSchema>;
