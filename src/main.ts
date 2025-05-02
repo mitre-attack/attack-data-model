@@ -6,7 +6,7 @@ import { z } from 'zod';
 import {
   type StixBundle,
   type AttackObject,
-  baseStixBundleSchema,
+  extensibleStixBundleSchema,
 } from './schemas/sdo/stix-bundle.schema.js';
 import {
   techniqueSchema,
@@ -176,7 +176,7 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
   const validObjects: AttackObject[] = [];
 
   // Validate the bundle's top-level properties
-  const baseBundleValidationResults = baseStixBundleSchema
+  const baseBundleValidationResults = extensibleStixBundleSchema
     .pick({
       id: true,
       type: true,
