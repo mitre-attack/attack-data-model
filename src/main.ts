@@ -6,7 +6,7 @@ import { z } from 'zod';
 import {
   type StixBundle,
   type AttackObject,
-  baseStixBundleSchema,
+  extensibleStixBundleSchema,
 } from './schemas/sdo/stix-bundle.schema.js';
 import {
   techniqueSchema,
@@ -30,9 +30,6 @@ import {
   type ParsingMode,
 } from './data-sources/data-source-registration.js';
 import { AttackDataModel } from './classes/attack-data-model.js';
-
-// Initializes the custom ZodErrorMap
-import './errors/index.js';
 
 const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
 const readFile = promisify(fs.readFile);
@@ -179,7 +176,7 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
   const validObjects: AttackObject[] = [];
 
   // Validate the bundle's top-level properties
-  const baseBundleValidationResults = baseStixBundleSchema
+  const baseBundleValidationResults = extensibleStixBundleSchema
     .pick({
       id: true,
       type: true,

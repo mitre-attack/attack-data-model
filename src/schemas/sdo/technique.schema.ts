@@ -1,23 +1,21 @@
 import { z } from 'zod';
-import { attackBaseObjectSchema } from '../common/attack-base-object.js';
-import { type StixType, stixTypeSchema } from '../common/stix-type.js';
 import {
+  attackBaseDomainObjectSchema,
   descriptionSchema,
   xMitrePlatformsSchema,
-  attackDomainSchema,
-  createStixIdentifierSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
   xMitreModifiedByRefSchema,
   xMitreDomainsSchema,
   xMitreContributorsSchema,
-  externalReferencesSchema,
   killChainPhaseSchema,
+  createAttackExternalReferencesSchema,
 } from '../common/index.js';
-
-// Initializes the custom ZodErrorMap
-import '../../errors/index.js';
-
-// read only type reference
-const TECHNIQUE_TYPE: StixType = stixTypeSchema.enum['attack-pattern'];
+import {
+  createAttackIdInExternalReferencesRefinement,
+  createEnterpriseOnlyPropertiesRefinement,
+  createMobileOnlyPropertiesRefinement,
+} from '@/refinements/index.js';
 
 /////////////////////////////////////
 //
@@ -276,14 +274,14 @@ export type XMitreDetection = z.infer<typeof xMitreDetectionSchema>;
 //
 /////////////////////////////////////
 
-export const techniqueSchema = attackBaseObjectSchema
+export const extensibleTechniqueSchema = attackBaseDomainObjectSchema
   .extend({
-    id: createStixIdentifierSchema(TECHNIQUE_TYPE),
+    id: createStixIdValidator('attack-pattern'),
 
-    type: z.literal(TECHNIQUE_TYPE),
+    type: createStixTypeValidator('attack-pattern'),
 
     // Optional in STIX but required in ATT&CK
-    external_references: externalReferencesSchema,
+    external_references: createAttackExternalReferencesSchema('attack-pattern'),
 
     kill_chain_phases: z.array(killChainPhaseSchema).optional(),
 
@@ -319,145 +317,16 @@ export const techniqueSchema = attackBaseObjectSchema
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
   })
-  .required({
-    created: true,
-    external_references: true,
-    id: true,
-    modified: true,
-    name: true,
-    spec_version: true,
-    type: true,
-    x_mitre_attack_spec_version: true,
-    x_mitre_domains: true,
-    x_mitre_is_subtechnique: true,
-    x_mitre_version: true,
-  })
-  .superRefine((schema, ctx) => {
-    // Destructure relevant properties from the schema
-    const {
-      external_references,
-      kill_chain_phases,
-      x_mitre_domains,
-      x_mitre_permissions_required,
-      x_mitre_effective_permissions,
-      x_mitre_system_requirements,
-      x_mitre_defense_bypassed,
-      x_mitre_remote_support,
-      x_mitre_impact_type,
-      x_mitre_is_subtechnique,
-      x_mitre_tactic_type,
-      x_mitre_data_sources,
-    } = schema;
+  .strict();
 
-    // Helper variables for domain checks
-    const inEnterpriseDomain = x_mitre_domains.includes(
-      attackDomainSchema.enum['enterprise-attack'],
-    );
-    const inMobileDomain = x_mitre_domains.includes(attackDomainSchema.enum['mobile-attack']);
+// Apply the refinements for techniques
+export const techniqueSchema = extensibleTechniqueSchema.superRefine((schema, ctx) => {
+  // Validates that the first external reference is a valid ATT&CK ID
+  createAttackIdInExternalReferencesRefinement()(schema, ctx);
+  // Validates that the technique only contains properties permissible by the target tactic in Enterprise
+  createEnterpriseOnlyPropertiesRefinement()(schema, ctx);
+  // Validates that the technique only contains properties permissible in Mobile (if the technique belongs to Mobile)
+  createMobileOnlyPropertiesRefinement()(schema, ctx);
+});
 
-    //==============================================================================
-    // Validate external references
-    //==============================================================================
-
-    // Verify that first external reference is an ATT&CK ID
-    const attackIdEntry = external_references[0];
-    if (!attackIdEntry.external_id) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'ATT&CK ID must be defined in the first external_references entry.',
-        path: ['external_references', 0, 'external_id'],
-      });
-    } else {
-      // Check if the ATT&CK ID format is correct based on whether it's a sub-technique
-      const idRegex = x_mitre_is_subtechnique ? /^T\d{4}\.\d{3}$/ : /^T\d{4}$/;
-      if (!idRegex.test(attackIdEntry.external_id)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `The first external_reference must match the ATT&CK ID format ${x_mitre_is_subtechnique ? 'T####.###' : 'T####'}.`,
-          path: ['external_references', 0, 'external_id'],
-        });
-      }
-    }
-
-    //==============================================================================
-    // Validate Enterprise-only properties
-    //==============================================================================
-
-    // Extract tactics from kill_chain_phases
-    const tactics = kill_chain_phases?.map((tactic) => tactic.phase_name) || [];
-
-    /**
-     * Validates that the specified property is only valid if the
-     * technique is associated with the specified tactic and belongs to the enterprise
-     * domain.
-     *
-     * @param fieldName The property key that will be evaluated
-     * @param value The property value that will be evaluated
-     * @param requiredTactic The name of the tactic required for the property to be valid
-     */
-    function validateEnterpriseOnlyField(
-      fieldName: string,
-      value: boolean | string[] | undefined,
-      requiredTactic: string | null = null,
-    ) {
-      if (value !== undefined) {
-        if (!inEnterpriseDomain) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: `${fieldName} is only supported in the 'enterprise-attack' domain.`,
-            path: [fieldName],
-          });
-        } else if (
-          requiredTactic &&
-          kill_chain_phases !== undefined &&
-          !tactics.includes(requiredTactic)
-        ) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: `${fieldName} is only supported in the ${requiredTactic} tactic.`,
-            path: [fieldName],
-          });
-        }
-      }
-    }
-
-    // Validate enterprise-only fields
-    validateEnterpriseOnlyField('x_mitre_system_requirements', x_mitre_system_requirements);
-    validateEnterpriseOnlyField(
-      'x_mitre_permissions_required',
-      x_mitre_permissions_required,
-      'privilege-escalation',
-    );
-    validateEnterpriseOnlyField(
-      'x_mitre_effective_permissions',
-      x_mitre_effective_permissions,
-      'privilege-escalation',
-    );
-    validateEnterpriseOnlyField(
-      'x_mitre_defense_bypassed',
-      x_mitre_defense_bypassed,
-      'defense-evasion',
-    );
-    validateEnterpriseOnlyField('x_mitre_remote_support', x_mitre_remote_support, 'execution');
-    validateEnterpriseOnlyField('x_mitre_impact_type', x_mitre_impact_type, 'impact');
-
-    //==============================================================================
-    // Validate Mobile-only properties
-    //==============================================================================
-
-    if (x_mitre_tactic_type?.length && !inMobileDomain) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "x_mitre_tactic_type is only supported in the 'mobile-attack' domain.",
-      });
-    }
-
-    if (x_mitre_data_sources && inMobileDomain) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "x_mitre_data_sources is not supported in the 'mobile-attack' domain.",
-      });
-    }
-  });
-
-export type Technique = z.infer<typeof techniqueSchema>;
+export type Technique = z.infer<typeof extensibleTechniqueSchema>;

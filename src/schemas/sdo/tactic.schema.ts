@@ -1,18 +1,16 @@
 import { z } from 'zod';
 import {
-  attackBaseObjectSchema,
-  createStixIdentifierSchema,
+  attackBaseDomainObjectSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
   descriptionSchema,
   xMitreModifiedByRefSchema,
   objectMarkingRefsSchema,
   stixCreatedByRefSchema,
   xMitreDomainsSchema,
-  externalReferencesSchema,
+  xMitreContributorsSchema,
+  createAttackExternalReferencesSchema,
 } from '../common/index.js';
-import { stixTypeSchema } from '../common/stix-type.js';
-
-// Initializes the custom ZodErrorMap
-import '../../errors/index.js';
 
 /////////////////////////////////////
 //
@@ -73,24 +71,15 @@ export type XMitreShortName = z.infer<typeof xMitreShortNameSchema>;
 
 /////////////////////////////////////
 //
-// Tactic ID
-//
-/////////////////////////////////////
-
-const tacticIdSchema = createStixIdentifierSchema('x-mitre-tactic');
-export type TacticId = z.infer<typeof tacticIdSchema>; // Will be "x-mitre-tactic--${string}"
-
-/////////////////////////////////////
-//
 // MITRE Tactic
 //
 /////////////////////////////////////
 
-export const tacticSchema = attackBaseObjectSchema
+export const extensibleTacticSchema = attackBaseDomainObjectSchema
   .extend({
-    id: tacticIdSchema,
+    id: createStixIdValidator('x-mitre-tactic'),
 
-    type: z.literal(stixTypeSchema.enum['x-mitre-tactic']),
+    type: createStixTypeValidator('x-mitre-tactic'),
 
     description: descriptionSchema,
 
@@ -98,7 +87,7 @@ export const tacticSchema = attackBaseObjectSchema
     created_by_ref: stixCreatedByRefSchema,
 
     // Optional in STIX but required in ATT&CK
-    external_references: externalReferencesSchema,
+    external_references: createAttackExternalReferencesSchema('x-mitre-tactic'),
 
     // Optional in STIX but required in ATT&CK
     object_marking_refs: objectMarkingRefsSchema,
@@ -108,51 +97,12 @@ export const tacticSchema = attackBaseObjectSchema
     x_mitre_shortname: xMitreShortNameSchema,
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
+
+    x_mitre_contributors: xMitreContributorsSchema.optional(),
   })
-  .required({
-    created: true,
-    created_by_ref: true,
-    description: true,
-    external_references: true,
-    id: true,
-    modified: true,
-    name: true,
-    object_marking_refs: true,
-    spec_version: true,
-    type: true,
-    x_mitre_attack_spec_version: true,
-    x_mitre_domains: true,
-    x_mitre_modified_by_ref: true,
-    x_mitre_shortname: true,
-    x_mitre_version: true,
-  })
-  .strict()
-  .superRefine((schema, ctx) => {
-    // Destructure relevant properties from the schema
-    const { external_references } = schema;
+  .strict();
 
-    //==============================================================================
-    // Validate external references
-    //==============================================================================
+// Alias unless/until tactics require at least one refinement
+export const tacticSchema = extensibleTacticSchema;
 
-    // Verify that first external reference is an ATT&CK ID
-    const attackIdEntry = external_references[0];
-    if (!attackIdEntry.external_id) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'ATT&CK ID must be defined in the first external_references entry.',
-        path: ['external_references', 0, 'external_id'],
-      });
-    } else {
-      // Check if the ATT&CK ID format is correct
-      const idRegex = /TA\d{4}$/;
-      if (!idRegex.test(attackIdEntry.external_id)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `The first external_reference must match the ATT&CK ID format TA####.`,
-        });
-      }
-    }
-  });
-
-export type Tactic = z.infer<typeof tacticSchema>;
+export type Tactic = z.infer<typeof extensibleTacticSchema>;

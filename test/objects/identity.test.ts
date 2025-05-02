@@ -20,8 +20,6 @@ describe('IdentitySchema', () => {
       object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
       identity_class: 'organization',
       x_mitre_attack_spec_version: '2.1.0',
-      x_mitre_domains: ['enterprise-attack'],
-      x_mitre_version: '1.0',
     };
   });
 
@@ -83,9 +81,6 @@ describe('IdentitySchema', () => {
       testField('identity_class', 'invalid-identity-class');
     });
 
-    describe('x_mitre_domains', () => {
-      testField('x_mitre_domains', ['invalid-domain']);
-    });
 
     // Testing optional fields
     describe('description', () => {

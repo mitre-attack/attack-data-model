@@ -1,24 +1,15 @@
 import { z } from 'zod';
-import { stixRelationshipObjectSchema } from '../common/stix-core.js';
 import {
-  createStixIdentifierSchema,
+  attackBaseRelationshipObjectSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
   descriptionSchema,
   objectMarkingRefsSchema,
   stixIdentifierSchema,
   type StixType,
   stixTypeSchema,
-  xMitreAttackSpecVersionSchema,
-  xMitreDeprecatedSchema,
-  xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
-  xMitreVersionSchema,
 } from '../common/index.js';
-
-// Initializes the custom ZodErrorMap
-import '../../errors/index.js';
-
-// read only type reference
-const RELATIONSHIP_TYPE: StixType = stixTypeSchema.enum.relationship;
 
 /////////////////////////////////////
 //
@@ -234,11 +225,11 @@ export const invalidRelationships: RelationshipCombination[] = allRelationships.
 //
 /////////////////////////////////////
 
-export const relationshipSchema = stixRelationshipObjectSchema
+export const relationshipSchema = attackBaseRelationshipObjectSchema
   .extend({
-    id: createStixIdentifierSchema(RELATIONSHIP_TYPE),
+    id: createStixIdValidator('relationship'),
 
-    type: z.literal(RELATIONSHIP_TYPE),
+    type: createStixTypeValidator('relationship'),
 
     relationship_type: relationshipTypeSchema,
 
@@ -252,30 +243,12 @@ export const relationshipSchema = stixRelationshipObjectSchema
     target_ref: stixIdentifierSchema.describe('The ID of the target (to) object.'),
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
-
-    x_mitre_attack_spec_version: xMitreAttackSpecVersionSchema,
-
-    x_mitre_domains: xMitreDomainsSchema,
-
-    x_mitre_version: xMitreVersionSchema,
-
-    x_mitre_deprecated: xMitreDeprecatedSchema.optional(),
   })
-  .required({
-    created: true,
-    id: true,
-    modified: true,
-    object_marking_refs: true,
-    relationship_type: true,
-    source_ref: true,
-    spec_version: true,
-    target_ref: true,
-    type: true,
-    x_mitre_attack_spec_version: true,
-    x_mitre_modified_by_ref: true,
-    x_mitre_domains: true,
+  .omit({
+    name: true,
     x_mitre_version: true,
   })
+  .strict()
   .superRefine((schema, ctx) => {
     const { relationship_type, source_ref, target_ref } = schema;
 

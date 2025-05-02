@@ -1,15 +1,15 @@
 import { z } from 'zod';
-import { attackBaseObjectSchema } from '../common/attack-base-object.js';
-import { stixTypeSchema } from '../common/stix-type.js';
+import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
+import { createStixIdValidator } from '../common/stix-identifier.js';
+import { createStixTypeValidator } from '../common/stix-type.js';
 import {
   xMitrePlatformsSchema,
   xMitreDomainsSchema,
-  createStixIdentifierSchema,
   descriptionSchema,
   xMitreModifiedByRefSchema,
   xMitreContributorsSchema,
   objectMarkingRefsSchema,
-  externalReferencesSchema,
+  createAttackExternalReferencesSchema,
   stixCreatedByRefSchema,
 } from '../common/index.js';
 
@@ -45,11 +45,11 @@ export type XMitreCollectionLayers = z.infer<typeof xMitreCollectionLayersSchema
 //
 /////////////////////////////////////
 
-export const dataSourceSchema = attackBaseObjectSchema
+export const dataSourceSchema = attackBaseDomainObjectSchema
   .extend({
-    id: createStixIdentifierSchema('x-mitre-data-source'),
+    id: createStixIdValidator('x-mitre-data-source'),
 
-    type: z.literal(stixTypeSchema.enum['x-mitre-data-source']),
+    type: createStixTypeValidator('x-mitre-data-source'),
 
     // Optional in STIX but required in ATT&CK
     created_by_ref: stixCreatedByRefSchema,
@@ -57,7 +57,7 @@ export const dataSourceSchema = attackBaseObjectSchema
     description: descriptionSchema,
 
     // Optional in STIX but required in ATT&CK
-    external_references: externalReferencesSchema,
+    external_references: createAttackExternalReferencesSchema('x-mitre-data-source'),
 
     // Optional in STIX but required in ATT&CK
     object_marking_refs: objectMarkingRefsSchema,
@@ -72,31 +72,7 @@ export const dataSourceSchema = attackBaseObjectSchema
 
     x_mitre_collection_layers: xMitreCollectionLayersSchema,
   })
-  .strict()
-  .superRefine((schema, ctx) => {
-    //==============================================================================
-    // Validate external references
-    //==============================================================================
-
-    const { external_references } = schema;
-    const attackIdEntry = external_references[0];
-    if (!attackIdEntry.external_id) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'ATT&CK ID must be defined in the first external_references entry.',
-        path: ['external_references', 0, 'external_id'],
-      });
-    } else {
-      const idRegex = /^DS\d{4}$/;
-      if (!idRegex.test(attackIdEntry.external_id)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `The first external_reference must match the ATT&CK ID format DS####.`,
-          path: ['external_references', 0, 'external_id'],
-        });
-      }
-    }
-  });
+  .strict();
 
 // Define the type for DataSource
 export type DataSource = z.infer<typeof dataSourceSchema>;

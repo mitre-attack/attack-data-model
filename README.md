@@ -141,7 +141,7 @@ try {
 }
 ```
 
-For more detailed examples, please refer to the [examples](./examples/) folder in the repository.
+For more detailed examples, please refer to the [examples](./examples/README.md) folder in the repository.
 
 ## How It Works
 
