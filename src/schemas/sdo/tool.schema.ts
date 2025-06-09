@@ -1,12 +1,17 @@
 import { z } from 'zod';
-import { stixTypeSchema } from '../common/stix-type.js';
 import { softwareSchema } from './software.schema.js';
-import { createStixIdentifierSchema, killChainPhaseSchema } from '../common/index.js';
+import {
+  createAttackExternalReferencesSchema,
+  createOldMitreAttackIdSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
+  killChainPhaseSchema,
+} from '../common/index.js';
 import { ToolTypesOpenVocabulary } from '../common/open-vocabulary.js';
-
-// Initializes the custom ZodErrorMap
-// TODO migrate to loading this in a globally scoped module
-import '../../errors/index.js';
+import {
+  createFirstAliasRefinement,
+  createFirstXMitreAliasRefinement,
+} from '@/refinements/index.js';
 
 /////////////////////////////////////
 //
@@ -14,11 +19,13 @@ import '../../errors/index.js';
 //
 /////////////////////////////////////
 
-export const toolSchema = softwareSchema
+export const extensibleToolSchema = softwareSchema
   .extend({
-    id: createStixIdentifierSchema(stixTypeSchema.enum.tool),
+    id: createStixIdValidator('tool'),
 
-    type: z.literal(stixTypeSchema.enum.tool),
+    type: createStixTypeValidator('tool'),
+
+    external_references: createAttackExternalReferencesSchema('tool'),
 
     // Not used in ATT&CK Tool but defined in STIX
     tool_types: z
@@ -34,46 +41,15 @@ export const toolSchema = softwareSchema
 
     // Not used in ATT&CK Tool but defined in STIX
     tool_version: z.string().optional().describe('The version identifier associated with the Tool'),
+
+    x_mitre_old_attack_id: createOldMitreAttackIdSchema('tool').optional(),
   })
-  .strict()
-  .superRefine((schema, ctx) => {
-    //==============================================================================
-    // Validate external references
-    //==============================================================================
+  .strict();
 
-    const { external_references } = schema;
-    const attackIdEntry = external_references[0];
-    if (!attackIdEntry.external_id) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'ATT&CK ID must be defined in the first external_references entry.',
-        path: ['external_references', 0, 'external_id'],
-      });
-    } else {
-      const idRegex = /^S\d{4}$/;
-      if (!idRegex.test(attackIdEntry.external_id)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `The first external_reference must match the ATT&CK ID format S####}.`,
-          path: ['external_references', 0, 'external_id'],
-        });
-      }
-    }
-
-    //==============================================================================
-    // Validate x_mitre_aliases
-    //==============================================================================
-
-    // The object's name MUST be listed as the first alias in the x_mitre_aliases field
-    if (schema.x_mitre_aliases && schema.x_mitre_aliases.length > 0) {
-      if (!(schema.x_mitre_aliases[0] === schema.name)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "The first alias must match the object's name",
-        });
-      }
-    }
-  });
-
+// Apply a single refinement that combines both refinements
+export const toolSchema = extensibleToolSchema.superRefine((schema, ctx) => {
+  createFirstXMitreAliasRefinement()(schema, ctx);
+  createFirstAliasRefinement()(schema, ctx);
+});
 // Define the type for Tool
-export type Tool = z.infer<typeof toolSchema>;
+export type Tool = z.infer<typeof extensibleToolSchema>;

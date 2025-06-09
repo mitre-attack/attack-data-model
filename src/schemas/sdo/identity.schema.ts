@@ -1,15 +1,12 @@
 import { z } from 'zod';
-import { stixTypeSchema } from '../common/stix-type.js';
-import { objectMarkingRefsSchema, xMitreDomainsSchema } from '../common/common-properties.js';
-import { attackBaseObjectSchema } from '../common/attack-base-object.js';
-import { createStixIdentifierSchema } from '../common/stix-identifier.js';
+import { createStixTypeValidator } from '../common/stix-type.js';
+import { objectMarkingRefsSchema } from '../common/common-properties.js';
+import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
+import { createStixIdValidator } from '../common/stix-identifier.js';
 import {
   identityClassOpenVocabulary,
   industrySectorOpenVocabulary,
 } from '../common/open-vocabulary.js';
-
-// TODO migrate to loading this in a globally scoped module
-import '../../errors/index.js';
 
 /////////////////////////////////////
 //
@@ -17,19 +14,17 @@ import '../../errors/index.js';
 //
 /////////////////////////////////////
 
-export const identitySchema = attackBaseObjectSchema
+export const extensibleIdentitySchema = attackBaseDomainObjectSchema
   .extend({
-    id: createStixIdentifierSchema(stixTypeSchema.enum.identity),
+    id: createStixIdValidator('identity'),
 
-    type: z.literal(stixTypeSchema.enum.identity),
+    type: createStixTypeValidator('identity'),
 
     object_marking_refs: objectMarkingRefsSchema,
 
     identity_class: identityClassOpenVocabulary.describe(
       'The type of entity that this Identity describes, e.g., an individual or organization. This is an open vocabulary and the values SHOULD come from the identity-class-ov vocabulary.',
     ),
-
-    x_mitre_domains: xMitreDomainsSchema,
 
     description: z.string().describe('A description of the object.').optional(),
 
@@ -55,7 +50,13 @@ export const identitySchema = attackBaseObjectSchema
       .describe('The contact information (e-mail, phone number, etc.) for this Identity.')
       .optional(),
   })
+  .omit({
+    x_mitre_version: true,
+  })
   .strict();
 
+// Alias because identities currently don't have any refinements
+export const identitySchema = extensibleIdentitySchema;
+
 // Define the type for Identity
-export type Identity = z.infer<typeof identitySchema>;
+export type Identity = z.infer<typeof extensibleIdentitySchema>;

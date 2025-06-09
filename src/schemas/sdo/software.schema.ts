@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { attackBaseObjectSchema } from '../common/attack-base-object.js';
+import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import {
   descriptionSchema,
   xMitrePlatformsSchema,
@@ -9,12 +9,8 @@ import {
   aliasesSchema,
   xMitreModifiedByRefSchema,
   externalReferencesSchema,
-  stixTypeSchema,
+  createMultiStixTypeValidator,
 } from '../common/index.js';
-
-// Initializes the custom ZodErrorMap
-// TODO migrate to loading this in a globally scoped module
-import '../../errors/index.js';
 
 /////////////////////////////////////
 //
@@ -22,8 +18,8 @@ import '../../errors/index.js';
 //
 /////////////////////////////////////
 
-export const softwareSchema = attackBaseObjectSchema.extend({
-  type: z.union([z.literal(stixTypeSchema.enum.malware), z.literal(stixTypeSchema.enum.tool)]),
+export const extensibleSoftwareSchema = attackBaseDomainObjectSchema.extend({
+  type: createMultiStixTypeValidator(['malware', 'tool']),
 
   created_by_ref: stixCreatedByRefSchema.describe(
     'The ID of the Source object that describes who created this object.',
@@ -55,5 +51,8 @@ export const softwareSchema = attackBaseObjectSchema.extend({
   aliases: aliasesSchema.optional().describe('Alternative names used to identify this software.'),
 });
 
+// Alias unless/until software requires at least one refinement
+export const softwareSchema = extensibleSoftwareSchema;
+
 // Define the type for Software
-export type Software = z.infer<typeof softwareSchema>;
+export type Software = z.infer<typeof extensibleSoftwareSchema>;

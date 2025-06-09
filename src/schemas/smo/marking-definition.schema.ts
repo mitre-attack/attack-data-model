@@ -1,13 +1,8 @@
 import { z } from 'zod';
-import { stixTypeSchema } from '../common/stix-type.js';
 import {
-  createStixIdentifierSchema,
-  nameSchema,
-  stixCreatedByRefSchema,
-  stixSpecVersionSchema,
-  stixTimestampSchema,
-  xMitreAttackSpecVersionSchema,
-  xMitreDomainsSchema,
+  attackBaseMetaObjectSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -120,29 +115,11 @@ export const statementMarkingObjectSchema = z
 /////////////////////////////////////
 
 // MarkingDefinition Schema
-export const markingDefinitionSchema = z
-  .object({
-    id: createStixIdentifierSchema(stixTypeSchema.enum['marking-definition']),
+export const markingDefinitionSchema = attackBaseMetaObjectSchema
+  .extend({
+    id: createStixIdValidator('marking-definition'),
 
-    type: z.literal(stixTypeSchema.enum['marking-definition']),
-
-    // Listed in STIX 2.1 spec but not used in ATT&CK
-    name: nameSchema.optional(),
-
-    spec_version: stixSpecVersionSchema.describe(
-      'The version of the STIX specification used to represent this object.',
-    ),
-
-    created: stixTimestampSchema
-      .brand('StixCreatedTimestamp')
-      .describe(
-        'The created property represents the time at which the first version of this object was created. The timstamp value MUST be precise to the nearest millisecond.',
-      ),
-
-    // Optional in STIX but required in ATT&CK
-    created_by_ref: stixCreatedByRefSchema.describe(
-      'The ID of the Source object that describes who created this object.',
-    ),
+    type: createStixTypeValidator('marking-definition'),
 
     // Deprecated in STIX
     // Optional in STIX but required in ATT&CK
@@ -158,11 +135,20 @@ export const markingDefinitionSchema = z
       .describe(
         'The definition property contains the marking object itself (e.g., the TLP marking as defined in section 7.2.1.4, the Statement marking as defined in section 7.2.1.3). Any new marking definitions SHOULD be specified using the extension facility described in section 7.3. If the extensions property is not present, this property MUST be present.',
       ),
-
-    // TODO flagged for removal in ATT&CK Release x.y.z
-    x_mitre_domains: xMitreDomainsSchema,
-
-    x_mitre_attack_spec_version: xMitreAttackSpecVersionSchema,
+  })
+  // .partial toggles required fields to optional
+  .partial({
+    name: true, // Listed in STIX 2.1 spec but not used in ATT&CK
+  })
+  // .omit sets inherited fields as unsupported
+  .omit({
+    x_mitre_attack_spec_version: true,
+    x_mitre_version: true,
+    x_mitre_deprecated: true,
+  })
+  // .required toggles optional fields to required
+  .required({
+    created_by_ref: true, // Optional in STIX but required in ATT&CK
   })
   .strict();
 

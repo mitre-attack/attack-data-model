@@ -40,8 +40,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Validate all commits
-        run: npx commitlint --from ${{ github.event.pull_request.base.sha || github.event.before }} --to ${{ github.event.pull_request.head.sha || github.sha }} --verbose
+      - name: Determine commit range
+        id: commit_range
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "base_sha=$(git merge-base ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})" >> $GITHUB_OUTPUT
+            echo "head_sha=${{ github.event.pull_request.head.sha }}" >> $GITHUB_OUTPUT
+          else
+            # For push events or when PR base isn't available
+            echo "base_sha=$(git rev-parse HEAD~1)" >> $GITHUB_OUTPUT
+            echo "head_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Validate commits
+        run: npx commitlint --from ${{ steps.commit_range.outputs.base_sha }} --to ${{ steps.commit_range.outputs.head_sha }} --verbose
 
   # Job 2: Build and Test
   test:

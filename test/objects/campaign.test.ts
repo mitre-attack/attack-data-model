@@ -159,7 +159,7 @@ describe('campaignSchema', () => {
     });
 
     describe('x_mitre_deprecated', () => {
-      testField('x_mitre_deprecated', 'not-a-boolean');
+      testField('x_mitre_deprecated', 'not-a-boolean', false);
     });
 
     // Optional Fields

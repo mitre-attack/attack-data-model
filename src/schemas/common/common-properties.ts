@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { type StixIdentifier, stixIdentifierSchema } from './stix-identifier.js';
+import type { StixType } from './stix-type.js';
 
 /////////////////////////////////////
 //
@@ -143,6 +144,41 @@ type MitreOldAttackId = `MOB-${'M' | 'S'}${number}`;
 
 const oldAttackIdRegex = /^MOB-(M|S)\d{4}$/;
 
+export function createOldMitreAttackIdSchema(
+  stixType: Extract<StixType, 'malware' | 'tool' | 'course-of-action'>,
+) {
+  const baseSchema = z
+    .string()
+    .describe('Old ATT&CK IDs that may have been associated with this object');
+
+  switch (stixType) {
+    case 'malware':
+    case 'tool':
+      // Software types use MOB-S####
+      return baseSchema.refine(
+        (value): value is MitreOldAttackId => {
+          return /^MOB-S\d{4}$/.test(value);
+        },
+        {
+          message: `x_mitre_old_attack_id for ${stixType} need to be in the format MOB-S####`,
+        },
+      );
+    case 'course-of-action':
+      // Mitigations use MOB-M####
+      return baseSchema.refine(
+        (value): value is MitreOldAttackId => {
+          return /^MOB-M\d{4}$/.test(value);
+        },
+        {
+          message: `x_mitre_old_attack_id for ${stixType} need to be in the format MOB-M####`,
+        },
+      );
+    default:
+      // This should never be reached due to the type constraint, but TypeScript wants it
+      throw new Error(`Unsupported STIX type: ${stixType}`);
+  }
+}
+
 export const xMitreOldAttackIdSchema = z
   .string()
   .refine(
@@ -202,10 +238,12 @@ export type XMitreDeprecated = z.infer<typeof xMitreDeprecatedSchema>;
 
 const supportedMitrePlatforms = [
   'Field Controller/RTU/PLC/IED',
-  'Network',
+  'Network Devices',
   'Data Historian',
   'Google Workspace',
-  'Office 365',
+  'Office Suite',
+  'ESXi',
+  'Identity Provider',
   'Containers',
   'Azure AD',
   'Engineering Workstation',

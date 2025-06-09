@@ -21,9 +21,7 @@ describe('MarkingDefinitionSchema (Statement)', () => {
       created: '2017-06-01T00:00:00.000Z' as StixCreatedTimestamp,
       created_by_ref: `identity--${uuidv4()}`,
       definition_type: 'statement',
-      x_mitre_attack_spec_version: '2.1.0',
       spec_version: '2.1',
-      x_mitre_domains: ['enterprise-attack'],
     };
   });
 
@@ -113,14 +111,6 @@ describe('MarkingDefinitionSchema (Statement)', () => {
         const { definition, ...objectWithoutDefinition } = minimalMarkingDefinition;
         expect(() => markingDefinitionSchema.parse(objectWithoutDefinition)).toThrow();
       });
-    });
-
-    describe('x_mitre_domains', () => {
-      testField('x_mitre_domains', ['invalid-domain']);
-    });
-
-    describe('x_mitre_attack_spec_version', () => {
-      testField('x_mitre_attack_spec_version', 'invalid-version');
     });
 
     // Optional fields
