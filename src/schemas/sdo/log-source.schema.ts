@@ -1,16 +1,16 @@
 import { z } from 'zod';
 import { attackBaseObjectSchema } from '../common/attack-base-object.js';
 import {
-  descriptionSchema,
+  // descriptionSchema,
   objectMarkingRefsSchema,
   xMitreContributorsSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
-  xMitrePlatformsSchema,
+  // xMitrePlatformsSchema,
 } from '../common/common-properties.js';
 import { externalReferencesSchema, stixCreatedByRefSchema } from '../common/misc.js';
-import { createStixIdValidator } from '../common/stix-identifier.js';
-import { createStixTypeValidator } from '../common/stix-type.js';
+// import { createStixIdValidator } from '../common/stix-identifier.js';
+// import { createStixTypeValidator } from '../common/stix-type.js';
 import { MitreCollectionLayerOV } from '../common/open-vocabulary.js';
 
 /////////////////////////////////////
@@ -38,28 +38,39 @@ export type XMitreCollectionLayers = z.infer<typeof xMitreCollectionLayersSchema
 
 export const logSourceSchema = attackBaseObjectSchema
   .extend({
-    id: createStixIdValidator('x-mitre-log-source'),
+    // name
+    // channel
+    // x_mitre_data_component
 
-    type: createStixTypeValidator('x-mitre-log-source'),
+    // id: createStixIdValidator('x-mitre-log-source'),
+    // type: createStixTypeValidator('x-mitre-log-source'),
 
     // Optional in STIX but required in ATT&CK
+    // TODO move to detection strategy
     created_by_ref: stixCreatedByRefSchema,
 
-    description: descriptionSchema,
+    // TODO remove!
+    // description: descriptionSchema,
 
+    // TODO move to detection strategy
     external_references: externalReferencesSchema,
 
     // Optional in STIX but required in ATT&CK
+    // TODO Software team figure this out - either track on detection strategy AND/OR log sources
     object_marking_refs: objectMarkingRefsSchema,
 
-    x_mitre_platforms: xMitrePlatformsSchema.optional(),
+    // x_mitre_platforms: xMitrePlatformsSchema.optional(),
 
+    // TODO move to detection strategy
     x_mitre_domains: xMitreDomainsSchema,
 
+    // TODO move to detection strategy
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
+    // TODO move to detection strategy
     x_mitre_contributors: xMitreContributorsSchema.optional(),
 
+    // TODO delete me!
     x_mitre_collection_layers: xMitreCollectionLayersSchema,
   })
   .strict()
