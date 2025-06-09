@@ -25,15 +25,11 @@ This site is dynamically generated from the contents of the `@latest` distributi
 
 ## Installation
 
-The ADM is available on both the npm registry and the GitHub package registry.
-
 To install from the npm registry, simply run:
 
 ```bash
 npm install @mitre-attack/attack-data-model
 ```
-
-See [USAGE.md](./docs/USAGE.md#installing-from-github-package-registry) for instructions on how to install from the GitHub package registry.
 
 ## ATT&CK Specification
 
