@@ -1,6 +1,4 @@
 import axios from 'axios';
-import fs from 'fs';
-import { promisify } from 'util';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import {
@@ -31,8 +29,30 @@ import {
 } from './data-sources/data-source-registration.js';
 import { AttackDataModel } from './classes/attack-data-model.js';
 
-const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
-const readFile = promisify(fs.readFile);
+let GITHUB_BASE_URL: string;
+let readFile: (path: string) => Promise<string>;
+
+if (typeof window === 'undefined') {
+  // Node.js environment
+  const fs = await import('fs');
+  const { promisify } = await import('util');
+
+  GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
+  readFile = async (path: string) => {
+    const buffer = await promisify(fs.readFile)(path);
+    return buffer.toString('utf-8'); // Convert Buffer to string
+  };
+} else {
+  // Browser environment
+  GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
+  readFile = async (path: string) => {
+    const response = await fetch(path);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch file: ${response.statusText}`);
+    }
+    return await response.text();
+  };
+}
 
 interface DataSourceMap {
   [key: string]: {
