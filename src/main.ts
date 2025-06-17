@@ -29,30 +29,24 @@ import {
 } from './data-sources/data-source-registration.js';
 import { AttackDataModel } from './classes/attack-data-model.js';
 
-let GITHUB_BASE_URL: string;
-let readFile: (path: string) => Promise<string>;
-
-if (typeof window === 'undefined') {
-  // Node.js environment
-  const fs = await import('fs');
-  const { promisify } = await import('util');
-
-  GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
-  readFile = async (path: string) => {
-    const buffer = await promisify(fs.readFile)(path);
-    return buffer.toString('utf-8'); // Convert Buffer to string
-  };
-} else {
-  // Browser environment
-  GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
-  readFile = async (path: string) => {
+const readFile = async (path: string): Promise<string> => {
+  if (typeof window !== 'undefined') {
+    // Browser environment - treat path as URL
     const response = await fetch(path);
     if (!response.ok) {
-      throw new Error(`Failed to fetch file: ${response.statusText}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return await response.text();
-  };
-}
+    return response.text();
+  } else {
+    // Node.js environment
+    const fs = await import('fs');
+    const { promisify } = await import('util');
+    const nodeReadFile = promisify(fs.readFile);
+    return nodeReadFile(path, 'utf8');
+  }
+};
+
+const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
 
 interface DataSourceMap {
   [key: string]: {
@@ -174,7 +168,7 @@ async function fetchDataFromUrl(url: string): Promise<StixBundle> {
  */
 async function fetchDataFromFile(filePath: string): Promise<StixBundle> {
   try {
-    const data = await readFile(filePath, 'utf8');
+    const data = await readFile(filePath);
     return JSON.parse(data) as StixBundle;
   } catch (error: unknown) {
     if (error instanceof Error) {
