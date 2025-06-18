@@ -4,7 +4,7 @@
         <title>MITRE ATT&amp;CK Data Model Blog</title>
         <link>https://mitre-attack.github.io/attack-data-model/blog</link>
         <description>MITRE ATT&amp;CK Data Model Blog</description>
-        <lastBuildDate>Tue, 17 Jun 2025 18:11:24 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 18 Jun 2025 20:07:02 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
@@ -12,7 +12,7 @@
             <title><![CDATA[known-issues]]></title>
             <link>https://mitre-attack.github.io/attack-data-model/blog/known-issues</link>
             <guid>https://mitre-attack.github.io/attack-data-model/blog/known-issues</guid>
-            <pubDate>Tue, 17 Jun 2025 18:11:24 GMT</pubDate>
+            <pubDate>Wed, 18 Jun 2025 20:07:02 GMT</pubDate>
             <description><![CDATA[<!-- ---]]></description>
         </item>
     </channel>
