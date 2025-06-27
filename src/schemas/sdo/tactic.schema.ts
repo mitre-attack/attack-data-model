@@ -1,11 +1,15 @@
 import { z } from 'zod/v4';
 import {
-  attackBaseObjectSchema,
+  attackBaseDomainObjectSchema,
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
   xMitreModifiedByRefSchema,
   xMitreDomainsSchema,
+  xMitreContributorsSchema,
+  createAttackExternalReferencesSchema,
+  stixCreatedByRefSchema,
+  objectMarkingRefsSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -70,7 +74,7 @@ export type XMitreShortName = z.infer<typeof xMitreShortNameSchema>;
 //
 /////////////////////////////////////
 
-export const tacticSchema = attackBaseObjectSchema
+export const extensibleTacticSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-tactic'),
 
@@ -78,47 +82,26 @@ export const tacticSchema = attackBaseObjectSchema
 
     description: descriptionSchema,
 
+    // Optional in STIX but required in ATT&CK
+    created_by_ref: stixCreatedByRefSchema,
+
+    // Optional in STIX but required in ATT&CK
+    external_references: createAttackExternalReferencesSchema('x-mitre-tactic'),
+
+    // Optional in STIX but required in ATT&CK
+    object_marking_refs: objectMarkingRefsSchema,
+
     x_mitre_domains: xMitreDomainsSchema,
 
     x_mitre_shortname: xMitreShortNameSchema,
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
+
+    x_mitre_contributors: xMitreContributorsSchema.optional(),
   })
-  .required({
-    created_by_ref: true, // Optional in STIX but required in ATT&CK
-    external_references: true, // Optional in STIX but required in ATT&CK
-    object_marking_refs: true, // Optional in STIX but required in ATT&CK
-  })
-  .strict()
-  .check((ctx) => {
-    // Destructure relevant properties from the schema
-    const { external_references } = ctx.value;
+  .strict();
 
-    //==============================================================================
-    // Validate external references
-    //==============================================================================
+// Alias unless/until tactics require at least one refinement
+export const tacticSchema = extensibleTacticSchema;
 
-    // Verify that first external reference is an ATT&CK ID
-    const attackIdEntry = external_references[0];
-    if (!attackIdEntry.external_id) {
-      ctx.issues.push({
-        code: 'custom',
-        message: 'ATT&CK ID must be defined in the first external_references entry.',
-        path: ['external_references', 0, 'external_id'],
-        input: external_references[0],
-      });
-    } else {
-      // Check if the ATT&CK ID format is correct
-      const idRegex = /TA\d{4}$/;
-      if (!idRegex.test(attackIdEntry.external_id)) {
-        ctx.issues.push({
-          code: 'custom',
-          message: `The first external_reference must match the ATT&CK ID format TA####.`,
-          path: ['external_references', 0, 'external_id'],
-          input: attackIdEntry.external_id,
-        });
-      }
-    }
-  });
-
-export type Tactic = z.infer<typeof tacticSchema>;
+export type Tactic = z.infer<typeof extensibleTacticSchema>;

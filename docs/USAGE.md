@@ -13,7 +13,42 @@ The ATT&CK Data Model (ADM) TypeScript API provides a structured and type-safe w
 
 ## Installation
 
-For installation instructions, please refer to the [Installation](../README.md#installation) section in the `README.md` file.
+For installation from the npm registry, please refer to the [Installation](../README.md#installation) section.
+
+## Module Format Support
+
+The ATT&CK Data Model is built using [tsup](https://github.com/egoist/tsup), which compiles the TypeScript code to both ESM (ECMAScript Modules) and CJS (CommonJS) formats. This dual-format approach allows the library to be used in various JavaScript environments:
+
+- **ESM**: Modern environments that support ES modules (Node.js with `"type": "module"` in package.json, or modern bundlers like Webpack, Rollup, etc.)
+- **CJS**: Traditional Node.js applications and environments that use CommonJS modules (Node.js with `"type": "commonjs"` in package.json)
+
+### ESM Usage Example
+
+```javascript
+// In a package with "type": "module" in package.json
+import { AttackDataModel } from '@mitre-attack/attack-data-model';
+
+// Create an instance with a UUID and an empty array of attack objects
+const uuid = "my-unique-id";
+const attackObjects = [];
+const attackDataModel = new AttackDataModel(uuid, attackObjects);
+
+console.log('AttackDataModel instance created with UUID:', attackDataModel.getUuid());
+```
+
+### CommonJS Usage Example
+
+```javascript
+// In a package with "type": "commonjs" in package.json
+const { AttackDataModel } = require('@mitre-attack/attack-data-model');
+
+// Create an instance with a UUID and an empty array of attack objects
+const uuid = "my-unique-id";
+const attackObjects = [];
+const attackDataModel = new AttackDataModel(uuid, attackObjects);
+
+console.log('AttackDataModel instance created with UUID:', attackDataModel.getUuid());
+```
 
 ## Package Structure
 
@@ -74,6 +109,63 @@ Schemas are available under the `schemas` directory. You can import them directl
 
 ```typescript
 import { tacticSchema } from '@mitre-attack/attack-data-model';
+```
+
+Notably, there are two versions of each ATT&CK type available: 
+
+* One "extensible" schema (denoted by its `extensible` prefix) that returns a `ZodType`
+* One "standard" schema that returns a `ZodEffect` 
+
+The extensible schemas (e.g., `extensibleCampaignSchema`) return a `ZodType` by intentionally omitting all Zod refinements. You should use these schemas if you are looking to extend or modify the baseline schema behaviors. 
+
+For example, let's say you wish to augment ATT&CK campaigns with your own custom fields—you can do this with the `extensibleCampaignSchema` as follows:
+
+```typescript
+// Using the extensible schema for type definition or extension
+import { extensibleCampaignSchema } from '@mitre-attack/attack-data-model';
+const myCustomCampaignSchema = extensibleCampaignSchema.extend({ /* additional fields */ });
+```
+
+This would not work for the "standard" `campaignSchema`.
+
+`campaignSchema` returns a `ZodEffect` by nature of employing Zod refinements. We leverage refinements to execute advanced validation checks (e.g., validating that the first reference in `external_references` contains a valid ATT&CK ID). You can use the refined schemas like you would any other Zod schema, with the added disclaimer that they are less extensible than their aforementioned counterparts:
+
+```typescript
+// Using the refined schema for validation
+import { campaignSchema } from '@mitre-attack/attack-data-model';
+const validCampaign = campaignSchema.parse(rawCampaignData);
+```
+
+And don't worry—you can still use these refinements with your custom schemas. Each ATT&CK refinement is decoupled so they can be used modularly. They are exported as factory functions in the `refinements` sub-package:
+
+```typescript
+// Step 1 - import the refinements you want to use
+import { createFirstAliasRefinement, createCitationsRefinement } from '@mitre-attack/attack-data-model';
+
+// Step 2 - initialize the refinements
+const validateFirstAlias = createFirstAliasRefinement();
+const validateCitations = createCitationsRefinement();
+
+// Step 3 - apply a single refinement that combines the imported refinements
+const myCustomCampaignSchema = extensibleCampaignSchema
+  .extend({ /* additional fields */ })
+  .superRefine((val, ctx) => {
+    validateFirstAlias(val, ctx);
+    validateCitations(val, ctx);
+  });
+```
+
+Notably, all ATT&CK schemas export only one TypeScript type, named in accordance with the refined schema, but inferred from the extensible schema. Since the refinements only add validation rules (rejected values) without changing the shape of valid data, a single type definition is sufficient:
+
+```typescript
+// An extensible schema for customizing or augmenting ATT&CK campaigns
+import { extensibleCampaignSchema } from '@mitre-attack/attack-data-model';
+
+// An inelastic but fully implemented schema for validating ATT&CK campaigns
+import { campaignSchema } from '@mitre-attack/attack-data-model';
+
+// One type definition for *all* ATT&CK campaigns (custom or otherwise)
+import type { Campaign } from '@mitre-attack/attack-data-model';
 ```
 
 ### Validating Data

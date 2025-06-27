@@ -1,17 +1,14 @@
-import { z } from 'zod';
-import { attackBaseObjectSchema } from '../common/attack-base-object.js';
+import { z } from 'zod/v4';
+import { MitreCollectionLayerOV } from '../common/open-vocabulary.js';
 import {
-  // descriptionSchema,
-  objectMarkingRefsSchema,
-  xMitreContributorsSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
-  // xMitrePlatformsSchema,
-} from '../common/common-properties.js';
-import { externalReferencesSchema, stixCreatedByRefSchema } from '../common/misc.js';
-// import { createStixIdValidator } from '../common/stix-identifier.js';
-// import { createStixTypeValidator } from '../common/stix-type.js';
-import { MitreCollectionLayerOV } from '../common/open-vocabulary.js';
+  xMitreContributorsSchema,
+  objectMarkingRefsSchema,
+  // createAttackExternalReferencesSchema,
+  stixCreatedByRefSchema,
+  attackBaseDomainObjectSchema,
+} from '../common/index.js';
 
 /////////////////////////////////////
 //
@@ -21,9 +18,11 @@ import { MitreCollectionLayerOV } from '../common/open-vocabulary.js';
 /////////////////////////////////////
 
 export const xMitreCollectionLayersSchema = z
-  .array(MitreCollectionLayerOV, {
-    invalid_type_error:
-      'x_mitre_collection_layers must be an array of supported collection layers.',
+  .array(MitreCollectionLayerOV,
+    {
+      error: (issue) => issue.code === 'invalid_type'
+        ? 'x_mitre_collection_layers must be an array of supported collection layers.'
+        : 'Invalid input in x_mitre_collection_layers'
   })
   .describe('List of places the data can be collected from.');
 
@@ -36,7 +35,7 @@ export type XMitreCollectionLayers = z.infer<typeof xMitreCollectionLayersSchema
 //
 /////////////////////////////////////
 
-export const logSourceSchema = attackBaseObjectSchema
+export const logSourceSchema = attackBaseDomainObjectSchema
   .extend({
     // name
     // channel
@@ -52,8 +51,8 @@ export const logSourceSchema = attackBaseObjectSchema
     // TODO remove!
     // description: descriptionSchema,
 
-    // TODO move to detection strategy
-    external_references: externalReferencesSchema,
+    // Optional in STIX but required in ATT&CK
+    // external_references: createAttackExternalReferencesSchema('x-mitre-log-source'), // TODO add log source type to createAttackExternalReferencesSchema (confirm this first)
 
     // Optional in STIX but required in ATT&CK
     // TODO Software team figure this out - either track on detection strategy AND/OR log sources
@@ -73,30 +72,6 @@ export const logSourceSchema = attackBaseObjectSchema
     // TODO delete me!
     x_mitre_collection_layers: xMitreCollectionLayersSchema,
   })
-  .strict()
-  .superRefine((schema, ctx) => {
-    //==============================================================================
-    // Validate external references
-    //==============================================================================
-
-    const { external_references } = schema;
-    const attackIdEntry = external_references[0];
-    if (!attackIdEntry.external_id) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'ATT&CK ID must be defined in the first external_references entry.',
-        path: ['external_references', 0, 'external_id'],
-      });
-    } else {
-      const idRegex = /^DS\d{4}$/;
-      if (!idRegex.test(attackIdEntry.external_id)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `The first external_reference must match the ATT&CK ID format DS####.`,
-          path: ['external_references', 0, 'external_id'],
-        });
-      }
-    }
-  });
+  .strict();
 
 export type LogSource = z.infer<typeof logSourceSchema>;

@@ -1,17 +1,13 @@
 import { z } from 'zod/v4';
-import { stixRelationshipObjectSchema } from '../common/stix-core.js';
 import {
+  attackBaseRelationshipObjectSchema,
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
   stixIdentifierSchema,
   type StixType,
   stixTypeSchema,
-  xMitreAttackSpecVersionSchema,
-  xMitreDeprecatedSchema,
-  xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
-  xMitreVersionSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -259,7 +255,7 @@ export const invalidRelationships: RelationshipCombination[] = allRelationships.
 //
 /////////////////////////////////////
 
-export const relationshipSchema = stixRelationshipObjectSchema
+export const relationshipSchema = attackBaseRelationshipObjectSchema
   .extend({
     id: createStixIdValidator('relationship'),
 
@@ -274,18 +270,12 @@ export const relationshipSchema = stixRelationshipObjectSchema
     target_ref: stixIdentifierSchema.describe('The ID of the target (to) object.'),
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
-
-    x_mitre_attack_spec_version: xMitreAttackSpecVersionSchema,
-
-    x_mitre_domains: xMitreDomainsSchema,
-
-    x_mitre_version: xMitreVersionSchema,
-
-    x_mitre_deprecated: xMitreDeprecatedSchema.optional(),
   })
-  .required({
-    object_marking_refs: true,
+  .omit({
+    name: true,
+    x_mitre_version: true,
   })
+  .strict()
   .check((ctx) => {
     const { relationship_type, source_ref, target_ref } = ctx.value;
 

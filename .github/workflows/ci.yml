@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - next
+      - next-major
       - beta
       - alpha
       - '*.*.x'   # Matches branches like '1.2.x', '2.3.x'
@@ -13,6 +14,7 @@ on:
     branches:
       - main
       - next
+      - next-major
       - beta
       - alpha
       - '*.*.x'   # Matches PRs targeting '1.2.x', '2.3.x'
@@ -38,8 +40,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Validate all commits
-        run: npx commitlint --from ${{ github.event.pull_request.base.sha || github.event.before }} --to ${{ github.event.pull_request.head.sha || github.sha }} --verbose
+      - name: Determine commit range
+        id: commit_range
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "base_sha=$(git merge-base ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})" >> $GITHUB_OUTPUT
+            echo "head_sha=${{ github.event.pull_request.head.sha }}" >> $GITHUB_OUTPUT
+          else
+            # For push events or when PR base isn't available
+            echo "base_sha=$(git rev-parse HEAD~1)" >> $GITHUB_OUTPUT
+            echo "head_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Validate commits
+        run: npx commitlint --from ${{ steps.commit_range.outputs.base_sha }} --to ${{ steps.commit_range.outputs.head_sha }} --verbose
 
   # Job 2: Build and Test
   test:
@@ -56,7 +70,7 @@ jobs:
           node-version: '22.x'
 
       - name: Install
-        run: npm ci
+        run: npm ci --include=dev
 
       - name: Build
         run: npm run build
@@ -99,8 +113,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@mitre-attack'
+          # registry-url: 'https://npm.pkg.github.com'
+          # scope: '@mitre-attack'
 
       - name: Install dependencies
         run: npm clean-install
@@ -115,7 +129,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # NPM_TOKEN: ${{ secrets.NPM_TOKEN }} DO NOT USE
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           HUSKY: 0  # Temporarily disables all Git hooks
         run: npx semantic-release
 

@@ -1,12 +1,13 @@
 import { z } from 'zod/v4';
 import {
-  attackBaseObjectSchema,
+  attackBaseDomainObjectSchema,
   descriptionSchema,
   xMitrePlatformsSchema,
   xMitreDomainsSchema,
   createStixIdValidator,
   xMitreContributorsSchema,
   xMitreModifiedByRefSchema,
+  createAttackExternalReferencesSchema,
   createStixTypeValidator,
 } from '../common/index.js';
 
@@ -77,13 +78,16 @@ export type RelatedAssets = z.infer<typeof relatedAssetsSchema>;
 //
 /////////////////////////////////////
 
-export const assetSchema = attackBaseObjectSchema
+export const extensibleAssetSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-asset'),
 
     type: createStixTypeValidator('x-mitre-asset'),
 
     description: descriptionSchema.optional(),
+
+    // Optional in STIX but required in ATT&CK
+    external_references: createAttackExternalReferencesSchema('x-mitre-asset'),
 
     x_mitre_platforms: xMitrePlatformsSchema.optional(),
 
@@ -98,44 +102,12 @@ export const assetSchema = attackBaseObjectSchema
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
   })
   .required({
-    external_references: true,
-    object_marking_refs: true,
-    created_by_ref: true,
+    object_marking_refs: true, // Optional in STIX but required in ATT&CK
+    created_by_ref: true, // Optional in STIX but required in ATT&CK
   })
-  .strict()
-  // validate common fields
-  .check((ctx) => {
-    const { external_references } = ctx.value;
+  .strict();
 
-    // ATT&CK ID format validation
-    if (!external_references?.length) {
-      ctx.issues.push({
-        code: 'custom',
-        message: 'At least one external_reference must be specified',
-        path: ['external_references'],
-        input: external_references,
-      });
-    } else {
-      const attackIdEntry = external_references[0];
-      if (!attackIdEntry.external_id) {
-        ctx.issues.push({
-          code: 'custom',
-          message: 'ATT&CK ID must be defined in the first external_references entry',
-          path: ['external_references', 0, 'external_id'],
-          input: external_references[0],
-        });
-      } else {
-        const idRegex = /^A\d{4}$/;
-        if (!idRegex.test(attackIdEntry.external_id)) {
-          ctx.issues.push({
-            code: 'custom',
-            message: 'The first external_reference must match the ATT&CK ID format A####',
-            path: ['external_references', 0, 'external_id'],
-            input: external_references[0],
-          });
-        }
-      }
-    }
-  });
+// No refinements currently exist on assets, so just export an alias
+export const assetSchema = extensibleAssetSchema;
 
-export type Asset = z.infer<typeof assetSchema>;
+export type Asset = z.infer<typeof extensibleAssetSchema>;

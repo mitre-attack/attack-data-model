@@ -1,5 +1,5 @@
 import { z } from 'zod/v4';
-import { attackBaseObjectSchema } from '../common/attack-base-object.js';
+import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 import {
   createStixIdValidator,
@@ -28,7 +28,7 @@ export type XMitreTacticRefs = z.infer<typeof xMitreTacticRefsSchema>;
 //
 /////////////////////////////////////
 
-export const matrixSchema = attackBaseObjectSchema
+export const extensibleMatrixSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-matrix'),
 
@@ -49,4 +49,7 @@ export const matrixSchema = attackBaseObjectSchema
   })
   .strict();
 
-export type Matrix = z.infer<typeof matrixSchema>;
+// Alias unless/until matrices require at least one refinement
+export const matrixSchema = extensibleMatrixSchema;
+
+export type Matrix = z.infer<typeof extensibleMatrixSchema>;

@@ -1,9 +1,12 @@
 import { z } from 'zod/v4';
-import { createStixTypeValidator } from '../common/stix-type.js';
-import { objectMarkingRefsSchema, xMitreDomainsSchema } from '../common/common-properties.js';
-import { attackBaseObjectSchema } from '../common/attack-base-object.js';
-import { createStixIdValidator } from '../common/stix-identifier.js';
-import { IdentityClassOV, IndustrySectorOV } from '../common/open-vocabulary.js';
+import { createStixTypeValidator } from '@/schemas/common/stix-type.js';
+import { createStixIdValidator } from '@/schemas/common/stix-identifier.js';
+import {
+  objectMarkingRefsSchema,
+  xMitreDomainsSchema,
+} from '@/schemas/common/common-properties.js';
+import { attackBaseDomainObjectSchema } from '@/schemas/common/attack-base-object.js';
+import { IdentityClassOV, IndustrySectorOV } from '@/schemas/common/open-vocabulary.js';
 
 /////////////////////////////////////
 //
@@ -11,7 +14,7 @@ import { IdentityClassOV, IndustrySectorOV } from '../common/open-vocabulary.js'
 //
 /////////////////////////////////////
 
-export const identitySchema = attackBaseObjectSchema
+export const extensibleIdentitySchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('identity'),
 
@@ -63,7 +66,13 @@ export const identitySchema = attackBaseObjectSchema
       })
       .optional(),
   })
+  .omit({
+    x_mitre_version: true,
+  })
   .strict();
 
+// Alias because identities currently don't have any refinements
+export const identitySchema = extensibleIdentitySchema;
+
 // Define the type for Identity
-export type Identity = z.infer<typeof identitySchema>;
+export type Identity = z.infer<typeof extensibleIdentitySchema>;

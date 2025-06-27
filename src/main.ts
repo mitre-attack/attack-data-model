@@ -1,12 +1,10 @@
 import axios from 'axios';
-import fs from 'fs';
-import { promisify } from 'util';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import {
   type StixBundle,
   type AttackObject,
-  baseStixBundleSchema,
+  extensibleStixBundleSchema,
 } from './schemas/sdo/stix-bundle.schema.js';
 import {
   techniqueSchema,
@@ -31,8 +29,24 @@ import {
 } from './data-sources/data-source-registration.js';
 import { AttackDataModel } from './classes/attack-data-model.js';
 
+const readFile = async (path: string): Promise<string> => {
+  if (typeof window !== 'undefined') {
+    // Browser environment - treat path as URL
+    const response = await fetch(path);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.text();
+  } else {
+    // Node.js environment
+    const fs = await import('fs');
+    const { promisify } = await import('util');
+    const nodeReadFile = promisify(fs.readFile);
+    return nodeReadFile(path, 'utf8');
+  }
+};
+
 const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
-const readFile = promisify(fs.readFile);
 
 interface DataSourceMap {
   [key: string]: {
@@ -154,7 +168,7 @@ async function fetchDataFromUrl(url: string): Promise<StixBundle> {
  */
 async function fetchDataFromFile(filePath: string): Promise<StixBundle> {
   try {
-    const data = await readFile(filePath, 'utf8');
+    const data = await readFile(filePath);
     return JSON.parse(data) as StixBundle;
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -176,7 +190,7 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
   const validObjects: AttackObject[] = [];
 
   // Validate the bundle's top-level properties
-  const baseBundleValidationResults = baseStixBundleSchema
+  const baseBundleValidationResults = extensibleStixBundleSchema
     .pick({
       id: true,
       type: true,

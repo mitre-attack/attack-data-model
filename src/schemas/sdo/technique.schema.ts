@@ -1,16 +1,21 @@
 import { z } from 'zod/v4';
 import {
-  attackBaseObjectSchema,
+  attackBaseDomainObjectSchema,
   descriptionSchema,
   xMitrePlatformsSchema,
-  attackDomainSchema,
   createStixIdValidator,
   createStixTypeValidator,
   xMitreModifiedByRefSchema,
   xMitreDomainsSchema,
   xMitreContributorsSchema,
   killChainPhaseSchema,
+  createAttackExternalReferencesSchema,
 } from '../common/index.js';
+import {
+  createAttackIdInExternalReferencesRefinement,
+  createEnterpriseOnlyPropertiesRefinement,
+  createMobileOnlyPropertiesRefinement,
+} from '@/refinements/index.js';
 
 /////////////////////////////////////
 //
@@ -317,11 +322,14 @@ export type XMitreDetection = z.infer<typeof xMitreDetectionSchema>;
 //
 /////////////////////////////////////
 
-export const techniqueSchema = attackBaseObjectSchema
+export const extensibleTechniqueSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('attack-pattern'),
 
     type: createStixTypeValidator('attack-pattern'),
+
+    // Optional in STIX but required in ATT&CK
+    external_references: createAttackExternalReferencesSchema('attack-pattern'),
 
     kill_chain_phases: z.array(killChainPhaseSchema).optional(),
 
@@ -357,151 +365,16 @@ export const techniqueSchema = attackBaseObjectSchema
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
   })
-  .required({
-    external_references: true, // Optional in STIX but required in ATT&CK
-  })
-  .check((ctx) => {
-    // Destructure relevant properties from the schema
-    const {
-      external_references,
-      kill_chain_phases,
-      x_mitre_domains,
-      x_mitre_permissions_required,
-      x_mitre_effective_permissions,
-      x_mitre_system_requirements,
-      x_mitre_defense_bypassed,
-      x_mitre_remote_support,
-      x_mitre_impact_type,
-      x_mitre_is_subtechnique,
-      x_mitre_tactic_type,
-      x_mitre_log_sources,
-    } = ctx.value;
+  .strict();
 
-    // Helper variables for domain checks
-    const inEnterpriseDomain = x_mitre_domains.includes(
-      attackDomainSchema.enum['enterprise-attack'],
-    );
-    const inMobileDomain = x_mitre_domains.includes(attackDomainSchema.enum['mobile-attack']);
+// Apply the refinements for techniques
+export const techniqueSchema = extensibleTechniqueSchema.superRefine((schema, ctx) => {
+  // Validates that the first external reference is a valid ATT&CK ID
+  createAttackIdInExternalReferencesRefinement()(schema, ctx);
+  // Validates that the technique only contains properties permissible by the target tactic in Enterprise
+  createEnterpriseOnlyPropertiesRefinement()(schema, ctx);
+  // Validates that the technique only contains properties permissible in Mobile (if the technique belongs to Mobile)
+  createMobileOnlyPropertiesRefinement()(schema, ctx);
+});
 
-    //==============================================================================
-    // Validate external references
-    //==============================================================================
-
-    // Verify that first external reference is an ATT&CK ID
-    const attackIdEntry = external_references[0];
-    if (!attackIdEntry.external_id) {
-      ctx.issues.push({
-        code: 'custom',
-        message: 'ATT&CK ID must be defined in the first external_references entry.',
-        path: ['external_references', 0, 'external_id'],
-        input: external_references[0],
-      });
-    } else {
-      // Check if the ATT&CK ID format is correct based on whether it's a sub-technique
-      const idRegex = x_mitre_is_subtechnique ? /^T\d{4}\.\d{3}$/ : /^T\d{4}$/;
-      if (!idRegex.test(attackIdEntry.external_id)) {
-        ctx.issues.push({
-          code: 'custom',
-          message: `The first external_reference must match the ATT&CK ID format ${x_mitre_is_subtechnique ? 'T####.###' : 'T####'}.`,
-          path: ['external_references', 0, 'external_id'],
-          input: external_references[0],
-        });
-      }
-    }
-
-    //==============================================================================
-    // Validate Enterprise-only properties
-    //==============================================================================
-
-    // Extract tactics from kill_chain_phases
-    const tactics = kill_chain_phases?.map((tactic) => tactic.phase_name) || [];
-
-    /**
-     * Validates that the specified property is only valid if the
-     * technique is associated with the specified tactic and belongs to the enterprise
-     * domain.
-     *
-     * @param fieldName The property key that will be evaluated
-     * @param value The property value that will be evaluated
-     * @param requiredTactic The name of the tactic required for the property to be valid
-     */
-    function validateEnterpriseOnlyField(
-      fieldName: string,
-      value: boolean | string[] | undefined,
-      requiredTactic: string | null = null,
-    ) {
-      if (value !== undefined) {
-        if (!inEnterpriseDomain) {
-          ctx.issues.push({
-            code: 'custom',
-            message: `${fieldName} is only supported in the 'enterprise-attack' domain.`,
-            path: [fieldName],
-            input: value,
-          });
-        } else if (
-          requiredTactic &&
-          kill_chain_phases !== undefined &&
-          !tactics.includes(requiredTactic)
-        ) {
-          ctx.issues.push({
-            code: 'custom',
-            message: `${fieldName} is only supported in the ${requiredTactic} tactic.`,
-            path: [fieldName],
-            input: value,
-          });
-        }
-      }
-    }
-
-    // Validate enterprise-only fields
-    validateEnterpriseOnlyField('x_mitre_system_requirements', x_mitre_system_requirements);
-    validateEnterpriseOnlyField(
-      'x_mitre_permissions_required',
-      x_mitre_permissions_required,
-      'privilege-escalation',
-    );
-    validateEnterpriseOnlyField(
-      'x_mitre_effective_permissions',
-      x_mitre_effective_permissions,
-      'privilege-escalation',
-    );
-    validateEnterpriseOnlyField(
-      'x_mitre_defense_bypassed',
-      x_mitre_defense_bypassed,
-      'defense-evasion',
-    );
-    validateEnterpriseOnlyField('x_mitre_remote_support', x_mitre_remote_support, 'execution');
-    validateEnterpriseOnlyField('x_mitre_impact_type', x_mitre_impact_type, 'impact');
-
-    //==============================================================================
-    // Validate Mobile-only properties
-    //==============================================================================
-
-    if (x_mitre_tactic_type?.length && !inMobileDomain) {
-      ctx.issues.push({
-        code: 'custom',
-        message: "x_mitre_tactic_type is only supported in the 'mobile-attack' domain.",
-        path: ['x_mitre_tactic_type'],
-        input: {
-          id: ctx.value.id,
-          x_mitre_domains: ctx.value.x_mitre_domains,
-          x_mitre_tactic_type: x_mitre_tactic_type,
-        },
-      });
-    }
-
-    if (x_mitre_log_sources && inMobileDomain) {
-      ctx.issues.push({
-        code: 'custom',
-        message: "x_mitre_log_sources is not supported in the 'mobile-attack' domain.",
-        path: ['x_mitre_log_sources'],
-        input: {
-          id: ctx.value.id,
-          x_mitre_domains: x_mitre_domains,
-          x_mitre_log_sources: x_mitre_log_sources,
-        },
-      });
-    }
-  });
-
-export type Technique = z.infer<typeof techniqueSchema>;
+export type Technique = z.infer<typeof extensibleTechniqueSchema>;
