@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { softwareSchema } from './software.schema.js';
 import {
   createStixIdValidator,
@@ -20,7 +20,10 @@ export const toolSchema = softwareSchema
     type: createStixTypeValidator('tool'),
 
     // Not used in ATT&CK Tool but defined in STIX
-    tool_types: z.array(ToolTypeOV).optional().describe('The kind(s) of tool(s) being described.'),
+    tool_types: z
+      .array(ToolTypeOV)
+      .optional()
+      .meta({ description: 'The kind(s) of tool(s) being described.' }),
 
     // Not used in ATT&CK Tool but defined in STIX
     kill_chain_phases: z
@@ -32,26 +35,27 @@ export const toolSchema = softwareSchema
     tool_version: z.string().optional().describe('The version identifier associated with the Tool'),
   })
   .strict()
-  .superRefine((schema, ctx) => {
+  .check((ctx) => {
     //==============================================================================
     // Validate external references
     //==============================================================================
 
-    const { external_references } = schema;
-    const attackIdEntry = external_references[0];
+    const attackIdEntry = ctx.value.external_references[0];
     if (!attackIdEntry.external_id) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+      ctx.issues.push({
+        code: 'custom',
         message: 'ATT&CK ID must be defined in the first external_references entry.',
         path: ['external_references', 0, 'external_id'],
+        input: ctx.value.id,
       });
     } else {
       const idRegex = /^S\d{4}$/;
       if (!idRegex.test(attackIdEntry.external_id)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+        ctx.issues.push({
+          code: 'custom',
           message: `The first external_reference must match the ATT&CK ID format S####}.`,
           path: ['external_references', 0, 'external_id'],
+          input: ctx.value.id,
         });
       }
     }
@@ -59,13 +63,15 @@ export const toolSchema = softwareSchema
     //==============================================================================
     // Validate x_mitre_aliases
     //==============================================================================
-
+    const { x_mitre_aliases, name } = ctx.value;
     // The object's name MUST be listed as the first alias in the x_mitre_aliases field
-    if (schema.x_mitre_aliases && schema.x_mitre_aliases.length > 0) {
-      if (!(schema.x_mitre_aliases[0] === schema.name)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+    if (x_mitre_aliases && x_mitre_aliases.length > 0) {
+      if (!(x_mitre_aliases[0] === name)) {
+        ctx.issues.push({
+          code: 'custom',
           message: "The first alias must match the object's name",
+          path: ['x_mitre_aliases'],
+          input: ctx.value.id,
         });
       }
     }

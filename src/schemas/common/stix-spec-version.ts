@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const specVersionDescription = [
   'The version of the STIX specification used to represent this object.',
@@ -7,6 +7,8 @@ const specVersionDescription = [
   'Since SCOs are now top-level objects in STIX 2.1, the default value for SCOs is 2.1.',
 ].join(' ');
 
-export const stixSpecVersionSchema = z.enum(['2.0', '2.1']).describe(specVersionDescription);
+export const stixSpecVersionSchema = z
+  .enum(['2.0', '2.1'])
+  .meta({ description: specVersionDescription });
 
 export type StixSpecVersion = z.infer<typeof stixSpecVersionSchema>;

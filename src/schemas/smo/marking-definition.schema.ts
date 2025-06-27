@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import {
   createStixIdValidator,
   createStixTypeValidator,
@@ -129,9 +129,9 @@ export const markingDefinitionSchema = z
     // Listed in STIX 2.1 spec but not used in ATT&CK
     name: nameSchema.optional(),
 
-    spec_version: stixSpecVersionSchema.describe(
-      'The version of the STIX specification used to represent this object.',
-    ),
+    spec_version: stixSpecVersionSchema.meta({
+      description: 'The version of the STIX specification used to represent this object.',
+    }),
 
     created: stixTimestampSchema
       .brand('StixCreatedTimestamp')
@@ -140,9 +140,9 @@ export const markingDefinitionSchema = z
       ),
 
     // Optional in STIX but required in ATT&CK
-    created_by_ref: stixCreatedByRefSchema.describe(
-      'The ID of the Source object that describes who created this object.',
-    ),
+    created_by_ref: stixCreatedByRefSchema.meta({
+      description: 'The ID of the Source object that describes who created this object.',
+    }),
 
     // Deprecated in STIX
     // Optional in STIX but required in ATT&CK
@@ -150,14 +150,17 @@ export const markingDefinitionSchema = z
       .enum(['statement', 'tlp'], {
         message: "definition_type must be either 'statement' or 'tlp'",
       })
-      .describe('The definition_type property identifies the type of Marking Definition.'),
+      .meta({
+        description: 'The definition_type property identifies the type of Marking Definition.',
+      }),
 
     // Deprecated in STIX
     definition: z
       .union([tlpMarkingObjectSchema, statementMarkingObjectSchema])
-      .describe(
-        'The definition property contains the marking object itself (e.g., the TLP marking as defined in section 7.2.1.4, the Statement marking as defined in section 7.2.1.3). Any new marking definitions SHOULD be specified using the extension facility described in section 7.3. If the extensions property is not present, this property MUST be present.',
-      ),
+      .meta({
+        description:
+          'The definition property contains the marking object itself (e.g., the TLP marking as defined in section 7.2.1.4, the Statement marking as defined in section 7.2.1.3). Any new marking definitions SHOULD be specified using the extension facility described in section 7.3. If the extensions property is not present, this property MUST be present.',
+      }),
 
     // TODO flagged for removal in ATT&CK Release x.y.z
     x_mitre_domains: xMitreDomainsSchema,

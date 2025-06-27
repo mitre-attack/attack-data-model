@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 // RFC3339 regex pattern with required 'Z' timezone
 const RFC3339_REGEX = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d+)?)Z$/;
@@ -37,9 +37,10 @@ export const stixTimestampSchema = z
       message: StixTimestampError.InvalidFormat.message,
     },
   )
-  .describe(
-    "Represents timestamps across the CTI specifications. The format is an RFC3339 timestamp, with a required timezone specification of 'Z'.",
-  );
+  .meta({
+    description:
+      "Represents timestamps across the CTI specifications. The format is an RFC3339 timestamp, with a required timezone specification of 'Z'.",
+  });
 
 export type StixTimestamp = z.infer<typeof stixTimestampSchema>;
 

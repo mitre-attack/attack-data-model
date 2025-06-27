@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { attackBaseObjectSchema } from '../common/attack-base-object.js';
 import {
   descriptionSchema,
@@ -21,9 +21,9 @@ import {
 export const softwareSchema = attackBaseObjectSchema.extend({
   type: createMultiStixTypeValidator(['malware', 'tool']),
 
-  created_by_ref: stixCreatedByRefSchema.describe(
-    'The ID of the Source object that describes who created this object.',
-  ),
+  created_by_ref: stixCreatedByRefSchema.meta({
+    description: 'The ID of the Source object that describes who created this object.',
+  }),
 
   description: descriptionSchema,
 
@@ -38,17 +38,20 @@ export const softwareSchema = attackBaseObjectSchema.extend({
   x_mitre_contributors: z.array(z.string()).optional(),
 
   x_mitre_aliases: aliasesSchema
-    .describe(
-      "Alternative names used to identify this software. The first alias must match the object's name.",
-    )
-    .optional(),
+    .optional()
+    .meta({
+      description:
+        "Alternative names used to identify this software. The first alias must match the object's name.",
+    }),
 
   x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
   x_mitre_domains: xMitreDomainsSchema,
 
   // Not used in ATT&CK Malware or Tool but defined in STIX
-  aliases: aliasesSchema.optional().describe('Alternative names used to identify this software.'),
+  aliases: aliasesSchema
+    .optional()
+    .meta({ description: 'Alternative names used to identify this software.' }),
 });
 
 // Define the type for Software
