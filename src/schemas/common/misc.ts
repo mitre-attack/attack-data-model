@@ -61,24 +61,3 @@ export const granularMarkingSchema = z.object({
 });
 
 export type GranularMarking = z.infer<typeof granularMarkingSchema>;
-
-//==============================================================================
-// Extension schema
-//==============================================================================
-
-export const extensionSchema = z.object({
-  extension_type: z.string(),
-  extension_properties: z.record(z.unknown()),
-});
-
-export type Extension = z.infer<typeof extensionSchema>;
-
-//==============================================================================
-// Extensions schema
-//==============================================================================
-
-export const extensionsSchema = z
-  .record(z.union([extensionSchema, z.record(z.unknown())]))
-  .describe('Specifies any extensions of the object, as a dictionary.');
-
-export type Extensions = z.infer<typeof extensionsSchema>;

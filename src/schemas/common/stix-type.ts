@@ -39,6 +39,7 @@ const supportedStixTypes = [
   'bundle',
   'campaign',
   'course-of-action',
+  'extension-definition',
   'identity',
   'indicator',
   'intrusion-set',
