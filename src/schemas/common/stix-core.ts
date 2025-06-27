@@ -7,10 +7,10 @@ import { stixCreatedTimestampSchema, stixModifiedTimestampSchema } from './stix-
 import {
   stixCreatedByRefSchema,
   granularMarkingSchema,
-  extensionsSchema,
   externalReferencesSchema,
 } from './misc.js';
 import { objectMarkingRefsSchema } from './common-properties.js';
+import { extensionsSchema } from './extensions.js';
 
 const stixBaseObjectSchema = z
   .object({
