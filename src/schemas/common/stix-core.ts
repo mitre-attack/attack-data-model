@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import { stixIdentifierSchema } from './stix-identifier.js';
 import { stixTypeSchema } from './stix-type.js';
