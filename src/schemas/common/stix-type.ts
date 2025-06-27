@@ -15,6 +15,7 @@ export const stixTypeToTypeName: Record<StixType, string> = {
   malware: 'Malware',
   tool: 'Tool',
   'marking-definition': 'MarkingDefinition',
+  'x-mitre-analytic': 'Analytic',
   'x-mitre-data-component': 'DataComponent',
   'x-mitre-detection': 'Detection',
   'x-mitre-log-source': 'LogSource',
@@ -44,8 +45,9 @@ const supportedStixTypes = [
   'malware',
   'tool',
   'marking-definition',
+  'x-mitre-analytic',
   'x-mitre-data-component',
-  'x-mitre-detection', // TODO this is not locked in yet
+  'x-mitre-detection',
   'x-mitre-tactic',
   'x-mitre-asset',
   'x-mitre-log-source',
