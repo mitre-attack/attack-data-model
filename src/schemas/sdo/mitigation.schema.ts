@@ -19,9 +19,9 @@ export const mitigationSchema = attackBaseObjectSchema
 
     type: createStixTypeValidator('course-of-action'),
 
-    description: z
-      .string()
-      .meta({ description: 'A description that provides more details and context about the Mitigation.' }),
+    description: z.string().meta({
+      description: 'A description that provides more details and context about the Mitigation.',
+    }),
 
     x_mitre_domains: xMitreDomainsSchema,
 
@@ -30,10 +30,10 @@ export const mitigationSchema = attackBaseObjectSchema
   .required({
     created_by_ref: true, // Optional in STIX but required in ATT&CK
     object_marking_refs: true, // Optional in STIX but required in ATT&CK
-    external_references: true // Optional in STIX but required in ATT&CK
+    external_references: true, // Optional in STIX but required in ATT&CK
   })
   .strict()
-  .check(ctx => {
+  .check((ctx) => {
     //==============================================================================
     // Validate x_mitre_old_attack_id
     //==============================================================================
@@ -44,7 +44,7 @@ export const mitigationSchema = attackBaseObjectSchema
         code: 'custom',
         message: `x_mitre_old_attack_id for mitigation need to be in the format MOB-M####}.`,
         path: ['x_mitre_old_attack_id'],
-        input: oldAttackId
+        input: oldAttackId,
       });
     }
   });

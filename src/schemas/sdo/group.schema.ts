@@ -19,12 +19,10 @@ export const groupSchema = attackBaseObjectSchema
     type: createStixTypeValidator('intrusion-set'),
 
     // Not used in ATT&CK Group but defined in STIX
-    description: z
-      .string()
-      .optional()
-      .meta({
-        description: 'A description that provides more details and context about the Intrusion Set, potentially including its purpose and its key characteristics'
-      }),
+    description: z.string().optional().meta({
+      description:
+        'A description that provides more details and context about the Intrusion Set, potentially including its purpose and its key characteristics',
+    }),
 
     // Optional in STIX but required in ATT&CK
     external_references: externalReferencesSchema,
@@ -35,49 +33,39 @@ export const groupSchema = attackBaseObjectSchema
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
 
-    aliases: aliasesSchema
-      .optional()
-      .meta({
-        description: "Alternative names used to identify this group. The first alias must match the object's name"
-      }),
+    aliases: aliasesSchema.optional().meta({
+      description:
+        "Alternative names used to identify this group. The first alias must match the object's name",
+    }),
 
     // Not used in ATT&CK Group but defined in STIX
-    first_seen: stixTimestampSchema
-      .optional()
-      .meta({
-        description: 'The time that this Intrusion Set was first seen'
-      }),
+    first_seen: stixTimestampSchema.optional().meta({
+      description: 'The time that this Intrusion Set was first seen',
+    }),
 
     // Not used in ATT&CK Group but defined in STIX
-    last_seen: stixTimestampSchema
-      .optional()
-      .meta({
-        description: 'The time that this Intrusion Set was last seen'
-      }),
+    last_seen: stixTimestampSchema.optional().meta({
+      description: 'The time that this Intrusion Set was last seen',
+    }),
 
     // Not used in ATT&CK Group but defined in STIX
-    goals: z
-      .array(z.string())
-      .optional()
-      .meta({
-        description: 'The high-level goals of this Intrusion Set, namely, what are they trying to do'
-      }),
+    goals: z.array(z.string()).optional().meta({
+      description: 'The high-level goals of this Intrusion Set, namely, what are they trying to do',
+    }),
 
     // Not used in ATT&CK Group but defined in STIX
     resource_level: AttackResourceLevelOV.optional().meta({
-      description: 'This property specifies the organizational level at which this Intrusion Set typically works, which in turn determines the resources available to this Intrusion Set for use in an attack'
+      description:
+        'This property specifies the organizational level at which this Intrusion Set typically works, which in turn determines the resources available to this Intrusion Set for use in an attack',
     }),
 
     primary_motivation: AttackMotivationOV.optional().meta({
-      description: 'The primary reason, motivation, or purpose behind this Intrusion Set'
+      description: 'The primary reason, motivation, or purpose behind this Intrusion Set',
     }),
 
-    secondary_motivations: z
-      .array(AttackMotivationOV)
-      .optional()
-      .meta({
-        description: 'The secondary reasons, motivations, or purposes behind this Intrusion Set'
-      }),
+    secondary_motivations: z.array(AttackMotivationOV).optional().meta({
+      description: 'The secondary reasons, motivations, or purposes behind this Intrusion Set',
+    }),
   })
   .strict()
   .refine(

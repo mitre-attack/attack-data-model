@@ -155,12 +155,10 @@ export const markingDefinitionSchema = z
       }),
 
     // Deprecated in STIX
-    definition: z
-      .union([tlpMarkingObjectSchema, statementMarkingObjectSchema])
-      .meta({
-        description:
-          'The definition property contains the marking object itself (e.g., the TLP marking as defined in section 7.2.1.4, the Statement marking as defined in section 7.2.1.3). Any new marking definitions SHOULD be specified using the extension facility described in section 7.3. If the extensions property is not present, this property MUST be present.',
-      }),
+    definition: z.union([tlpMarkingObjectSchema, statementMarkingObjectSchema]).meta({
+      description:
+        'The definition property contains the marking object itself (e.g., the TLP marking as defined in section 7.2.1.4, the Statement marking as defined in section 7.2.1.3). Any new marking definitions SHOULD be specified using the extension facility described in section 7.3. If the extensions property is not present, this property MUST be present.',
+    }),
 
     // TODO flagged for removal in ATT&CK Release x.y.z
     x_mitre_domains: xMitreDomainsSchema,

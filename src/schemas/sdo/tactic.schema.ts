@@ -57,11 +57,10 @@ const supportedMitreShortNames = [
   'remote-service-effects',
 ] as const;
 
-export const xMitreShortNameSchema = z
-  .enum(supportedMitreShortNames)
-  .meta(
-    { description: 'The x_mitre_shortname of the tactic is used for mapping techniques into the tactic. It corresponds to kill_chain_phases.phase_name of the techniques in the tactic.' }
-  );
+export const xMitreShortNameSchema = z.enum(supportedMitreShortNames).meta({
+  description:
+    'The x_mitre_shortname of the tactic is used for mapping techniques into the tactic. It corresponds to kill_chain_phases.phase_name of the techniques in the tactic.',
+});
 
 export type XMitreShortName = z.infer<typeof xMitreShortNameSchema>;
 
@@ -89,10 +88,9 @@ export const tacticSchema = attackBaseObjectSchema
     created_by_ref: true, // Optional in STIX but required in ATT&CK
     external_references: true, // Optional in STIX but required in ATT&CK
     object_marking_refs: true, // Optional in STIX but required in ATT&CK
-
   })
   .strict()
-  .check(ctx => {
+  .check((ctx) => {
     // Destructure relevant properties from the schema
     const { external_references } = ctx.value;
 
@@ -107,7 +105,7 @@ export const tacticSchema = attackBaseObjectSchema
         code: 'custom',
         message: 'ATT&CK ID must be defined in the first external_references entry.',
         path: ['external_references', 0, 'external_id'],
-        input: external_references[0]
+        input: external_references[0],
       });
     } else {
       // Check if the ATT&CK ID format is correct
@@ -117,7 +115,7 @@ export const tacticSchema = attackBaseObjectSchema
           code: 'custom',
           message: `The first external_reference must match the ATT&CK ID format TA####.`,
           path: ['external_references', 0, 'external_id'],
-          input: attackIdEntry.external_id
+          input: attackIdEntry.external_id,
         });
       }
     }

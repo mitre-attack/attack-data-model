@@ -20,24 +20,29 @@ export const identitySchema = attackBaseObjectSchema
     object_marking_refs: objectMarkingRefsSchema,
 
     identity_class: IdentityClassOV.meta({
-      description: 'The type of entity that this Identity describes, e.g., an individual or organization. This is an open vocabulary and the values SHOULD come from the identity-class-ov vocabulary'
+      description:
+        'The type of entity that this Identity describes, e.g., an individual or organization. This is an open vocabulary and the values SHOULD come from the identity-class-ov vocabulary',
     }),
 
     x_mitre_domains: xMitreDomainsSchema,
 
-    description: z.string().meta({
-      description: 'A description of the object'
-    }).optional(),
+    description: z
+      .string()
+      .meta({
+        description: 'A description of the object',
+      })
+      .optional(),
 
     // Not used in ATT&CK Identity but defined in STIX
     roles: z
       .array(z.string(), {
-        error: (issue) => issue.code === 'invalid_type'
-          ? 'Roles must be an array of strings'
-          : 'Invalid roles array'
+        error: (issue) =>
+          issue.code === 'invalid_type'
+            ? 'Roles must be an array of strings'
+            : 'Invalid roles array',
       })
       .meta({
-        description: 'The list of roles that this Identity performs'
+        description: 'The list of roles that this Identity performs',
       })
       .optional(),
 
@@ -45,7 +50,8 @@ export const identitySchema = attackBaseObjectSchema
     sectors: z
       .array(IndustrySectorOV)
       .meta({
-        description: 'The list of industry sectors that this Identity belongs to. This is an open vocabulary and values SHOULD come from the industry-sector-ov vocabulary'
+        description:
+          'The list of industry sectors that this Identity belongs to. This is an open vocabulary and values SHOULD come from the industry-sector-ov vocabulary',
       })
       .optional(),
 
@@ -53,7 +59,7 @@ export const identitySchema = attackBaseObjectSchema
     contact_information: z
       .string()
       .meta({
-        description: 'The contact information (e-mail, phone number, etc.) for this Identity'
+        description: 'The contact information (e-mail, phone number, etc.) for this Identity',
       })
       .optional(),
   })

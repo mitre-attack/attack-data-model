@@ -37,12 +37,10 @@ export const softwareSchema = attackBaseObjectSchema.extend({
 
   x_mitre_contributors: z.array(z.string()).optional(),
 
-  x_mitre_aliases: aliasesSchema
-    .optional()
-    .meta({
-      description:
-        "Alternative names used to identify this software. The first alias must match the object's name.",
-    }),
+  x_mitre_aliases: aliasesSchema.optional().meta({
+    description:
+      "Alternative names used to identify this software. The first alias must match the object's name.",
+  }),
 
   x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 

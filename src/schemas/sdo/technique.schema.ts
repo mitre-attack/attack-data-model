@@ -33,20 +33,22 @@ const supportedMitreEffectivePermissions = ['Administrator', 'SYSTEM', 'User', '
 export const xMitreEffectivePermissionsSchema = z
   .array(
     z.enum(supportedMitreEffectivePermissions, {
-      error: () => `Effective permission must be one of: ${supportedMitreEffectivePermissions.join(', ')}`
+      error: () =>
+        `Effective permission must be one of: ${supportedMitreEffectivePermissions.join(', ')}`,
     }),
     {
-      error: (issue) => issue.code === 'invalid_type'
-        ? 'x_mitre_effective_permissions must be an array of strings'
-        : 'Invalid effective permissions array'
-    }
+      error: (issue) =>
+        issue.code === 'invalid_type'
+          ? 'x_mitre_effective_permissions must be an array of strings'
+          : 'Invalid effective permissions array',
+    },
   )
   .nonempty('At least one effective permission is required')
   .refine((items) => new Set(items).size === items.length, {
     message: 'Effective permissions must be unique (no duplicates allowed)',
   })
   .meta({
-    description: 'The level of permissions the adversary will attain by performing the technique'
+    description: 'The level of permissions the adversary will attain by performing the technique',
   });
 
 export type XMitreEffectivePermissions = z.infer<typeof xMitreEffectivePermissionsSchema>;
@@ -62,16 +64,17 @@ const supportedMitreImpactTypes = ['Availability', 'Integrity'] as const;
 const xMitreImpactTypeSchema = z
   .array(
     z.enum(supportedMitreImpactTypes, {
-      error: () => `Impact type must be one of: ${supportedMitreImpactTypes.join(', ')}`
+      error: () => `Impact type must be one of: ${supportedMitreImpactTypes.join(', ')}`,
     }),
     {
-      error: (issue) => issue.code === 'invalid_type'
-        ? 'x_mitre_impact_type must be an array of strings'
-        : 'Invalid impact type array'
-    }
+      error: (issue) =>
+        issue.code === 'invalid_type'
+          ? 'x_mitre_impact_type must be an array of strings'
+          : 'Invalid impact type array',
+    },
   )
   .meta({
-    description: 'Denotes if the technique can be used for integrity or availability attacks'
+    description: 'Denotes if the technique can be used for integrity or availability attacks',
   });
 
 export type XMitreImpactType = z.infer<typeof xMitreImpactTypeSchema>;
@@ -84,12 +87,14 @@ export type XMitreImpactType = z.infer<typeof xMitreImpactTypeSchema>;
 
 export const xMitreSystemRequirementsSchema = z
   .array(z.string(), {
-    error: (issue) => issue.code === 'invalid_type'
-      ? 'x_mitre_system_requirements must be an array of strings'
-      : 'Invalid system requirements array'
+    error: (issue) =>
+      issue.code === 'invalid_type'
+        ? 'x_mitre_system_requirements must be an array of strings'
+        : 'Invalid system requirements array',
   })
   .meta({
-    description: 'Additional information on requirements the adversary needs to meet or about the state of the system (software, patch level, etc.) that may be required for the technique to work'
+    description:
+      'Additional information on requirements the adversary needs to meet or about the state of the system (software, patch level, etc.) that may be required for the technique to work',
   });
 
 export type XMitreSystemRequirements = z.infer<typeof xMitreSystemRequirementsSchema>;
@@ -100,9 +105,9 @@ export type XMitreSystemRequirements = z.infer<typeof xMitreSystemRequirementsSc
 //
 /////////////////////////////////////
 
-export const xMitreRemoteSupportSchema = z
-  .boolean()
-  .meta({ description: 'If true, the technique can be used to execute something on a remote system.' });
+export const xMitreRemoteSupportSchema = z.boolean().meta({
+  description: 'If true, the technique can be used to execute something on a remote system.',
+});
 
 export type XMitreRemoteSupport = z.infer<typeof xMitreRemoteSupportSchema>;
 
@@ -122,20 +127,23 @@ const supportedMitrePermissionsRequired = [
 
 export const xMitrePermissionsRequiredSchema = z
   .array(
-    z.enum(supportedMitrePermissionsRequired,
-      {
-        error: () => 'x_mitre_permissions_required may only contain values from the following list: ' + supportedMitrePermissionsRequired.join(', ')
-      }
-    ),
+    z.enum(supportedMitrePermissionsRequired, {
+      error: () =>
+        'x_mitre_permissions_required may only contain values from the following list: ' +
+        supportedMitrePermissionsRequired.join(', '),
+    }),
     {
-      error: (issue) => issue.code === 'invalid_type'
-        ? 'x_mitre_permissions_required must be an array of strings'
-        : 'Invalid x_mitre_permissions_required array'
-    })
+      error: (issue) =>
+        issue.code === 'invalid_type'
+          ? 'x_mitre_permissions_required must be an array of strings'
+          : 'Invalid x_mitre_permissions_required array',
+    },
+  )
   .nonempty('At least one x_mitre_permissions_required value is required')
-  .meta(
-    { description: 'The lowest level of permissions the adversary is required to be operating within to perform the technique on a system.' }
-  );
+  .meta({
+    description:
+      'The lowest level of permissions the adversary is required to be operating within to perform the technique on a system.',
+  });
 
 export type XMitrePermissionsRequired = z.infer<typeof xMitrePermissionsRequiredSchema>;
 
@@ -160,18 +168,20 @@ export const xMitreLogSourceSchema = z
     },
   )
   .meta({
-    description: "A single log source in the format 'Log Source Name: Data Component Name'"
+    description: "A single log source in the format 'Log Source Name: Data Component Name'",
   });
 
 // list of log sources
 export const xMitreLogSourcesSchema = z
   .array(xMitreLogSourceSchema, {
-    error: (issue) => issue.code === 'invalid_type'
-      ? 'x_mitre_log_sources must be an array of strings'
-      : 'Invalid log sources array'
+    error: (issue) =>
+      issue.code === 'invalid_type'
+        ? 'x_mitre_log_sources must be an array of strings'
+        : 'Invalid log sources array',
   })
   .meta({
-    description: 'Sources of information that may be used to identify the action or result of the action being performed'
+    description:
+      'Sources of information that may be used to identify the action or result of the action being performed',
   });
 
 export type XMitreLogSource = z.infer<typeof xMitreLogSourceSchema>;
@@ -185,10 +195,10 @@ export type XMitreLogSources = z.infer<typeof xMitreLogSourcesSchema>;
 
 export const xMitreIsSubtechniqueSchema = z
   .boolean({
-    error: 'x_mitre_is_subtechnique must be a boolean'
+    error: 'x_mitre_is_subtechnique must be a boolean',
   })
   .meta({
-    description: 'If true, this attack-pattern is a sub-technique'
+    description: 'If true, this attack-pattern is a sub-technique',
   });
 
 export type XMitreIsSubtechnique = z.infer<typeof xMitreIsSubtechniqueSchema>;
@@ -208,16 +218,18 @@ const supportedMitreTacticTypes = [
 export const xMitreTacticTypeSchema = z
   .array(
     z.enum(supportedMitreTacticTypes, {
-      error: () => `Tactic type must be one of: ${supportedMitreTacticTypes.join(', ')}`
+      error: () => `Tactic type must be one of: ${supportedMitreTacticTypes.join(', ')}`,
     }),
     {
-      error: (issue) => issue.code === 'invalid_type'
-        ? 'x_mitre_tactic_type must be an array of strings'
-        : 'Invalid tactic type array'
-    }
+      error: (issue) =>
+        issue.code === 'invalid_type'
+          ? 'x_mitre_tactic_type must be an array of strings'
+          : 'Invalid tactic type array',
+    },
   )
   .meta({
-    description: '"Post-Adversary Device Access", "Pre-Adversary Device Access", or "Without Adversary Device Access"'
+    description:
+      '"Post-Adversary Device Access", "Pre-Adversary Device Access", or "Without Adversary Device Access"',
   });
 
 export type XMitreTacticType = z.infer<typeof xMitreTacticTypeSchema>;
@@ -277,7 +289,9 @@ export const xMitreDefenseBypassesSchema = z
   .refine((items) => new Set(items).size === items.length, {
     message: 'Mitre defense bypasses must be unique (no duplicates allowed).',
   })
-  .meta({ description: 'List of defensive tools, methodologies, or processes the technique can bypass.' });
+  .meta({
+    description: 'List of defensive tools, methodologies, or processes the technique can bypass.',
+  });
 
 export type XMitreDefenseBypasses = z.infer<typeof xMitreDefenseBypassesSchema>;
 
@@ -291,7 +305,9 @@ export const xMitreDetectionSchema = z
   .string({
     error: 'x_mitre_detection must be a string.',
   })
-  .meta({ description: 'Strategies for identifying if a technique has been used by an adversary.' });
+  .meta({
+    description: 'Strategies for identifying if a technique has been used by an adversary.',
+  });
 
 export type XMitreDetection = z.infer<typeof xMitreDetectionSchema>;
 
@@ -344,7 +360,7 @@ export const techniqueSchema = attackBaseObjectSchema
   .required({
     external_references: true, // Optional in STIX but required in ATT&CK
   })
-  .check(ctx => {
+  .check((ctx) => {
     // Destructure relevant properties from the schema
     const {
       external_references,
@@ -378,7 +394,7 @@ export const techniqueSchema = attackBaseObjectSchema
         code: 'custom',
         message: 'ATT&CK ID must be defined in the first external_references entry.',
         path: ['external_references', 0, 'external_id'],
-        input: external_references[0]
+        input: external_references[0],
       });
     } else {
       // Check if the ATT&CK ID format is correct based on whether it's a sub-technique
@@ -388,7 +404,7 @@ export const techniqueSchema = attackBaseObjectSchema
           code: 'custom',
           message: `The first external_reference must match the ATT&CK ID format ${x_mitre_is_subtechnique ? 'T####.###' : 'T####'}.`,
           path: ['external_references', 0, 'external_id'],
-          input: external_references[0]
+          input: external_references[0],
         });
       }
     }
@@ -420,7 +436,7 @@ export const techniqueSchema = attackBaseObjectSchema
             code: 'custom',
             message: `${fieldName} is only supported in the 'enterprise-attack' domain.`,
             path: [fieldName],
-            input: value
+            input: value,
           });
         } else if (
           requiredTactic &&
@@ -431,7 +447,7 @@ export const techniqueSchema = attackBaseObjectSchema
             code: 'custom',
             message: `${fieldName} is only supported in the ${requiredTactic} tactic.`,
             path: [fieldName],
-            input: value
+            input: value,
           });
         }
       }
@@ -469,7 +485,7 @@ export const techniqueSchema = attackBaseObjectSchema
         input: {
           id: ctx.value.id,
           x_mitre_domains: ctx.value.x_mitre_domains,
-          x_mitre_tactic_type: x_mitre_tactic_type
+          x_mitre_tactic_type: x_mitre_tactic_type,
         },
       });
     }
@@ -482,8 +498,8 @@ export const techniqueSchema = attackBaseObjectSchema
         input: {
           id: ctx.value.id,
           x_mitre_domains: x_mitre_domains,
-          x_mitre_log_sources: x_mitre_log_sources
-        }
+          x_mitre_log_sources: x_mitre_log_sources,
+        },
       });
     }
   });
