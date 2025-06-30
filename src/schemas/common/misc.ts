@@ -75,7 +75,9 @@ export const createAttackExternalReferencesSchema = (stixType: StixTypesWithAtta
           path: [0, 'external_id'],
         },
       )
-      .describe('A list of external references with the first containing a valid ATT&CK ID')
+      .meta({
+        description: 'A list of external references with the first containing a valid ATT&CK ID',
+      })
   );
 };
 

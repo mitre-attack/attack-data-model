@@ -287,7 +287,8 @@ export type XMitreContributors = z.infer<typeof xMitreContributorsSchema>;
 //
 /////////////////////////////////////
 
-const xMitreIdentity: StixIdentifier = 'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5' as const;
+export const xMitreIdentity: StixIdentifier =
+  'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5' as const;
 
 export const xMitreIdentitySchema = z.literal(xMitreIdentity);
 
