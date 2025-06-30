@@ -7,7 +7,7 @@ import {
   type KillChainPhase,
   type StixBundle,
   type Technique,
-  type XMitreLogSources,
+  type XMitreDataSources,
   type XMitreDefenseBypasses,
   type XMitreDomains,
   type XMitreEffectivePermissions,
@@ -291,7 +291,7 @@ export function createEnterpriseOnlyPropertiesRefinement() {
           x_mitre_defense_bypassed?: XMitreDefenseBypasses;
           x_mitre_remote_support?: XMitreRemoteSupport;
           x_mitre_impact_type?: XMitreImpactType;
-          x_mitre_log_sources?: XMitreLogSources;
+          x_mitre_data_sources?: XMitreDataSources;
         }
     >,
   ): void => {
@@ -369,15 +369,15 @@ export function createEnterpriseOnlyPropertiesRefinement() {
 
     // Mobile-specific data sources check
     if (
-      ctx.value.x_mitre_log_sources &&
+      ctx.value.x_mitre_data_sources &&
       inEnterpriseDomain &&
       ctx.value.x_mitre_domains.includes(attackDomainSchema.enum['mobile-attack'])
     ) {
       ctx.issues.push({
         code: 'custom',
-        message: "x_mitre_log_sources is not supported in the 'mobile-attack' domain.",
-        path: ['x_mitre_log_sources'],
-        input: ctx.value.x_mitre_log_sources,
+        message: "x_mitre_data_sources is not supported in the 'mobile-attack' domain.",
+        path: ['x_mitre_data_sources'],
+        input: ctx.value.x_mitre_data_sources,
       });
     }
   };
@@ -395,7 +395,7 @@ export function createMobileOnlyPropertiesRefinement() {
       | {
           x_mitre_domains: XMitreDomains;
           x_mitre_tactic_type?: XMitreTacticType;
-          x_mitre_log_sources?: XMitreLogSources;
+          x_mitre_data_sources?: XMitreDataSources;
         }
     >,
   ): void => {
@@ -414,12 +414,12 @@ export function createMobileOnlyPropertiesRefinement() {
       });
     }
 
-    if (ctx.value.x_mitre_log_sources && inMobileDomain) {
+    if (ctx.value.x_mitre_data_sources && inMobileDomain) {
       ctx.issues.push({
         code: 'custom',
-        message: "x_mitre_log_sources is not supported in the 'mobile-attack' domain.",
-        path: ['x_mitre_log_sources'],
-        input: ctx.value.x_mitre_log_sources,
+        message: "x_mitre_data_sources is not supported in the 'mobile-attack' domain.",
+        path: ['x_mitre_data_sources'],
+        input: ctx.value.x_mitre_data_sources,
       });
     }
   };

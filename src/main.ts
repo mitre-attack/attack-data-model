@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import { z } from 'zod';
 import {
   type StixBundle,
   type AttackObject,
   extensibleStixBundleSchema,
+  type AttackObjects,
 } from './schemas/sdo/stix-bundle.schema.js';
 import {
   techniqueSchema,
@@ -212,10 +212,10 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
   }
 
   // Now process each object individually
-  const objects = rawData.objects;
+  const objects = rawData.objects as AttackObjects[];
   for (let index = 0; index < objects.length; index++) {
-    const obj = objects[index];
-    let objParseResult: z.SafeParseReturnType<unknown, AttackObject> | null;
+    const obj = objects[index] as AttackObject;
+    let objParseResult;
 
     switch (obj.type) {
       case 'x-mitre-asset':
