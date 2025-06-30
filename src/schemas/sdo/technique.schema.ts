@@ -11,6 +11,7 @@ import {
   killChainPhaseSchema,
   createAttackExternalReferencesSchema,
 } from '../common/index.js';
+import { logSourceSchema } from './log-source.schema.js';
 import {
   createAttackIdInExternalReferencesRefinement,
   createEnterpriseOnlyPropertiesRefinement,
@@ -154,43 +155,43 @@ export type XMitrePermissionsRequired = z.infer<typeof xMitrePermissionsRequired
 
 /////////////////////////////////////
 //
-// MITRE Log Sources (x_mitre_log_sources)
+// MITRE Data Sources (x_mitre_data_sources)
 //
 /////////////////////////////////////
 
-// a singular log source
-type LogSourceString = `${string}: ${string}`;
+// a singular data source
+type DataSourceString = `${string}: ${string}`;
 
-export const xMitreLogSourceSchema = z
-  .custom<LogSourceString>(
-    (value): value is LogSourceString => {
+export const xMitreDataSourceSchema = z
+  .custom<DataSourceString>(
+    (value): value is DataSourceString => {
       if (typeof value !== 'string') return false;
       const parts = value.split(':');
       return parts.length === 2 && parts[0].trim() !== '' && parts[1].trim() !== '';
     },
     {
-      message: "Each entry must conform to the pattern '<Log Source Name>: <Data Component Name>'",
+      message: "Each entry must conform to the pattern '<Data Source Name>: <Data Component Name>'",
     },
   )
   .meta({
-    description: "A single log source in the format 'Log Source Name: Data Component Name'",
+    description: "A single data source in the format 'Data Source Name: Data Component Name'",
   });
 
-// list of log sources
-export const xMitreLogSourcesSchema = z
-  .array(xMitreLogSourceSchema, {
+// list of data sources
+export const xMitreDataSourcesSchema = z
+  .array(xMitreDataSourceSchema, {
     error: (issue) =>
       issue.code === 'invalid_type'
-        ? 'x_mitre_log_sources must be an array of strings'
-        : 'Invalid log sources array',
+        ? 'x_mitre_data_sources must be an array of strings'
+        : 'Invalid data sources array',
   })
   .meta({
     description:
       'Sources of information that may be used to identify the action or result of the action being performed',
   });
 
-export type XMitreLogSource = z.infer<typeof xMitreLogSourceSchema>;
-export type XMitreLogSources = z.infer<typeof xMitreLogSourcesSchema>;
+export type XMitreDataSource = z.infer<typeof xMitreDataSourceSchema>;
+export type XMitreDataSources = z.infer<typeof xMitreDataSourcesSchema>;
 
 /////////////////////////////////////
 //
@@ -341,7 +342,9 @@ export const extensibleTechniqueSchema = attackBaseDomainObjectSchema
 
     x_mitre_is_subtechnique: xMitreIsSubtechniqueSchema,
 
-    x_mitre_log_sources: xMitreLogSourcesSchema.optional(),
+    x_mitre_data_sources: z.array(xMitreDataSourcesSchema).optional(), // TODO remove in attack spec 4.0.0 / adm release 5.x
+
+    x_mitre_log_sources: z.array(logSourceSchema).optional(),
 
     x_mitre_defense_bypassed: xMitreDefenseBypassesSchema.optional(),
 
@@ -368,13 +371,13 @@ export const extensibleTechniqueSchema = attackBaseDomainObjectSchema
   .strict();
 
 // Apply the refinements for techniques
-export const techniqueSchema = extensibleTechniqueSchema.superRefine((schema, ctx) => {
+export const techniqueSchema = extensibleTechniqueSchema.check((ctx) => {
   // Validates that the first external reference is a valid ATT&CK ID
-  createAttackIdInExternalReferencesRefinement()(schema, ctx);
+  createAttackIdInExternalReferencesRefinement()(ctx);
   // Validates that the technique only contains properties permissible by the target tactic in Enterprise
-  createEnterpriseOnlyPropertiesRefinement()(schema, ctx);
+  createEnterpriseOnlyPropertiesRefinement()(ctx);
   // Validates that the technique only contains properties permissible in Mobile (if the technique belongs to Mobile)
-  createMobileOnlyPropertiesRefinement()(schema, ctx);
+  createMobileOnlyPropertiesRefinement()(ctx);
 });
 
 export type Technique = z.infer<typeof extensibleTechniqueSchema>;
