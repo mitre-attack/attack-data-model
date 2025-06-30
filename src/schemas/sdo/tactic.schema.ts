@@ -8,8 +8,6 @@ import {
   xMitreDomainsSchema,
   xMitreContributorsSchema,
   createAttackExternalReferencesSchema,
-  stixCreatedByRefSchema,
-  objectMarkingRefsSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -83,13 +81,7 @@ export const extensibleTacticSchema = attackBaseDomainObjectSchema
     description: descriptionSchema,
 
     // Optional in STIX but required in ATT&CK
-    created_by_ref: stixCreatedByRefSchema,
-
-    // Optional in STIX but required in ATT&CK
     external_references: createAttackExternalReferencesSchema('x-mitre-tactic'),
-
-    // Optional in STIX but required in ATT&CK
-    object_marking_refs: objectMarkingRefsSchema,
 
     x_mitre_domains: xMitreDomainsSchema,
 
@@ -98,6 +90,10 @@ export const extensibleTacticSchema = attackBaseDomainObjectSchema
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
     x_mitre_contributors: xMitreContributorsSchema.optional(),
+  })
+  .required({
+    created_by_ref: true, // Optional in STIX but required in ATT&CK
+    object_marking_refs: true, // Optional in STIX but required in ATT&CK
   })
   .strict();
 

@@ -9,7 +9,6 @@ import {
   createAttackExternalReferencesSchema,
   xMitreModifiedByRefSchema,
   xMitreContributorsSchema,
-  objectMarkingRefsSchema,
   createStixTypeValidator,
 } from '../common/index.js';
 import { createFirstAliasRefinement, createCitationsRefinement } from '@/refinements/index.js';
@@ -111,10 +110,9 @@ export const extensibleCampaignSchema = attackBaseDomainObjectSchema
     x_mitre_last_seen_citation: xMitreLastSeenCitationSchema,
   })
   .required({
-    created_by_ref: true,
-    external_references: true,
-    object_marking_refs: true,
-    revoked: true,
+    created_by_ref: true, // Optional in STIX but required in ATT&CK
+    object_marking_refs: true, // Optional in STIX but required in ATT&CK
+    revoked: true, // Optional in STIX but required in ATT&CK
   })
   .strict();
 
