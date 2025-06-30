@@ -15,7 +15,7 @@ import { type Technique, techniqueSchema } from './technique.schema.js';
 import { type Group, groupSchema } from './group.schema.js';
 import { type Mitigation, mitigationSchema } from './mitigation.schema.js';
 import { type Collection, collectionSchema } from './collection.schema.js';
-import { type Detection, detectionSchema } from './detection.schema.js';
+import { type DetectionStrategy, detectionStrategySchema } from './detection.schema.js';
 import { type Analytic, analyticSchema } from './analytic.schema.js';
 import { type Relationship, relationshipSchema } from '../sro/relationship.schema.js';
 import {
@@ -39,8 +39,8 @@ export type AttackObject =
   | Technique
   | Group
   | Mitigation
-  | Detection
-  | Indicator
+  | DetectionStrategy
+  | Analytic
   | Relationship
   | MarkingDefinition;
 
@@ -52,9 +52,9 @@ const schemaMap = {
   'x-mitre-collection': collectionSchema,
   'x-mitre-data-component': dataComponentSchema,
   'x-mitre-data-source': dataSourceSchema,
-  'x-mitre-detection-strategy': detectionSchema,
+  'x-mitre-detection-strategy': detectionStrategySchema,
   'x-mitre-log-source': logSourceSchema,
-  indicator: indicatorSchema,
+  'x-mitre-analytic': analyticSchema,
   identity: identitySchema,
   'x-mitre-matrix': matrixSchema,
   tool: toolSchema,
