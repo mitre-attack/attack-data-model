@@ -7,39 +7,39 @@ import {
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
 } from '../common/common-properties.js';
+import { createAttackExternalReferencesSchema } from '../common/misc.js';
 
 /////////////////////////////////////
 //
-// MITRE Detection
+// MITRE Detection Strategy
 //
 /////////////////////////////////////
 
-export const detectionSchema = attackBaseDomainObjectSchema
+export const extensibleDetectionStrategySchema = attackBaseDomainObjectSchema
   .extend({
-    id: createStixIdValidator('x-mitre-detection'),
-    type: createStixTypeValidator('x-mitre-detection'),
-    // spec_version
-    // created
-    // modified
-    // name
-    // created_by_ref --> override as required
-    // x_mitre_version
-    // x_mitre_attack_spec_version
+    id: createStixIdValidator('x-mitre-detection-strategy'),
+
+    type: createStixTypeValidator('x-mitre-detection-strategy'),
+
+    external_references: createAttackExternalReferencesSchema('x-mitre-detection-strategy'),
+
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
+
     x_mitre_contributors: xMitreContributorsSchema,
-    // object_marking_refs --> override as required
-    // x_mitre_analytics: xMitreAnalytics[],
+
+    x_mitre_analytics: z.array(createStixIdValidator('x-mitre-analytic')).nonempty(),
+
     x_mitre_domains: xMitreDomainsSchema,
-    // external_references --> override as required
   })
   .required({
     created_by_ref: true,
     object_marking_refs: true,
-    external_references: true,
   })
   .meta({
     description:
       'The detection logic and patterns used to identify malicious activities based on the collected data.',
   });
 
-export type Detection = z.infer<typeof detectionSchema>;
+export const detectionStrategySchema = extensibleDetectionStrategySchema;
+
+export type DetectionStrategy = z.infer<typeof detectionStrategySchema>;

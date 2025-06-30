@@ -12,18 +12,21 @@ import { xMitrePlatformsSchema } from '../common/common-properties.js';
 
 export const xMitreLogSourcePermutationKey = z.string();
 
-export const xMitreLogSourceRef = z
+export const xMitreLogSourceRefSchema = z
   .object({
     ref: createStixIdValidator('x-mitre-log-source'),
-    keys: z.array(z.string()).meta({
-      description:
-        'Must match one of the elements in the ``x_mitre_log_source_permutations`` array',
-    }),
+    keys: z
+      .array(z.string())
+      .meta({
+        description:
+          'Must match one of the elements in the ``x_mitre_log_source_permutations`` array',
+      })
+      .nonempty(),
   })
   .meta({
-    description: 'asdf', // TODO enter a description for the log source ref
+    description: 'A reference to a log source permutation', // TODO enter a description for the log source ref
   });
-export type LogSourceRef = z.infer<typeof xMitreLogSourceRef>;
+export type LogSourceRef = z.infer<typeof xMitreLogSourceRefSchema>;
 
 /////////////////////////////////////
 //
@@ -31,8 +34,8 @@ export type LogSourceRef = z.infer<typeof xMitreLogSourceRef>;
 //
 /////////////////////////////////////
 
-export const xMitreLogSourceRefs = z.array(xMitreLogSourceRef);
-export type LogSourceRefs = z.infer<typeof xMitreLogSourceRefs>;
+export const xMitreLogSourceRefsSchema = z.array(xMitreLogSourceRefSchema);
+export type LogSourceRefs = z.infer<typeof xMitreLogSourceRefsSchema>;
 
 /////////////////////////////////////
 //
@@ -40,11 +43,11 @@ export type LogSourceRefs = z.infer<typeof xMitreLogSourceRefs>;
 //
 /////////////////////////////////////
 
-export const xMitreMutableElement = z.object({
+export const xMitreMutableElementSchema = z.object({
   field: z.string(),
   description: z.string(),
 });
-export type MutableElement = z.infer<typeof xMitreMutableElement>;
+export type MutableElement = z.infer<typeof xMitreMutableElementSchema>;
 
 /////////////////////////////////////
 //
@@ -52,8 +55,8 @@ export type MutableElement = z.infer<typeof xMitreMutableElement>;
 //
 /////////////////////////////////////
 
-export const xMitreMutableElements = z.array(xMitreMutableElement);
-export type MutableElements = z.infer<typeof xMitreMutableElements>;
+export const xMitreMutableElementsSchema = z.array(xMitreMutableElementSchema);
+export type MutableElements = z.infer<typeof xMitreMutableElementsSchema>;
 
 /////////////////////////////////////
 //
@@ -61,18 +64,20 @@ export type MutableElements = z.infer<typeof xMitreMutableElements>;
 //
 /////////////////////////////////////
 
-export const xMitreAnalytic = attackBaseDomainObjectSchema.extend({
+export const extensibleAnalyticSchema = attackBaseDomainObjectSchema.extend({
   id: createStixIdValidator('x-mitre-analytic'),
+
   type: createStixTypeValidator('x-mitre-analytic'),
-  // spec_version
-  // created
-  // modified
-  // x_mitre_version
-  // x_mitre_attack_spec_version
+
   x_mitre_platforms: xMitrePlatformsSchema,
+
   x_mitre_detects: z.string().meta({ description: 'Open format field for detections' }),
-  x_mitre_log_sources: xMitreLogSourceRefs,
-  x_mitre_mutable_elements: xMitreMutableElements,
+
+  x_mitre_log_sources: xMitreLogSourceRefsSchema,
+
+  x_mitre_mutable_elements: xMitreMutableElementsSchema,
 });
 
-export type Analytic = z.infer<typeof xMitreAnalytic>;
+export const analyticSchema = extensibleAnalyticSchema;
+
+export type Analytic = z.infer<typeof extensibleAnalyticSchema>;

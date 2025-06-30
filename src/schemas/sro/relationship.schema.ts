@@ -75,7 +75,7 @@ const relationshipMap: RelationshipMap = {
   detects: {
     source: [
       stixTypeSchema.enum['x-mitre-data-component'], // TODO remove in attack spec 4.0.0 / adm release 5.x
-      stixTypeSchema.enum['x-mitre-detection-strategy']
+      stixTypeSchema.enum['x-mitre-detection-strategy'],
     ],
     target: [stixTypeSchema.enum['attack-pattern']],
   },
