@@ -1,32 +1,30 @@
 import { z } from 'zod/v4';
-import { MitreCollectionLayerOV } from '../common/open-vocabulary.js';
 import {
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
-  xMitreContributorsSchema,
-  objectMarkingRefsSchema,
-  // createAttackExternalReferencesSchema,
-  stixCreatedByRefSchema,
   attackBaseDomainObjectSchema,
+  createAttackExternalReferencesSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
 } from '../common/index.js';
 
 /////////////////////////////////////
 //
-// MITRE Collection Layers
-// (x_mitre_collection_layers)
+// Log Source Permutations
+// (x_mitre_log_source_permutations)
 //
 /////////////////////////////////////
 
-export const xMitreCollectionLayersSchema = z
-  .array(MitreCollectionLayerOV, {
-    error: (issue) =>
-      issue.code === 'invalid_type'
-        ? 'x_mitre_collection_layers must be an array of supported collection layers.'
-        : 'Invalid input in x_mitre_collection_layers',
-  })
-  .describe('List of places the data can be collected from.');
+export const xMitreLogSourcePermutationsSchema = z
+  .array(
+    z.object({
+      name: z.string().nonempty(),
+      channel: z.string().nonempty(),
+    }),
+  )
+  .nonempty();
 
-export type XMitreCollectionLayers = z.infer<typeof xMitreCollectionLayersSchema>;
+export type XMitreLogSourcePermutations = z.infer<typeof xMitreLogSourcePermutationsSchema>;
 
 /////////////////////////////////////
 //
@@ -35,43 +33,27 @@ export type XMitreCollectionLayers = z.infer<typeof xMitreCollectionLayersSchema
 //
 /////////////////////////////////////
 
-export const logSourceSchema = attackBaseDomainObjectSchema
+export const extensibleLogSourceSchema = attackBaseDomainObjectSchema
   .extend({
-    // name
-    // channel
-    // x_mitre_data_component
+    id: createStixIdValidator('x-mitre-log-source'),
 
-    // id: createStixIdValidator('x-mitre-log-source'),
-    // type: createStixTypeValidator('x-mitre-log-source'),
+    type: createStixTypeValidator('x-mitre-log-source'),
 
     // Optional in STIX but required in ATT&CK
-    // TODO move to detection strategy
-    created_by_ref: stixCreatedByRefSchema,
+    external_references: createAttackExternalReferencesSchema('x-mitre-log-source'),
 
-    // TODO remove!
-    // description: descriptionSchema,
-
-    // Optional in STIX but required in ATT&CK
-    // external_references: createAttackExternalReferencesSchema('x-mitre-log-source'), // TODO add log source type to createAttackExternalReferencesSchema (confirm this first)
-
-    // Optional in STIX but required in ATT&CK
-    // TODO Software team figure this out - either track on detection strategy AND/OR log sources
-    object_marking_refs: objectMarkingRefsSchema,
-
-    // x_mitre_platforms: xMitrePlatformsSchema.optional(),
-
-    // TODO move to detection strategy
     x_mitre_domains: xMitreDomainsSchema,
 
-    // TODO move to detection strategy
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
-    // TODO move to detection strategy
-    x_mitre_contributors: xMitreContributorsSchema.optional(),
-
-    // TODO delete me!
-    x_mitre_collection_layers: xMitreCollectionLayersSchema,
+    x_mitre_log_source_permutations: xMitreLogSourcePermutationsSchema,
+  })
+  .required({
+    object_marking_refs: true, // Optional in STIX but required in ATT&CK
+    created_by_ref: true, // Optional in STIX but required in ATT&CK
   })
   .strict();
 
-export type LogSource = z.infer<typeof logSourceSchema>;
+export const logSourceSchema = extensibleLogSourceSchema;
+
+export type LogSource = z.infer<typeof extensibleLogSourceSchema>;
