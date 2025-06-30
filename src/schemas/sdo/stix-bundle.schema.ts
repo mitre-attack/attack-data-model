@@ -6,6 +6,7 @@ import { type Asset, assetSchema } from './asset.schema.js';
 import { type Campaign, campaignSchema } from './campaign.schema.js';
 import { type DataComponent, dataComponentSchema } from './data-component.schema.js';
 import { type LogSource, logSourceSchema } from './log-source.schema.js';
+import { type DataSource, dataSourceSchema } from './data-source.schema.js';
 import { type Identity, identitySchema } from './identity.schema.js';
 import { type Matrix, matrixSchema } from './matrix.schema.js';
 import { type Tool, toolSchema } from './tool.schema.js';
@@ -30,7 +31,7 @@ export type AttackObject =
   | Campaign
   | Collection
   | DataComponent
-  | LogSource
+  | (DataSource | LogSource)
   | Identity
   | Matrix
   | Tool
@@ -51,6 +52,9 @@ const schemaMap = {
   'x-mitre-collection': collectionSchema,
   'x-mitre-data-component': dataComponentSchema,
   'x-mitre-data-source': dataSourceSchema,
+  'x-mitre-detection-strategy': detectionSchema,
+  'x-mitre-log-source': logSourceSchema,
+  indicator: indicatorSchema,
   identity: identitySchema,
   'x-mitre-matrix': matrixSchema,
   tool: toolSchema,
