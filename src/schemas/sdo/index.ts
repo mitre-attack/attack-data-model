@@ -5,7 +5,6 @@ export * from './data-component.schema.js';
 export * from './detection.schema.js';
 export * from './group.schema.js';
 export * from './identity.schema.js';
-export * from './indicator.schema.js';
 export * from './log-source.schema.js';
 export * from './malware.schema.js';
 export * from './matrix.schema.js';

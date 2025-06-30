@@ -16,7 +16,7 @@ import { type Group, groupSchema } from './group.schema.js';
 import { type Mitigation, mitigationSchema } from './mitigation.schema.js';
 import { type Collection, collectionSchema } from './collection.schema.js';
 import { type Detection, detectionSchema } from './detection.schema.js';
-import { type Indicator, indicatorSchema } from './indicator.schema.js';
+import { type Analytic, analyticSchema } from './analytic.schema.js';
 import { type Relationship, relationshipSchema } from '../sro/relationship.schema.js';
 import {
   type MarkingDefinition,
