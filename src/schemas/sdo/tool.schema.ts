@@ -37,19 +37,22 @@ export const extensibleToolSchema = softwareSchema
     kill_chain_phases: z
       .array(killChainPhaseSchema)
       .optional()
-      .describe('The list of kill chain phases for which this Tool can be used.'),
+      .meta({ description: 'The list of kill chain phases for which this Tool can be used.' }),
 
     // Not used in ATT&CK Tool but defined in STIX
-    tool_version: z.string().optional().describe('The version identifier associated with the Tool'),
+    tool_version: z
+      .string()
+      .optional()
+      .meta({ description: 'The version identifier associated with the Tool' }),
 
     x_mitre_old_attack_id: createOldMitreAttackIdSchema('tool').optional(),
   })
   .strict();
 
 // Apply a single refinement that combines both refinements
-export const toolSchema = extensibleToolSchema.superRefine((schema, ctx) => {
-  createFirstXMitreAliasRefinement()(schema, ctx);
-  createFirstAliasRefinement()(schema, ctx);
+export const toolSchema = extensibleToolSchema.check((ctx) => {
+  createFirstXMitreAliasRefinement()(ctx);
+  createFirstAliasRefinement()(ctx);
 });
 // Define the type for Tool
 export type Tool = z.infer<typeof extensibleToolSchema>;

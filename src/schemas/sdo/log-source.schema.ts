@@ -18,11 +18,11 @@ import {
 /////////////////////////////////////
 
 export const xMitreCollectionLayersSchema = z
-  .array(MitreCollectionLayerOV,
-    {
-      error: (issue) => issue.code === 'invalid_type'
+  .array(MitreCollectionLayerOV, {
+    error: (issue) =>
+      issue.code === 'invalid_type'
         ? 'x_mitre_collection_layers must be an array of supported collection layers.'
-        : 'Invalid input in x_mitre_collection_layers'
+        : 'Invalid input in x_mitre_collection_layers',
   })
   .describe('List of places the data can be collected from.');
 

@@ -70,9 +70,9 @@ export const extensibleGroupSchema = attackBaseDomainObjectSchema
   })
   .strict();
 
-export const groupSchema = extensibleGroupSchema.superRefine((schema, ctx) => {
+export const groupSchema = extensibleGroupSchema.check((ctx) => {
   // validate that when aliases are present, the first alias must match the object's name
-  createFirstAliasRefinement()(schema, ctx);
+  createFirstAliasRefinement()(ctx);
 });
 
 // Define the TypeScript type

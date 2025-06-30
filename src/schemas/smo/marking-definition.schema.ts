@@ -26,8 +26,8 @@ export const tlpMarkingObjectSchema = z
 export const baseMarkingDefinitionSchema = z.object({
   type: z.literal('marking-definition'),
   spec_version: z.literal('2.1'),
-  id: z.string().uuid(),
-  created: z.string().datetime(),
+  id: z.uuid(),
+  created: z.iso.datetime(),
   definition_type: z.literal('tlp'),
   name: z.string(),
   definition: tlpMarkingObjectSchema,
@@ -100,11 +100,10 @@ export type TlpMarkingObject = z.infer<typeof tlpMarkingObjectSchema>;
 
 export const statementMarkingObjectSchema = z
   .object({
-    statement: z
-      .string()
-      .describe(
+    statement: z.string().meta({
+      description:
         'A Statement (e.g., copyright, terms of use) applied to the content marked by this marking definition.',
-      ),
+    }),
   })
   .strict();
 

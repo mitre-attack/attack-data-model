@@ -17,9 +17,9 @@ import {
 //
 /////////////////////////////////////
 
-export const xMitreLogSourceRefSchema = createStixIdValidator('x-mitre-log-source').describe(
-  'STIX ID of the log source this component is a part of.',
-);
+export const xMitreLogSourceRefSchema = createStixIdValidator('x-mitre-log-source').meta({
+  description: 'STIX ID of the log source this component is a part of.',
+});
 
 export type XMitreLogSourceRef = z.infer<typeof xMitreLogSourceRefSchema>;
 

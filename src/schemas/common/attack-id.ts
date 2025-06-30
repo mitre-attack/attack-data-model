@@ -70,12 +70,14 @@ export const createAttackIdSchema = (stixType: StixTypesWithAttackIds) => {
 
   // Special case for attack-pattern which could be technique or subtechnique
   if (stixType === 'attack-pattern') {
-    return z.string().refine(
-      (id) => attackIdPatterns.technique.test(id) || attackIdPatterns.subtechnique.test(id),
-      () => ({
-        message: `Must match either ATT&CK Technique ID format (T####) or Sub-technique ID format (T####.###)`,
-      }),
-    );
+    return z
+      .string()
+      .refine(
+        (id) => attackIdPatterns.technique.test(id) || attackIdPatterns.subtechnique.test(id),
+        {
+          error: `Must match either ATT&CK Technique ID format (T####) or Sub-technique ID format (T####.###)`,
+        },
+      );
   }
 
   return z.string().regex(attackIdPatterns[format], attackIdMessages[format]);

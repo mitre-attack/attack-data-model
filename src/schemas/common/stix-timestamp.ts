@@ -6,7 +6,7 @@ const RFC3339_REGEX = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d+)?
 // Custom error messages
 const StixTimestampError = {
   InvalidFormat: {
-    code: z.ZodIssueCode.custom,
+    code: 'custom',
     message:
       "Invalid STIX timestamp format: must be an RFC3339 timestamp with a timezone specification of 'Z'.",
   },

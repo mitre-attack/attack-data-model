@@ -265,9 +265,9 @@ export const relationshipSchema = attackBaseRelationshipObjectSchema
 
     description: descriptionSchema.optional(),
 
-    source_ref: stixIdentifierSchema.describe('The ID of the source (from) object.'),
+    source_ref: stixIdentifierSchema.meta({ description: 'The ID of the source (from) object.' }),
 
-    target_ref: stixIdentifierSchema.describe('The ID of the target (to) object.'),
+    target_ref: stixIdentifierSchema.meta({ description: 'The ID of the target (to) object.' }),
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
   })

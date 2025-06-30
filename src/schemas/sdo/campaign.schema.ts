@@ -119,9 +119,9 @@ export const extensibleCampaignSchema = attackBaseDomainObjectSchema
   .strict();
 
 // Apply a single refinement that combines both refinements
-export const campaignSchema = extensibleCampaignSchema.superRefine((schema, ctx) => {
-  createFirstAliasRefinement()(schema, ctx);
-  createCitationsRefinement()(schema, ctx);
+export const campaignSchema = extensibleCampaignSchema.check((ctx) => {
+  createFirstAliasRefinement()(ctx);
+  createCitationsRefinement()(ctx);
 });
 
 // Define the type for Campaign

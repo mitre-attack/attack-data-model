@@ -30,9 +30,10 @@ const supportedMitreCollectionLayers = [
 
 export const xMitreCollectionLayersSchema = z
   .array(z.enum(supportedMitreCollectionLayers), {
-      error: issue => issue.code === 'invalid_type'
-          ? 'x_mitre_collection_layers must be an array of supported collection layers.'
-          : 'x_mitre_collection_layers is invalid or missing'
+    error: (issue) =>
+      issue.code === 'invalid_type'
+        ? 'x_mitre_collection_layers must be an array of supported collection layers.'
+        : 'x_mitre_collection_layers is invalid or missing',
   })
   .meta({ description: 'List of places the data can be collected from.' });
 
@@ -67,7 +68,7 @@ export const extensibleDataSourceSchema = attackBaseDomainObjectSchema
   })
   .required({
     created_by_ref: true, // Optional in STIX but required in ATT&CK
-    object_marking_refs: true // Optional in STIX but required in ATT&CK
+    object_marking_refs: true, // Optional in STIX but required in ATT&CK
   })
   .strict();
 

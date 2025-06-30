@@ -37,8 +37,9 @@ export const detectionSchema = attackBaseDomainObjectSchema
     object_marking_refs: true,
     external_references: true,
   })
-  .describe(
-    'The detection logic and patterns used to identify malicious activities based on the collected data.',
-  );
+  .meta({
+    description:
+      'The detection logic and patterns used to identify malicious activities based on the collected data.',
+  });
 
 export type Detection = z.infer<typeof detectionSchema>;
