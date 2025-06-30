@@ -101,6 +101,14 @@ function getFormatExample(stixType: StixTypesWithAttackIds): string {
       return 'A####';
     case 'campaign':
       return 'C####';
+    case 'x-mitre-log-source':
+      return 'LS####';
+    case 'x-mitre-analytic':
+      return 'AN####';
+    case 'x-mitre-detection-strategy':
+      return 'DET####';
+    case 'x-mitre-data-component':
+      return 'DC####';
     default:
       return ''; // Satisfy TypeScript
   }

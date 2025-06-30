@@ -11,8 +11,11 @@ type AttackTypesWithAttackIds =
   | 'mitigation'
   | 'asset'
   | 'data-source'
+  | 'campaign'
+  | 'data-component'
   | 'log-source'
-  | 'campaign';
+  | 'detection-strategy'
+  | 'analytic';
 
 // STIX types that support ATT&CK IDs
 export type StixTypesWithAttackIds = Extract<
@@ -25,8 +28,11 @@ export type StixTypesWithAttackIds = Extract<
   | 'course-of-action'
   | 'x-mitre-asset'
   | 'x-mitre-data-source'
-  | 'x-mitre-log-source'
   | 'campaign'
+  | 'x-mitre-data-component'
+  | 'x-mitre-log-source'
+  | 'x-mitre-detection-strategy'
+  | 'x-mitre-analytic'
 >;
 
 // Define the mapping between STIX types and ATT&CK ID formats
@@ -39,8 +45,11 @@ export const stixTypeToAttackIdMapping: Record<StixTypesWithAttackIds, AttackTyp
   'course-of-action': 'mitigation',
   'x-mitre-asset': 'asset',
   'x-mitre-data-source': 'data-source',
-  'x-mitre-log-source': 'data-source',
   campaign: 'campaign',
+  'x-mitre-data-component': 'data-component',
+  'x-mitre-log-source': 'data-source',
+  'x-mitre-detection-strategy': 'detection-strategy',
+  'x-mitre-analytic': 'analytic',
 };
 
 export const attackIdPatterns: Record<AttackTypesWithAttackIds, RegExp> = {
@@ -52,8 +61,11 @@ export const attackIdPatterns: Record<AttackTypesWithAttackIds, RegExp> = {
   mitigation: /^M\d{4}$/,
   asset: /^A\d{4}$/,
   'data-source': /^DS\d{4}$/,
-  'log-source': /^LS\d{4}$/,
   campaign: /^C\d{4}$/,
+  'data-component': /^DC\d{4}$/,
+  'log-source': /^LS\d{4}$/,
+  'detection-strategy': /^DET\d{4}$/,
+  analytic: /^AN\d{4}$/,
 };
 
 const attackIdMessages: Record<AttackTypesWithAttackIds, string> = {
@@ -65,8 +77,11 @@ const attackIdMessages: Record<AttackTypesWithAttackIds, string> = {
   mitigation: 'Must match ATT&CK Mitigation ID format (M####)',
   asset: 'Must match ATT&CK Asset ID format (A####)',
   'data-source': 'Must match ATT&CK Data Source ID format (DS####)',
-  'log-source': 'Must match ATT&CK Data Source ID format (LS####)',
   campaign: 'Must match ATT&CK Campaign ID format (C####)',
+  'data-component': 'Must match ATT&CK Data Component Source ID format (DC####)',
+  'log-source': 'Must match ATT&CK Data Source ID format (LS####)',
+  'detection-strategy': 'Must match ATT&CK Detection Strategy Source ID format (DET####)',
+  analytic: 'Must match ATT&CK Analytic Source ID format (AN####)',
 };
 
 // Generic ATT&CK ID validator with configurable patterns for different object types
