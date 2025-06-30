@@ -1,10 +1,7 @@
 import { z } from 'zod/v4';
 import { createStixTypeValidator } from '@/schemas/common/stix-type.js';
 import { createStixIdValidator } from '@/schemas/common/stix-identifier.js';
-import {
-  objectMarkingRefsSchema,
-  xMitreDomainsSchema,
-} from '@/schemas/common/common-properties.js';
+import { objectMarkingRefsSchema } from '@/schemas/common/common-properties.js';
 import { attackBaseDomainObjectSchema } from '@/schemas/common/attack-base-object.js';
 import { IdentityClassOV, IndustrySectorOV } from '@/schemas/common/open-vocabulary.js';
 
@@ -26,8 +23,6 @@ export const extensibleIdentitySchema = attackBaseDomainObjectSchema
       description:
         'The type of entity that this Identity describes, e.g., an individual or organization. This is an open vocabulary and the values SHOULD come from the identity-class-ov vocabulary',
     }),
-
-    x_mitre_domains: xMitreDomainsSchema,
 
     description: z
       .string()
