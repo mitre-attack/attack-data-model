@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import type { StixType } from './stix-type.js';
 
 // ATT&CK ID format types
@@ -11,6 +11,7 @@ type AttackTypesWithAttackIds =
   | 'mitigation'
   | 'asset'
   | 'data-source'
+  | 'log-source'
   | 'campaign';
 
 // STIX types that support ATT&CK IDs
@@ -24,6 +25,7 @@ export type StixTypesWithAttackIds = Extract<
   | 'course-of-action'
   | 'x-mitre-asset'
   | 'x-mitre-data-source'
+  | 'x-mitre-log-source'
   | 'campaign'
 >;
 
@@ -37,6 +39,7 @@ export const stixTypeToAttackIdMapping: Record<StixTypesWithAttackIds, AttackTyp
   'course-of-action': 'mitigation',
   'x-mitre-asset': 'asset',
   'x-mitre-data-source': 'data-source',
+  'x-mitre-log-source': 'data-source',
   campaign: 'campaign',
 };
 
@@ -49,6 +52,7 @@ export const attackIdPatterns: Record<AttackTypesWithAttackIds, RegExp> = {
   mitigation: /^M\d{4}$/,
   asset: /^A\d{4}$/,
   'data-source': /^DS\d{4}$/,
+  'log-source': /^LS\d{4}$/,
   campaign: /^C\d{4}$/,
 };
 
@@ -61,6 +65,7 @@ const attackIdMessages: Record<AttackTypesWithAttackIds, string> = {
   mitigation: 'Must match ATT&CK Mitigation ID format (M####)',
   asset: 'Must match ATT&CK Asset ID format (A####)',
   'data-source': 'Must match ATT&CK Data Source ID format (DS####)',
+  'log-source': 'Must match ATT&CK Data Source ID format (LS####)',
   campaign: 'Must match ATT&CK Campaign ID format (C####)',
 };
 
