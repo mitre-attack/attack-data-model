@@ -1,81 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATT&CK Specification Banner</title>
-</head>
-<body>
-    <div style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); 
-                border: 1px solid #1e40af; 
-                border-radius: 8px; 
-                padding: 16px; 
-                margin-bottom: 24px; 
-                color: white; 
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-        <div style="display: flex; align-items: flex-start; gap: 12px;">
-            <div style="background: rgba(255, 255, 255, 0.2); 
-                        border-radius: 50%; 
-                        padding: 8px; 
-                        margin-top: 2px; 
-                        flex-shrink: 0;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path d="M12 16v-4"/>
-                    <path d="M12 8h.01"/>
-                </svg>
-            </div>
-            <div>
-                <h3 style="margin: 0 0 8px 0; 
-                           font-size: 16px; 
-                           font-weight: 600; 
-                           color: #fef3c7;">
-                    Documentation Notice
-                </h3>
-                <p style="margin: 0 0 12px 0; 
-                          font-size: 14px; 
-                          line-height: 1.5; 
-                          color: #e5e7eb;">
-                    This document is <strong>not the source of truth</strong> for the ATT&CK specification. 
-                    The authoritative source is the <strong>ATT&CK Data Model (ADM) TypeScript library</strong>.
-                </p>
-                <div style="background: rgba(255, 255, 255, 0.1); 
-                           border-radius: 6px; 
-                           padding: 12px; 
-                           margin-bottom: 12px;">
-                    <p style="margin: 0 0 8px 0; 
-                              font-size: 13px; 
-                              font-weight: 500; 
-                              color: #fbbf24;">
-                        📖 Browse ATT&CK schemas:
-                    </p>
-                    <a href="https://mitre-attack.github.io/attack-data-model/" 
-                       style="color: #93c5fd; 
-                              text-decoration: none; 
-                              font-size: 13px; 
-                              word-break: break-all;"
-                       onmouseover="this.style.textDecoration='underline'"
-                       onmouseout="this.style.textDecoration='none'">
-                        https://mitre-attack.github.io/attack-data-model/
-                    </a>
-                </div>
-                <p style="margin: 0; 
-                          font-size: 13px; 
-                          line-height: 1.4; 
-                          color: #d1d5db;">
-                    While maintained to the best of our ability, this documentation may drift from the ADM library. 
-                    If you find discrepancies, please 
-                    <a href="#" style="color: #93c5fd; text-decoration: none;"
-                       onmouseover="this.style.textDecoration='underline'"
-                       onmouseout="this.style.textDecoration='none'">
-                        open a GitHub Issue
-                    </a>.
-                </p>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+> [!IMPORTANT]
+> **Documentation Notice**
+> 
+> This document is **not the source of truth** for the ATT&CK specification. The authoritative source is the **ATT&CK Data Model (ADM) TypeScript library**.
+> 
+> 📖 **Browse ATT&CK schemas:** https://mitre-attack.github.io/attack-data-model/
+> 
+> While maintained to the best of our ability, this documentation may drift from the ADM library. If you find discrepancies, please [open a GitHub Issue](https://github.com/mitre-attack/attack-data-model/issues).
 
 # The ATT&CK Specification
 
