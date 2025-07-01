@@ -15,7 +15,7 @@ import { type Technique, techniqueSchema } from './technique.schema.js';
 import { type Group, groupSchema } from './group.schema.js';
 import { type Mitigation, mitigationSchema } from './mitigation.schema.js';
 import { type Collection, collectionSchema } from './collection.schema.js';
-import { type DetectionStrategy, detectionStrategySchema } from './detection.schema.js';
+import { type DetectionStrategy, detectionStrategySchema } from './detection-strategy.schema.js';
 import { type Analytic, analyticSchema } from './analytic.schema.js';
 import { type Relationship, relationshipSchema } from '../sro/relationship.schema.js';
 import {

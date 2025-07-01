@@ -2,7 +2,7 @@ export * from './asset.schema.js';
 export * from './campaign.schema.js';
 export * from './collection.schema.js';
 export * from './data-component.schema.js';
-export * from './detection.schema.js';
+export * from './detection-strategy.schema.js';
 export * from './group.schema.js';
 export * from './identity.schema.js';
 export * from './log-source.schema.js';

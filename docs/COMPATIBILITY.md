@@ -17,7 +17,7 @@ This document tracks the compatibility between versions of the ATT&CK® Data Mod
 - **ATT&CK Specification v3.3.0**:
   - **Features**:
     - Introduces support for three new SDOs:
-      - MITRE Detection Strategies (`x-mitre-detection-strategy`) <sup>[[schema](../src/schemas/sdo/detection.schema.ts)]</sup>
+      - MITRE Detection Strategies (`x-mitre-detection-strategy`) <sup>[[schema](../src/schemas/sdo/detection-strategy.schema.ts)]</sup>
       - MITRE Analytics (`x-mitre-analytic`) <sup>[[schema](../src/schemas/sdo/analytic.schema.ts)]</sup>
       - MITRE Log Sources (`x-mitre-log-sources`) <sup>[[schema](../src/schemas/sdo/log-source.schema.ts)]</sup>
     - MITRE Data Sources (`x-mitre-data-sources`) <sup>[[schema](../src/schemas/sdo/data-source.schema.ts)]</sup> are _deprecated_ and will be removed in ATT&CK Specification v4.0.0
