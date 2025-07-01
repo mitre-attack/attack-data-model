@@ -296,7 +296,8 @@ describe('RelationshipSchema', () => {
     });
   });
 
-  it('should validate existing ATT&CK relationships and report errors', () => {
+  // GitHub Actions often fails without an increased timeout for this test
+  it('should validate existing ATT&CK relationships and report errors', { timeout: 10_000 }, () => {
     const validRelationships: Relationship[] = [];
     const errors: { relationship: Relationship; issues: z.ZodIssue[] }[] = [];
 
