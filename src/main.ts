@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import { z } from 'zod';
 import {
   type StixBundle,
   type AttackObject,
   extensibleStixBundleSchema,
+  type AttackObjects,
 } from './schemas/sdo/stix-bundle.schema.js';
 import {
   techniqueSchema,
@@ -12,7 +12,7 @@ import {
   matrixSchema,
   mitigationSchema,
   relationshipSchema,
-  dataSourceSchema,
+  logSourceSchema,
   dataComponentSchema,
   groupSchema,
   malwareSchema,
@@ -212,10 +212,10 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
   }
 
   // Now process each object individually
-  const objects = rawData.objects;
+  const objects = rawData.objects as AttackObjects[];
   for (let index = 0; index < objects.length; index++) {
-    const obj = objects[index];
-    let objParseResult: z.SafeParseReturnType<unknown, AttackObject> | null;
+    const obj = objects[index] as AttackObject;
+    let objParseResult;
 
     switch (obj.type) {
       case 'x-mitre-asset':
@@ -230,8 +230,8 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
       case 'x-mitre-data-component':
         objParseResult = dataComponentSchema.safeParse(obj);
         break;
-      case 'x-mitre-data-source':
-        objParseResult = dataSourceSchema.safeParse(obj);
+      case 'x-mitre-log-source':
+        objParseResult = logSourceSchema.safeParse(obj);
         break;
       case 'intrusion-set':
         objParseResult = groupSchema.safeParse(obj);

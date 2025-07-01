@@ -6,17 +6,22 @@ This document tracks the compatibility between versions of the ATT&CK® Data Mod
 
 | ADM Version (`@mitre-attack/attack-data-model`) | ATT&CK Specification Version (`ATTACK_SPEC_VERSION`) | Supported ATT&CK Releases (`mitre-attack/attack-stix-data`) |
 |-------------------------------------------------|------------------------------------------------------|-------------------------------------------------------------|
-| 1.0.0                                           | 3.2.0                                                | 15.1, 16.1                                                  |
-| 2.0.0                                           | 4.0.0                                                | 17.0                                                        |
+| 1.x, 2.x, 3.x                                   | 3.2.0                                                | >=15.x, <=17.x                                              |
+| 4.x                                             | 3.3.0                                                | >=15.x, <=18.x                                              |
+| 5.x (future release)                            | 4.0.0                                                | >=18.x                                                      |
 
 <sup>1</sup>Other versions of ATT&CK or the ATT&CK Specification may work with the specified ADM release, but are not officially supported.
 
 ## Compatibility Details
 
-- **ADM Version 2.0.0**: Officially supports ATT&CK Specification Version **4.0.0** and ATT&CK Release Version **17.x**.
+- **ATT&CK Specification v3.3.0**:
   - **Features**:
-    - Full parsing and validation support for all objects and properties defined in the ATT&CK Specification v4.0.0.
-    - Supports all content introduced in ATT&CK Release v17.x, including new techniques, tactics, and relationships.
+    - Introduces support for three new SDOs:
+      - MITRE Detection Strategies (`x-mitre-detection-strategy`) <sup>[[schema](../src/schemas/sdo/detection.schema.ts)]</sup>
+      - MITRE Analytics (`x-mitre-analytic`) <sup>[[schema](../src/schemas/sdo/analytic.schema.ts)]</sup>
+      - MITRE Log Sources (`x-mitre-log-sources`) <sup>[[schema](../src/schemas/sdo/log-source.schema.ts)]</sup>
+    - MITRE Data Sources (`x-mitre-data-sources`) <sup>[[schema](../src/schemas/sdo/data-source.schema.ts)]</sup> are _deprecated_ and will be removed in ATT&CK Specification v4.0.0
+    - Supports all content introduced in ATT&CK Release v18.x and earlier, including new techniques, tactics, and relationships.
   - **Notes**:
     - Ensure that you are using the correct domain (e.g., `enterprise-attack`, `mobile-attack`) when loading data to avoid inconsistencies.
     - The ADM's Zod schemas and TypeScript types are aligned with the ATT&CK Specification v4.0.0, providing a codified expression of the specification.

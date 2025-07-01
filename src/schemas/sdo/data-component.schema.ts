@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 import {
@@ -12,16 +12,16 @@ import {
 
 /////////////////////////////////////
 //
-// MITRE Data Source Ref
-// (x_mitre_data_source_ref)
+// MITRE Log Source Ref
+// (x_mitre_log_source_ref)
 //
 /////////////////////////////////////
 
-export const xMitreDataSourceRefSchema = createStixIdValidator('x-mitre-data-source').describe(
-  'STIX ID of the data source this component is a part of.',
-);
+export const xMitreLogSourceRefSchema = createStixIdValidator('x-mitre-log-source').meta({
+  description: 'STIX ID of the log source this component is a part of.',
+});
 
-export type XMitreDataSourceRef = z.infer<typeof xMitreDataSourceRefSchema>;
+export type XMitreLogSourceRef = z.infer<typeof xMitreLogSourceRefSchema>;
 
 /////////////////////////////////////
 //
@@ -47,7 +47,7 @@ export const extensibleDataComponentSchema = attackBaseDomainObjectSchema
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
-    x_mitre_data_source_ref: xMitreDataSourceRefSchema,
+    x_mitre_log_source_ref: xMitreLogSourceRefSchema,
   })
   .strict();
 

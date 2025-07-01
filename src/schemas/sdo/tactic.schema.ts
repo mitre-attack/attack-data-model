@@ -1,12 +1,10 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import {
   attackBaseDomainObjectSchema,
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
   xMitreModifiedByRefSchema,
-  objectMarkingRefsSchema,
-  stixCreatedByRefSchema,
   xMitreDomainsSchema,
   xMitreContributorsSchema,
   createAttackExternalReferencesSchema,
@@ -61,11 +59,10 @@ const supportedMitreShortNames = [
   'remote-service-effects',
 ] as const;
 
-export const xMitreShortNameSchema = z
-  .enum(supportedMitreShortNames)
-  .describe(
+export const xMitreShortNameSchema = z.enum(supportedMitreShortNames).meta({
+  description:
     'The x_mitre_shortname of the tactic is used for mapping techniques into the tactic. It corresponds to kill_chain_phases.phase_name of the techniques in the tactic.',
-  );
+});
 
 export type XMitreShortName = z.infer<typeof xMitreShortNameSchema>;
 
@@ -84,13 +81,7 @@ export const extensibleTacticSchema = attackBaseDomainObjectSchema
     description: descriptionSchema,
 
     // Optional in STIX but required in ATT&CK
-    created_by_ref: stixCreatedByRefSchema,
-
-    // Optional in STIX but required in ATT&CK
     external_references: createAttackExternalReferencesSchema('x-mitre-tactic'),
-
-    // Optional in STIX but required in ATT&CK
-    object_marking_refs: objectMarkingRefsSchema,
 
     x_mitre_domains: xMitreDomainsSchema,
 
@@ -99,6 +90,10 @@ export const extensibleTacticSchema = attackBaseDomainObjectSchema
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
     x_mitre_contributors: xMitreContributorsSchema.optional(),
+  })
+  .required({
+    created_by_ref: true, // Optional in STIX but required in ATT&CK
+    object_marking_refs: true, // Optional in STIX but required in ATT&CK
   })
   .strict();
 

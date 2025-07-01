@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import {
   attackBaseMetaObjectSchema,
   createStixIdValidator,
@@ -26,8 +26,8 @@ export const tlpMarkingObjectSchema = z
 export const baseMarkingDefinitionSchema = z.object({
   type: z.literal('marking-definition'),
   spec_version: z.literal('2.1'),
-  id: z.string().uuid(),
-  created: z.string().datetime(),
+  id: z.uuid(),
+  created: z.iso.datetime(),
   definition_type: z.literal('tlp'),
   name: z.string(),
   definition: tlpMarkingObjectSchema,
@@ -100,11 +100,10 @@ export type TlpMarkingObject = z.infer<typeof tlpMarkingObjectSchema>;
 
 export const statementMarkingObjectSchema = z
   .object({
-    statement: z
-      .string()
-      .describe(
+    statement: z.string().meta({
+      description:
         'A Statement (e.g., copyright, terms of use) applied to the content marked by this marking definition.',
-      ),
+    }),
   })
   .strict();
 
@@ -127,14 +126,15 @@ export const markingDefinitionSchema = attackBaseMetaObjectSchema
       .enum(['statement', 'tlp'], {
         message: "definition_type must be either 'statement' or 'tlp'",
       })
-      .describe('The definition_type property identifies the type of Marking Definition.'),
+      .meta({
+        description: 'The definition_type property identifies the type of Marking Definition.',
+      }),
 
     // Deprecated in STIX
-    definition: z
-      .union([tlpMarkingObjectSchema, statementMarkingObjectSchema])
-      .describe(
+    definition: z.union([tlpMarkingObjectSchema, statementMarkingObjectSchema]).meta({
+      description:
         'The definition property contains the marking object itself (e.g., the TLP marking as defined in section 7.2.1.4, the Statement marking as defined in section 7.2.1.3). Any new marking definitions SHOULD be specified using the extension facility described in section 7.3. If the extensions property is not present, this property MUST be present.',
-      ),
+    }),
   })
   // .partial toggles required fields to optional
   .partial({

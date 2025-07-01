@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import {
   stixTimestampSchema,
@@ -110,17 +110,16 @@ export const extensibleCampaignSchema = attackBaseDomainObjectSchema
     x_mitre_last_seen_citation: xMitreLastSeenCitationSchema,
   })
   .required({
-    created_by_ref: true,
-    external_references: true,
-    object_marking_refs: true,
-    revoked: true,
+    created_by_ref: true, // Optional in STIX but required in ATT&CK
+    object_marking_refs: true, // Optional in STIX but required in ATT&CK
+    revoked: true, // Optional in STIX but required in ATT&CK
   })
   .strict();
 
 // Apply a single refinement that combines both refinements
-export const campaignSchema = extensibleCampaignSchema.superRefine((schema, ctx) => {
-  createFirstAliasRefinement()(schema, ctx);
-  createCitationsRefinement()(schema, ctx);
+export const campaignSchema = extensibleCampaignSchema.check((ctx) => {
+  createFirstAliasRefinement()(ctx);
+  createCitationsRefinement()(ctx);
 });
 
 // Define the type for Campaign

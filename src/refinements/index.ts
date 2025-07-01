@@ -1,6 +1,7 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import {
   attackDomainSchema,
+  type AttackObject,
   type Aliases,
   type ExternalReferences,
   type KillChainPhase,
@@ -24,10 +25,7 @@ import { attackIdPatterns } from '@/schemas/common/attack-id.js';
 /**
  * Creates a refinement for validating that the first alias matches the object's name
  *
- * @param schema The object to validate
- * @param ctx The Zod refinement context
- *
- * @returns A superRefine callback function for alias validation
+ * @returns A refinement callback function for alias validation
  *
  * @remarks
  * This function is used to validate that when aliases are present, the first
@@ -35,18 +33,19 @@ import { attackIdPatterns } from '@/schemas/common/attack-id.js';
  *
  * @example
  * ```typescript
- * const validateFirstAlias = createFirstAliasNameMatchRefinement();
+ * const validateFirstAlias = createFirstAliasRefinement();
  * const schema = baseSchema.superRefine(validateFirstAlias);
  * ```
  */
 export function createFirstAliasRefinement() {
-  return (schema: { aliases?: Aliases; name: string }, ctx: z.RefinementCtx): void => {
-    if (schema.aliases && schema.aliases.length > 0) {
-      if (schema.aliases[0] !== schema.name) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+  return (ctx: z.core.ParsePayload<{ aliases?: Aliases; name: string }>): void => {
+    if (ctx.value.aliases && ctx.value.aliases.length > 0) {
+      if (ctx.value.aliases[0] !== ctx.value.name) {
+        ctx.issues.push({
+          code: 'custom',
           message: "The first alias must match the object's name.",
           path: ['aliases'],
+          input: ctx.value.aliases,
         });
       }
     }
@@ -64,18 +63,19 @@ export function createFirstAliasRefinement() {
  *
  * @example
  * ```typescript
- * const validateFirstXMitreAlias = createFirstXMitreAliasValidator();
+ * const validateFirstXMitreAlias = createFirstXMitreAliasRefinement();
  * const schema = extensibleSchema.superRefine(validateFirstXMitreAlias);
  * ```
  */
 export function createFirstXMitreAliasRefinement() {
-  return (schema: { x_mitre_aliases?: string[]; name: string }, ctx: z.RefinementCtx): void => {
-    if (schema.x_mitre_aliases && schema.x_mitre_aliases.length > 0) {
-      if (schema.x_mitre_aliases[0] !== schema.name) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+  return (ctx: z.core.ParsePayload<{ x_mitre_aliases?: string[]; name: string }>): void => {
+    if (ctx.value.x_mitre_aliases && ctx.value.x_mitre_aliases.length > 0) {
+      if (ctx.value.x_mitre_aliases[0] !== ctx.value.name) {
+        ctx.issues.push({
+          code: 'custom',
           message: "The first alias must match the object's name.",
           path: ['x_mitre_aliases'],
+          input: ctx.value.x_mitre_aliases,
         });
       }
     }
@@ -85,10 +85,7 @@ export function createFirstXMitreAliasRefinement() {
 /**
  * Creates a refinement for validating citation formats and references
  *
- * @param schema The object to validate
- * @param ctx The Zod refinement context
- *
- * @returns A superRefine callback function for citation validation
+ * @returns A refinement callback function for citation validation
  *
  * @remarks
  * This function validates that citation strings follow the correct format
@@ -96,20 +93,20 @@ export function createFirstXMitreAliasRefinement() {
  *
  * @example
  * ```typescript
- * const validateCitations = createCitationRefinement();
+ * const validateCitations = createCitationsRefinement();
  * const schema = baseSchema.superRefine(validateCitations);
  * ```
  */
 export function createCitationsRefinement() {
   return (
-    schema: {
+    ctx: z.core.ParsePayload<{
       external_references: ExternalReferences;
       x_mitre_first_seen_citation?: XMitreFirstSeenCitation;
       x_mitre_last_seen_citation?: XMitreLastSeenCitation;
-    },
-    ctx: z.RefinementCtx,
+    }>,
   ): void => {
-    const { external_references, x_mitre_first_seen_citation, x_mitre_last_seen_citation } = schema;
+    const { external_references, x_mitre_first_seen_citation, x_mitre_last_seen_citation } =
+      ctx.value;
 
     // Helper function to extract citation names from a citation string
     const extractCitationNames = (citations: string): string[] => {
@@ -125,21 +122,23 @@ export function createCitationsRefinement() {
         const citationExists = external_references.some((ref) => ref.source_name === citationName);
 
         if (!citationExists) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
+          ctx.issues.push({
+            code: 'custom',
             message: `Citation ${citationName} not found in external_references.`,
             path: [...path, index],
+            input: citationName,
           });
         }
       });
 
       // Validate the format of the entire citation string
       if (!citations.match(/^(\(Citation: [^)]+\))+$/)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+        ctx.issues.push({
+          code: 'custom',
           message:
             "Citations must be in the format '(Citation: Name1)(Citation: Name2)...' without any separators.",
           path: path,
+          input: citations,
         });
       }
     };
@@ -168,21 +167,22 @@ export function createCitationsRefinement() {
  *
  * @example
  * ```typescript
- * const validateFirstBundleObject = createFirstBundleObjectValidator();
+ * const validateFirstBundleObject = createFirstBundleObjectRefinement();
  * const schema = extensibleStixBundleSchema.superRefine(validateFirstBundleObject);
  * ```
  */
 export function createFirstBundleObjectRefinement() {
-  return (schema: StixBundle, ctx: z.RefinementCtx): void => {
+  return (ctx: z.core.ParsePayload<StixBundle>): void => {
     // Verify that the first object in the bundle is the 'x-mitre-collection' object
-    if (schema.objects.length > 0) {
-      const firstObject = schema.objects[0];
+    if ((ctx.value.objects as AttackObject[]).length > 0) {
+      const firstObject = (ctx.value.objects as AttackObject[])[0];
 
       if (firstObject.type !== 'x-mitre-collection') {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+        ctx.issues.push({
+          code: 'custom',
           message: "The first object in the 'objects' array must be of type 'x-mitre-collection'",
           path: ['objects', 0, 'type'],
+          input: firstObject.type,
         });
       }
     }
@@ -196,73 +196,78 @@ export function createFirstBundleObjectRefinement() {
  */
 export function createAttackIdInExternalReferencesRefinement() {
   return (
-    schema:
+    ctx: z.core.ParsePayload<
       | Technique
       | {
           external_references: ExternalReferences;
           x_mitre_is_subtechnique: XMitreIsSubtechnique;
-        },
-    ctx: z.RefinementCtx,
+        }
+    >,
   ): void => {
     // Check if external_references exists and has at least one entry
     if (
-      !schema.external_references ||
-      !Array.isArray(schema.external_references) ||
-      schema.external_references.length === 0
+      !ctx.value.external_references ||
+      !Array.isArray(ctx.value.external_references) ||
+      ctx.value.external_references.length === 0
     ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+      ctx.issues.push({
+        code: 'custom',
         message: 'At least one external reference with an ATT&CK ID is required.',
         path: ['external_references'],
+        input: ctx.value.external_references,
       });
       return;
     }
 
     // Verify that first external reference exists and has the expected structure
-    const attackIdEntry = schema.external_references[0];
+    const attackIdEntry = ctx.value.external_references[0];
     if (!attackIdEntry || typeof attackIdEntry !== 'object') {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+      ctx.issues.push({
+        code: 'custom',
         message: 'First external reference must be a valid object.',
         path: ['external_references', 0],
+        input: attackIdEntry,
       });
       return;
     }
 
     // Check if external_id exists
     if (!attackIdEntry.external_id || typeof attackIdEntry.external_id !== 'string') {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+      ctx.issues.push({
+        code: 'custom',
         message: 'ATT&CK ID must be defined in the first external_references entry.',
         path: ['external_references', 0, 'external_id'],
+        input: attackIdEntry.external_id,
       });
       return;
     }
 
     // Validate ATT&CK ID format based on whether it's a sub-technique
-    const idPattern = schema.x_mitre_is_subtechnique
+    const idPattern = ctx.value.x_mitre_is_subtechnique
       ? attackIdPatterns.subtechnique
       : attackIdPatterns.technique;
 
     // Use the exact error message format expected by the test
-    const message = schema.x_mitre_is_subtechnique
+    const message = ctx.value.x_mitre_is_subtechnique
       ? 'The first external_reference must match the ATT&CK ID format T####.###.'
       : 'The first external_reference must match the ATT&CK ID format T####.';
 
     if (!idPattern.test(attackIdEntry.external_id)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+      ctx.issues.push({
+        code: 'custom',
         message,
         path: ['external_references', 0, 'external_id'],
+        input: attackIdEntry.external_id,
       });
     }
 
     // Also verify source_name is 'mitre-attack'
     if (!attackIdEntry.source_name || attackIdEntry.source_name !== 'mitre-attack') {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+      ctx.issues.push({
+        code: 'custom',
         message: 'The first external_reference must have source_name set to "mitre-attack".',
         path: ['external_references', 0, 'source_name'],
+        input: attackIdEntry.source_name,
       });
     }
   };
@@ -275,7 +280,7 @@ export function createAttackIdInExternalReferencesRefinement() {
  */
 export function createEnterpriseOnlyPropertiesRefinement() {
   return (
-    schema:
+    ctx: z.core.ParsePayload<
       | Technique
       | {
           x_mitre_domains: XMitreDomains;
@@ -287,16 +292,16 @@ export function createEnterpriseOnlyPropertiesRefinement() {
           x_mitre_remote_support?: XMitreRemoteSupport;
           x_mitre_impact_type?: XMitreImpactType;
           x_mitre_data_sources?: XMitreDataSources;
-        },
-    ctx: z.RefinementCtx,
+        }
+    >,
   ): void => {
     // Helper variables for domain checks
-    const inEnterpriseDomain = schema.x_mitre_domains.includes(
+    const inEnterpriseDomain = ctx.value.x_mitre_domains.includes(
       attackDomainSchema.enum['enterprise-attack'],
     );
 
     // Extract tactics from kill_chain_phases
-    const tactics = schema.kill_chain_phases?.map((tactic) => tactic.phase_name) || [];
+    const tactics = ctx.value.kill_chain_phases?.map((tactic) => tactic.phase_name) || [];
 
     /**
      * Validates that the specified property is only valid if the
@@ -314,59 +319,65 @@ export function createEnterpriseOnlyPropertiesRefinement() {
     ) {
       if (value !== undefined) {
         if (!inEnterpriseDomain) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
+          ctx.issues.push({
+            code: 'custom',
             message: `${fieldName} is only supported in the 'enterprise-attack' domain.`,
             path: [fieldName],
+            input: value,
           });
         } else if (
           requiredTactic &&
-          schema.kill_chain_phases !== undefined &&
+          ctx.value.kill_chain_phases !== undefined &&
           !tactics.includes(requiredTactic)
         ) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
+          ctx.issues.push({
+            code: 'custom',
             message: `${fieldName} is only supported in the ${requiredTactic} tactic.`,
             path: [fieldName],
+            input: value,
           });
         }
       }
     }
 
     // Validate enterprise-only fields
-    validateEnterpriseOnlyField('x_mitre_system_requirements', schema.x_mitre_system_requirements);
+    validateEnterpriseOnlyField(
+      'x_mitre_system_requirements',
+      ctx.value.x_mitre_system_requirements,
+    );
     validateEnterpriseOnlyField(
       'x_mitre_permissions_required',
-      schema.x_mitre_permissions_required,
+      ctx.value.x_mitre_permissions_required,
       'privilege-escalation',
     );
     validateEnterpriseOnlyField(
       'x_mitre_effective_permissions',
-      schema.x_mitre_effective_permissions,
+      ctx.value.x_mitre_effective_permissions,
       'privilege-escalation',
     );
     validateEnterpriseOnlyField(
       'x_mitre_defense_bypassed',
-      schema.x_mitre_defense_bypassed,
+      ctx.value.x_mitre_defense_bypassed,
       'defense-evasion',
     );
     validateEnterpriseOnlyField(
       'x_mitre_remote_support',
-      schema.x_mitre_remote_support,
+      ctx.value.x_mitre_remote_support,
       'execution',
     );
-    validateEnterpriseOnlyField('x_mitre_impact_type', schema.x_mitre_impact_type, 'impact');
+    validateEnterpriseOnlyField('x_mitre_impact_type', ctx.value.x_mitre_impact_type, 'impact');
 
     // Mobile-specific data sources check
     if (
-      schema.x_mitre_data_sources &&
+      ctx.value.x_mitre_data_sources &&
       inEnterpriseDomain &&
-      schema.x_mitre_domains.includes(attackDomainSchema.enum['mobile-attack'])
+      ctx.value.x_mitre_domains.includes(attackDomainSchema.enum['mobile-attack'])
     ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+      ctx.issues.push({
+        code: 'custom',
         message: "x_mitre_data_sources is not supported in the 'mobile-attack' domain.",
         path: ['x_mitre_data_sources'],
+        input: ctx.value.x_mitre_data_sources,
       });
     }
   };
@@ -379,34 +390,36 @@ export function createEnterpriseOnlyPropertiesRefinement() {
  */
 export function createMobileOnlyPropertiesRefinement() {
   return (
-    schema:
+    ctx: z.core.ParsePayload<
       | Technique
       | {
           x_mitre_domains: XMitreDomains;
           x_mitre_tactic_type?: XMitreTacticType;
           x_mitre_data_sources?: XMitreDataSources;
-        },
-    ctx: z.RefinementCtx,
+        }
+    >,
   ): void => {
     // Helper variables for domain checks
-    const inMobileDomain = schema.x_mitre_domains.includes(
+    const inMobileDomain = ctx.value.x_mitre_domains.includes(
       attackDomainSchema.enum['mobile-attack'],
     );
 
     // Validate Mobile-only properties
-    if (schema.x_mitre_tactic_type?.length && !inMobileDomain) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+    if (ctx.value.x_mitre_tactic_type?.length && !inMobileDomain) {
+      ctx.issues.push({
+        code: 'custom',
         message: "x_mitre_tactic_type is only supported in the 'mobile-attack' domain.",
         path: ['x_mitre_tactic_type'],
+        input: ctx.value.x_mitre_tactic_type,
       });
     }
 
-    if (schema.x_mitre_data_sources && inMobileDomain) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+    if (ctx.value.x_mitre_data_sources && inMobileDomain) {
+      ctx.issues.push({
+        code: 'custom',
         message: "x_mitre_data_sources is not supported in the 'mobile-attack' domain.",
         path: ['x_mitre_data_sources'],
+        input: ctx.value.x_mitre_data_sources,
       });
     }
   };

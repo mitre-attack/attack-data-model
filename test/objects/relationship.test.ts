@@ -18,6 +18,7 @@ import {
   type StixModifiedTimestamp,
   type StixSpecVersion,
   type StixType,
+  type XMitreModifiedByRef,
   stixTypeSchema,
   xMitreIdentity,
 } from '../../src/schemas/common/index';
@@ -73,16 +74,16 @@ describe('RelationshipSchema', () => {
 
     minimalRelationship = {
       id: `relationship--${uuidv4()}`,
-      type: stixTypeSchema.Enum.relationship,
+      type: stixTypeSchema.enum.relationship,
       spec_version: '2.1',
       created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
       modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
       relationship_type: relationshipTypeSchema.enum.uses,
-      source_ref: `${stixTypeSchema.Enum.campaign}--${uuidv4()}`,
-      target_ref: `${stixTypeSchema.Enum.malware}--${uuidv4()}`,
+      source_ref: `${stixTypeSchema.enum.campaign}--${uuidv4()}`,
+      target_ref: `${stixTypeSchema.enum.malware}--${uuidv4()}`,
       object_marking_refs: [`marking-definition--${uuidv4()}`],
       x_mitre_attack_spec_version: '2.1.0',
-      x_mitre_modified_by_ref: xMitreIdentity,
+      x_mitre_modified_by_ref: xMitreIdentity as XMitreModifiedByRef,
     };
   });
 
@@ -295,7 +296,8 @@ describe('RelationshipSchema', () => {
     });
   });
 
-  it('should validate existing ATT&CK relationships and report errors', () => {
+  // GitHub Actions often fails without an increased timeout for this test
+  it('should validate existing ATT&CK relationships and report errors', { timeout: 10_000 }, () => {
     const validRelationships: Relationship[] = [];
     const errors: { relationship: Relationship; issues: z.ZodIssue[] }[] = [];
 

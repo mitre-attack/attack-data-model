@@ -1,9 +1,9 @@
 import type { Relationship } from '../schemas/sro/relationship.schema.js';
 import type { AttackObject } from '../schemas/sdo/stix-bundle.schema.js';
-import type { Technique, Tactic, Mitigation, DataSource } from '../schemas/sdo/index.js';
+import type { Technique, Tactic, Mitigation, LogSource } from '../schemas/sdo/index.js';
 import { TacticImpl } from './sdo/tactic.impl.js';
 import { MitigationImpl } from './sdo/mitigation.impl.js';
-import { DataSourceImpl } from './sdo/data-source.impl.js';
+import { LogSourceImpl } from './sdo/log-source.impl.js';
 import type { XMitrePlatforms } from '../schemas/common/index.js';
 
 export function getSubTechniques(
@@ -43,28 +43,32 @@ export function getMitigations(
   return relationships
     .filter((rel) => rel.relationship_type === 'mitigates' && rel.target_ref === technique.id)
     .map((rel) => {
-      const mitigation = attackObjects.find((obj) => obj.id === rel.source_ref);
-      if (mitigation && mitigation.type === 'course-of-action') {
-        return new MitigationImpl(mitigation as Mitigation);
+      const mitigation = attackObjects.find(
+        (obj): obj is Mitigation => obj.id === rel.source_ref && obj.type === 'course-of-action',
+      );
+      if (mitigation) {
+        return new MitigationImpl(mitigation);
       }
       return null;
     })
-    .filter((mitigation): mitigation is MitigationImpl => mitigation !== null);
+    .filter((mitigation) => mitigation !== null);
 }
 
-export function getDataSources(
+export function getLogSources(
   technique: Technique,
   relationships: Relationship[],
   attackObjects: AttackObject[],
-): DataSourceImpl[] {
+): LogSourceImpl[] {
   return relationships
     .filter((rel) => rel.relationship_type === 'detects' && rel.target_ref === technique.id)
     .map((rel) => {
-      const dataSource = attackObjects.find((obj) => obj.id === rel.source_ref);
-      if (dataSource && dataSource.type === 'x-mitre-data-source') {
-        return new DataSourceImpl(dataSource as DataSource);
+      const logSource = attackObjects.find(
+        (obj): obj is LogSource => obj.id === rel.source_ref && obj.type === 'x-mitre-log-source',
+      );
+      if (logSource) {
+        return new LogSourceImpl(logSource);
       }
       return null;
     })
-    .filter((dataSource): dataSource is DataSourceImpl => dataSource !== null);
+    .filter((logSource) => logSource !== null);
 }

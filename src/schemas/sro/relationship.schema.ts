@@ -1,10 +1,9 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import {
   attackBaseRelationshipObjectSchema,
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
-  objectMarkingRefsSchema,
   stixIdentifierSchema,
   type StixType,
   stixTypeSchema,
@@ -27,24 +26,26 @@ const supportedRelationshipTypes = [
   'attributed-to',
   'targets',
   'revoked-by',
+  'found-in',
 ] as const;
 
 export const relationshipTypeSchema = z
   .enum(supportedRelationshipTypes)
-  .describe('The name used to identify the type of Relationship.');
+  .meta({ description: 'The name used to identify the type of Relationship.' });
 
 export type RelationshipType = z.infer<typeof relationshipTypeSchema>;
 
 // Valid relationship object types
 export const validRelationshipObjectTypes = [
-  stixTypeSchema.Enum['attack-pattern'],
-  stixTypeSchema.Enum['campaign'],
-  stixTypeSchema.Enum['course-of-action'],
-  stixTypeSchema.Enum['intrusion-set'],
-  stixTypeSchema.Enum['malware'],
-  stixTypeSchema.Enum['tool'],
-  stixTypeSchema.Enum['x-mitre-data-component'],
-  stixTypeSchema.Enum['x-mitre-asset'],
+  stixTypeSchema.enum['attack-pattern'],
+  stixTypeSchema.enum['campaign'],
+  stixTypeSchema.enum['course-of-action'],
+  stixTypeSchema.enum['intrusion-set'],
+  stixTypeSchema.enum['malware'],
+  stixTypeSchema.enum['tool'],
+  stixTypeSchema.enum['x-mitre-data-component'],
+  stixTypeSchema.enum['x-mitre-asset'],
+  stixTypeSchema.enum['x-mitre-log-source'],
 ];
 
 type RelationshipMap = Record<RelationshipType, { source: StixType[]; target: StixType[] }>;
@@ -52,49 +53,56 @@ type RelationshipMap = Record<RelationshipType, { source: StixType[]; target: St
 const relationshipMap: RelationshipMap = {
   uses: {
     source: [
-      stixTypeSchema.Enum.malware,
-      stixTypeSchema.Enum.tool,
-      stixTypeSchema.Enum['intrusion-set'],
-      stixTypeSchema.Enum.campaign,
+      stixTypeSchema.enum.malware,
+      stixTypeSchema.enum.tool,
+      stixTypeSchema.enum['intrusion-set'],
+      stixTypeSchema.enum.campaign,
     ],
     target: [
-      stixTypeSchema.Enum['attack-pattern'],
-      stixTypeSchema.Enum.malware,
-      stixTypeSchema.Enum.tool,
+      stixTypeSchema.enum['attack-pattern'],
+      stixTypeSchema.enum.malware,
+      stixTypeSchema.enum.tool,
     ],
   },
   mitigates: {
-    source: [stixTypeSchema.Enum['course-of-action']],
-    target: [stixTypeSchema.Enum['attack-pattern']],
+    source: [stixTypeSchema.enum['course-of-action']],
+    target: [stixTypeSchema.enum['attack-pattern']],
   },
   'subtechnique-of': {
-    source: [stixTypeSchema.Enum['attack-pattern']],
-    target: [stixTypeSchema.Enum['attack-pattern']],
+    source: [stixTypeSchema.enum['attack-pattern']],
+    target: [stixTypeSchema.enum['attack-pattern']],
   },
   detects: {
-    source: [stixTypeSchema.Enum['x-mitre-data-component']],
-    target: [stixTypeSchema.Enum['attack-pattern']],
+    source: [
+      stixTypeSchema.enum['x-mitre-data-component'], // TODO remove in attack spec 4.0.0 / adm release 5.x
+      stixTypeSchema.enum['x-mitre-detection-strategy'],
+    ],
+    target: [stixTypeSchema.enum['attack-pattern']],
   },
   'attributed-to': {
-    source: [stixTypeSchema.Enum.campaign],
-    target: [stixTypeSchema.Enum['intrusion-set']],
+    source: [stixTypeSchema.enum.campaign],
+    target: [stixTypeSchema.enum['intrusion-set']],
   },
   targets: {
-    source: [stixTypeSchema.Enum['attack-pattern']],
-    target: [stixTypeSchema.Enum['x-mitre-asset']],
+    source: [stixTypeSchema.enum['attack-pattern']],
+    target: [stixTypeSchema.enum['x-mitre-asset']],
   },
   'revoked-by': {
     source: validRelationshipObjectTypes,
     target: validRelationshipObjectTypes,
   },
+  'found-in': {
+    source: [stixTypeSchema.enum['x-mitre-data-component']],
+    target: [stixTypeSchema.enum['x-mitre-log-source']],
+  },
 } as const;
 
 // Invalid "uses" combinations
 const invalidUsesRelationships: [StixType, StixType][] = [
-  [stixTypeSchema.Enum.malware, stixTypeSchema.Enum.malware],
-  [stixTypeSchema.Enum.malware, stixTypeSchema.Enum.tool],
-  [stixTypeSchema.Enum.tool, stixTypeSchema.Enum.malware],
-  [stixTypeSchema.Enum.tool, stixTypeSchema.Enum.tool],
+  [stixTypeSchema.enum.malware, stixTypeSchema.enum.malware],
+  [stixTypeSchema.enum.malware, stixTypeSchema.enum.tool],
+  [stixTypeSchema.enum.tool, stixTypeSchema.enum.malware],
+  [stixTypeSchema.enum.tool, stixTypeSchema.enum.tool],
 ];
 
 /**
@@ -121,7 +129,7 @@ export function isValidRelationship(
   sourceType: StixType,
   relationshipType: RelationshipType,
   targetType: StixType,
-  errorCollector?: (issue: z.ZodIssue) => void,
+  errorCollector?: (issue: z.core.$ZodIssue) => void,
 ): boolean {
   const mapping = relationshipMap[relationshipType];
 
@@ -129,8 +137,13 @@ export function isValidRelationship(
     if (errorCollector) {
       errorCollector({
         message: `Invalid 'relationship_type': ${relationshipType}. Must be one of ${Object.keys(relationshipMap).join(', ')}.`,
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['relationship_type'],
+        input: {
+          relationship_type: relationshipType,
+          source_type: sourceType,
+          target_type: targetType,
+        },
       });
     }
     return false;
@@ -140,8 +153,13 @@ export function isValidRelationship(
     if (errorCollector) {
       errorCollector({
         message: `Invalid source type: ${sourceType} for relationship type: ${relationshipType}. Valid source types are: ${mapping.source.join(', ')}.`,
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['source_ref'],
+        input: {
+          relationship_type: relationshipType,
+          source_type: sourceType,
+          target_type: targetType,
+        },
       });
     }
     return false;
@@ -151,8 +169,13 @@ export function isValidRelationship(
     if (errorCollector) {
       errorCollector({
         message: `Invalid target type: ${targetType} for relationship type: ${relationshipType}. Valid target types are: ${mapping.target.join(', ')}.`,
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['target_ref'],
+        input: {
+          relationship_type: relationshipType,
+          source_type: sourceType,
+          target_type: targetType,
+        },
       });
     }
     return false;
@@ -165,8 +188,13 @@ export function isValidRelationship(
     if (errorCollector) {
       errorCollector({
         message: `Invalid "uses" relationship: source (${sourceType}) and target (${targetType}) cannot both be "malware" or "tool".`,
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['relationship_type'],
+        input: {
+          relationship_type: relationshipType,
+          source_type: sourceType,
+          target_type: targetType,
+        },
       });
     }
     return false;
@@ -176,8 +204,13 @@ export function isValidRelationship(
     if (errorCollector) {
       errorCollector({
         message: `Invalid "revoked-by" relationship: source (${sourceType}) and target (${targetType}) must be of the same type.`,
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['relationship_type'],
+        input: {
+          relationship_type: relationshipType,
+          source_type: sourceType,
+          target_type: targetType,
+        },
       });
     }
     return false;
@@ -235,12 +268,9 @@ export const relationshipSchema = attackBaseRelationshipObjectSchema
 
     description: descriptionSchema.optional(),
 
-    // Optional in STIX but required in ATT&CK
-    object_marking_refs: objectMarkingRefsSchema,
+    source_ref: stixIdentifierSchema.meta({ description: 'The ID of the source (from) object.' }),
 
-    source_ref: stixIdentifierSchema.describe('The ID of the source (from) object.'),
-
-    target_ref: stixIdentifierSchema.describe('The ID of the target (to) object.'),
+    target_ref: stixIdentifierSchema.meta({ description: 'The ID of the target (to) object.' }),
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
   })
@@ -249,14 +279,14 @@ export const relationshipSchema = attackBaseRelationshipObjectSchema
     x_mitre_version: true,
   })
   .strict()
-  .superRefine((schema, ctx) => {
-    const { relationship_type, source_ref, target_ref } = schema;
+  .check((ctx) => {
+    const { relationship_type, source_ref, target_ref } = ctx.value;
 
     const [sourceType] = source_ref.split('--') as [StixType];
     const [targetType] = target_ref.split('--') as [StixType];
 
     isValidRelationship(sourceType, relationship_type, targetType, (issue) => {
-      ctx.addIssue(issue);
+      ctx.issues.push(issue);
     });
   });
 
