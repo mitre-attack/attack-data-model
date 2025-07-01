@@ -4,14 +4,13 @@ This document tracks the compatibility between versions of the ATT&CK® Data Mod
 
 ## Supported Versions Compatibility Matrix<sup>1</sup>
 
-| ADM Version (`@mitre-attack/attack-data-model`) | ATT&CK Specification Version (`ATTACK_SPEC_VERSION`) | Supported ATT&CK Releases (`mitre-attack/attack-stix-data`) |
-|-------------------------------------------------|------------------------------------------------------|-------------------------------------------------------------|
-| 1.x, 2.x, 3.x                                   | 3.2.0                                                | >=15.x, <=17.x                                              |
-| 4.x                                             | 3.3.0                                                | >=15.x, <=18.x                                              |
-| 5.x (future release)                            | 4.0.0                                                | >=18.x                                                      |
+| ADM Version ([`@mitre-attack/attack-data-model`](npmjs.com/package/@mitre-attack/attack-data-model)) | ATT&CK Specification Version ([`ATTACK_SPEC_VERSION`](https://github.com/mitre-attack/attack-data-model/blob/main/ATTACK_SPEC_VERSION)) | STIX Version ([`spec_version`](https://oasis-open.github.io/cti-documentation/resources#stix-21-specification)) | Supported ATT&CK Releases ([`mitre-attack/attack-stix-data`](https://github.com/mitre-attack/attack-stix-data/)) |
+|-------------------------------------------------|------------------------------------------------------|-------------------------------|-------------------------------------------------------------|
+| 1.x, 2.x, 3.x                                   | 3.2.0                                                | 2.1                           | >=15.x, <=17.x                                              |
+| 4.x                                             | 3.3.0                                                | 2.1                           | >=15.x, <=18.x                                              |
+| 5.x (future release)                            | 4.0.0                                                | 2.1                           | >=18.x                                                      |
 
 <sup>1</sup>Other versions of ATT&CK or the ATT&CK Specification may work with the specified ADM release, but are not officially supported.
-
 ## Compatibility Details
 
 - **ATT&CK Specification v3.3.0**:
