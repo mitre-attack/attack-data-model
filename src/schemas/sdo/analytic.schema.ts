@@ -17,6 +17,7 @@ export const xMitreLogSourceRefSchema = z
     ref: createStixIdValidator('x-mitre-log-source'),
     keys: z
       .array(z.string())
+      .nonempty()
       .meta({
         description:
           'Must match one of the elements in the ``x_mitre_log_source_permutations`` array',
@@ -24,8 +25,9 @@ export const xMitreLogSourceRefSchema = z
       .nonempty(),
   })
   .meta({
-    description: 'A reference to a log source permutation', // TODO enter a description for the log source ref
+    description: 'A reference to a log source permutation',
   });
+
 export type LogSourceRef = z.infer<typeof xMitreLogSourceRefSchema>;
 
 /////////////////////////////////////
@@ -34,7 +36,11 @@ export type LogSourceRef = z.infer<typeof xMitreLogSourceRefSchema>;
 //
 /////////////////////////////////////
 
-export const xMitreLogSourceRefsSchema = z.array(xMitreLogSourceRefSchema);
+export const xMitreLogSourceRefsSchema = z.array(xMitreLogSourceRefSchema).nonempty().meta({
+  description:
+    'A list of log source STIX IDs, plus the specific channel or event type, e.g., sysmon:1 or auditd:SYSCALL.',
+});
+
 export type LogSourceRefs = z.infer<typeof xMitreLogSourceRefsSchema>;
 
 /////////////////////////////////////
@@ -47,6 +53,7 @@ export const xMitreMutableElementSchema = z.object({
   field: z.string(),
   description: z.string(),
 });
+
 export type MutableElement = z.infer<typeof xMitreMutableElementSchema>;
 
 /////////////////////////////////////
@@ -55,7 +62,11 @@ export type MutableElement = z.infer<typeof xMitreMutableElementSchema>;
 //
 /////////////////////////////////////
 
-export const xMitreMutableElementsSchema = z.array(xMitreMutableElementSchema);
+export const xMitreMutableElementsSchema = z.array(xMitreMutableElementSchema).nonempty().meta({
+  description:
+    'Environment-specific tuning knobs like TimeWindow, UserContext, or PortRange, so defenders can adapt without changing core behavior.',
+});
+
 export type MutableElements = z.infer<typeof xMitreMutableElementsSchema>;
 
 /////////////////////////////////////
@@ -64,19 +75,24 @@ export type MutableElements = z.infer<typeof xMitreMutableElementsSchema>;
 //
 /////////////////////////////////////
 
-export const extensibleAnalyticSchema = attackBaseDomainObjectSchema.extend({
-  id: createStixIdValidator('x-mitre-analytic'),
+export const extensibleAnalyticSchema = attackBaseDomainObjectSchema
+  .extend({
+    id: createStixIdValidator('x-mitre-analytic'),
 
-  type: createStixTypeValidator('x-mitre-analytic'),
+    type: createStixTypeValidator('x-mitre-analytic'),
 
-  x_mitre_platforms: xMitrePlatformsSchema,
+    x_mitre_platforms: xMitrePlatformsSchema.max(1), // 0 or 1
 
-  x_mitre_detects: z.string().meta({ description: 'Open format field for detections' }),
+    x_mitre_detects: z.string().nonempty().meta({
+      description:
+        'A tool-agnostic description of the adversary behavior chain this analytic looks for.',
+    }),
 
-  x_mitre_log_sources: xMitreLogSourceRefsSchema,
+    x_mitre_log_sources: xMitreLogSourceRefsSchema,
 
-  x_mitre_mutable_elements: xMitreMutableElementsSchema,
-});
+    x_mitre_mutable_elements: xMitreMutableElementsSchema,
+  })
+  .strict();
 
 export const analyticSchema = extensibleAnalyticSchema;
 
