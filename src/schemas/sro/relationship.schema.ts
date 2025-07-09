@@ -5,10 +5,12 @@ import {
   createStixTypeValidator,
   descriptionSchema,
   stixIdentifierSchema,
+  type StixIdentifier,
   type StixType,
   stixTypeSchema,
   xMitreModifiedByRefSchema,
 } from '../common/index.js';
+import { createFoundInRelationshipRefinement } from '@/refinements/index.js';
 
 /////////////////////////////////////
 //
@@ -252,13 +254,38 @@ export const invalidRelationships: RelationshipCombination[] = allRelationships.
   (rel) => !isValidRelationship(rel.sourceType, rel.relationshipType, rel.targetType),
 );
 
+/**
+ * Creates a refinement function for relationships
+ *
+ * @returns A refinement function for relationship validation
+ */
+export function createRelationshipValidationRefinement() {
+  return (
+    ctx: z.core.ParsePayload<
+      | Relationship
+      | {
+          relationship_type: RelationshipType;
+          source_ref: StixIdentifier;
+          target_ref: StixIdentifier;
+        }
+    >,
+  ): void => {
+    const [sourceType] = ctx.value.source_ref.split('--') as [StixType];
+    const [targetType] = ctx.value.target_ref.split('--') as [StixType];
+
+    isValidRelationship(sourceType, ctx.value.relationship_type, targetType, (issue) => {
+      ctx.issues.push(issue);
+    });
+  };
+}
+
 /////////////////////////////////////
 //
 // Relationship
 //
 /////////////////////////////////////
 
-export const relationshipSchema = attackBaseRelationshipObjectSchema
+export const extensibleRelationshipSchema = attackBaseRelationshipObjectSchema
   .extend({
     id: createStixIdValidator('relationship'),
 
@@ -273,21 +300,18 @@ export const relationshipSchema = attackBaseRelationshipObjectSchema
     target_ref: stixIdentifierSchema.meta({ description: 'The ID of the target (to) object.' }),
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
+
+    x_mitre_log_source_channel: z.string().nonempty().optional(),
   })
   .omit({
     name: true,
     x_mitre_version: true,
   })
-  .strict()
-  .check((ctx) => {
-    const { relationship_type, source_ref, target_ref } = ctx.value;
+  .strict();
 
-    const [sourceType] = source_ref.split('--') as [StixType];
-    const [targetType] = target_ref.split('--') as [StixType];
+export const relationshipSchema = extensibleRelationshipSchema.check((ctx) => {
+  createRelationshipValidationRefinement()(ctx);
+  createFoundInRelationshipRefinement()(ctx);
+});
 
-    isValidRelationship(sourceType, relationship_type, targetType, (issue) => {
-      ctx.issues.push(issue);
-    });
-  });
-
-export type Relationship = z.infer<typeof relationshipSchema>;
+export type Relationship = z.infer<typeof extensibleRelationshipSchema>;

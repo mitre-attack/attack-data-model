@@ -19,6 +19,8 @@ import {
   type XMitreRemoteSupport,
   type XMitreSystemRequirements,
   type XMitreTacticType,
+  type Relationship,
+  type RelationshipType,
 } from '@/schemas/index.js';
 import { attackIdPatterns } from '@/schemas/common/attack-id.js';
 
@@ -420,6 +422,50 @@ export function createMobileOnlyPropertiesRefinement() {
         message: "x_mitre_data_sources is not supported in the 'mobile-attack' domain.",
         path: ['x_mitre_data_sources'],
         input: ctx.value.x_mitre_data_sources,
+      });
+    }
+  };
+}
+
+/**
+ * Creates a refinement function for validating 'found-in' relationships
+ *
+ * @returns A refinement function for 'found-in' relationship validation
+ */
+export function createFoundInRelationshipRefinement() {
+  return (
+    ctx: z.core.ParsePayload<
+      | Relationship
+      | {
+          relationship_type: RelationshipType;
+          x_mitre_log_source_channel?: z.ZodString;
+        }
+    >,
+  ): void => {
+    // Must be present if relationship_type is 'found-in'
+    if (ctx.value.relationship_type === 'found-in' && !ctx.value.x_mitre_log_source_channel) {
+      ctx.issues.push({
+        code: 'custom',
+        message: "x_mitre_log_source_channel must be defined if relationship_type is 'found-in'",
+        path: ['x_mitre_log_source_channel'],
+        input: {
+          relationship_type: ctx.value.relationship_type,
+          x_mitre_log_source_channel: ctx.value.x_mitre_log_source_channel,
+        },
+      });
+    }
+
+    // Must NOT be present if relationship_type is not 'found-in'
+    if (ctx.value.relationship_type !== 'found-in' && ctx.value.x_mitre_log_source_channel) {
+      ctx.issues.push({
+        code: 'custom',
+        message:
+          "x_mitre_log_source_channel can only be defined if relationship_type is 'found-in'",
+        path: ['x_mitre_log_source_channel'],
+        input: {
+          relationship_type: ctx.value.relationship_type,
+          x_mitre_log_source_channel: ctx.value.x_mitre_log_source_channel,
+        },
       });
     }
   };
