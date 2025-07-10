@@ -22,7 +22,28 @@ export const xMitreLogSourcePermutationsSchema = z
       channel: z.string().nonempty(),
     }),
   )
-  .nonempty();
+  .nonempty().refine(
+    // Reject duplicate (name, channel) pairs
+    // Allow same name with different channels
+    // Allow same channel with different names
+    (permutations) => {
+      const seen = new Set<string>();
+
+      for (const perm of permutations) {
+        const key = `${perm.name}|${perm.channel}`;
+        if (seen.has(key)) {
+          return false;
+        }
+        seen.add(key);
+      }
+
+      return true;
+    },
+    {
+      message: 'Duplicate log source permutation found: each (name, channel) pair must be unique',
+      path: ['x_mitre_log_source_permutations'],
+    }
+  );
 
 export type XMitreLogSourcePermutations = z.infer<typeof xMitreLogSourcePermutationsSchema>;
 
