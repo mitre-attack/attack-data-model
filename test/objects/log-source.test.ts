@@ -193,9 +193,7 @@ describe('logSourceSchema', () => {
           ...minimalLogSource,
           external_references: [{ source_name: 'mitre-attack' }],
         };
-        expect(() => logSourceSchema.parse(invalidLogSource)).toThrow(
-          /ATT&CK ID must be defined/,
-        );
+        expect(() => logSourceSchema.parse(invalidLogSource)).toThrow(/ATT&CK ID must be defined/);
       });
 
       it('should reject invalid ATT&CK ID format', () => {
@@ -239,7 +237,6 @@ describe('logSourceSchema', () => {
   });
 
   describe('Edge Cases and Special Scenarios', () => {
-
     it('should reject log source permutations with identical (name, channel) pairs', () => {
       const logSourceWithIdenticalPermutations: LogSource = {
         ...minimalLogSource,

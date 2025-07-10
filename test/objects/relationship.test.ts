@@ -24,7 +24,6 @@ import {
 } from '../../src/schemas/common/index';
 import { logger } from '../utils/logger';
 
-
 describe('RelationshipSchema', () => {
   let relationships: any[];
   let minimalRelationship: Relationship;
