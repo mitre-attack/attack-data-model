@@ -22,7 +22,7 @@ import {
   type Relationship,
   type RelationshipType,
 } from '@/schemas/index.js';
-import { attackIdPatterns } from '@/schemas/common/attack-id.js';
+import { attackIdPatterns, attackIdExamples } from '@/schemas/common/attack-id.js';
 
 /**
  * Creates a refinement for validating that the first alias matches the object's name
@@ -251,8 +251,8 @@ export function createAttackIdInExternalReferencesRefinement() {
 
     // Use the exact error message format expected by the test
     const message = ctx.value.x_mitre_is_subtechnique
-      ? 'The first external_reference must match the ATT&CK ID format T####.###.'
-      : 'The first external_reference must match the ATT&CK ID format T####.';
+      ? `The first external_reference must match the ATT&CK ID format ${attackIdExamples.subtechnique}.`
+      : `The first external_reference must match the ATT&CK ID format ${attackIdExamples.technique}.`;
 
     if (!idPattern.test(attackIdEntry.external_id)) {
       ctx.issues.push({

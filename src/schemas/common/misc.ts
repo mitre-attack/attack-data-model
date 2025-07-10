@@ -3,6 +3,7 @@ import { stixIdentifierSchema, createStixIdValidator } from './stix-identifier.j
 import {
   attackIdPatterns,
   stixTypeToAttackIdMapping,
+  getAttackIdExample,
   type StixTypesWithAttackIds,
 } from './attack-id.js';
 
@@ -67,11 +68,11 @@ export const createAttackExternalReferencesSchema = (stixType: StixTypesWithAtta
           if (!refs[0]?.external_id) return true;
 
           // Get expected format and validate
-          const format = stixTypeToAttackIdMapping[stixType];
-          return attackIdPatterns[format].test(refs[0].external_id);
+          const attackIdType = stixTypeToAttackIdMapping[stixType];
+          return attackIdPatterns[attackIdType].test(refs[0].external_id);
         },
         {
-          message: `The first external_reference must match the ATT&CK ID format ${getFormatExample(stixType)}.`,
+          message: `The first external_reference must match the ATT&CK ID format ${getAttackIdExample(stixType)}.`,
           path: [0, 'external_id'],
         },
       )
@@ -80,39 +81,6 @@ export const createAttackExternalReferencesSchema = (stixType: StixTypesWithAtta
       })
   );
 };
-
-// Helper to get format example for error messages
-function getFormatExample(stixType: StixTypesWithAttackIds): string {
-  switch (stixType) {
-    case 'x-mitre-tactic':
-      return 'TA####';
-    case 'attack-pattern':
-      return 'T#### or T####.###';
-    case 'intrusion-set':
-      return 'G####';
-    case 'malware':
-    case 'tool':
-      return 'S####';
-    case 'course-of-action':
-      return 'M####';
-    case 'x-mitre-data-source':
-      return 'DS####';
-    case 'x-mitre-asset':
-      return 'A####';
-    case 'campaign':
-      return 'C####';
-    case 'x-mitre-log-source':
-      return 'LS####';
-    case 'x-mitre-analytic':
-      return 'AN####';
-    case 'x-mitre-detection-strategy':
-      return 'DET####';
-    case 'x-mitre-data-component':
-      return 'DC####';
-    default:
-      return ''; // Satisfy TypeScript
-  }
-}
 
 export type ExternalReference = z.infer<typeof externalReferenceSchema>;
 export type ExternalReferences = z.infer<typeof externalReferencesSchema>;
