@@ -1,5 +1,5 @@
+import { z } from "zod/v4";
 import { dataComponentSchema } from "../../src/schemas/sdo/data-component.schema.js";
-import { z } from "zod";
 
 /** ************************************************************************************************* */
 // Example 1: Valid Data Component
@@ -34,7 +34,6 @@ console.log(dataComponentSchema.parse(validDataComponent));
 const invalidDataComponent = {
   modified: "2022-10-20T20:18:06.745Z",
   name: "Network Connection Creation",
-  // Missing description
   x_mitre_data_source_ref:
     "x-mitre-data-source--c000cd5c-bbb3-4606-af6f-6c6d9de0bbe3",
   x_mitre_version: "1.1",
@@ -42,7 +41,6 @@ const invalidDataComponent = {
   id: "x-mitre-data-component--181a9f8c-c780-4f1f-91a8-edb770e904ba",
   created: "2021-10-20T15:05:19.274Z",
   created_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
-  // Missing object_marking_refs
   x_mitre_attack_spec_version: "2.1.0",
   x_mitre_modified_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
   spec_version: "2.1",
@@ -50,31 +48,8 @@ const invalidDataComponent = {
 };
 
 console.log("\nExample 2 - Invalid Data Component (missing required fields):");
-try {
-  dataComponentSchema.parse(invalidDataComponent);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation errors:", error.errors);
-  }
-}
-/**
-   * Validation errors: [
-      {
-          code: 'invalid_type',
-          expected: 'array',
-          received: 'undefined',
-          path: [ 'object_marking_refs' ],
-          message: 'Required'
-      },
-      {
-          code: 'invalid_type',
-          expected: 'string',
-          received: 'undefined',
-          path: [ 'description' ],
-          message: 'Required'
-      }
-      ]
-   */
+const e2 = dataComponentSchema.safeParse(invalidDataComponent);
+console.log(z.prettifyError(e2.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 3: Data Component with optional fields
@@ -97,33 +72,21 @@ const dataComponentWithInvalidType = {
 };
 
 console.log("\nExample 4 - Data Component with invalid type:");
-try {
-  dataComponentSchema.parse(dataComponentWithInvalidType);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation error:", error.errors[0].message);
-    // Validation error: Invalid literal value, expected "x-mitre-data-component"
-  }
-}
+const e4 = dataComponentSchema.safeParse(dataComponentWithInvalidType);
+console.log(z.prettifyError(e4.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 5: Data Component with invalid dates
 /** ************************************************************************************************* */
 const dataComponentWithInvalidDates = {
   ...validDataComponent,
-  created: "2019-09-01", // Invalid date format
+  created: "2019-09-01",
   modified: "2020-08-01T04:00:00.000Z",
 };
 
 console.log("\nExample 5 - Data Component with invalid dates:");
-try {
-  dataComponentSchema.parse(dataComponentWithInvalidDates);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation error:", error.errors[0].message);
-    // Validation error: Invalid STIX timestamp format: must be an RFC3339 timestamp with a timezone specification of 'Z'.
-  }
-}
+const e5 = dataComponentSchema.safeParse(dataComponentWithInvalidDates);
+console.log(z.prettifyError(e5.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 6: Parsing the provided example Data Component
@@ -152,19 +115,11 @@ const exampleOfRealDataComponent = {
 };
 
 console.log("\nExample 6 - Parsing the provided example data component:");
-try {
-  const parsedDataComponent = dataComponentSchema.parse(
-    exampleOfRealDataComponent
-  );
-  console.log(
-    "Parsed successfully. Data Component name:",
-    parsedDataComponent.name
-  );
-  // Parsed successfully. Data Component name: Process Creation
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation errors:", error.errors);
-  }
+const e6 = dataComponentSchema.safeParse(exampleOfRealDataComponent);
+if (e6.success) {
+  console.log("Parsed successfully. Data Component name:", e6.data.name);
+} else {
+  console.log(z.prettifyError(e6.error as z.core.$ZodError));
 }
 
 /** ************************************************************************************************* */
@@ -176,19 +131,9 @@ const dataComponentWithUnknownProperty = {
 }
 
 console.log("\nExample 7 - Parsing a dataComponent with an unknown property (foo: 'bar'):");
-try {
-  const parsedDataComponent = dataComponentSchema.parse(dataComponentWithUnknownProperty);
-  console.log("Parsed successfully. DataComponent name:", parsedDataComponent.name);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-      console.log("Validation errors:", error.errors);
-      // Validation errors: [
-      //     {
-      //       code: 'unrecognized_keys',
-      //       keys: [ 'foo' ],
-      //       path: [],
-      //       message: "Unrecognized key(s) in object: 'foo'"
-      //     }
-      //   ]
-  }
+const e7 = dataComponentSchema.safeParse(dataComponentWithUnknownProperty);
+if (e7.success) {
+  console.log("Parsed successfully. DataComponent name:", e7.data.name);
+} else {
+  console.log(z.prettifyError(e7.error as z.core.$ZodError));
 }

@@ -1,5 +1,5 @@
+import { z } from "zod/v4";
 import { mitigationSchema } from "../../src/schemas/sdo/mitigation.schema.js";
-import { z } from "zod";
 
 /** ************************************************************************************************* */
 // Example 1: Valid Mitigation
@@ -22,8 +22,8 @@ const validMitigation = {
   external_references: [
     {
       source_name: "mitre-attack",
-      url: "https://attack.mitre.org/mitigations/T1174",
-      external_id: "T1174",
+      url: "https://attack.mitre.org/mitigations/M1174",
+      external_id: "M1174",
     },
     {
       url: "https://example.com",
@@ -47,49 +47,16 @@ const invalidMitigation = {
   x_mitre_attack_spec_version: "2.1.0",
   name: "Mitigation name",
   x_mitre_version: "1.0",
-  // Missing description
   created_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
   created: "2018-10-17T00:14:20.652Z",
   modified: "2019-07-25T11:22:19.139Z",
-  // Missing object_marking_refs
   x_mitre_domains: ["enterprise-attack"],
-  // Missing external_references
   x_mitre_modified_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
 };
 
 console.log("\nExample 2 - Invalid Mitigation (missing required fields):");
-try {
-  mitigationSchema.parse(invalidMitigation);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation errors:", error.errors);
-  }
-}
-/**
-   * Validation errors: [
-    {
-          code: 'invalid_type',
-          expected: 'array',
-          received: 'undefined',
-          path: [ 'external_references' ],
-          message: 'Required'
-      },
-      {
-          code: 'invalid_type',
-          expected: 'array',
-          received: 'undefined',
-          path: [ 'object_marking_refs' ],
-          message: 'Required'
-      },
-      {
-          code: 'invalid_type',
-          expected: 'string',
-          received: 'undefined',
-          path: [ 'description' ],
-          message: 'Required'
-      }
-      ]
-   */
+const e2 = mitigationSchema.safeParse(invalidMitigation);
+console.log(z.prettifyError(e2.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 3: Mitigation with optional fields
@@ -118,14 +85,8 @@ const mitigationWithInvalidType = {
 };
 
 console.log("\nExample 4 - Mitigation with invalid type:");
-try {
-  mitigationSchema.parse(mitigationWithInvalidType);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation error:", error.errors[0].message);
-    // Validation error: Invalid literal value, expected "course-of-action"
-  }
-}
+const e4 = mitigationSchema.safeParse(mitigationWithInvalidType);
+console.log(z.prettifyError(e4.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 5: Parsing the provided example Mitigation
@@ -164,16 +125,12 @@ const exampleOfRealMitigation = {
 };
 
 console.log("\nExample 5 - Parsing the provided example mitigation:");
-try {
-  const parsedMitigation = mitigationSchema.parse(exampleOfRealMitigation);
-  console.log("Parsed successfully. Mitigation name:", parsedMitigation.name);
-  // Parsed successfully. Mitigation name: Password Filter DLL Mitigation
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation errors:", error.errors);
-  }
+const e5 = mitigationSchema.safeParse(exampleOfRealMitigation);
+if (e5.success) {
+  console.log("Parsed successfully. Mitigation name:", e5.data.name);
+} else {
+  console.log(z.prettifyError(e5.error as z.core.$ZodError));
 }
-
 
 /** ************************************************************************************************* */
 // Example 6: Mitigation with unknown property
@@ -184,19 +141,9 @@ const mitigationWithUnknownProperty = {
 }
 
 console.log("\nExample 6 - Parsing a mitigation with an unknown property (foo: 'bar'):");
-try {
-  const parsedMitigation = mitigationSchema.parse(mitigationWithUnknownProperty);
-  console.log("Parsed successfully. Mitigation name:", parsedMitigation.name);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-      console.log("Validation errors:", error.errors);
-      // Validation errors: [
-      //     {
-      //       code: 'unrecognized_keys',
-      //       keys: [ 'foo' ],
-      //       path: [],
-      //       message: "Unrecognized key(s) in object: 'foo'"
-      //     }
-      //   ]
-  }
+const e6 = mitigationSchema.safeParse(mitigationWithUnknownProperty);
+if (e6.success) {
+  console.log("Parsed successfully. Mitigation name:", e6.data.name);
+} else {
+  console.log(z.prettifyError(e6.error as z.core.$ZodError));
 }

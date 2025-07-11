@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 import { techniqueSchema } from "../../src/schemas/sdo/technique.schema.js";
 
 /*************************************************************************************************** */
@@ -63,22 +63,8 @@ const invalidTechniqueID = {
 };
 
 console.log("\nExample 2 - Invalid Technique (ATT&CK ID does not match format T####):");
-try {
-	techniqueSchema.parse(invalidTechniqueID);
-} catch (error) {
-	if (error instanceof z.ZodError) {
-		console.log("Validation errors:", error.errors);
-	}
-}
-/**
-	Validation errors: [
-	{
-		code: 'custom',
-		message: 'The first external_reference must match the ATT&CK ID format T####.',
-		path: []
-	}
-	]
- */
+const e2 = techniqueSchema.safeParse(invalidTechniqueID);
+console.log(z.prettifyError(e2.error as z.core.$ZodError));
 
 /*************************************************************************************************** */
 // Example 3: Valid Sub-technique
@@ -153,40 +139,22 @@ const invalidSubtechniqueID = {
 }
 
 console.log("\nExample 4 - Invalid Subtechnique (ATT&CK ID does not match format T####.###):");
-try {
-	techniqueSchema.parse(invalidSubtechniqueID);
-} catch (error) {
-	if (error instanceof z.ZodError) {
-		console.log("Validation errors:", error.errors);
-	}
-}
-/**
-	Validation errors: [
-	{
-		code: 'custom',
-		message: 'The first external_reference must match the ATT&CK ID format T####.###.',
-		path: []
-	}
-	]
- */
+const e4 = techniqueSchema.safeParse(invalidSubtechniqueID);
+console.log(z.prettifyError(e4.error as z.core.$ZodError));
 
 /*************************************************************************************************** */
 // Example 5: Invalid Technique (missing required fields)
 /*************************************************************************************************** */
 const invalidTechniqueMissingFields = {
 	"modified": "2024-02-02T19:04:35.389Z",
-	// Missing name
 	"description": "Adversaries may obfuscate command and control traffic to make it more difficult to detect.(Citation: Bitdefender FunnyDream Campaign November 2020) Command and control (C2) communications are hidden (but not necessarily encrypted) in an attempt to make the content more difficult to discover or decipher and to make the communication less conspicuous and hide commands from being seen. This encompasses many methods, such as adding junk data to protocol traffic, using steganography, or impersonating legitimate protocols. ",
-	// Missing kill_chain_phases
 	"x_mitre_deprecated": false,
-	// Missing x_mitre_domains
 	"x_mitre_is_subtechnique": false,
 	"x_mitre_platforms": [
 		"Linux",
 		"macOS",
 		"Windows"
 	],
-	// Missing x_mitre_version (Defaults to 1.0)
 	"type": "attack-pattern",
 	"id": "attack-pattern--ad255bfe-a9e6-4b52-a258-8d3462abe842",
 	"created": "2017-05-31T21:30:18.931Z",
@@ -208,38 +176,8 @@ const invalidTechniqueMissingFields = {
 };
 
 console.log("\nExample 5 - Invalid Technique (missing required fields):");
-try {
-	techniqueSchema.parse(invalidTechniqueMissingFields);
-} catch (error) {
-	if (error instanceof z.ZodError) {
-		console.log("Validation errors:", error.errors);
-	}
-}
-/**
-	Validation errors: [
-	{
-		code: 'invalid_type',
-		expected: 'string',
-		received: 'undefined',
-		path: [ 'name' ],
-		message: 'Required'
-	},
-	{
-		code: 'invalid_type',
-		expected: 'array',
-		received: 'undefined',
-		path: [ 'kill_chain_phases' ],
-		message: 'Required'
-	},
-	{
-		code: 'invalid_type',
-		expected: 'array',
-		received: 'undefined',
-		path: [ 'x_mitre_domains' ],
-		message: 'Required'
-	}
-	]
- */
+const e5 = techniqueSchema.safeParse(invalidTechniqueMissingFields);
+console.log(z.prettifyError(e5.error as z.core.$ZodError));
 
 /*************************************************************************************************** */
 // Example 6: Technique with invalid type
@@ -250,14 +188,8 @@ const techniqueWithInvalidType = {
 }
 
 console.log("\nExample 6 - Technique with invalid type:");
-try {
-	techniqueSchema.parse(techniqueWithInvalidType);
-} catch (error) {
-	if (error instanceof z.ZodError) {
-		console.log("Validation error:", error.errors[0].message);
-	}
-}
-// Validation error: Invalid 'type' property. Expected 'attack-pattern' for AttackPattern object, but received 'invalid-type'.
+const e6 = techniqueSchema.safeParse(techniqueWithInvalidType);
+console.log(z.prettifyError(e6.error as z.core.$ZodError));
 
 /*************************************************************************************************** */
 // Example 7: Valid Enterprise Technique with Enterprise-only fields
@@ -282,16 +214,11 @@ const validTechniqueWithEnterpriseFields = {
 			"phase_name": "impact"
 		}
 	],
-	// enterprise-only fields
 	"x_mitre_system_requirements": ["Windows 10"],
-	// enterprise-only field in privilege escalation
 	"x_mitre_permissions_required": ["User"],
 	"x_mitre_effective_permissions": ["Administrator"],
-	// enterprise-only field in defense evasion
 	"x_mitre_defense_bypassed": ["Anti-virus"],
-	// enterprise-only field in execution
 	"x_mitre_remote_support": true,
-	// enterprise-only field in impact
 	"x_mitre_impact_type": ["Integrity"]
 };
 console.log("\nExample 7: Valid Enterprise Technique with Enterprise-only fields:");
@@ -303,19 +230,12 @@ console.log(`SUCCESS ${result.name} (${result.x_mitre_domains})`)
 /*************************************************************************************************** */
 const invalidEnterpriseTechnique = {
 	...validEnterpriseTechnique,
-	// mobile-only field
 	"x_mitre_tactic_type": ["Post-Adversary Device Access"],
 };
 
 console.log("\nExample 8: Invalid Enterprise Technique with Mobile-only fields:");
-try {
-	techniqueSchema.parse(invalidEnterpriseTechnique);
-} catch (error) {
-	if (error instanceof z.ZodError) {
-		console.log("Validation error:", error.errors[0].message);
-	}
-}
-// Validation error: x_mitre_tactic_type is only supported in the 'mobile-attack' domain.
+const e8 = techniqueSchema.safeParse(invalidEnterpriseTechnique);
+console.log(z.prettifyError(e8.error as z.core.$ZodError));
 
 /*************************************************************************************************** */
 // Example 9: Valid Mobile Technique with Mobile-only fields
@@ -340,7 +260,6 @@ const validMobileTechnique = {
 		"Android"
 	],
 	"x_mitre_version": "1.1",
-	// mobile-only field
 	"x_mitre_tactic_type": [
 		"Post-Adversary Device Access"
 	],
@@ -378,19 +297,12 @@ console.log(`SUCCESS ${result.name} (${result.x_mitre_domains})`)
 /*************************************************************************************************** */
 const invalidMobileTechnique = {
 	...validMobileTechnique,
-	// enterprise-only fields
 	"x_mitre_system_requirements": ["system requirements"]
 }
 
 console.log("\nExample 10: Invalid Mobile Technique with Enterprise-only fields:");
-try {
-	techniqueSchema.parse(invalidMobileTechnique);
-} catch (error) {
-	if (error instanceof z.ZodError) {
-		console.log("Validation error:", error.errors[0].message);
-	}
-}
-// Validation error: x_mitre_system_requirements is only supported in the 'enterprise-attack' domain.
+const e10 = techniqueSchema.safeParse(invalidMobileTechnique);
+console.log(z.prettifyError(e10.error as z.core.$ZodError));
 
 /*************************************************************************************************** */
 // Example 11: Valid ICS Technique with ICS-only fields
@@ -455,28 +367,17 @@ console.log("\nExample 11: Valid ICS Technique with ICS-only fields:");
 result = techniqueSchema.parse(validIcsTechnique);
 console.log(`SUCCESS ${result.name} (${result.x_mitre_domains})`)
 
-// Expected output:
-// Validation error: Invalid enum value. Expected 'Remote Desktop Users' | 'SYSTEM' | 'Administrator' | 'root' | 'User', received 'permissions required'
-
 /*************************************************************************************************** */
 // Example 12: Invalid ICS Technique with Enterprise-only fields
 /*************************************************************************************************** */
 const invalidIcsTechnique = {
 	...validIcsTechnique,
-	// enterprise-only fields
 	"x_mitre_permissions_required": ["permissions required"]
 }
 
 console.log("\nExample 12: Invalid ICS Technique with Enterprise-only fields:");
-try {
-	techniqueSchema.parse(invalidIcsTechnique);
-} catch (error) {
-	if (error instanceof z.ZodError) {
-		console.log("Validation error:", error.errors[0].message);
-	}
-}
-// Expected output: 
-// Validation error: x_mitre_permissions_required is only supported in the 'enterprise-attack' domain in the Privilege Escalation tactic.
+const e12 = techniqueSchema.safeParse(invalidIcsTechnique);
+console.log(z.prettifyError(e12.error as z.core.$ZodError));
 
 /*************************************************************************************************** */
 // Example 13: Valid multi-domain Technique with Enterprise/ICS-only fields
@@ -487,7 +388,6 @@ const validMultiDomainTechnique = {
 		"enterprise-attack",
 		"ics-attack"
 	],
-	// enterprise- and ics-only field
 	"x_mitre_data_sources": [
 		"Process: Process Termination",
 		"Operational Databases: Process History/Live Data",
@@ -501,10 +401,6 @@ console.log("\nExample 13: Valid multi-domain Technique with Enterprise/ICS-only
 result = techniqueSchema.parse(validMultiDomainTechnique);
 console.log(`SUCCESS ${result.name} (${result.x_mitre_domains})`)
 
-// Expected output: 
-// SUCCESS Data Obfuscation(enterprise - attack, ics - attack)
-
-
 /*************************************************************************************************** */
 // Example 14: Enterprise-only fields in the wrong tactic
 /*************************************************************************************************** */
@@ -517,18 +413,11 @@ const invalidEnterpriseTechniqueWrongTactic = {
 			"phase_name": "execution"
 		}
 	],
-	"x_mitre_permissions_required": ["User"] // This should only be allowed in the privilege-escalation tactic
+	"x_mitre_permissions_required": ["User"]
 };
 
-try {
-	techniqueSchema.parse(invalidEnterpriseTechniqueWrongTactic);
-} catch (error) {
-	if (error instanceof z.ZodError) {
-		console.log("Validation error:", error.errors[0].message);
-	}
-}
-// Expected output: 
-// Validation error: x_mitre_permissions_required is only supported in the privilege - escalation tactic.
+const e14 = techniqueSchema.safeParse(invalidEnterpriseTechniqueWrongTactic);
+console.log(z.prettifyError(e14.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 15: Technique with unknown property
@@ -536,22 +425,12 @@ try {
 const techniqueWithUnknownProperty = {
 	...validEnterpriseTechnique,
 	foo: 'bar'
-  }
-  
-  console.log("\nExample 15 - Parsing a technique with an unknown property (foo: 'bar'):");
-  try {
-	const parsedTechnique = techniqueSchema.parse(techniqueWithUnknownProperty);
-	console.log("Parsed successfully. Technique name:", parsedTechnique.name);
-  } catch (error) {
-	if (error instanceof z.ZodError) {
-		console.log("Validation errors:", error.errors);
-		// Validation errors: [
-		//     {
-		//       code: 'unrecognized_keys',
-		//       keys: [ 'foo' ],
-		//       path: [],
-		//       message: "Unrecognized key(s) in object: 'foo'"
-		//     }
-		//   ]
-	}
-  }
+}
+
+console.log("\nExample 15 - Parsing a technique with an unknown property (foo: 'bar'):");
+const e15 = techniqueSchema.safeParse(techniqueWithUnknownProperty);
+if (e15.success) {
+	console.log("Parsed successfully. Technique name:", e15.data.name);
+} else {
+	console.log(z.prettifyError(e15.error as z.core.$ZodError));
+}

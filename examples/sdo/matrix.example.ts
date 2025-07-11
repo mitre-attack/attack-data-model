@@ -1,5 +1,5 @@
 import { matrixSchema } from "../../src/schemas/sdo/matrix.schema.js";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 /** ************************************************************************************************* */
 // Example 1: Valid Matrix
@@ -66,9 +66,7 @@ const invalidMatrix = {
     "x-mitre-tactic--77542f83-70d0-40c2-8a9d-ad2eb8b00279",
   ],
   x_mitre_domains: ["ics-attack"],
-  // missing object_marking_refs
   created: "2018-10-17T00:14:20.652Z",
-  // missing description
   created_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
   external_references: [
     {
@@ -88,31 +86,8 @@ const invalidMatrix = {
 };
 
 console.log("\nExample 2 - Invalid Matrix (missing required fields):");
-try {
-  matrixSchema.parse(invalidMatrix);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation errors:", error.errors);
-  }
-}
-/**
-   * Validation errors: [
-      {
-          code: 'invalid_type',
-          expected: 'array',
-          received: 'undefined',
-          path: [ 'object_marking_refs' ],
-          message: 'Required'
-      },
-      {
-          code: 'invalid_type',
-          expected: 'string',
-          received: 'undefined',
-          path: [ 'description' ],
-          message: 'Required'
-      }
-      ]
-   */
+const e2 = matrixSchema.safeParse(invalidMatrix);
+console.log(z.prettifyError(e2.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 3: Matrix with optional fields
@@ -135,14 +110,8 @@ const matrixWithInvalidType = {
 };
 
 console.log("\nExample 4 - Matrix with invalid type:");
-try {
-  matrixSchema.parse(matrixWithInvalidType);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation error:", error.errors[0].message);
-    // Validation error: Invalid literal value, expected "x-mitre-matrix"
-  }
-}
+const e4 = matrixSchema.safeParse(matrixWithInvalidType);
+console.log(z.prettifyError(e4.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 5: Parsing the provided example Matrix
@@ -188,14 +157,11 @@ const exampleOfRealMatrix = {
 };
 
 console.log("\nExample 5 - Parsing the provided example matrix:");
-try {
-  const parsedMatrix = matrixSchema.parse(exampleOfRealMatrix);
-  console.log("Parsed successfully. Matrix name:", parsedMatrix.name);
-  // Parsed successfully. Matrix name: ATT&CK for ICS
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation errors:", error.errors);
-  }
+const e5 = matrixSchema.safeParse(exampleOfRealMatrix);
+if (e5.success) {
+  console.log("Parsed successfully. Matrix name:", e5.data.name);
+} else {
+  console.log(z.prettifyError(e5.error as z.core.$ZodError));
 }
 
 /** ************************************************************************************************* */
@@ -207,19 +173,9 @@ const matrixWithUnknownProperty = {
 }
 
 console.log("\nExample 6 - Parsing a matrix with an unknown property (foo: 'bar'):");
-try {
-  const parsedMatrix = matrixSchema.parse(matrixWithUnknownProperty);
-  console.log("Parsed successfully. Matrix name:", parsedMatrix.name);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-      console.log("Validation errors:", error.errors);
-      // Validation errors: [
-      //     {
-      //       code: 'unrecognized_keys',
-      //       keys: [ 'foo' ],
-      //       path: [],
-      //       message: "Unrecognized key(s) in object: 'foo'"
-      //     }
-      //   ]
-  }
+const e6 = matrixSchema.safeParse(matrixWithUnknownProperty);
+if (e6.success) {
+  console.log("Parsed successfully. Matrix name:", e6.data.name);
+} else {
+  console.log(z.prettifyError(e6.error as z.core.$ZodError));
 }
