@@ -273,10 +273,13 @@ export const objectMarkingRefsSchema = z
 //
 /////////////////////////////////////
 
-export const xMitreContributorsSchema = z.array(z.string()).meta({
-  description:
-    'People and organizations who have contributed to the object. Not found on objects of type `relationship`.',
-});
+export const xMitreContributorsSchema = z
+  .array(z.string().nonempty())
+  .meta({
+    description:
+      'People and organizations who have contributed to the object. Not found on objects of type `relationship`.',
+  })
+  .nonempty();
 
 export type XMitreContributors = z.infer<typeof xMitreContributorsSchema>;
 
