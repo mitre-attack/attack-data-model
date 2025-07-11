@@ -5,8 +5,6 @@ import {
   type StixCreatedTimestamp,
   type StixModifiedTimestamp,
   type ExternalReferences,
-  type XMitreModifiedByRef,
-  xMitreIdentity,
 } from '../../src/schemas/common/index';
 
 describe('analyticSchema', () => {
