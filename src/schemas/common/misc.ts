@@ -69,6 +69,13 @@ export const createAttackExternalReferencesSchema = (stixType: StixTypesWithAtta
 
           // Get expected format and validate
           const attackIdType = stixTypeToAttackIdMapping[stixType];
+          if (attackIdType === 'technique') {
+            // Fallback to subtechnique if technique fails
+            return (
+              attackIdPatterns['technique'].test(refs[0].external_id) ||
+              attackIdPatterns['subtechnique'].test(refs[0].external_id)
+            );
+          }
           return attackIdPatterns[attackIdType].test(refs[0].external_id);
         },
         {
