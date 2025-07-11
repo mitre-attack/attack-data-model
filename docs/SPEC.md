@@ -351,34 +351,40 @@ Detection strategies define high-level approaches for detecting specific adversa
 
 The following diagrams illustrate how Detection Strategies connect to other ATT&CK objects through both formal STIX Relationship Objects (SROs) and soft relationships (STIX ID references):
 
-ASCII Diagram:
 ```
-┌─────────────────┐                    ┌─────────────────┐
-│     <<SDO>>     │      "detects"     │     <<SDO>>     │
-│   Detection     │        <<SRO>>     │                 │
-│   Strategy      │━━━━━━━━━━━━━━━━━━━▶│   Technique     │
-│                 │                    │                 │
-│x_mitre_analytics│                    └─────────────────┘
-└────────┬────────┘
-         │
-         │ "Soft" relationship
-         │ (STIX ID reference)
-         ▼
-┌───────────────────┐
-│     <<SDO>>       │
-│    Analytic       │
-│                   │
-│x_mitre_log_sources│
-└────────┬──────────┘
-         │
-         │ "Soft" relationship
-         │ (STIX ID reference)
-         ▼
-┌─────────────────┐                    ┌─────────────────┐
-│     <<SDO>>     │     "found-in"     │     <<SDO>>     │
-│   Log Source    │◀━━━━━━━━━━━━━━━━━━━│      Data       │
-│                 │       <<SRO>>      │   Component     │
-└─────────────────┘                    └─────────────────┘
+ ┌────────────────────┐                               
+ │                    │                               
+ │      <<SDO>>       │             ┌─────────────┐   
+ │     Detection      │             │             │   
+ │     Strategy       │   <<SRO>>   │  <<SDO>>    │   
+ │                    ├─────────────►  Technique  │   
+ │┌──────────────────┐│  "detects"  │             │   
+ ││x_mitre_analytics ││             └─────────────┘   
+ │└───────┬──────────┘│                               
+ └────────┼───────────┘                               
+          │                                           
+          │ "Soft" relationship                       
+          │ (STIX ID reference)                       
+          │                                           
+┌─────────▼───────────┐                               
+│                     │                               
+│       <<SDO>>       │                               
+│      Analytic       │                               
+│                     │                               
+│┌───────────────────┐│                               
+││x_mitre_log_sources││                               
+│└────────┬──────────┘│                               
+└─────────┼───────────┘                               
+          │                                           
+          │ "Soft" relationship                       
+          │ (STIX ID reference)                       
+          │                                           
+    ┌─────▼──────┐                 ┌─────────────────┐
+    │            │                 │                 │
+    │  <<SDO>>   │     <<SRO>>     │    <<SDO>>      │
+    │ Log Source ◄─────────────────┤  Data Component │
+    │            │    "found-in"   │                 │
+    └────────────┘                 └─────────────────┘
 ```
 
 ### Analytics
