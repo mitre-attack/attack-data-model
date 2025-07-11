@@ -24,7 +24,9 @@ import {
 //
 /////////////////////////////////////
 
-const xMitreNetworkRequirementsSchema = z.boolean().describe(''); // TODO enter a description
+export const xMitreNetworkRequirementsSchema = z
+  .boolean()
+  .describe('Requires network to execute the technique');
 
 export type XMitreNetworkRequirements = z.infer<typeof xMitreNetworkRequirementsSchema>;
 
@@ -67,7 +69,7 @@ export type XMitreEffectivePermissions = z.infer<typeof xMitreEffectivePermissio
 
 const supportedMitreImpactTypes = ['Availability', 'Integrity'] as const;
 
-const xMitreImpactTypeSchema = z
+export const xMitreImpactTypeSchema = z
   .array(
     z.enum(supportedMitreImpactTypes, {
       error: () => `Impact type must be one of: ${supportedMitreImpactTypes.join(', ')}`,
