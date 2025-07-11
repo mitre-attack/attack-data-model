@@ -31,8 +31,8 @@ export {
 } from './collection.schema.js';
 
 export {
-  xMitreLogSourceRefSchema,
-  type XMitreLogSourceRef,
+  xMitreDataSourceRefSchema,
+  type XMitreDataSourceRef,
   extensibleDataComponentSchema,
   dataComponentSchema,
   type DataComponent,

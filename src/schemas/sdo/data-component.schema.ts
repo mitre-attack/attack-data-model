@@ -12,16 +12,16 @@ import {
 
 /////////////////////////////////////
 //
-// MITRE Log Source Ref
-// (x_mitre_log_source_ref)
+// MITRE Data Source Ref
+// (x_mitre_data_source_ref)
 //
 /////////////////////////////////////
 
-export const xMitreLogSourceRefSchema = createStixIdValidator('x-mitre-log-source').meta({
-  description: 'STIX ID of the log source this component is a part of.',
-});
+export const xMitreDataSourceRefSchema = createStixIdValidator('x-mitre-data-source').describe(
+  'STIX ID of the data source this component is a part of.',
+);
 
-export type XMitreLogSourceRef = z.infer<typeof xMitreLogSourceRefSchema>;
+export type XMitreDataSourceRef = z.infer<typeof xMitreDataSourceRefSchema>;
 
 /////////////////////////////////////
 //
@@ -47,7 +47,7 @@ export const extensibleDataComponentSchema = attackBaseDomainObjectSchema
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
-    x_mitre_log_source_ref: xMitreLogSourceRefSchema,
+    x_mitre_data_source_ref: xMitreDataSourceRefSchema,
   })
   .strict();
 
