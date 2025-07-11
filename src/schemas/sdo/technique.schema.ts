@@ -11,7 +11,6 @@ import {
   killChainPhaseSchema,
   createAttackExternalReferencesSchema,
 } from '../common/index.js';
-import { logSourceSchema } from './log-source.schema.js';
 import {
   createAttackIdInExternalReferencesRefinement,
   createEnterpriseOnlyPropertiesRefinement,
@@ -187,6 +186,7 @@ export const xMitreDataSourcesSchema = z
         ? 'x_mitre_data_sources must be an array of strings'
         : 'Invalid data sources array',
   })
+  .nonempty()
   .meta({
     description:
       'Sources of information that may be used to identify the action or result of the action being performed',
@@ -344,9 +344,7 @@ export const extensibleTechniqueSchema = attackBaseDomainObjectSchema
 
     x_mitre_is_subtechnique: xMitreIsSubtechniqueSchema,
 
-    x_mitre_data_sources: z.array(xMitreDataSourcesSchema).optional(), // TODO remove in attack spec 4.0.0 / adm release 5.x
-
-    x_mitre_log_sources: z.array(logSourceSchema).optional(),
+    x_mitre_data_sources: xMitreDataSourcesSchema.optional(), // TODO remove in attack spec 4.0.0 / adm release 5.x
 
     x_mitre_defense_bypassed: xMitreDefenseBypassesSchema.optional(),
 
