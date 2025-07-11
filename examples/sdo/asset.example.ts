@@ -1,5 +1,5 @@
 
-import { z } from "zod";
+import { z } from "zod/v4";
 import { assetSchema } from "../../src/schemas/sdo/asset.schema.js";
 
 /*************************************************************************************************** */
@@ -59,19 +59,12 @@ console.log("\nExample 2: Invalid Asset (ATT&CK ID does not match format A####):
 try {
 	assetSchema.parse(invalidAssetID);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
+	if (error instanceof z.core.$ZodError) {
+		console.log(z.prettifyError(error));
     }
 }
-/**
-	Validation errors: [
-		{
-			code: 'custom',
-			message: 'The first external_reference must match the ATT&CK ID format A####.',
-			path: []
-		}
-	]
- */
+// ✖ The first external_reference must match the ATT&CK ID format A####.
+//   → at external_references[0].external_id
 
 /*************************************************************************************************** */
 // Example 3: Invalid Asset (missing required fields)
@@ -117,33 +110,16 @@ console.log("\nExample 3: Invalid Asset (missing required fields):");
 try {
 	assetSchema.parse(invalidAssetMissingFields);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
+	if (error instanceof z.core.$ZodError) {
+		console.log(z.prettifyError(error));
     }
 }
-/**
-	Validation errors: [
-		{
-			code: 'invalid_type',
-			expected: 'string',
-			received: 'undefined',
-			path: [ 'name' ],
-			message: 'Required'
-		},
-		{
-			code: 'custom',
-			message: "The version must be in the format 'M.N' where M and N are integers between 0 and 99",
-			path: [ 'x_mitre_version' ]
-		},
-		{
-			code: 'invalid_type',
-			expected: 'array',
-			received: 'undefined',
-			path: [ 'x_mitre_domains' ],
-			message: 'Required'
-		}
-	]
- */
+// ✖ Invalid input: expected string, received undefined
+//   → at name
+// ✖ Invalid input: expected string, received undefined
+//   → at x_mitre_version
+// ✖ Invalid input: expected array, received undefined
+//   → at x_mitre_domains
 
 /*************************************************************************************************** */
 // Example 4: Asset with invalid type
@@ -157,11 +133,12 @@ console.log("\nExample 4: Asset with invalid type:");
 try {
 	assetSchema.parse(assetWithInvalidType);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
+	if (error instanceof z.core.$ZodError) {
+		console.log(z.prettifyError(error));
     }
 }
-// Validation error: Invalid 'type' property. Expected 'x-mitre-asset' for Asset object, but received 'invalid-type'.
+// ✖ Invalid input: expected "x-mitre-asset"
+//   → at type
 
 /*************************************************************************************************** */
 // Example 5: Asset with optional fields
@@ -184,7 +161,9 @@ const assetWithOptionalFields = {
 };
 
 console.log("\nExample 5: Asset with optional fields:");
-console.log(assetSchema.parse(assetWithOptionalFields));
+console.log("Parsed successfully:", assetSchema.safeParse(assetWithOptionalFields).success);
+
+// Parsed successfully:  true
 
 /*************************************************************************************************** */
 // Example 6: Asset with invalid sectors
@@ -200,11 +179,12 @@ console.log("\nExample 6: Asset with invalid sectors:");
 try {
 	assetSchema.parse(assetWithInvalidSectors);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
+	if (error instanceof z.core.$ZodError) {
+		console.log(z.prettifyError(error));
     }
 }
-// Validation error: Invalid enum value. Expected 'Electric' | 'Water and Wastewater' | 'Manufacturing' | 'Rail' | 'Maritime' | 'General', received 'Invalid Sector'
+// ✖ Sector must be one of: Electric, Water and Wastewater, Manufacturing, Rail, Maritime, General
+//   → at x_mitre_sectors[0]
 
 /*************************************************************************************************** */
 // Example 7: Asset with invalid related assets
@@ -222,11 +202,12 @@ console.log("\nExample 7: Asset with invalid related assets:");
 try {
 	assetSchema.parse(assetWithInvalidRelatedAssets);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
+	if (error instanceof z.core.$ZodError) {
+		console.log(z.prettifyError(error));
     }
 }
-// Validation error: Related asset name is required.
+// ✖ Related asset name is required
+//   → at x_mitre_related_assets[0].name
 
 /** ************************************************************************************************* */
 // Example 8: Asset with unknown property
@@ -241,15 +222,8 @@ try {
     const parsedAsset = assetSchema.parse(assetWithUnknownProperty);
     console.log("Parsed successfully. Asset name:", parsedAsset.name);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-        // Validation errors: [
-        //     {
-        //       code: 'unrecognized_keys',
-        //       keys: [ 'foo' ],
-        //       path: [],
-        //       message: "Unrecognized key(s) in object: 'foo'"
-        //     }
-        //   ]
+	if (error instanceof z.core.$ZodError) {
+		console.log(z.prettifyError(error));
     }
 }
+// ✖ Unrecognized key: "foo"
