@@ -46,24 +46,60 @@ export type AttackObject =
 
 // Create a schema mapping object to map types to their schemas
 const schemaMap = {
-  malware: malwareSchema,
-  'x-mitre-asset': assetSchema,
-  campaign: campaignSchema,
-  'x-mitre-collection': collectionSchema,
-  'x-mitre-data-component': dataComponentSchema,
-  'x-mitre-data-source': dataSourceSchema,
-  'x-mitre-detection-strategy': detectionStrategySchema,
-  'x-mitre-log-source': logSourceSchema,
-  'x-mitre-analytic': analyticSchema,
-  identity: identitySchema,
-  'x-mitre-matrix': matrixSchema,
-  tool: toolSchema,
-  'x-mitre-tactic': tacticSchema,
-  'attack-pattern': techniqueSchema,
-  'intrusion-set': groupSchema,
-  'course-of-action': mitigationSchema,
-  relationship: relationshipSchema,
-  'marking-definition': markingDefinitionSchema,
+  get malware() {
+    return malwareSchema;
+  },
+  get 'x-mitre-asset'() {
+    return assetSchema;
+  },
+  get campaign() {
+    return campaignSchema;
+  },
+  get 'x-mitre-collection'() {
+    return collectionSchema;
+  },
+  get 'x-mitre-data-component'() {
+    return dataComponentSchema;
+  },
+  get 'x-mitre-data-source'() {
+    return dataSourceSchema;
+  },
+  get 'x-mitre-detection-strategy'() {
+    return detectionStrategySchema;
+  },
+  get 'x-mitre-log-source'() {
+    return logSourceSchema;
+  },
+  get 'x-mitre-analytic'() {
+    return analyticSchema;
+  },
+  get identity() {
+    return identitySchema;
+  },
+  get 'x-mitre-matrix'() {
+    return matrixSchema;
+  },
+  get tool() {
+    return toolSchema;
+  },
+  get 'x-mitre-tactic'() {
+    return tacticSchema;
+  },
+  get 'attack-pattern'() {
+    return techniqueSchema;
+  },
+  get 'intrusion-set'() {
+    return groupSchema;
+  },
+  get 'course-of-action'() {
+    return mitigationSchema;
+  },
+  get relationship() {
+    return relationshipSchema;
+  },
+  get 'marking-definition'() {
+    return markingDefinitionSchema;
+  },
 };
 
 // IMPORTANT: Casting the 'attackObjectsSchema' to 'z.ZodTypeAny' is critical. Without it, the TypeScript compiler will get overwhelmed and throw the following:
