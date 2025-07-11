@@ -1,18 +1,20 @@
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+
 import {
   type StixBundle,
   type AttackObject,
   extensibleStixBundleSchema,
   type AttackObjects,
 } from './schemas/sdo/stix-bundle.schema.js';
+
 import {
   techniqueSchema,
   tacticSchema,
   matrixSchema,
   mitigationSchema,
   relationshipSchema,
-  logSourceSchema,
+  dataSourceSchema,
   dataComponentSchema,
   groupSchema,
   malwareSchema,
@@ -22,11 +24,16 @@ import {
   collectionSchema,
   campaignSchema,
   assetSchema,
+  logSourceSchema,
+  detectionStrategySchema,
+  analyticSchema,
 } from './schemas/index.js';
+
 import {
   DataSourceRegistration,
   type ParsingMode,
 } from './data-sources/data-source-registration.js';
+
 import { AttackDataModel } from './classes/attack-data-model.js';
 
 const readFile = async (path: string): Promise<string> => {
@@ -46,7 +53,9 @@ const readFile = async (path: string): Promise<string> => {
   }
 };
 
-const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
+const GITHUB_BASE_URL =
+  process.env.GITHUB_BASE_URL ||
+  'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
 
 interface DataSourceMap {
   [key: string]: {
@@ -230,8 +239,8 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
       case 'x-mitre-data-component':
         objParseResult = dataComponentSchema.safeParse(obj);
         break;
-      case 'x-mitre-log-source':
-        objParseResult = logSourceSchema.safeParse(obj);
+      case 'x-mitre-data-source':
+        objParseResult = dataSourceSchema.safeParse(obj);
         break;
       case 'intrusion-set':
         objParseResult = groupSchema.safeParse(obj);
@@ -262,6 +271,15 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
         break;
       case 'relationship':
         objParseResult = relationshipSchema.safeParse(obj);
+        break;
+      case 'x-mitre-log-source':
+        objParseResult = logSourceSchema.safeParse(obj);
+        break;
+      case 'x-mitre-detection-strategy':
+        objParseResult = detectionStrategySchema.safeParse(obj);
+        break;
+      case 'x-mitre-analytic':
+        objParseResult = analyticSchema.safeParse(obj);
         break;
       default:
         errors.push(`Unknown object type at index ${index}: ${obj.type}`);
