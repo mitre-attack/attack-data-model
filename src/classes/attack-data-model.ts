@@ -207,7 +207,7 @@ export class AttackDataModel {
           objectMap.set(object.id, relationship);
           break;
         }
-        
+
         // LOG SOURCE
         case 'x-mitre-log-source': {
           const logSource = new LogSourceImpl(object as LogSource);
