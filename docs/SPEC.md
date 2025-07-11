@@ -24,11 +24,19 @@ ATT&CK uses a mix of predefined and custom STIX objects to implement ATT&CK conc
 | [Group](#groups)                                                                                                                          | [intrusion-set](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230941)                                                                                                                                 | no           |
 | [Software](#software)                                                                                                                     | [malware](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230945) or [tool](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230961) | no           |
 | [Collection](https://github.com/center-for-threat-informed-defense/attack-workbench-frontend/blob/master/docs/collections.md)<sup>1</sup> | `x-mitre-collection`                                                                                                                                                                                                                                                          | yes          |
-| [Data Source](#data-sources)                                                                                                               | `x-mitre-data-source`                                                                                                                                                                                                                                                         | yes          |
-| [Campaign](#campaigns) | [campaign](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230925) | no |
-| [Asset](#assets) | `x-mitre-asset` | yes |
+| [Data Source](#data-sources) <sup>2</sup>                                                                                                 | `x-mitre-data-source`                                                                                                                                                                                                                                                         | yes          |
+| [Data Component](#data-components)                                                                                                        | `x-mitre-data-component`                                                                                                                                                                                                                                                      | yes          |
+| [Campaign](#campaigns)                                                                                                                    | [campaign](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230925)                                                                                                                                       | no           |
+| [Asset](#assets)                                                                                                                          | `x-mitre-asset`                                                                                                                                                                                                                                                               | yes          |
+| [Detection Strategy](#detection-strategies) <sup>3</sup>                                                                                  | `x-mitre-detection-strategy`                                                                                                                                                                                                                                                  | yes          |
+| [Analytic](#analytics) <sup>3</sup>                                                                                                       | `x-mitre-analytic`                                                                                                                                                                                                                                                            | yes          |
+| [Log Source](#log-sources) <sup>3</sup>                                                                                                   | `x-mitre-log-source`                                                                                                                                                                                                                                                          | yes          |
 
 <sup>1</sup> This type was added in the upgrade to STIX 2.1 and is not available in [the STIX 2.0 dataset](https://github.com/mitre/cti).
+
+<sup>2</sup> **Deprecated as of ATT&CK Specification 3.3.0.** Data Sources are superseded by the Detection Strategy framework but remain supported for backward compatibility. They will be removed in ATT&CK Specification 4.0.0.
+
+<sup>3</sup> These types were added in ATT&CK Specification 3.3.0 as part of the Detection Strategy framework.
 
 The following STIX 2.1 objects also appear in the ATT&CK catalog:
 
@@ -51,7 +59,7 @@ There are three general ways that ATT&CK extends the STIX 2.1 specification:
 | `x_mitre_contributors`                    | string[] | People and organizations who have contributed to the object.<br>Not found on objects of type `relationship`.                                                                                                                                                                                                           |
 | `x_mitre_modified_by_ref`                 | string   | The STIX ID of an `identity` object. Used to track the identity of the individual or organization which created the current _version_ of the object. Previous versions of the object may have been created by other individuals or organizations.                                                           |
 | `x_mitre_domains`                         | string[] | Identifies the domains the object is found in. See [domains](#domains) for more information.<br>Not found on objects of type `relationship`, `identity`, or `marking-definition`.                                                                                                                                                                           |
-| `x_mitre_attack_spec_version`<sup>1</sup> | string   | The version of the ATT&CK specification used by the object. Consuming software can use this field to determine if the data format is supported. |
+| `x_mitre_attack_spec_version`<sup>1</sup> | string   | The version of the ATT&CK specification used by the object. Consuming software can use this field to determine if the data format is supported. Current version is 3.3.0. |
 
 
 - New relationship types. Unlike custom object types and extended fields, custom relationship types are **not** prefixed with `x_mitre_`. You can find a full list of relationship types in the [Relationships](#Relationships) section, which also mentions whether the type is a default STIX type.
@@ -65,7 +73,7 @@ ATT&CK uses three distinct version fields that track different aspects of the sp
 | Field                         | Scope                | Purpose                                                                     | Example                   | Managed By   |
 | ----------------------------- | -------------------- | --------------------------------------------------------------------------- | ------------------------- | ------------ |
 | `spec_version`                | STIX specification   | Tracks which version of the STIX 2.1 specification the object conforms to   | `"2.1"`                   | STIX/OASIS   |
-| `x_mitre_attack_spec_version` | ATT&CK specification | Tracks which version of the ATT&CK specification extensions the object uses | `"2.1.0"`                 | MITRE ATT&CK |
+| `x_mitre_attack_spec_version` | ATT&CK specification | Tracks which version of the ATT&CK specification extensions the object uses | `"3.3.0"`                 | MITRE ATT&CK |
 | `x_mitre_version`             | Individual object    | Tracks semantic changes to the specific object content over time            | `"1.0"`, `"1.1"`, `"2.0"` | MITRE ATT&CK |
 
 ### Key Distinctions
@@ -102,18 +110,22 @@ ATT&CK objects use multiple identifier systems to support different use cases an
 
 ATT&CK IDs are human-readable identifiers commonly used for referencing objects in documentation and communication. Each ATT&CK object type follows a specific ID format:
 
-| ATT&CK concept                   | ID format                     |
-| :------------------------------- | :---------------------------- |
-| [Matrix](#matrices)              | [domain identifier](#domain-membership) |
-| [Tactic](#tactics)               | `TAxxxx`                      |
-| [Technique](#techniques)         | `Txxxx`                       |
-| [Sub-Technique](#sub-techniques) | `Txxxx.yyy`                   |
-| [Mitigation](#mitigations)       | `Mxxxx`                       |
-| [Group](#groups)                 | `Gxxxx`                       |
-| [Software](#software)            | `Sxxxx`                       |
-| [Data Source](#data-sources)     | `DSxxxx`                      |
-| [Campaign](#campaigns)           | `Cxxxx`                       |
-| [Asset](#assets)                 | `Axxxx`                       |
+| ATT&CK concept                            | ID format                               |
+| :---------------------------------------- | :-------------------------------------- |
+| [Matrix](#matrices)                       | [domain identifier](#domain-membership) |
+| [Tactic](#tactics)                        | `TAxxxx`                                |
+| [Technique](#techniques)                  | `Txxxx`                                 |
+| [Sub-Technique](#sub-techniques)          | `Txxxx.yyy`                             |
+| [Mitigation](#mitigations)                | `Mxxxx`                                 |
+| [Group](#groups)                          | `Gxxxx`                                 |
+| [Software](#software)                     | `Sxxxx`                                 |
+| [Data Source](#data-sources)              | `DSxxxx`                                |
+| [Data Component](#data-components)        | `DCxxxx`                                |
+| [Campaign](#campaigns)                    | `Cxxxx`                                 |
+| [Asset](#assets)                          | `Axxxx`                                 |
+| [Detection Strategy](#detection-strategies) | `DETxxxx`                             |
+| [Analytic](#analytics)                    | `ANxxxx`                                |
+| [Log Source](#log-sources)                | `LSxxxx`                                |
 
 **Important limitations:**
 - ATT&CK IDs are not guaranteed to be unique (see [Collisions with Technique ATT&CK IDs](#collisions-with-technique-attck-ids))
@@ -233,20 +245,25 @@ Software represents tools and malicious code used by adversaries to accomplish t
 
 ### Data Sources and Data Components
 
+> [!WARNING]
+> **Deprecation Notice**: Data Sources (`x-mitre-data-source`) are deprecated as of ATT&CK Specification 3.3.0 and superseded by the Detection Strategy framework. They remain supported for backward compatibility but will be removed in ATT&CK Specification 4.0.0. Data Components remain supported and are integrated into the new Detection Strategy framework through Log Sources.
+
 Data sources and data components define the telemetry and observational data that security teams can use to detect adversary techniques. This hierarchical model provides granular mapping between detection capabilities and techniques.
 
 **Structural relationships:**
 - Data components are nested within data sources but maintain separate STIX objects
 - Each data component has exactly one parent data source
 - Data sources can contain multiple data components
-- Data components can map to multiple techniques via `detects` relationships
+- Data components can map to multiple techniques via `detects` relationships (deprecated as of 3.3.0)
+- Data components can map to log sources via `found-in` relationships (new in 3.3.0)
 
 **Architecture overview:**
 
 ```
            "detects"       x_mitre_data_source_ref
           relationship      embedded relationship
-               │                      │
+          (deprecated)            │
+               │                  │
 ┌───────────┐  ▼  ┌────────────────┐  │  ┌───────────┐
 │Technique 1│◄────┤                │  │  │           │
 └───────────┘     │                │  ▼  │           │
@@ -315,6 +332,115 @@ The `related_asset` object provides sector-specific asset variations and aliases
 | `related_asset_sectors` | string[] | Industry sectors where this related asset name applies                        |
 | `description`           | string   | Description of how the related asset connects to the primary asset definition |
 
+### Detection Strategies
+
+Detection strategies define high-level approaches for detecting specific adversary techniques. They serve as containers that organize multiple platform-specific analytics into cohesive detection methodologies. Detection strategies are defined as `x-mitre-detection-strategy` objects extending the generic [STIX Domain Object pattern](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230920).
+
+**Detection strategy-specific fields:**
+
+| Field                   | Type     | Description                                                                                              |
+| :---------------------- | :------- | -------------------------------------------------------------------------------------------------------- |
+| `x_mitre_analytics`     | string[] | Array of STIX IDs referencing `x-mitre-analytic` objects that implement this detection strategy.         |
+
+**Key characteristics:**
+- Each detection strategy has a one-to-one relationship with a specific ATT&CK technique
+- Detection strategies typically reference 1-3 analytics (one for each supported platform)
+- Uses soft relationships (STIX ID references) to analytics for flexibility
+
+**Relationship Architecture:**
+
+The following diagrams illustrate how Detection Strategies connect to other ATT&CK objects through both formal STIX Relationship Objects (SROs) and soft relationships (STIX ID references):
+
+ASCII Diagram:
+```
+┌─────────────────┐                    ┌─────────────────┐
+│     <<SDO>>     │      "detects"     │     <<SDO>>     │
+│   Detection     │        <<SRO>>     │                 │
+│   Strategy      │━━━━━━━━━━━━━━━━━━━▶│   Technique     │
+│                 │                    │                 │
+│x_mitre_analytics│                    └─────────────────┘
+└────────┬────────┘
+         │
+         │ "Soft" relationship
+         │ (STIX ID reference)
+         ▼
+┌───────────────────┐
+│     <<SDO>>       │
+│    Analytic       │
+│                   │
+│x_mitre_log_sources│
+└────────┬──────────┘
+         │
+         │ "Soft" relationship
+         │ (STIX ID reference)
+         ▼
+┌─────────────────┐                    ┌─────────────────┐
+│     <<SDO>>     │     "found-in"     │     <<SDO>>     │
+│   Log Source    │◀━━━━━━━━━━━━━━━━━━━│      Data       │
+│                 │       <<SRO>>      │   Component     │
+└─────────────────┘                    └─────────────────┘
+```
+
+### Analytics
+
+Analytics contain platform-specific detection logic and represent the implementation details of a detection strategy. They are defined as `x-mitre-analytic` objects extending the generic [STIX Domain Object pattern](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230920).
+
+**Analytic-specific fields:**
+
+| Field                      | Type                    | Description                                                                            |
+| :------------------------- | :---------------------- | -------------------------------------------------------------------------------------- |
+| `x_mitre_platforms`        | string[] (max 1)        | Target platform for this analytic (Windows, Linux, macOS).                             |
+| `x_mitre_detects`          | string                  | Tool-agnostic description of the adversary behavior chain this analytic detects.       |
+| `x_mitre_log_sources`      | `log_source_ref[]`      | Array of log source references with specific permutation keys.                         |
+| `x_mitre_mutable_elements` | `mutable_element[]`     | Array of tunable detection parameters for environment-specific adaptation.             |
+
+#### Log Source Reference Subtype
+
+The `log_source_ref` object links analytics to specific log source permutations:
+
+| Field  | Type     | Description                                                                           |
+| ------ | -------- | ------------------------------------------------------------------------------------- |
+| `ref`  | string   | STIX ID of the referenced `x-mitre-log-source` object                                |
+| `keys` | string[] | Specific permutation keys from the log source's `x_mitre_log_source_permutations`     |
+
+#### Mutable Element Subtype
+
+The `mutable_element` object defines tunable parameters within analytics:
+
+| Field         | Type   | Description                                                                      |
+| ------------- | ------ | -------------------------------------------------------------------------------- |
+| `field`       | string | Name of the detection field that can be tuned                                   |
+| `description` | string | Rationale for tunability and environment-specific considerations                 |
+
+### Log Sources
+
+Log sources define immutable configurations for collecting security telemetry across different platforms and deployment scenarios. They are defined as `x-mitre-log-source` objects extending the generic [STIX Domain Object pattern](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230920).
+
+**Log source-specific fields:**
+
+| Field                            | Type                          | Description                                                    |
+| :------------------------------- | :---------------------------- | -------------------------------------------------------------- |
+| `x_mitre_log_source_permutations` | `log_source_permutation[]`   | Array of platform-specific log collection configurations.       |
+
+**Key characteristics:**
+- Each log source contains multiple permutations for different deployment scenarios
+- Permutations represent different ways to collect the same type of data across platforms
+- Connected to data components via `found-in` relationships
+
+#### Log Source Permutation Subtype
+
+The `log_source_permutation` object defines platform-specific collection configurations:
+
+| Field     | Type   | Description                                                          |
+| --------- | ------ | -------------------------------------------------------------------- |
+| `name`    | string | Log source identifier (e.g., "sysmon", "auditd")                     |
+| `channel` | string | Specific log channel or event type (e.g., "1" for Sysmon Process Creation) |
+
+**Example:** A single log source for 'Process Creation' might contain permutations for:
+- Windows: (name: "sysmon", channel: "1")
+- Linux: (name: "auditd", channel: "SYSCALL")
+- macOS: (name: "unified_logs", channel: "process")
+
 ### Relationships
 
 ATT&CK objects are interconnected through STIX [relationship](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230970) objects that capture associations between groups, techniques, software, and other entities. These relationships enable analysis of adversary behaviors, defensive capabilities, and organizational structures within the ATT&CK framework.
@@ -333,7 +459,9 @@ Relationship objects frequently include `description` fields that provide contex
 | `campaign` | `attributed-to` | `intrusion-set` | No | Campaign attributed to a group. |
 | `course-of-action`       | `mitigates`       | `attack-pattern`    | No           | Mitigation mitigating technique.                                                                                                                                                                                                                                                                                      |
 | `attack-pattern`         | `subtechnique-of` | `attack-pattern`    | Yes          | Sub-technique of a technique, where the `source_ref` is the sub-technique and the `target_ref` is the parent technique.                                                                                                                                                                                               |
-| `x-mitre-data-component` | `detects`         | `attack-pattern`    | Yes          | Data component detecting a technique.                                                                                                                                                                                                                                                                                 |
+| `x-mitre-data-component` | `detects`         | `attack-pattern`    | Yes          | **Deprecated as of ATT&CK Specification 3.3.0.** Data component detecting a technique. This relationship type will be removed in ATT&CK Specification 4.0.0.                                                                                                                                                           |
+| `x-mitre-detection-strategy` | `detects`     | `attack-pattern`    | Yes          | Detection strategy for detecting a technique.                                                                                                                                                         |
+| `x-mitre-data-component` | `found-in`        | `x-mitre-log-source` | Yes         | Data component telemetry found in a log source.                                                                                                                                                      |
 | `attack-pattern` | `targets` | `x-mitre-asset` | Yes | Technique targets an asset. |
 | any type                 | `revoked-by`      | any type            | Yes          | The target object is a replacement for the source object. Only occurs where the objects are of the same type, and the source object will have the property `revoked = true`. See [Working with deprecated and revoked objects](#working-with-deprecated-and-revoked-objects) for more information on revoked objects. |
 
