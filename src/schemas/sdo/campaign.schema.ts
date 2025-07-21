@@ -64,13 +64,15 @@ const multipleCitationsSchema = z.custom<string>(
   },
 );
 
-export const xMitreFirstSeenCitationSchema = multipleCitationsSchema.describe(
-  "One or more citations for when the object was first seen, in the form '(Citation: [citation name])(Citation: [citation name])...', where each [citation name] can be found as one of the source_name values in the external_references.",
-);
+export const xMitreFirstSeenCitationSchema = multipleCitationsSchema.meta({
+  description:
+    "One or more citations for when the object was first seen, in the form '(Citation: [citation name])(Citation: [citation name])...', where each [citation name] can be found as one of the source_name values in the external_references.",
+});
 
-export const xMitreLastSeenCitationSchema = multipleCitationsSchema.describe(
-  "One or more citations for when the object was last seen, in the form '(Citation: [citation name])(Citation: [citation name])...', where each [citation name] can be found as one of the source_name values in the external_references.",
-);
+export const xMitreLastSeenCitationSchema = multipleCitationsSchema.meta({
+  description:
+    "One or more citations for when the object was last seen, in the form '(Citation: [citation name])(Citation: [citation name])...', where each [citation name] can be found as one of the source_name values in the external_references.",
+});
 
 export type XMitreFirstSeenCitation = z.infer<typeof xMitreFirstSeenCitationSchema>;
 export type XMitreLastSeenCitation = z.infer<typeof xMitreLastSeenCitationSchema>;
@@ -100,10 +102,14 @@ export const extensibleCampaignSchema = attackBaseDomainObjectSchema
     aliases: aliasesSchema,
 
     // Optional in STIX but required in ATT&CK
-    first_seen: stixTimestampSchema.describe('The time that this Campaign was first seen.'),
+    first_seen: stixTimestampSchema.meta({
+      description: 'The time that this Campaign was first seen.',
+    }),
 
     // Optional in STIX but required in ATT&CK
-    last_seen: stixTimestampSchema.describe('The time that this Campaign was last seen.'),
+    last_seen: stixTimestampSchema.meta({
+      description: 'The time that this Campaign was last seen.',
+    }),
 
     x_mitre_first_seen_citation: xMitreFirstSeenCitationSchema,
 

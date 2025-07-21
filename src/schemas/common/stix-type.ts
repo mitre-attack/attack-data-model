@@ -78,9 +78,10 @@ export const stixTypeSchema = z
       return undefined;
     },
   })
-  .describe(
-    'The type property identifies the type of STIX Object (SDO, Relationship Object, etc). The value of the type field MUST be one of the types defined by a STIX Object (e.g., indicator).',
-  );
+  .meta({
+    description:
+      'The type property identifies the type of STIX Object (SDO, Relationship Object, etc). The value of the type field MUST be one of the types defined by a STIX Object (e.g., indicator).',
+  });
 
 export type StixType = z.infer<typeof stixTypeSchema>;
 

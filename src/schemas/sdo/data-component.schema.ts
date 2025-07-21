@@ -17,9 +17,9 @@ import {
 //
 /////////////////////////////////////
 
-export const xMitreDataSourceRefSchema = createStixIdValidator('x-mitre-data-source').describe(
-  'STIX ID of the data source this component is a part of.',
-);
+export const xMitreDataSourceRefSchema = createStixIdValidator('x-mitre-data-source').meta({
+  description: 'STIX ID of the data source this component is a part of.',
+});
 
 export type XMitreDataSourceRef = z.infer<typeof xMitreDataSourceRefSchema>;
 

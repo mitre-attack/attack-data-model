@@ -30,7 +30,7 @@ export type Version = z.infer<typeof versionSchema>;
 export const nameSchema = z
   .string()
   .min(1, 'Name must not be empty')
-  .describe('The name of the object.');
+  .meta({ description: 'The name of the object.' });
 
 export type Name = z.infer<typeof nameSchema>;
 
@@ -41,7 +41,7 @@ export type Name = z.infer<typeof nameSchema>;
 //
 /////////////////////////////////////
 
-export const descriptionSchema = z.string().describe('A description of the object.');
+export const descriptionSchema = z.string().meta({ description: 'A description of the object.' });
 
 export type Description = z.infer<typeof descriptionSchema>;
 
@@ -114,7 +114,7 @@ export function createOldMitreAttackIdSchema(
 ) {
   const baseSchema = z
     .string()
-    .describe('Old ATT&CK IDs that may have been associated with this object');
+    .meta({ description: 'Old ATT&CK IDs that may have been associated with this object' });
 
   switch (stixType) {
     case 'malware':

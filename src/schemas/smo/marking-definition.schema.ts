@@ -14,11 +14,10 @@ import {
 // TLP Marking Object type
 export const tlpMarkingObjectSchema = z
   .object({
-    tlp: z
-      .string()
-      .describe(
+    tlp: z.string().meta({
+      description:
         'The TLP level [TLP] of the content marked by this marking definition, as defined in this section.',
-      ),
+    }),
   })
   .strict();
 

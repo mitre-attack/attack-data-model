@@ -250,9 +250,10 @@ export const MitreCollectionLayerOV = z.enum([
 
 export const PatternTypeOV = z
   .enum(['spl', 'stix', 'pcre', 'sigma', 'snort', 'suricata', 'yara'])
-  .describe(
-    'This is a non-exhaustive, open vocabulary that covers common pattern languages and is intended to characterize the pattern language that the indicator pattern is expressed in.',
-  );
+  .meta({
+    description:
+      'This is a non-exhaustive, open vocabulary that covers common pattern languages and is intended to characterize the pattern language that the indicator pattern is expressed in.',
+  });
 
 /////////////////////////////////////
 //
@@ -271,6 +272,7 @@ export const IndicatorTypeOV = z
     'attribution',
     'unknown',
   ])
-  .describe(
-    "Indicator type is an open vocabulary used to categorize Indicators. It is intended to be high-level to promote consistent practices. Indicator types should not be used to capture information that can be better captured via related Malware or Attack Pattern objects. It is better to link an Indicator to a Malware object describing Poison Ivy rather than simply providing a type or label of 'poison-ivy.'",
-  );
+  .meta({
+    description:
+      "Indicator type is an open vocabulary used to categorize Indicators. It is intended to be high-level to promote consistent practices. Indicator types should not be used to capture information that can be better captured via related Malware or Attack Pattern objects. It is better to link an Indicator to a Malware object describing Poison Ivy rather than simply providing a type or label of 'poison-ivy.'",
+  });

@@ -25,7 +25,7 @@ import {
 
 export const xMitreNetworkRequirementsSchema = z
   .boolean()
-  .describe('Requires network to execute the technique');
+  .meta({ description: 'Requires network to execute the technique' });
 
 export type XMitreNetworkRequirements = z.infer<typeof xMitreNetworkRequirementsSchema>;
 

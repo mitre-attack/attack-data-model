@@ -1,9 +1,9 @@
 import type { Relationship } from '../schemas/sro/relationship.schema.js';
 import type { AttackObject } from '../schemas/sdo/stix-bundle.schema.js';
-import type { Technique, Tactic, Mitigation, LogSource } from '../schemas/sdo/index.js';
+import type { Technique, Tactic, Mitigation, DataSource } from '../schemas/sdo/index.js';
 import { TacticImpl } from './sdo/tactic.impl.js';
 import { MitigationImpl } from './sdo/mitigation.impl.js';
-import { LogSourceImpl } from './sdo/log-source.impl.js';
+import { DataSourceImpl } from './sdo/data-source.impl.js';
 import type { XMitrePlatforms } from '../schemas/common/index.js';
 
 export function getSubTechniques(
@@ -54,21 +54,21 @@ export function getMitigations(
     .filter((mitigation) => mitigation !== null);
 }
 
-export function getLogSources(
+export function getDataSources(
   technique: Technique,
   relationships: Relationship[],
   attackObjects: AttackObject[],
-): LogSourceImpl[] {
+): DataSourceImpl[] {
   return relationships
     .filter((rel) => rel.relationship_type === 'detects' && rel.target_ref === technique.id)
     .map((rel) => {
-      const logSource = attackObjects.find(
-        (obj): obj is LogSource => obj.id === rel.source_ref && obj.type === 'x-mitre-log-source',
+      const dataSource = attackObjects.find(
+        (obj): obj is DataSource => obj.id === rel.source_ref && obj.type === 'x-mitre-data-source',
       );
-      if (logSource) {
-        return new LogSourceImpl(logSource);
+      if (dataSource) {
+        return new DataSourceImpl(dataSource);
       }
       return null;
     })
-    .filter((logSource) => logSource !== null);
+    .filter((dataSource) => dataSource !== null);
 }

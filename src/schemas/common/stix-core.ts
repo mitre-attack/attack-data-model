@@ -10,31 +10,38 @@ import { extensionsSchema } from './extensions.js';
 
 const stixBaseObjectSchema = z
   .object({
-    id: stixIdentifierSchema.describe(
-      'The id property universally and uniquely identifies this object.',
-    ),
+    id: stixIdentifierSchema.meta({
+      description: 'The id property universally and uniquely identifies this object.',
+    }),
     type: stixTypeSchema,
-    spec_version: stixSpecVersionSchema.describe(
-      'The version of the STIX specification used to represent this object.',
-    ),
-    created: stixCreatedTimestampSchema.describe(
-      'The created property represents the time at which the first version of this object was created. The timstamp value MUST be precise to the nearest millisecond.',
-    ),
-    modified: stixModifiedTimestampSchema.describe(
-      'The modified property represents the time that this particular version of the object was modified. The timstamp value MUST be precise to the nearest millisecond.',
-    ),
+    spec_version: stixSpecVersionSchema.meta({
+      description: 'The version of the STIX specification used to represent this object.',
+    }),
+    created: stixCreatedTimestampSchema.meta({
+      description:
+        'The created property represents the time at which the first version of this object was created. The timstamp value MUST be precise to the nearest millisecond.',
+    }),
+    modified: stixModifiedTimestampSchema.meta({
+      description:
+        'The modified property represents the time that this particular version of the object was modified. The timstamp value MUST be precise to the nearest millisecond.',
+    }),
     created_by_ref: stixCreatedByRefSchema.optional(),
     labels: z
       .array(z.string())
-      .describe('The labels property specifies a set of terms used to describe this object.')
+      .meta({
+        description: 'The labels property specifies a set of terms used to meta this object.',
+      })
       .optional(),
     revoked: z
       .boolean()
-      .describe('The revoked property indicates whether the object has been revoked.')
+      .meta({ description: 'The revoked property indicates whether the object has been revoked.' })
       .optional(),
     confidence: z
       .number()
-      .describe('Identifies the confidence that the creator has in the correctness of their data.')
+      .meta({
+        description:
+          'Identifies the confidence that the creator has in the correctness of their data.',
+      })
       .int()
       .min(1)
       .max(99)
@@ -45,13 +52,13 @@ const stixBaseObjectSchema = z
       .optional(),
     lang: z
       .string()
-      .describe('Identifies the language of the text content in this object.')
+      .meta({ description: 'Identifies the language of the text content in this object.' })
       .optional(),
     external_references: externalReferencesSchema.optional(),
     object_marking_refs: objectMarkingRefsSchema.optional(),
     granular_markings: z
       .array(granularMarkingSchema)
-      .describe('The set of granular markings that apply to this object.')
+      .meta({ description: 'The set of granular markings that apply to this object.' })
       .optional(),
     extensions: extensionsSchema.optional(),
   })
