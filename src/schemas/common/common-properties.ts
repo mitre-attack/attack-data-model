@@ -228,18 +228,19 @@ const supportedMitrePlatforms = [
   'Embedded',
 ] as const;
 
+export const xMitrePlatformSchema = z.enum(supportedMitrePlatforms, {
+  error: () => `Platform must be one of: ${supportedMitrePlatforms.join(', ')}`,
+});
+
+export type XMitrePlatform = z.infer<typeof xMitrePlatformSchema>;
+
 export const xMitrePlatformsSchema = z
-  .array(
-    z.enum(supportedMitrePlatforms, {
-      error: () => `Platform must be one of: ${supportedMitrePlatforms.join(', ')}`,
-    }),
-    {
-      error: (issue) =>
-        issue.code === 'invalid_type'
-          ? 'x_mitre_platforms must be an array of strings'
-          : 'Invalid platforms array',
-    },
-  )
+  .array(xMitrePlatformSchema, {
+    error: (issue) =>
+      issue.code === 'invalid_type'
+        ? 'x_mitre_platforms must be an array of strings'
+        : 'Invalid platforms array',
+  })
   .min(1, 'At least one platform is required')
   .refine((items) => new Set(items).size === items.length, {
     message: 'Platforms must be unique (no duplicates allowed).',
