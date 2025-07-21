@@ -27,8 +27,8 @@ export const externalReferenceSchema = z.object({
   url: z
     .url({
       error: (issue) =>
-        issue.input === undefined
-          ? 'URL is required'
+        issue.input === null
+          ? 'URL cannot be null'
           : 'Invalid URL format. Please provide a valid URL',
     })
     .optional(),
