@@ -9,7 +9,7 @@
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
-    "gendocs": "bash ./generate-docs.sh"
+    "gendocs": "cd .. && bash generate-docs.sh"
   },
   "dependencies": {
     "@docusaurus/core": "3.8.1",
@@ -18,8 +18,7 @@
     "clsx": "^2.1.1",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "zod2md": "^0.2.0"
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.8.1",

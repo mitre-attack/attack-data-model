@@ -1,9 +1,8 @@
 #!/bin/bash
 
-# path to parent directory where schemas are located
-PARENT_DIR=".."
-SCHEMA_DIR="$PARENT_DIR/src/schemas"
-OUTPUT_DIR="docs"
+WORKDIR="."
+SCHEMA_DIR="$WORKDIR/src/schemas"
+OUTPUT_DIR="docusaurus/docs"
 OVERVIEW="$OUTPUT_DIR/overview.md"
 
 mkdir -p $OUTPUT_DIR
@@ -13,7 +12,7 @@ echo "# ATT&CK Schemas" > $OVERVIEW
 echo "" >> $OVERVIEW
 
 # attack spec version
-specVersion=$(cat "$PARENT_DIR/ATTACK_SPEC_VERSION")
+specVersion=$(cat "$WORKDIR/ATTACK_SPEC_VERSION")
 echo "Current ATT&CK Spec Version: [$specVersion](https://github.com/mitre-attack/attack-stix-data/blob/master/CHANGELOG.md)" >> $OVERVIEW
 echo "" >> $OVERVIEW
 
@@ -47,7 +46,7 @@ find $SCHEMA_DIR -name "*.schema.ts" | while read schemaFile; do
 
 	# convert zod schemas to md
 	# pass the parent tsconfig to resolve path aliases
-	npx zod2md --entry $schemaFile --title "$title Schema" --output "$outputFile" --tsconfig "$PARENT_DIR/tsconfig.json"
+	npx zod2md --entry $schemaFile --title "$title Schema" --output "$outputFile" --tsconfig "$WORKDIR/tsconfig.json"
 
 	# add schema to overview table
 	schemaLink="${relativePath/.ts/.md}"

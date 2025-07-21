@@ -84,7 +84,7 @@
   "dependencies": {
     "axios": "^1.9.0",
     "uuid": "^10.0.0",
-    "zod": "^3.25.67"
+    "zod": "^4.0.5"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
@@ -103,6 +103,7 @@
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.34.0",
-    "vitest": "^3.2.3"
+    "vitest": "^3.2.3",
+    "zod2md": "^0.2.2"
   }
 }
