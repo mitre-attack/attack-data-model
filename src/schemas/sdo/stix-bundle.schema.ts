@@ -1,10 +1,11 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { createStixTypeValidator } from '../common/stix-type.js';
 import { createStixIdValidator } from '../common/stix-identifier.js';
 import { type Malware, malwareSchema } from './malware.schema.js';
 import { type Asset, assetSchema } from './asset.schema.js';
 import { type Campaign, campaignSchema } from './campaign.schema.js';
 import { type DataComponent, dataComponentSchema } from './data-component.schema.js';
+import { type LogSource, logSourceSchema } from './log-source.schema.js';
 import { type DataSource, dataSourceSchema } from './data-source.schema.js';
 import { type Identity, identitySchema } from './identity.schema.js';
 import { type Matrix, matrixSchema } from './matrix.schema.js';
@@ -14,6 +15,8 @@ import { type Technique, techniqueSchema } from './technique.schema.js';
 import { type Group, groupSchema } from './group.schema.js';
 import { type Mitigation, mitigationSchema } from './mitigation.schema.js';
 import { type Collection, collectionSchema } from './collection.schema.js';
+import { type DetectionStrategy, detectionStrategySchema } from './detection-strategy.schema.js';
+import { type Analytic, analyticSchema } from './analytic.schema.js';
 import { type Relationship, relationshipSchema } from '../sro/relationship.schema.js';
 import {
   type MarkingDefinition,
@@ -28,7 +31,7 @@ export type AttackObject =
   | Campaign
   | Collection
   | DataComponent
-  | DataSource
+  | (DataSource | LogSource)
   | Identity
   | Matrix
   | Tool
@@ -36,26 +39,67 @@ export type AttackObject =
   | Technique
   | Group
   | Mitigation
+  | DetectionStrategy
+  | Analytic
   | Relationship
   | MarkingDefinition;
 
 // Create a schema mapping object to map types to their schemas
 const schemaMap = {
-  malware: malwareSchema,
-  'x-mitre-asset': assetSchema,
-  campaign: campaignSchema,
-  'x-mitre-collection': collectionSchema,
-  'x-mitre-data-component': dataComponentSchema,
-  'x-mitre-data-source': dataSourceSchema,
-  identity: identitySchema,
-  'x-mitre-matrix': matrixSchema,
-  tool: toolSchema,
-  'x-mitre-tactic': tacticSchema,
-  'attack-pattern': techniqueSchema,
-  'intrusion-set': groupSchema,
-  'course-of-action': mitigationSchema,
-  relationship: relationshipSchema,
-  'marking-definition': markingDefinitionSchema,
+  get malware() {
+    return malwareSchema;
+  },
+  get 'x-mitre-asset'() {
+    return assetSchema;
+  },
+  get campaign() {
+    return campaignSchema;
+  },
+  get 'x-mitre-collection'() {
+    return collectionSchema;
+  },
+  get 'x-mitre-data-component'() {
+    return dataComponentSchema;
+  },
+  get 'x-mitre-data-source'() {
+    return dataSourceSchema;
+  },
+  get 'x-mitre-detection-strategy'() {
+    return detectionStrategySchema;
+  },
+  get 'x-mitre-log-source'() {
+    return logSourceSchema;
+  },
+  get 'x-mitre-analytic'() {
+    return analyticSchema;
+  },
+  get identity() {
+    return identitySchema;
+  },
+  get 'x-mitre-matrix'() {
+    return matrixSchema;
+  },
+  get tool() {
+    return toolSchema;
+  },
+  get 'x-mitre-tactic'() {
+    return tacticSchema;
+  },
+  get 'attack-pattern'() {
+    return techniqueSchema;
+  },
+  get 'intrusion-set'() {
+    return groupSchema;
+  },
+  get 'course-of-action'() {
+    return mitigationSchema;
+  },
+  get relationship() {
+    return relationshipSchema;
+  },
+  get 'marking-definition'() {
+    return markingDefinitionSchema;
+  },
 };
 
 // IMPORTANT: Casting the 'attackObjectsSchema' to 'z.ZodTypeAny' is critical. Without it, the TypeScript compiler will get overwhelmed and throw the following:
@@ -67,17 +111,23 @@ export const attackObjectsSchema: z.ZodTypeAny = z
       .object({
         // Basic structure validation to ensure we have a type field
         type: z.string({
-          required_error: "Object must have a 'type' property",
-          invalid_type_error: "Object 'type' must be a string",
+          error: (issue) => {
+            return issue.code === 'invalid_type'
+              ? "Object 'type' must be a string"
+              : "The 'type' property is invalid or missing";
+          },
         }),
         id: z.string({
-          required_error: "Object must have an 'id' property",
-          invalid_type_error: "Object 'id' must be a string",
+          error: (issue) => {
+            return issue.code === 'invalid_type'
+              ? "Object 'id' must be a string"
+              : "The 'id' property is invalid or missing";
+          },
         }),
       })
-      .passthrough()
-      .superRefine((obj, ctx) => {
-        const type = obj.type;
+      .loose()
+      .check((ctx) => {
+        const type = ctx.value.type;
 
         // Uncomment for debugging
         // console.log(`Validating object of type: ${type}, ID: ${obj.id}`);
@@ -86,28 +136,31 @@ export const attackObjectsSchema: z.ZodTypeAny = z
         const schema = schemaMap[type as keyof typeof schemaMap];
 
         if (!schema) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
+          ctx.issues.push({
+            code: 'custom',
             message: `Unknown STIX type: ${type}`,
             path: ['type'],
+            input: ctx.value.type,
           });
           return;
         }
 
         // Validate the object against the appropriate schema
+        // TODO can the following code be cleaned up?
         try {
-          schema.parse(obj);
+          schema.parse(ctx.value);
         } catch (error) {
           if (error instanceof z.ZodError) {
             // Forward all validation issues from the schema
             error.issues.forEach((issue) => {
-              ctx.addIssue(issue);
+              ctx.issues.push(issue);
             });
           } else {
             // Handle unexpected errors
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
+            ctx.issues.push({
+              code: 'custom',
               message: `Validation error: ${error instanceof Error ? error.message : String(error)}`,
+              input: ctx.value, // TODO this might be too much information: how can we filter down to just the relevant part?
             });
           }
         }
@@ -131,7 +184,7 @@ export const extensibleStixBundleSchema = z
 
     spec_version: z
       .literal(stixSpecVersionSchema.enum['2.1'] as StixSpecVersion)
-      .describe('Only STIX 2.1 specification version is allowed'),
+      .meta({ description: 'Only STIX 2.1 specification version is allowed' }),
 
     objects: attackObjectsSchema,
   })
@@ -141,8 +194,8 @@ export const extensibleStixBundleSchema = z
 const validateFirstBundleObject = createFirstBundleObjectRefinement();
 
 // Apply the refinement
-export const stixBundleSchema = extensibleStixBundleSchema.superRefine((schema, ctx) => {
-  validateFirstBundleObject(schema, ctx);
+export const stixBundleSchema = extensibleStixBundleSchema.check((ctx) => {
+  validateFirstBundleObject(ctx);
 });
 
 // Define the type for StixBundle

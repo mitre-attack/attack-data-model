@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 import { malwareSchema } from "../../src/schemas/sdo/malware.schema.js";
 import { toolSchema } from "../../src/schemas/sdo/tool.schema.js";
 
@@ -81,7 +81,6 @@ const invalidMalware = {
             url: "https://www.f-secure.com/documents/996508/1030745/dukes_whitepaper.pdf"
         }
     ],
-    // Missing object_marking_refs
     x_mitre_aliases: [
         "HAMMERTOSS",
         "HammerDuke",
@@ -91,47 +90,16 @@ const invalidMalware = {
     x_mitre_domains: [
         "enterprise-attack"
     ],
-    // Missing x_mitre_modified_by_ref
     x_mitre_platforms: [
         "Windows"
     ],
-    // Missing is_family
     x_mitre_version: "1.2"
 };
 
 console.log("Example 2 - Invalid Malware (missing required fields):");
-try {
-    malwareSchema.parse(invalidMalware);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
-}
+const e2 = malwareSchema.safeParse(invalidMalware);
+console.log(z.prettifyError(e2.error as z.core.$ZodError));
 
-/**
- * Validation errors: [
-    {
-      code: 'invalid_type',
-      expected: 'array',
-      received: 'undefined',
-      path: [ 'object_marking_refs' ],
-      message: 'Required'
-    },
-    {
-      code: 'custom',
-      message: 'Invalid STIX Identifier',
-      fatal: true,
-      path: [ 'x_mitre_modified_by_ref' ]
-    },
-    {
-      code: 'invalid_type',
-      expected: 'boolean',
-      received: 'undefined',
-      path: [ 'is_family' ],
-      message: 'Required'
-    }
-  ]
-*/
 /** ************************************************************************************************* */
 // Example 3: Malware with optional fields
 /** ************************************************************************************************* */
@@ -150,10 +118,8 @@ const malwareWithOptionalFields = {
     x_mitre_old_attack_id: "MOB-S0123"
 };
 
-
 console.log("\nExample 3 - Malware with optional fields:");
 console.log(malwareSchema.parse(malwareWithOptionalFields));
-
 
 /** ************************************************************************************************* */
 // Example 4: Malware with invalid type
@@ -164,14 +130,8 @@ const malwareWithInvalidType = {
 };
 
 console.log("\nExample 4 - Malware with invalid type:");
-try {
-    malwareSchema.parse(malwareWithInvalidType);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
-        // Validation error: Invalid literal value, expected "malware"
-    }
-}
+const e4 = malwareSchema.safeParse(malwareWithInvalidType);
+console.log(z.prettifyError(e4.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 5: Malware with invalid id
@@ -182,14 +142,8 @@ const malwareWithInvalidId = {
 };
 
 console.log("\nExample 5 - Malware with invalid id:");
-try {
-    malwareSchema.parse(malwareWithInvalidId);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
-        // Validation error: Invalid literal value, expected "malware"
-    }
-}
+const e5 = malwareSchema.safeParse(malwareWithInvalidId);
+console.log(z.prettifyError(e5.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 6: Malware with fields in STIX but not in ATT&CK
@@ -228,7 +182,6 @@ const malwareWithStixFields = {
         "python"
     ]
 };
-
 
 console.log("\nExample 6 - Malware with fields in STIX but not in ATT&CK:");
 console.log(malwareSchema.parse(malwareWithStixFields));
@@ -287,17 +240,13 @@ const exampleOfRealMalware = {
 }
 
 console.log("\nExample 7 - Parsing the provided example malware:");
-try {
-    const parsedMalware = malwareSchema.parse(exampleOfRealMalware);
-    console.log(parsedMalware);
-    console.log("Parsed successfully. Malware name:", parsedMalware.name);
-    // Parsed successfully. Malware name: HAMMERTOSS
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
+const e7 = malwareSchema.safeParse(exampleOfRealMalware);
+if (e7.success) {
+    console.log(e7.data);
+    console.log("Parsed successfully. Malware name:", e7.data.name);
+} else {
+    console.log(z.prettifyError(e7.error as z.core.$ZodError));
 }
-
 
 /** ************************************************************************************************* */
 // Example 8: Malware with unknown property
@@ -308,23 +257,12 @@ const malwareWithUnknownProperty = {
 }
 
 console.log("\nExample 8 - Parsing a malware with an unknown property (foo: 'bar'):");
-try {
-    const parsedMalware = malwareSchema.parse(malwareWithUnknownProperty);
-    console.log("Parsed successfully. Malware name:", parsedMalware.name);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-        // Validation errors: [
-        //     {
-        //       code: 'unrecognized_keys',
-        //       keys: [ 'foo' ],
-        //       path: [],
-        //       message: "Unrecognized key(s) in object: 'foo'"
-        //     }
-        //   ]
-    }
+const e8 = malwareSchema.safeParse(malwareWithUnknownProperty);
+if (e8.success) {
+    console.log("Parsed successfully. Malware name:", e8.data.name);
+} else {
+    console.log(z.prettifyError(e8.error as z.core.$ZodError));
 }
-
 
 // Tool Examples - 
 console.log("****************************************************************************************************")
@@ -378,13 +316,10 @@ const invalidTool = {
     type: 'tool',
     id: 'tool--11f8d7eb-1927-4806-9267-3a11d4d4d6be',
     spec_version: '2.1',
-    // Missing created_by_ref
     created: "2021-07-30T15:43:17.770Z",
     modified: "2024-04-11T00:06:01.264Z",
     name: "Sliver",
     description: '[Sliver](https://attack.mitre.org/software/S0633) is an open source, cross-platform, red team command and control framework written in Golang.(Citation: Bishop Fox Sliver Framework August 2019)',
-    // Missing external_references
-    // Missing object_marking_refs
     x_mitre_aliases: [
         "Sliver"
     ],
@@ -403,49 +338,11 @@ const invalidTool = {
         "macOS"
     ],
     x_mitre_version: "1.2"
-    // Missing x_mitre_attack_spec_version
 };
 
 console.log("Example 2 - Invalid Tool (missing required fields):");
-try {
-    toolSchema.parse(invalidTool);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
-}
-
-/**
- * Validation errors: [
-  {
-    code: 'custom',
-    message: 'Invalid STIX Identifier',
-    fatal: true,
-    path: [ 'created_by_ref' ]
-  },
-  {
-    code: 'invalid_type',
-    expected: 'array',
-    received: 'undefined',
-    path: [ 'external_references' ],
-    message: 'Required'
-  },
-  {
-    code: 'invalid_type',
-    expected: 'array',
-    received: 'undefined',
-    path: [ 'object_marking_refs' ],
-    message: 'Required'
-  },
-  {
-    code: 'invalid_type',
-    expected: 'string',
-    received: 'undefined',
-    path: [ 'x_mitre_attack_spec_version' ],
-    message: 'Required'
-  }
-]
- */
+const et2 = toolSchema.safeParse(invalidTool);
+console.log(z.prettifyError(et2.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 3: Tool with optional fields
@@ -470,7 +367,6 @@ const toolWithOptionalFields = {
 console.log("\nExample 3 - Tool with optional fields:");
 console.log(toolSchema.parse(toolWithOptionalFields));
 
-
 /** ************************************************************************************************* */
 // Example 4: Tool with invalid type
 /** ************************************************************************************************* */
@@ -480,14 +376,8 @@ const toolWithInvalidType = {
 };
 
 console.log("\nExample 4 - Tool with invalid type:");
-try {
-    toolSchema.parse(toolWithInvalidType);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
-        // Validation error: Invalid literal value, expected "tool"
-    }
-}
+const et4 = toolSchema.safeParse(toolWithInvalidType);
+console.log(z.prettifyError(et4.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 5: Tool with invalid id
@@ -498,14 +388,9 @@ const toolWithInvalidId = {
 };
 
 console.log("\nExample 5 - Tool with invalid id:");
-try {
-    toolSchema.parse(toolWithInvalidId);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
-        // Validation error: Invalid literal value, expected "tool"
-    }
-}
+const et5 = toolSchema.safeParse(toolWithInvalidId);
+console.log(z.prettifyError(et5.error as z.core.$ZodError));
+
 /** ************************************************************************************************* */
 // Example 6: Tool with fields in STIX but not in ATT&CK
 /** ************************************************************************************************* */
@@ -523,7 +408,6 @@ const toolWithStixFields = {
     tool_types: ["remote-access"],
     tool_version: "1.0"
 };
-
 
 console.log("\nExample 6 - Tool with fields in STIX but not in ATT&CK:");
 console.log(toolSchema.parse(toolWithStixFields));
@@ -581,17 +465,13 @@ const exampleOfRealTool = {
 }
 
 console.log("\nExample 7 - Parsing the provided example tool:");
-try {
-    const parsedTool = toolSchema.parse(exampleOfRealTool);
-    console.log(parsedTool);
-    console.log("Parsed successfully. Tool name:", parsedTool.name);
-    // Parsed successfully. Tool name: Sliver
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
+const et7 = toolSchema.safeParse(exampleOfRealTool);
+if (et7.success) {
+    console.log(et7.data);
+    console.log("Parsed successfully. Tool name:", et7.data.name);
+} else {
+    console.log(z.prettifyError(et7.error as z.core.$ZodError));
 }
-
 
 /** ************************************************************************************************* */
 // Example 8: Tool with unknown property
@@ -602,19 +482,9 @@ const toolWithUnknownProperty = {
 }
 
 console.log("\nExample 8 - Parsing a tool with an unknown property (foo: 'bar'):");
-try {
-    const parsedTool = toolSchema.parse(toolWithUnknownProperty);
-    console.log("Parsed successfully. Tool name:", parsedTool.name);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-        // Validation errors: [
-        //     {
-        //       code: 'unrecognized_keys',
-        //       keys: [ 'foo' ],
-        //       path: [],
-        //       message: "Unrecognized key(s) in object: 'foo'"
-        //     }
-        //   ]
-    }
+const et8 = toolSchema.safeParse(toolWithUnknownProperty);
+if (et8.success) {
+    console.log("Parsed successfully. Tool name:", et8.data.name);
+} else {
+    console.log(z.prettifyError(et8.error as z.core.$ZodError));
 }

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import {
   attackBaseDomainObjectSchema,
   descriptionSchema,
@@ -7,7 +7,6 @@ import {
   createStixIdValidator,
   xMitreContributorsSchema,
   xMitreModifiedByRefSchema,
-  objectMarkingRefsSchema,
   createAttackExternalReferencesSchema,
   createStixTypeValidator,
 } from '../common/index.js';
@@ -29,10 +28,20 @@ const supportedAssetSectors = [
 ] as const;
 
 export const xMitreSectorsSchema = z
-  .array(z.enum(supportedAssetSectors), {
-    invalid_type_error: 'related_asset_sectors must be an array.',
-  })
-  .describe('List of industry sector(s) an asset may be commonly observed in.');
+  .array(
+    z.enum(supportedAssetSectors, {
+      error: () => `Sector must be one of: ${supportedAssetSectors.join(', ')}`,
+    }),
+    {
+      error: (issue) =>
+        issue.code === 'invalid_type'
+          ? 'related_asset_sectors must be an array'
+          : 'Invalid asset sectors array',
+    },
+  )
+  .meta({
+    description: 'List of industry sector(s) an asset may be commonly observed in',
+  });
 
 export type XMitreSectors = z.infer<typeof xMitreSectorsSchema>;
 
@@ -45,19 +54,20 @@ export type XMitreSectors = z.infer<typeof xMitreSectorsSchema>;
 
 export const relatedAssetSchema = z.object({
   name: z.string({
-    required_error: 'Related asset name is required.',
-    invalid_type_error: 'Related asset name must be a string.',
+    error: (issue) =>
+      issue.input === undefined
+        ? 'Related asset name is required'
+        : 'Related asset name must be a string',
   }),
 
   related_asset_sectors: xMitreSectorsSchema.optional(),
   description: descriptionSchema.optional(),
 });
 
-export const relatedAssetsSchema = z
-  .array(relatedAssetSchema)
-  .describe(
-    'Related assets describe sector specific device names or alias that may be commonly associated with the primary asset page name or functional description. Related asset objects include a description of how the related asset is associated with the page definition.',
-  );
+export const relatedAssetsSchema = z.array(relatedAssetSchema).meta({
+  description:
+    'Related assets describe sector specific device names or alias that may be commonly associated with the primary asset page name or functional description. Related asset objects include a description of how the related asset is associated with the page definition',
+});
 
 export type RelatedAsset = z.infer<typeof relatedAssetSchema>;
 export type RelatedAssets = z.infer<typeof relatedAssetsSchema>;
@@ -79,9 +89,6 @@ export const extensibleAssetSchema = attackBaseDomainObjectSchema
     // Optional in STIX but required in ATT&CK
     external_references: createAttackExternalReferencesSchema('x-mitre-asset'),
 
-    // Optional in STIX but required in ATT&CK
-    object_marking_refs: objectMarkingRefsSchema,
-
     x_mitre_platforms: xMitrePlatformsSchema.optional(),
 
     x_mitre_domains: xMitreDomainsSchema,
@@ -93,6 +100,10 @@ export const extensibleAssetSchema = attackBaseDomainObjectSchema
     x_mitre_related_assets: relatedAssetsSchema.optional(),
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
+  })
+  .required({
+    object_marking_refs: true, // Optional in STIX but required in ATT&CK
+    created_by_ref: true, // Optional in STIX but required in ATT&CK
   })
   .strict();
 

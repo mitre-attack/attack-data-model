@@ -5,6 +5,7 @@ import {
   type StixCreatedTimestamp,
   type StixModifiedTimestamp,
   type ExternalReferences,
+  type XMitreModifiedByRef,
   xMitreIdentity,
 } from '../../src/schemas/common/index';
 
@@ -15,18 +16,18 @@ describe('dataSourceSchema', () => {
     minimalDataSource = {
       type: 'x-mitre-data-source',
       id: `x-mitre-data-source--${uuidv4()}`,
-      description: 'Test data source description',
+      description: 'Test log source description',
       spec_version: '2.1',
       created: '2017-06-01T00:00:00.000Z' as StixCreatedTimestamp,
       created_by_ref: `identity--${uuidv4()}`,
       modified: '2017-06-01T00:00:00.000Z' as StixModifiedTimestamp,
       name: 'Network Connection Creation',
       object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
-      x_mitre_modified_by_ref: xMitreIdentity,
+      x_mitre_modified_by_ref: xMitreIdentity as XMitreModifiedByRef,
       external_references: [
         {
           source_name: 'mitre-attack',
-          url: 'https://attack.mitre.org/datasources/DS0014',
+          url: 'https://attack.mitre.org/datasources/DS0014', // TODO change this after website updates to use logsources
           external_id: 'DS0014',
         },
       ],
@@ -43,13 +44,13 @@ describe('dataSourceSchema', () => {
     });
 
     it('should accept fully populated valid object (required + optional ATT&CK fields)', () => {
-      const fullDataSource: DataSource = {
+      const LogDataSource: DataSource = {
         ...minimalDataSource,
         x_mitre_platforms: ['Windows'],
         x_mitre_contributors: ['Contributor'],
         x_mitre_deprecated: false,
       };
-      expect(() => dataSourceSchema.parse(fullDataSource)).not.toThrow();
+      expect(() => dataSourceSchema.parse(LogDataSource)).not.toThrow();
     });
   });
 

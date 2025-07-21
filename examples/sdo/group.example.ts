@@ -1,8 +1,7 @@
+import { z } from "zod/v4";
+import { v4 as uuidv4 } from 'uuid';
 import type { StixCreatedTimestamp, StixModifiedTimestamp } from "../../src/schemas/common/index.js";
 import { groupSchema } from "../../src/schemas/sdo/group.schema.js";
-import { z } from "zod";
-import { v4 as uuidv4 } from 'uuid';
-
 
 /** ************************************************************************************************* */
 // Example 1: Valid Group
@@ -39,50 +38,17 @@ console.log(groupSchema.parse(validGroup));
 /** ************************************************************************************************* */
 const invalidGroup = {
   modified: "2024-04-17T16:13:43.697Z",
-  // missing name
   x_mitre_version: "1.4",
   type: "intrusion-set",
   id: "intrusion-set--9538b1a4-4120-4e2d-bf59-3b11fcab05a4",
   created: "2019-04-16T15:14:38.533Z",
-  // missing x_mitre_domains
-  // external_references
   x_mitre_attack_spec_version: "3.2.0",
   spec_version: "2.1",
 };
 
 console.log("\nExample 2 - Invalid Group (missing required fields):");
-try {
-  groupSchema.parse(invalidGroup);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation errors:", error.errors);
-  }
-}
-/**
-   * Validation errors: [
-    {
-      code: 'invalid_type',
-      expected: 'array',
-      received: 'undefined',
-      path: [ 'external_references' ],
-      message: 'Required'
-    },
-    {
-      code: 'invalid_type',
-      expected: 'string',
-      received: 'undefined',
-      path: [ 'name' ],
-      message: 'Required'
-    },
-    {
-      code: 'invalid_type',
-      expected: 'array',
-      received: 'undefined',
-      path: [ 'x_mitre_domains' ],
-      message: 'Required'
-    }
-  ]
-   */
+const e2 = groupSchema.safeParse(invalidGroup);
+console.log(z.prettifyError(e2.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 3: Group with optional fields
@@ -121,33 +87,21 @@ const grouptWithInvalidType = {
 };
 
 console.log("\nExample 4 - Group with invalid type:");
-try {
-  groupSchema.parse(grouptWithInvalidType);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation error:", error.errors[0].message);
-    // Validation error: Invalid literal value, expected "intrusion-set"
-  }
-}
+const e4 = groupSchema.safeParse(grouptWithInvalidType);
+console.log(z.prettifyError(e4.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 5: Group with invalid dates
 /** ************************************************************************************************* */
 const groupWithInvalidDates = {
   ...validGroup,
-  first_seen: "2019-09-01", // Invalid date format
+  first_seen: "2019-09-01",
   last_seen: "2020-08-01T04:00:00.000Z",
 };
 
 console.log("\nExample 5 - Group with invalid dates:");
-try {
-  groupSchema.parse(groupWithInvalidDates);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation error:", error.errors[0].message);
-    // Validation error: Invalid STIX timestamp format: must be an RFC3339 timestamp with a timezone specification of 'Z'.
-  }
-}
+const e5 = groupSchema.safeParse(groupWithInvalidDates);
+console.log(z.prettifyError(e5.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 6: Parsing the provided example Group
@@ -193,14 +147,11 @@ const exampleOfRealGroup = {
 };
 
 console.log("\nExample 6 - Parsing the provided example group:");
-try {
-  const parsedGroup = groupSchema.parse(exampleOfRealGroup);
-  console.log("Parsed successfully. Group name:", parsedGroup.name);
-  // Parsed successfully. Group name: CyberAv3ngers
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation errors:", error.errors);
-  }
+const e6 = groupSchema.safeParse(exampleOfRealGroup);
+if (e6.success) {
+  console.log("Parsed successfully. Group name:", e6.data.name);
+} else {
+  console.log(z.prettifyError(e6.error as z.core.$ZodError));
 }
 
 /** ************************************************************************************************* */
@@ -212,19 +163,9 @@ const groupWithUnknownProperty = {
 }
 
 console.log("\nExample 7 - Parsing a group with an unknown property (foo: 'bar'):");
-try {
-  const parsedGroup = groupSchema.parse(groupWithUnknownProperty);
-  console.log("Parsed successfully. Group name:", parsedGroup.name);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-      console.log("Validation errors:", error.errors);
-      // Validation errors: [
-      //     {
-      //       code: 'unrecognized_keys',
-      //       keys: [ 'foo' ],
-      //       path: [],
-      //       message: "Unrecognized key(s) in object: 'foo'"
-      //     }
-      //   ]
-  }
+const e7 = groupSchema.safeParse(groupWithUnknownProperty);
+if (e7.success) {
+  console.log("Parsed successfully. Group name:", e7.data.name);
+} else {
+  console.log(z.prettifyError(e7.error as z.core.$ZodError));
 }

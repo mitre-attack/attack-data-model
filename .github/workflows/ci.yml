@@ -92,8 +92,9 @@ jobs:
       - name: Verify integrity of dependencies
         run: npm audit signatures
 
-  # Job 3: Publish
+  # Job 3: Publish (only on push events)
   publish:
+    if: github.event_name == 'push'
     needs: [test]
     runs-on: ubuntu-latest
     permissions:
@@ -133,7 +134,9 @@ jobs:
           HUSKY: 0  # Temporarily disables all Git hooks
         run: npx semantic-release
 
+  # Job 4: Update docs site (only on push events targeting main)
   deploy-docs:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [publish]
     runs-on: ubuntu-latest
     permissions:

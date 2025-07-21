@@ -1,10 +1,10 @@
+import { z } from "zod/v4";
 import {
   stixCreatedByRefSchema,
   stixCreatedTimestampSchema,
   stixModifiedTimestampSchema,
 } from "../../src/schemas/common/index.js";
 import { dataSourceSchema } from "../../src/schemas/sdo/data-source.schema.js";
-import { z } from "zod";
 
 /** ************************************************************************************************* */
 // Example 1: Valid Data Source
@@ -50,16 +50,13 @@ const invalidDataSource = {
   x_mitre_attack_spec_version: "3.2.0",
   name: "Test Data Source",
   x_mitre_version: "1.2",
-  // Missing description
   created_by_ref: stixCreatedByRefSchema.parse(
     "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5"
   ),
   created: stixCreatedTimestampSchema.parse("2023-03-17T13:37:42.596Z"),
   modified: stixModifiedTimestampSchema.parse("2024-04-11T00:31:21.576Z"),
-  // Missing object_marking_refs
   x_mitre_platforms: ["Windows", "Linux"],
   x_mitre_domains: ["enterprise-attack"],
-  // Missing external_references
   x_mitre_modified_by_ref: "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
   x_mitre_contributors: ["Test Contributer"],
   x_mitre_deprecated: false,
@@ -68,38 +65,8 @@ const invalidDataSource = {
 };
 
 console.log("\nExample 2 - Invalid Data Source (missing required fields):");
-try {
-  dataSourceSchema.parse(invalidDataSource);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation errors:", error.errors);
-  }
-}
-/**
- * Validation errors: [
-  {
-        code: 'invalid_type',
-        expected: 'array',
-        received: 'undefined',
-        path: [ 'external_references' ],
-        message: 'Required'
-    },
-    {
-        code: 'invalid_type',
-        expected: 'array',
-        received: 'undefined',
-        path: [ 'object_marking_refs' ],
-        message: 'Required'
-    },
-    {
-        code: 'invalid_type',
-        expected: 'string',
-        received: 'undefined',
-        path: [ 'description' ],
-        message: 'Required'
-    }
-    ]
- */
+const e2 = dataSourceSchema.safeParse(invalidDataSource);
+console.log(z.prettifyError(e2.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 3: Data Source with optional fields
@@ -124,33 +91,21 @@ const dataSourceWithInvalidType = {
 };
 
 console.log("\nExample 4 - Data Source with invalid type:");
-try {
-  dataSourceSchema.parse(dataSourceWithInvalidType);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation error:", error.errors[0].message);
-    // Validation error: Invalid literal value, expected "x-mitre-data-source"
-  }
-}
+const e4 = dataSourceSchema.safeParse(dataSourceWithInvalidType);
+console.log(z.prettifyError(e4.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 5: Data Source with invalid dates
 /** ************************************************************************************************* */
 const dataSourceWithInvalidDates = {
   ...validDataSource,
-  created: "2019-09-01", // Invalid date format
+  created: "2019-09-01",
   modified: "2020-08-01T04:00:00.000Z",
 };
 
 console.log("\nExample 5 - Data source with invalid dates:");
-try {
-  dataSourceSchema.parse(dataSourceWithInvalidDates);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation error:", error.errors[0].message);
-    // Validation error: Invalid STIX timestamp format: must be an RFC3339 timestamp with a timezone specification of 'Z'.
-  }
-}
+const e5 = dataSourceSchema.safeParse(dataSourceWithInvalidDates);
+console.log(z.prettifyError(e5.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 6: Parsing the provided example Data Source
@@ -187,14 +142,11 @@ const exampleOfRealDataSource = {
 };
 
 console.log("\nExample 6 - Parsing the provided example data source:");
-try {
-  const parsedDataSource = dataSourceSchema.parse(exampleOfRealDataSource);
-  console.log("Parsed successfully. Data Source name:", parsedDataSource.name);
-  // Parsed successfully. Data Source name: Sensor Health
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.log("Validation errors:", error.errors);
-  }
+const e6 = dataSourceSchema.safeParse(exampleOfRealDataSource);
+if (e6.success) {
+  console.log("Parsed successfully. Data Source name:", e6.data.name);
+} else {
+  console.log(z.prettifyError(e6.error as z.core.$ZodError));
 }
 
 /** ************************************************************************************************* */
@@ -206,19 +158,9 @@ const dataSourceWithUnknownProperty = {
 }
 
 console.log("\nExample 7 - Parsing a dataSource with an unknown property (foo: 'bar'):");
-try {
-  const parsedDataSource = dataSourceSchema.parse(dataSourceWithUnknownProperty);
-  console.log("Parsed successfully. DataSource name:", parsedDataSource.name);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-      console.log("Validation errors:", error.errors);
-      // Validation errors: [
-      //     {
-      //       code: 'unrecognized_keys',
-      //       keys: [ 'foo' ],
-      //       path: [],
-      //       message: "Unrecognized key(s) in object: 'foo'"
-      //     }
-      //   ]
-  }
+const e7 = dataSourceSchema.safeParse(dataSourceWithUnknownProperty);
+if (e7.success) {
+  console.log("Parsed successfully. DataSource name:", e7.data.name);
+} else {
+  console.log(z.prettifyError(e7.error as z.core.$ZodError));
 }

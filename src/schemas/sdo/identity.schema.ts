@@ -1,12 +1,9 @@
-import { z } from 'zod';
-import { createStixTypeValidator } from '../common/stix-type.js';
-import { objectMarkingRefsSchema } from '../common/common-properties.js';
-import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
-import { createStixIdValidator } from '../common/stix-identifier.js';
-import {
-  identityClassOpenVocabulary,
-  industrySectorOpenVocabulary,
-} from '../common/open-vocabulary.js';
+import { z } from 'zod/v4';
+import { createStixTypeValidator } from '@/schemas/common/stix-type.js';
+import { createStixIdValidator } from '@/schemas/common/stix-identifier.js';
+import { objectMarkingRefsSchema } from '@/schemas/common/common-properties.js';
+import { attackBaseDomainObjectSchema } from '@/schemas/common/attack-base-object.js';
+import { IdentityClassOV, IndustrySectorOV } from '@/schemas/common/open-vocabulary.js';
 
 /////////////////////////////////////
 //
@@ -22,32 +19,46 @@ export const extensibleIdentitySchema = attackBaseDomainObjectSchema
 
     object_marking_refs: objectMarkingRefsSchema,
 
-    identity_class: identityClassOpenVocabulary.describe(
-      'The type of entity that this Identity describes, e.g., an individual or organization. This is an open vocabulary and the values SHOULD come from the identity-class-ov vocabulary.',
-    ),
+    identity_class: IdentityClassOV.meta({
+      description:
+        'The type of entity that this Identity describes, e.g., an individual or organization. This is an open vocabulary and the values SHOULD come from the identity-class-ov vocabulary',
+    }),
 
-    description: z.string().describe('A description of the object.').optional(),
+    description: z
+      .string()
+      .meta({
+        description: 'A description of the object',
+      })
+      .optional(),
 
     // Not used in ATT&CK Identity but defined in STIX
     roles: z
       .array(z.string(), {
-        invalid_type_error: 'Roles must be an array of strings.',
+        error: (issue) =>
+          issue.code === 'invalid_type'
+            ? 'Roles must be an array of strings'
+            : 'Invalid roles array',
       })
-      .describe('The list of roles that this Identity performs.')
+      .meta({
+        description: 'The list of roles that this Identity performs',
+      })
       .optional(),
 
     // Not used in ATT&CK Identity but defined in STIX
     sectors: z
-      .array(industrySectorOpenVocabulary)
-      .describe(
-        'The list of industry sectors that this Identity belongs to. This is an open vocabulary and values SHOULD come from the industry-sector-ov vocabulary.',
-      )
+      .array(IndustrySectorOV)
+      .meta({
+        description:
+          'The list of industry sectors that this Identity belongs to. This is an open vocabulary and values SHOULD come from the industry-sector-ov vocabulary',
+      })
       .optional(),
 
     // Not used in ATT&CK Identity but defined in STIX
     contact_information: z
       .string()
-      .describe('The contact information (e-mail, phone number, etc.) for this Identity.')
+      .meta({
+        description: 'The contact information (e-mail, phone number, etc.) for this Identity',
+      })
       .optional(),
   })
   .omit({

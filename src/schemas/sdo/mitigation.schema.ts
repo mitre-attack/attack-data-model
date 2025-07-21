@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 import {
@@ -24,12 +24,12 @@ export const extensibleMitigationSchema = attackBaseDomainObjectSchema
 
     type: createStixTypeValidator('course-of-action'),
 
+    description: z.string().meta({
+      description: 'A description that provides more details and context about the Mitigation.',
+    }),
+
     // Optional in STIX but required in ATT&CK
     created_by_ref: stixCreatedByRefSchema,
-
-    description: z
-      .string()
-      .describe('A description that provides more details and context about the Mitigation.'),
 
     // Optional in STIX but required in ATT&CK
     external_references: createAttackExternalReferencesSchema('course-of-action'),

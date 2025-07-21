@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 import { collectionSchema } from "../../src/schemas/sdo/collection.schema.js";
 
 /****************************************************************************************************/
@@ -61,48 +61,15 @@ const invalidCollectionMissingFields = {
     "type": "x-mitre-collection",
     "spec_version": "2.1",
     "x_mitre_attack_spec_version": "2.1.0",
-    // Missing name
     "x_mitre_version": "6.2",
     "description": "Version 6.2 of the Enterprise ATT&CK dataset",
     "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
     "created": "2018-10-17T00:14:20.652Z",
     "modified": "2019-10-11T19:30:42.406Z",
-    // Missing object_marking_refs
-    // Missing x_mitre_contents
 }
 console.log("\nExample 2: Invalid Collection (missing required fields):");
-try {
-    collectionSchema.parse(invalidCollectionMissingFields);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
-}
-/**
-	Validation errors: [
-		{
-			code: 'invalid_type',
-			expected: 'string',
-			received: 'undefined',
-			path: [ 'name' ],
-			message: 'Required'
-		},
-		{
-			code: 'invalid_type',
-			expected: 'array',
-			received: 'undefined',
-			path: [ 'object_marking_refs' ],
-			message: 'Required'
-		},
-		{
-			code: 'invalid_type',
-			expected: 'array',
-			received: 'undefined',
-			path: [ 'x_mitre_contents' ],
-			message: 'Required'
-		}
-	]
- */
+const e2 = collectionSchema.safeParse(invalidCollectionMissingFields);
+console.log(z.prettifyError(e2.error as z.core.$ZodError));
 
 /****************************************************************************************************/
 // Example 3: Collection with invalid type
@@ -113,14 +80,8 @@ const collectionWithInvalidType = {
 };
 
 console.log("\nExample 3: Collection with invalid type:");
-try {
-    collectionSchema.parse(collectionWithInvalidType);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
-    }
-}
-// Validation error: Invalid literal value, expected "x-mitre-collection"
+const e3 = collectionSchema.safeParse(collectionWithInvalidType);
+console.log(z.prettifyError(e3.error as z.core.$ZodError));
 
 /****************************************************************************************************/
 // Example 4: Collection with optional fields
@@ -140,15 +101,12 @@ const collectionWithInvalidContents = {
 	...validCollection,
 	x_mitre_contents: [
 		{
-			object_ref: "attack-pattern--ad255bfe-a9e6-4b52-a258-8d3462abe842",
-			// Missing object_modified
+            object_ref: "attack-pattern--ad255bfe-a9e6-4b52-a258-8d3462abe842",
 		},
         {
-            // Missing object_ref
             object_modified: "2024-02-02T19:04:35.389Z"
         },
         {
-            // Invalid object_ref
             object_ref: "invalid-id",
             object_modified: "2024-02-02T19:04:35.389Z"
         }
@@ -156,33 +114,8 @@ const collectionWithInvalidContents = {
 };
 
 console.log("\nExample 5: Collection with invalid object version references:");
-try {
-    collectionSchema.parse(collectionWithInvalidContents);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors);
-    }
-}
-// Validation error: [
-//     {
-//       code: 'custom',
-//       message: "Invalid STIX timestamp format: must be an RFC3339 timestamp with a timezone specification of 'Z'.",
-//       fatal: true,
-//       path: [ 'x_mitre_contents', 0, 'object_modified' ]
-//     },
-//     {
-//       code: 'custom',
-//       message: 'Invalid STIX Identifier',
-//       fatal: true,
-//       path: [ 'x_mitre_contents', 1, 'object_ref' ]
-//     },
-//     {
-//       code: 'custom',
-//       message: 'Invalid STIX Identifier',
-//       fatal: true,
-//       path: [ 'x_mitre_contents', 2, 'object_ref' ]
-//     }
-//   ]
+const e5 = collectionSchema.safeParse(collectionWithInvalidContents);
+console.log(z.prettifyError(e5.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 6: Collection with unknown property
@@ -193,19 +126,9 @@ const collectionWithUnknownProperty = {
 }
 
 console.log("\nExample 6 - Parsing a collection with an unknown property (foo: 'bar'):");
-try {
-    const parsedCollection = collectionSchema.parse(collectionWithUnknownProperty);
-    console.log("Parsed successfully. Collection name:", parsedCollection.name);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-        // Validation errors: [
-        //     {
-        //       code: 'unrecognized_keys',
-        //       keys: [ 'foo' ],
-        //       path: [],
-        //       message: "Unrecognized key(s) in object: 'foo'"
-        //     }
-        //   ]
-    }
+const e6 = collectionSchema.safeParse(collectionWithUnknownProperty);
+if (e6.success) {
+    console.log("Parsed successfully. Collection name:", e6.data.name);
+} else {
+    console.log(z.prettifyError(e6.error as z.core.$ZodError));
 }

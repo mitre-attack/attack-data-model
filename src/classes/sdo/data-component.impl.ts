@@ -2,10 +2,12 @@
 
 import type { DataComponent } from '../../schemas/sdo/data-component.schema.js';
 import { AttackBaseImpl } from '../common/attack-object.impl.js';
+import { LogSourceImpl } from './log-source.impl.js';
 import { TechniqueImpl } from './technique.impl.js';
 
 export class DataComponentImpl extends AttackBaseImpl implements DataComponent {
   private _detectedTechniques: TechniqueImpl[] = [];
+  private _logSources: LogSourceImpl[] = [];
 
   constructor(readonly dataComponent: DataComponent) {
     super();
@@ -17,9 +19,21 @@ export class DataComponentImpl extends AttackBaseImpl implements DataComponent {
     this._detectedTechniques.push(technique);
   }
 
+  addFoundIn(logSource: LogSourceImpl): void {
+    this._logSources.push(logSource);
+  }
+
   // Getters
   getDetectedTechniques(): TechniqueImpl[] {
     return this._detectedTechniques;
+  }
+
+  getLogSources(): LogSourceImpl[] {
+    return this._logSources;
+  }
+
+  get foundIn(): LogSourceImpl[] {
+    return this._logSources;
   }
 }
 
