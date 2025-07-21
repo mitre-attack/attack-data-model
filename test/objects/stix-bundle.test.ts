@@ -178,7 +178,8 @@ describe('StixBundleSchema', () => {
     });
   });
 
-  it('should validate existing ATT&CK bundles and report errors', () => {
+  // GitHub Actions often fails without an increased timeout for this test
+  it('should validate existing ATT&CK bundles and report errors', { timeout: 10_000 }, () => {
     const bundles = globalThis.attackData.bundles as StixBundle[];
     const bundlesWithErrors: { bundleIndex: number; errors: string[] }[] = [];
 

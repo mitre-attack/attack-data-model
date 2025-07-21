@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 import { stixBundleSchema } from '../../src/schemas/sdo/stix-bundle.schema.js';
 import type { StixCreatedTimestamp, StixModifiedTimestamp } from "../../src/schemas/common/index.js";
 import { v4 as uuidv4 } from 'uuid';
@@ -78,38 +78,12 @@ console.log(stixBundleSchema.parse(validBundle));
 
 const invalidBundle = {
     id: `bundle--${uuidv4()}`,
-    // Missing type
-    // Missing spec_version
     objects: [minimalCollection]
 };
 
 console.log("Example 2 - Invalid Stix Bundle (missing required fields):");
-try {
-    stixBundleSchema.parse(invalidBundle);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
-}
-
-/** 
- * Validation errors: [
-    {
-      received: undefined,
-      code: 'invalid_literal',
-      expected: 'bundle',
-      path: [ 'type' ],
-      message: "Invalid 'type' property. Expected 'bundle' for StixBundle object, but received 'undefined'."
-    },
-    {
-      expected: "'2.0' | '2.1'",
-      received: 'undefined',
-      code: 'invalid_type',
-      path: [ 'spec_version' ],
-      message: 'Required'
-    }
-]
-*/
+const e2 = stixBundleSchema.safeParse(invalidBundle);
+console.log(z.prettifyError(e2.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 3: Invalid Stix Bundle (missing required fields)
@@ -144,7 +118,6 @@ const bundleWithInvalidCollection = {
         {
             type: "identity",
             id: `identity--${uuidv4()}`,
-            // Incorrect spec version
             spec_version: "2.3",
             created: "2017-06-01T00:00:00.000Z" as StixCreatedTimestamp,
             modified: "2017-06-01T00:00:00.000Z" as StixModifiedTimestamp,
@@ -152,7 +125,6 @@ const bundleWithInvalidCollection = {
             object_marking_refs: [
                 "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168",
             ],
-            //Missing identity_class
             x_mitre_attack_spec_version: "2.1.0",
             x_mitre_domains: ["enterprise-attack"],
             x_mitre_version: "1.0"
@@ -161,36 +133,30 @@ const bundleWithInvalidCollection = {
 };
 console.log("Example 3 - Invalid Collection (missing required fields):");
 
-try {
-    stixBundleSchema.parse(bundleWithInvalidCollection);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-        const errors: string[] = [];
-        error.issues.forEach((issue) => {
+const e3 = stixBundleSchema.safeParse(bundleWithInvalidCollection);
+if (!e3.success) {
+    const errors: string[] = [];
+    e3.error.issues.forEach((issue) => {
         const objectIndex = issue.path.find((p) => typeof p === 'number');
         const errorObject = objectIndex !== undefined ? bundleWithInvalidCollection.objects[objectIndex as number] : undefined;
         console.log("\n")
         let errorMessage = `Error in bundle`;
         let objectMessage = `Validation errors: `;
         if (errorObject) {
-          errorMessage += `\n  Object Index: ${objectIndex}`;
-          errorMessage += `\n  Object ID: ${errorObject.id}`;
-          errorMessage += `\n  Object Type: ${errorObject.type}`;
-          errorMessage += `\n  Object Name: ${(errorObject as any).name || 'N/A'}`;
-  
-          // Determine Object Status
-          let objectStatus = 'Active';
-          if ((errorObject as any).x_mitre_deprecated) {
+            errorMessage += `\n  Object Index: ${objectIndex}`;
+            errorMessage += `\n  Object ID: ${errorObject.id}`;
+            errorMessage += `\n  Object Type: ${errorObject.type}`;
+            errorMessage += `\n  Object Name: ${(errorObject as any).name || 'N/A'}`;
+
+        let objectStatus = 'Active';
+        if ((errorObject as any).x_mitre_deprecated) {
             objectStatus = 'Deprecated';
-          }
-          errorMessage += `\n  Object Status: ${objectStatus}`;
-          const schema = StixObjectSchema[errorObject.type];
-            try {
-                schema.parse(errorObject);
-            } catch (error) {
-                if (error instanceof z.ZodError) {
-                    objectMessage += error.errors.map(err => `\n  - ${err.path.join('.')} : ${err.message}`).join('');
-                }
+        }
+        errorMessage += `\n  Object Status: ${objectStatus}`;
+        const schema = StixObjectSchema[errorObject.type];
+            const objValidation = schema.safeParse(errorObject);
+            if (!objValidation.success) {
+                objectMessage += objValidation.error.issues.map(err => `\n  - ${err.path.join('.')} : ${err.message}`).join('');
             }
         }
         errorMessage += `\n  Path: ${issue.path.join('.')}`;
@@ -198,25 +164,8 @@ try {
         errors.push(errorMessage);
         console.warn(errorMessage);
         console.warn(objectMessage);
-      });
-    }
-  }
-
-/**
- * 
-Error in bundle
-  Object Index: 1
-  Object ID: identity--76cb565f-7af8-4343-a251-101a7223b18c
-  Object Type: identity
-  Object Name: The MITRE Corporation
-  Object Status: Active
-  Path: objects.1
-  Error: Invalid input
-Validation errors: 
-  - spec_version : Invalid enum value. Expected '2.0' | '2.1', received '2.3'
-  - identity_class : Required
- */
-
+    });
+}
 
 /** ************************************************************************************************* */
 // Example 4: Stix Bundle with invalid type
@@ -227,14 +176,8 @@ const stixBundleWithInvalidType = {
 };
 
 console.log("\nExample 4 - Stix Bundle with invalid type:");
-try {
-    stixBundleSchema.parse(stixBundleWithInvalidType);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
-        // Validation error: Invalid 'type' property. Expected 'bundle' for StixBundle object, but received 'invalid-type'.
-    }
-}
+const e4 = stixBundleSchema.safeParse(stixBundleWithInvalidType);
+console.log(z.prettifyError(e4.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 5: Stix Bundle with invalid id
@@ -245,14 +188,8 @@ const stixBundleWithInvalidId = {
 };
 
 console.log("\nExample 5 - Stix Bundle with invalid id:");
-try {
-    stixBundleSchema.parse(stixBundleWithInvalidId);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
-        // Validation error: Invalid STIX Identifier: must start with 'bundle--'.
-    }
-}
+const e5 = stixBundleSchema.safeParse(stixBundleWithInvalidId);
+console.log(z.prettifyError(e5.error as z.core.$ZodError));
 
 /** ************************************************************************************************* */
 // Example 6: Parsing the provided example stix bundle
@@ -335,16 +272,13 @@ const exampleOfRealStixBundle = {
     ]
 }
 
-console.log("\nExample 7 - Parsing the provided example stixBundle:");
-try {
-    const parsedBundle = stixBundleSchema.parse(exampleOfRealStixBundle);
-    console.log(parsedBundle);
-    console.log("Parsed successfully. stix bundle ID:", parsedBundle.id);
-    // Parsed successfully. ID: bundle--1d9d1bf4-f94e-401e-b330-e0f2229493e3
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
+console.log("\nExample 6 - Parsing the provided example stixBundle:");
+const e6 = stixBundleSchema.safeParse(exampleOfRealStixBundle);
+if (e6.success) {
+    console.log(e6.data);
+    console.log("Parsed successfully. stix bundle ID:", e6.data.id);
+} else {
+    console.log(z.prettifyError(e6.error as z.core.$ZodError));
 }
 
 /** ************************************************************************************************* */
@@ -356,21 +290,9 @@ const stixBundleWithUnknownProperty = {
 }
 
 console.log("\nExample 7 - Parsing a stix bundle with an unknown property (foo: 'bar'):");
-try {
-    const parsedBundle = stixBundleSchema.parse(stixBundleWithUnknownProperty);
-    console.log("Parsed successfully. Stix Bundle name:", parsedBundle.id);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
+const e7 = stixBundleSchema.safeParse(stixBundleWithUnknownProperty);
+if (e7.success) {
+    console.log("Parsed successfully. Stix Bundle name:", e7.data.id);
+} else {
+    console.log(z.prettifyError(e7.error as z.core.$ZodError));
 }
-/**
- * Validation errors: [
-    {
-      code: 'unrecognized_keys',
-      keys: [ 'foo' ],
-      path: [],
-      message: "Unrecognized key(s) in object: 'foo'"
-    }
-  ]
-*/

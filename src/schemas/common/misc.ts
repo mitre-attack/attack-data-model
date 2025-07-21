@@ -1,8 +1,9 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { stixIdentifierSchema, createStixIdValidator } from './stix-identifier.js';
 import {
   attackIdPatterns,
   stixTypeToAttackIdMapping,
+  getAttackIdExample,
   type StixTypesWithAttackIds,
 } from './attack-id.js';
 
@@ -10,28 +11,42 @@ import {
 // ExternalReference schema
 //==============================================================================
 
-// a singlular external reference
+// a singular external reference
 export const externalReferenceSchema = z.object({
   source_name: z.string({
-    required_error: 'Source name is required.',
-    invalid_type_error: 'Source name must be a string.',
+    error: (issue) =>
+      issue.input === undefined ? 'Source name is required' : 'Source name must be a string',
   }),
 
-  description: z.string({ invalid_type_error: 'Description must be a string.' }).optional(),
-
-  url: z
-    .string({ invalid_type_error: 'URL must be a string.' })
-    .url({ message: 'Invalid URL format. Please provide a valid URL.' })
+  description: z
+    .string({
+      error: 'Description must be a string',
+    })
     .optional(),
 
-  external_id: z.string({ invalid_type_error: 'External ID must be a string.' }).optional(),
+  url: z
+    .url({
+      error: (issue) =>
+        issue.input === null
+          ? 'URL cannot be null'
+          : 'Invalid URL format. Please provide a valid URL',
+    })
+    .optional(),
+
+  external_id: z
+    .string({
+      error: 'External ID must be a string',
+    })
+    .optional(),
 });
 
-// a list of external reference
+// a list of external references
 export const externalReferencesSchema = z
   .array(externalReferenceSchema)
-  .min(1, "At least one external reference is required when 'external_references' is defined.")
-  .describe('A list of external references which refers to non-STIX information.');
+  .min(1, "At least one external reference is required when 'external_references' is defined")
+  .meta({
+    description: 'A list of external references which refers to non-STIX information',
+  });
 
 // a factory function to generate specialized external references schemas for each ATT&CK object type
 export const createAttackExternalReferencesSchema = (stixType: StixTypesWithAttackIds) => {
@@ -53,42 +68,26 @@ export const createAttackExternalReferencesSchema = (stixType: StixTypesWithAtta
           if (!refs[0]?.external_id) return true;
 
           // Get expected format and validate
-          const format = stixTypeToAttackIdMapping[stixType];
-          return attackIdPatterns[format].test(refs[0].external_id);
+          const attackIdType = stixTypeToAttackIdMapping[stixType];
+          if (attackIdType === 'technique') {
+            // Fallback to subtechnique if technique fails
+            return (
+              attackIdPatterns['technique'].test(refs[0].external_id) ||
+              attackIdPatterns['subtechnique'].test(refs[0].external_id)
+            );
+          }
+          return attackIdPatterns[attackIdType].test(refs[0].external_id);
         },
         {
-          message: `The first external_reference must match the ATT&CK ID format ${getFormatExample(stixType)}.`,
+          message: `The first external_reference must match the ATT&CK ID format ${getAttackIdExample(stixType)}.`,
           path: [0, 'external_id'],
         },
       )
-      .describe('A list of external references with the first containing a valid ATT&CK ID')
+      .meta({
+        description: 'A list of external references with the first containing a valid ATT&CK ID',
+      })
   );
 };
-
-// Helper to get format example for error messages
-function getFormatExample(stixType: StixTypesWithAttackIds): string {
-  switch (stixType) {
-    case 'x-mitre-tactic':
-      return 'TA####';
-    case 'attack-pattern':
-      return 'T#### or T####.###';
-    case 'intrusion-set':
-      return 'G####';
-    case 'malware':
-    case 'tool':
-      return 'S####';
-    case 'course-of-action':
-      return 'M####';
-    case 'x-mitre-data-source':
-      return 'DS####';
-    case 'x-mitre-asset':
-      return 'A####';
-    case 'campaign':
-      return 'C####';
-    default:
-      return ''; // Satisfy TypeScript
-  }
-}
 
 export type ExternalReference = z.infer<typeof externalReferenceSchema>;
 export type ExternalReferences = z.infer<typeof externalReferencesSchema>;
@@ -97,9 +96,10 @@ export type ExternalReferences = z.infer<typeof externalReferencesSchema>;
 // StixCreatedByRef schema (wrapper around StixIdentifier)
 //==============================================================================
 
-export const stixCreatedByRefSchema = createStixIdValidator('identity').describe(
-  'The created_by_ref property specifies the id property of the identity object that describes the entity that created this object. If this attribute is omitted, the source of this information is undefined. This may be used by object creators who wish to remain anonymous.',
-);
+export const stixCreatedByRefSchema = createStixIdValidator('identity').meta({
+  description:
+    'The created_by_ref property specifies the id property of the identity object that describes the entity that created this object. If this attribute is omitted, the source of this information is undefined. This may be used by object creators who wish to remain anonymous.',
+});
 
 export type StixCreatedByRef = z.infer<typeof stixCreatedByRefSchema>;
 
@@ -113,24 +113,3 @@ export const granularMarkingSchema = z.object({
 });
 
 export type GranularMarking = z.infer<typeof granularMarkingSchema>;
-
-//==============================================================================
-// Extension schema
-//==============================================================================
-
-export const extensionSchema = z.object({
-  extension_type: z.string(),
-  extension_properties: z.record(z.unknown()),
-});
-
-export type Extension = z.infer<typeof extensionSchema>;
-
-//==============================================================================
-// Extensions schema
-//==============================================================================
-
-export const extensionsSchema = z
-  .record(z.union([extensionSchema, z.record(z.unknown())]))
-  .describe('Specifies any extensions of the object, as a dictionary.');
-
-export type Extensions = z.infer<typeof extensionsSchema>;

@@ -118,8 +118,8 @@ describe('TechniqueSchema', () => {
       testField('x_mitre_detection', 123, false);
     });
 
-    describe('x_mitre_data_sources', () => {
-      testField('x_mitre_data_sources', 'invalid string', false);
+    describe('x_mitre_log_sources', () => {
+      testField('x_mitre_log_sources', 'invalid string', false);
     });
 
     describe('x_mitre_permissions_required', () => {

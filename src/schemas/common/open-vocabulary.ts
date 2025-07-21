@@ -1,6 +1,14 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
-export const MalwareTypeOpenVocabulary = z.enum([
+/**
+ * Naming convention for OV variables:
+ * Open vocabularies MUST
+ *  - use singular tense: MalwareType as opposed to MalwareType~s~
+ *  - use the suffix: "OV"
+ *  - Follow ProperCase
+ */
+
+export const MalwareTypeOV = z.enum([
   'adware',
   'backdoor',
   'bot',
@@ -25,7 +33,7 @@ export const MalwareTypeOpenVocabulary = z.enum([
   'unknown',
 ]);
 
-export const ProcessorArchitecturesOpenVocabulary = z.enum([
+export const ProcessorArchitectureOV = z.enum([
   'alpha',
   'arm',
   'ia-64',
@@ -36,7 +44,7 @@ export const ProcessorArchitecturesOpenVocabulary = z.enum([
   'x86-64',
 ]);
 
-export const ImplementationLanguagesOpenVocabulary = z.enum([
+export const ImplementationLanguageOV = z.enum([
   'applescript',
   'bash',
   'c',
@@ -60,7 +68,7 @@ export const ImplementationLanguagesOpenVocabulary = z.enum([
   'x86-64',
 ]);
 
-export const MalwareCapabilitiesOpenVocabulary = z.enum([
+export const MalwareCapabilityOV = z.enum([
   'accesses-remote-machines',
   'anti-debugging',
   'anti-disassembly',
@@ -100,7 +108,7 @@ export const MalwareCapabilitiesOpenVocabulary = z.enum([
   'violates-system-operational-integrity',
 ]);
 
-export const ToolTypesOpenVocabulary = z.enum([
+export const ToolTypeOV = z.enum([
   'denial-of-service',
   'exploitation',
   'information-gathering',
@@ -111,7 +119,7 @@ export const ToolTypesOpenVocabulary = z.enum([
   'unknown',
 ]);
 
-export const identityClassOpenVocabulary = z.enum([
+export const IdentityClassOV = z.enum([
   'individual',
   'group',
   'system',
@@ -132,7 +140,7 @@ export const identityClassOpenVocabulary = z.enum([
  * Knowing a Threat Actor or Intrusion Set's motivation may allow an analyst or
  * defender to better understand likely targets and behaviors.
  */
-export const attackMotivationOpenVocabulary = z.enum([
+export const AttackMotivationOV = z.enum([
   'accidental',
   'coercion',
   'dominance',
@@ -162,7 +170,7 @@ export const attackMotivationOpenVocabulary = z.enum([
  * This section including vocabulary items and their descriptions is based on the
  * Threat Agent Library publication from Intel Corp in September 2007 [Casey 2007].
  */
-export const attackResourceLevelOpenVocabulary = z.enum([
+export const AttackResourceLevelOV = z.enum([
   'individual',
   'club',
   'contest',
@@ -183,7 +191,7 @@ export const attackResourceLevelOpenVocabulary = z.enum([
  * It is intended to be holistic; it has been derived from several other lists and is not
  * limited to "critical infrastructure" sectors.
  */
-export const industrySectorOpenVocabulary = z.enum([
+export const IndustrySectorOV = z.enum([
   'agriculture',
   'aerospace',
   'automotive',
@@ -219,3 +227,52 @@ export const industrySectorOpenVocabulary = z.enum([
   'transportation',
   'utilities',
 ]);
+
+// Used by x_mitre_collection_layers
+export const MitreCollectionLayerOV = z.enum([
+  'Cloud Control Plane',
+  'Host',
+  'Report',
+  'Container',
+  'Device',
+  'OSINT',
+  'Network',
+]);
+
+/////////////////////////////////////
+//
+// Pattern Type Vocabulary
+// https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_9lfdvxnyofxw
+//
+// At the time of adoption (May-2025), ATT&CK only uses 'spl' and 'stix'
+//
+/////////////////////////////////////
+
+export const PatternTypeOV = z
+  .enum(['spl', 'stix', 'pcre', 'sigma', 'snort', 'suricata', 'yara'])
+  .meta({
+    description:
+      'This is a non-exhaustive, open vocabulary that covers common pattern languages and is intended to characterize the pattern language that the indicator pattern is expressed in.',
+  });
+
+/////////////////////////////////////
+//
+// Indicator Type Vocabulary
+// https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_cvhfwe3t9vuo
+//
+/////////////////////////////////////
+
+export const IndicatorTypeOV = z
+  .enum([
+    'anomalous-activity',
+    'anonymization',
+    'benign',
+    'compromised',
+    'malicious-activity',
+    'attribution',
+    'unknown',
+  ])
+  .meta({
+    description:
+      "Indicator type is an open vocabulary used to categorize Indicators. It is intended to be high-level to promote consistent practices. Indicator types should not be used to capture information that can be better captured via related Malware or Attack Pattern objects. It is better to link an Indicator to a Malware object describing Poison Ivy rather than simply providing a type or label of 'poison-ivy.'",
+  });

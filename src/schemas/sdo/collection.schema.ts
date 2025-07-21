@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import {
   attackBaseDomainObjectSchema,
   createStixIdValidator,
@@ -18,17 +18,18 @@ import {
 /////////////////////////////////////
 
 export const objectVersionReferenceSchema = z.object({
-  object_ref: stixIdentifierSchema.describe('The ID of the referenced object.'),
+  object_ref: stixIdentifierSchema.meta({ description: 'The ID of the referenced object.' }),
 
-  object_modified: stixModifiedTimestampSchema.describe(
-    'The modified time of the referenced object. It MUST be an exact match for the modified time of the STIX object being referenced.',
-  ),
+  object_modified: stixModifiedTimestampSchema.meta({
+    description:
+      'The modified time of the referenced object. It MUST be an exact match for the modified time of the STIX object being referenced.',
+  }),
 });
 
 export const xMitreContentsSchema = z
   .array(objectVersionReferenceSchema)
   .min(1, 'At least one STIX object reference is required.')
-  .describe('Specifies the objects contained within the collection.');
+  .meta({ description: 'Specifies the objects contained within the collection.' });
 
 export type ObjectVersionReference = z.infer<typeof objectVersionReferenceSchema>;
 
@@ -50,9 +51,10 @@ export const extensibleCollectionSchema = attackBaseDomainObjectSchema
     // Optional in STIX but required in ATT&CK
     object_marking_refs: objectMarkingRefsSchema,
 
-    description: descriptionSchema.describe(
-      'Details, context, and explanation about the purpose or contents of the collection.',
-    ),
+    description: descriptionSchema.meta({
+      description:
+        'Details, context, and explanation about the purpose or contents of the collection.',
+    }),
 
     x_mitre_contents: xMitreContentsSchema.min(1, 'At least one STIX object reference is required'),
   })

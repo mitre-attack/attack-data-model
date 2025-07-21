@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import {
   stixTimestampSchema,
@@ -64,13 +64,15 @@ const multipleCitationsSchema = z.custom<string>(
   },
 );
 
-export const xMitreFirstSeenCitationSchema = multipleCitationsSchema.describe(
-  "One or more citations for when the object was first seen, in the form '(Citation: [citation name])(Citation: [citation name])...', where each [citation name] can be found as one of the source_name values in the external_references.",
-);
+export const xMitreFirstSeenCitationSchema = multipleCitationsSchema.meta({
+  description:
+    "One or more citations for when the object was first seen, in the form '(Citation: [citation name])(Citation: [citation name])...', where each [citation name] can be found as one of the source_name values in the external_references.",
+});
 
-export const xMitreLastSeenCitationSchema = multipleCitationsSchema.describe(
-  "One or more citations for when the object was last seen, in the form '(Citation: [citation name])(Citation: [citation name])...', where each [citation name] can be found as one of the source_name values in the external_references.",
-);
+export const xMitreLastSeenCitationSchema = multipleCitationsSchema.meta({
+  description:
+    "One or more citations for when the object was last seen, in the form '(Citation: [citation name])(Citation: [citation name])...', where each [citation name] can be found as one of the source_name values in the external_references.",
+});
 
 export type XMitreFirstSeenCitation = z.infer<typeof xMitreFirstSeenCitationSchema>;
 export type XMitreLastSeenCitation = z.infer<typeof xMitreLastSeenCitationSchema>;
@@ -100,27 +102,30 @@ export const extensibleCampaignSchema = attackBaseDomainObjectSchema
     aliases: aliasesSchema,
 
     // Optional in STIX but required in ATT&CK
-    first_seen: stixTimestampSchema.describe('The time that this Campaign was first seen.'),
+    first_seen: stixTimestampSchema.meta({
+      description: 'The time that this Campaign was first seen.',
+    }),
 
     // Optional in STIX but required in ATT&CK
-    last_seen: stixTimestampSchema.describe('The time that this Campaign was last seen.'),
+    last_seen: stixTimestampSchema.meta({
+      description: 'The time that this Campaign was last seen.',
+    }),
 
     x_mitre_first_seen_citation: xMitreFirstSeenCitationSchema,
 
     x_mitre_last_seen_citation: xMitreLastSeenCitationSchema,
   })
   .required({
-    created_by_ref: true,
-    external_references: true,
-    object_marking_refs: true,
-    revoked: true,
+    created_by_ref: true, // Optional in STIX but required in ATT&CK
+    object_marking_refs: true, // Optional in STIX but required in ATT&CK
+    revoked: true, // Optional in STIX but required in ATT&CK
   })
   .strict();
 
 // Apply a single refinement that combines both refinements
-export const campaignSchema = extensibleCampaignSchema.superRefine((schema, ctx) => {
-  createFirstAliasRefinement()(schema, ctx);
-  createCitationsRefinement()(schema, ctx);
+export const campaignSchema = extensibleCampaignSchema.check((ctx) => {
+  createFirstAliasRefinement()(ctx);
+  createCitationsRefinement()(ctx);
 });
 
 // Define the type for Campaign

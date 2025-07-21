@@ -1,6 +1,6 @@
-import { stixCreatedByRefSchema, stixCreatedTimestampSchema, stixModifiedTimestampSchema } from "../../src/schemas/common/index.js";
+import { z } from "zod/v4";
 import { campaignSchema } from "../../src/schemas/sdo/campaign.schema.js";
-import { z } from "zod";
+import { stixCreatedByRefSchema, stixCreatedTimestampSchema, stixModifiedTimestampSchema } from "../../src/schemas/common/index.js";
 
 /** ************************************************************************************************* */
 // Example 1: Valid Campaign
@@ -69,7 +69,7 @@ const validCampaign = {
 };
 
 console.log("Example 1 - Valid Campaign:");
-console.log(campaignSchema.parse(validCampaign));
+console.log("Parsed successfully:", campaignSchema.safeParse(validCampaign).success);
 
 
 /** ************************************************************************************************* */
@@ -100,50 +100,19 @@ const invalidCampaign = {
 };
 
 console.log("\nExample 2 - Invalid Campaign (missing required fields):");
-try {
-    campaignSchema.parse(invalidCampaign);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
-}
-/**
- * Validation errors: [
-  {
-        code: 'invalid_type',
-        expected: 'array',
-        received: 'undefined',
-        path: [ 'external_references' ],
-        message: 'Required'
-    },
-    {
-        code: 'invalid_type',
-        expected: 'array',
-        received: 'undefined',
-        path: [ 'object_marking_refs' ],
-        message: 'Required'
-    },
-    {
-        code: 'invalid_type',
-        expected: 'string',
-        received: 'undefined',
-        path: [ 'description' ],
-        message: 'Required'
-    },
-    {
-        code: 'custom',
-        message: "The citation must conform to the pattern '(Citation: <Citation Name>)'",
-        fatal: true,
-        path: [ 'x_mitre_first_seen_citation' ]
-    },
-    {
-        code: 'custom',
-        message: "The citation must conform to the pattern '(Citation: <Citation Name>)'",
-        fatal: true,
-        path: [ 'x_mitre_last_seen_citation' ]
-    }
-    ]
- */
+const e2 = campaignSchema.safeParse(invalidCampaign);
+console.log(z.prettifyError(e2.error as z.core.$ZodError));
+
+// ✖ Invalid input: expected array, received undefined
+//   → at external_references
+// ✖ Invalid input: expected nonoptional, received undefined
+//   → at object_marking_refs
+// ✖ Invalid input: expected string, received undefined
+//   → at description
+// ✖ Must be one or more citations in the form '(Citation: [citation name])' without any separators
+//   → at x_mitre_first_seen_citation
+// ✖ Must be one or more citations in the form '(Citation: [citation name])' without any separators
+//   → at x_mitre_last_seen_citation
 
 /** ************************************************************************************************* */
 // Example 3: Campaign with optional fields
@@ -154,7 +123,7 @@ const campaignWithOptionalFields = {
 };
 
 console.log("\nExample 3 - Campaign with optional fields:");
-console.log(campaignSchema.parse(campaignWithOptionalFields));
+console.log("Successfully parsed:", campaignSchema.safeParse(campaignWithOptionalFields).success);
 
 /** ************************************************************************************************* */
 // Example 4: Campaign with invalid type
@@ -165,14 +134,11 @@ const campaignWithInvalidType = {
 };
 
 console.log("\nExample 4 - Campaign with invalid type:");
-try {
-    campaignSchema.parse(campaignWithInvalidType);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
-        // Validation error: Invalid literal value, expected "campaign"
-    }
-}
+const e4 = campaignSchema.safeParse(campaignWithInvalidType);
+console.log(z.prettifyError(e4.error as z.core.$ZodError));
+
+// ✖ Invalid input: expected "campaign"
+//   → at type
 
 /** ************************************************************************************************* */
 // Example 5: Campaign with invalid dates
@@ -187,11 +153,13 @@ console.log("\nExample 5 - Campaign with invalid dates:");
 try {
     campaignSchema.parse(campaignWithInvalidDates);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
-        // Validation error: Invalid STIX timestamp format: must be an RFC3339 timestamp with a timezone specification of 'Z'.
+    if (error instanceof z.core.$ZodError) {
+        console.log(z.prettifyError(error));
     }
 }
+
+// ✖ Invalid STIX timestamp format: must be an RFC3339 timestamp with a timezone specification of 'Z'.
+//   → at first_seen
 
 /** ************************************************************************************************* */
 // Example 6: Campaign with invalid citations
@@ -206,11 +174,13 @@ console.log("\nExample 6 - Campaign with invalid citations:");
 try {
     campaignSchema.parse(campaignWithInvalidCitations);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation error:", error.errors[0].message);
-        // Validation error: The citation must conform to the pattern '(Citation: <Citation Name>)'
+    if (error instanceof z.core.$ZodError) {
+        console.log(z.prettifyError(error));
     }
 }
+
+// ✖ Must be one or more citations in the form '(Citation: [citation name])' without any separators
+//   → at x_mitre_first_seen_citation
 
 /** ************************************************************************************************* */
 // Example 7: Parsing the provided example campaign
@@ -279,15 +249,10 @@ const exampleOfRealCampaign = {
 }
 
 console.log("\nExample 7 - Parsing the provided example campaign:");
-try {
-    const parsedCampaign = campaignSchema.parse(exampleOfRealCampaign);
-    console.log("Parsed successfully. Campaign name:", parsedCampaign.name);
-    // Parsed successfully. Campaign name: Operation Dream Job
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
-}
+const e7 = campaignSchema.safeParse(exampleOfRealCampaign);
+console.log("Successfully parsed:", e7.success);
+
+// Successfully parsed: true
 
 /** ************************************************************************************************* */
 // Example 8: Campaign with unknown property
@@ -302,18 +267,12 @@ try {
     const parsedCampaign = campaignSchema.parse(campaignWithUnknownProperty);
     console.log("Parsed successfully. Campaign name:", parsedCampaign.name);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-        // Validation errors: [
-        //     {
-        //       code: 'unrecognized_keys',
-        //       keys: [ 'foo' ],
-        //       path: [],
-        //       message: "Unrecognized key(s) in object: 'foo'"
-        //     }
-        //   ]
+    if (error instanceof z.core.$ZodError) {
+        console.log(z.prettifyError(error));
     }
 }
+
+// ✖ Unrecognized key: "foo"
 
 /** ************************************************************************************************* */
 // Example 9: Campaign with multiple valid citations
@@ -325,15 +284,10 @@ const campaignWithMultipleCitations = {
 };
 
 console.log("\nExample 9 - Campaign with multiple valid citations:");
-try {
-    const parsedCampaign = campaignSchema.parse(campaignWithMultipleCitations);
-    console.log("Parsed successfully. First seen citation:", parsedCampaign.x_mitre_first_seen_citation);
-    console.log("Last seen citation:", parsedCampaign.x_mitre_last_seen_citation);
-} catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
-    }
-}
+const e9 = campaignSchema.safeParse(campaignWithMultipleCitations);
+console.log("Successfully parsed:", e9.success);
+
+// Successfully parsed: true
 
 /** ************************************************************************************************* */
 // Example 10: Campaign with invalid multiple citations (missing parentheses)
@@ -348,10 +302,13 @@ console.log("\nExample 10 - Campaign with invalid multiple citations:");
 try {
     campaignSchema.parse(campaignWithInvalidMultipleCitations);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
+    if (error instanceof z.core.$ZodError) {
+        console.log(z.prettifyError(error));
     }
 }
+
+// ✖ Must be one or more citations in the form '(Citation: [citation name])' without any separators
+//   → at x_mitre_first_seen_citation
 
 /** ************************************************************************************************* */
 // Example 11: Campaign with citation not in external_references
@@ -366,10 +323,13 @@ console.log("\nExample 11 - Campaign with citation not in external_references:")
 try {
     campaignSchema.parse(campaignWithNonExistentCitation);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
+    if (error instanceof z.core.$ZodError) {
+        console.log(z.prettifyError(error));
     }
 }
+
+// ✖ Citation Non-existent Source not found in external_references.
+//   → at x_mitre_first_seen_citation[1]
 
 /** ************************************************************************************************* */
 // Example 12: Campaign with mixed valid and invalid citations
@@ -384,10 +344,13 @@ console.log("\nExample 12 - Campaign with mixed valid and invalid citations:");
 try {
     campaignSchema.parse(campaignWithMixedCitations);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
+    if (error instanceof z.core.$ZodError) {
+        console.log(z.prettifyError(error));
     }
 }
+
+// ✖ Citation Invalid Citation not found in external_references.
+//   → at x_mitre_first_seen_citation[1]
 
 /** ************************************************************************************************* */
 // Example 13: Campaign with empty citation string
@@ -402,7 +365,10 @@ console.log("\nExample 13 - Campaign with empty citation string:");
 try {
     campaignSchema.parse(campaignWithEmptyCitation);
 } catch (error) {
-    if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
+    if (error instanceof z.core.$ZodError) {
+        console.log(z.prettifyError(error));
     }
 }
+
+// ✖ Must be one or more citations in the form '(Citation: [citation name])' without any separators
+//   → at x_mitre_first_seen_citation

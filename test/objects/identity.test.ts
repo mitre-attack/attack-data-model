@@ -81,7 +81,6 @@ describe('IdentitySchema', () => {
       testField('identity_class', 'invalid-identity-class');
     });
 
-
     // Testing optional fields
     describe('description', () => {
       testField('description', 123, false);

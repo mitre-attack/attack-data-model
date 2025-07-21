@@ -10,7 +10,7 @@ class TestLogger {
 
   private constructor() {
     const timestamp = new Date().toISOString().replace(/[:]/g, '-').replace(/\..+/, '');
-    
+
     // Ensure the log directory exists
     if (!fs.existsSync(TestLogger.LOG_DIR)) {
       fs.mkdirSync(TestLogger.LOG_DIR, { recursive: true });

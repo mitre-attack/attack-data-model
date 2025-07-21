@@ -7,3 +7,4 @@ export * from './stix-identifier.js';
 export * from './stix-spec-version.js';
 export * from './stix-timestamp.js';
 export * from './stix-type.js';
+export * from './extensions.js';

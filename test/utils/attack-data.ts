@@ -87,7 +87,7 @@ async function getCachedOrFetchAttackData(
  * @returns A Promise that resolves to an object containing processed ATT&CK data.
  */
 export async function getAttackObjects(
-  domains: AttackDomain[] = Object.values(attackDomainSchema.Enum),
+  domains: AttackDomain[] = Object.values(attackDomainSchema.enum),
   version?: string,
 ): Promise<{
   bundles: StixBundle[];

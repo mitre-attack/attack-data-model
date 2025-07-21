@@ -43,13 +43,15 @@ export function getMitigations(
   return relationships
     .filter((rel) => rel.relationship_type === 'mitigates' && rel.target_ref === technique.id)
     .map((rel) => {
-      const mitigation = attackObjects.find((obj) => obj.id === rel.source_ref);
-      if (mitigation && mitigation.type === 'course-of-action') {
-        return new MitigationImpl(mitigation as Mitigation);
+      const mitigation = attackObjects.find(
+        (obj): obj is Mitigation => obj.id === rel.source_ref && obj.type === 'course-of-action',
+      );
+      if (mitigation) {
+        return new MitigationImpl(mitigation);
       }
       return null;
     })
-    .filter((mitigation): mitigation is MitigationImpl => mitigation !== null);
+    .filter((mitigation) => mitigation !== null);
 }
 
 export function getDataSources(
@@ -60,11 +62,13 @@ export function getDataSources(
   return relationships
     .filter((rel) => rel.relationship_type === 'detects' && rel.target_ref === technique.id)
     .map((rel) => {
-      const dataSource = attackObjects.find((obj) => obj.id === rel.source_ref);
-      if (dataSource && dataSource.type === 'x-mitre-data-source') {
-        return new DataSourceImpl(dataSource as DataSource);
+      const dataSource = attackObjects.find(
+        (obj): obj is DataSource => obj.id === rel.source_ref && obj.type === 'x-mitre-data-source',
+      );
+      if (dataSource) {
+        return new DataSourceImpl(dataSource);
       }
       return null;
     })
-    .filter((dataSource): dataSource is DataSourceImpl => dataSource !== null);
+    .filter((dataSource) => dataSource !== null);
 }

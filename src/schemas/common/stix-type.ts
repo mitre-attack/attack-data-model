@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 /**
  * Type mapping for more readable error messages.
@@ -9,13 +9,17 @@ export const stixTypeToTypeName: Record<StixType, string> = {
   bundle: 'StixBundle',
   campaign: 'Campaign',
   'course-of-action': 'Mitigation',
+  'extension-definition': null as unknown as string,
   identity: 'Identity',
   'intrusion-set': 'Group',
   malware: 'Malware',
   tool: 'Tool',
   'marking-definition': 'MarkingDefinition',
+  'x-mitre-analytic': 'Analytic',
   'x-mitre-data-component': 'DataComponent',
+  'x-mitre-detection-strategy': 'DetectionStrategy',
   'x-mitre-data-source': 'DataSource',
+  'x-mitre-log-source': 'LogSource',
   'x-mitre-tactic': 'Tactic',
   'x-mitre-asset': 'Asset',
   'x-mitre-matrix': 'Matrix',
@@ -36,15 +40,19 @@ const supportedStixTypes = [
   'bundle',
   'campaign',
   'course-of-action',
+  'extension-definition',
   'identity',
   'intrusion-set',
   'malware',
   'tool',
   'marking-definition',
+  'x-mitre-analytic',
   'x-mitre-data-component',
-  'x-mitre-data-source',
+  'x-mitre-detection-strategy',
   'x-mitre-tactic',
   'x-mitre-asset',
+  'x-mitre-data-source',
+  'x-mitre-log-source',
   'x-mitre-matrix',
   'x-mitre-collection',
   'relationship',
@@ -61,19 +69,19 @@ const supportedStixTypes = [
 
 export const stixTypeSchema = z
   .enum(supportedStixTypes, {
-    errorMap: (issue, ctx) => {
-      if (issue.code === 'invalid_enum_value') {
-        const received = typeof ctx.data === 'string' ? ctx.data : String(ctx.data);
-        return {
-          message: `Invalid STIX type '${received}'. Expected one of the supported STIX types.`,
-        };
+    error: (issue) => {
+      if (issue.code === 'invalid_value') {
+        const received = typeof issue.input === 'string' ? issue.input : String(issue.input);
+        return `Invalid STIX type '${received}'. Expected one of the supported STIX types.`;
       }
-      return { message: ctx.defaultError };
+      // Return undefined to yield control to next error map
+      return undefined;
     },
   })
-  .describe(
-    'The type property identifies the type of STIX Object (SDO, Relationship Object, etc). The value of the type field MUST be one of the types defined by a STIX Object (e.g., indicator).',
-  );
+  .meta({
+    description:
+      'The type property identifies the type of STIX Object (SDO, Relationship Object, etc). The value of the type field MUST be one of the types defined by a STIX Object (e.g., indicator).',
+  });
 
 export type StixType = z.infer<typeof stixTypeSchema>;
 
@@ -97,14 +105,9 @@ export type StixType = z.infer<typeof stixTypeSchema>;
  */
 export function createStixTypeValidator(stixType: StixType) {
   const objectName = stixTypeToTypeName[stixType];
-  return z.string().superRefine((val, ctx) => {
-    if (val !== stixType) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `Invalid 'type' property. Expected '${stixType}' for ${objectName} object, but received '${val}'.`,
-      });
-      return z.NEVER;
-    }
+  return z.literal(stixType).refine((val) => val === stixType, {
+    error: (issue) =>
+      `Invalid 'type' property. Expected '${stixType}' for ${objectName} object, but received '${issue.input}'.`,
   });
 }
 
@@ -124,17 +127,15 @@ export function createStixTypeValidator(stixType: StixType) {
  *   });
  */
 export function createMultiStixTypeValidator(stixTypes: StixType[]) {
-  // Create a descriptive string of the object types for error messages
   const objectNames = stixTypes.map((type) => stixTypeToTypeName[type]).join(' or ');
   const typeList = stixTypes.map((t) => `'${t}'`).join(' or ');
 
-  return z.string().superRefine((val, ctx) => {
-    if (!stixTypes.includes(val as StixType)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `Invalid 'type' property. Expected ${typeList} for ${objectNames} object, but received '${val}'.`,
-      });
-      return z.NEVER;
-    }
-  });
+  const literals = stixTypes.map((type) => z.literal(type));
+
+  return z
+    .union(literals as [z.ZodLiteral<StixType>, ...z.ZodLiteral<StixType>[]])
+    .refine((val) => stixTypes.includes(val), {
+      error: (issue) =>
+        `Invalid 'type' property. Expected ${typeList} for ${objectNames} object, but received '${issue.input}'.`,
+    });
 }

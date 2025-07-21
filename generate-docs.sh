@@ -1,6 +1,7 @@
 #!/bin/bash
 
-SCHEMA_DIR="src/schemas"
+WORKDIR="."
+SCHEMA_DIR="$WORKDIR/src/schemas"
 OUTPUT_DIR="docusaurus/docs"
 OVERVIEW="$OUTPUT_DIR/overview.md"
 
@@ -11,7 +12,7 @@ echo "# ATT&CK Schemas" > $OVERVIEW
 echo "" >> $OVERVIEW
 
 # attack spec version
-specVersion=$(cat "ATTACK_SPEC_VERSION")
+specVersion=$(cat "$WORKDIR/ATTACK_SPEC_VERSION")
 echo "Current ATT&CK Spec Version: [$specVersion](https://github.com/mitre-attack/attack-stix-data/blob/master/CHANGELOG.md)" >> $OVERVIEW
 echo "" >> $OVERVIEW
 
@@ -33,19 +34,19 @@ find $SCHEMA_DIR -name "*.schema.ts" | while read schemaFile; do
 		continue
 	fi
 
-	# get relative file path
+	# get relative file path (remove parent directory prefix)
 	relativePath="${schemaFile#$SCHEMA_DIR/}"
 
 	# get schema title
 	title=$(sed -e 's/-/ /g' <<< "${fileName%%.*}")
 	title=$(echo "$title" | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')
-	# title="$(tr '[:lower:]' '[:upper:]' <<< "${title:0:1}")${title:1}"
 
 	# set output file path
 	outputFile="$OUTPUT_DIR/${relativePath/.ts/.md}"
 
 	# convert zod schemas to md
-	npx zod2md --entry $schemaFile --title "$title Schema" --output "$outputFile"
+	# pass the parent tsconfig to resolve path aliases
+	npx zod2md --entry $schemaFile --title "$title Schema" --output "$outputFile" --tsconfig "$WORKDIR/tsconfig.json"
 
 	# add schema to overview table
 	schemaLink="${relativePath/.ts/.md}"
@@ -53,4 +54,4 @@ find $SCHEMA_DIR -name "*.schema.ts" | while read schemaFile; do
 
 	echo "| $title | $stixType | [Schema](/docs/$schemaLink) |" >> $OVERVIEW
 
-done 
+done

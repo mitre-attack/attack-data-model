@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import { createStixIdValidator } from '../common/stix-identifier.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
@@ -8,9 +8,7 @@ import {
   descriptionSchema,
   xMitreModifiedByRefSchema,
   xMitreContributorsSchema,
-  objectMarkingRefsSchema,
   createAttackExternalReferencesSchema,
-  stixCreatedByRefSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -32,10 +30,12 @@ const supportedMitreCollectionLayers = [
 
 export const xMitreCollectionLayersSchema = z
   .array(z.enum(supportedMitreCollectionLayers), {
-    invalid_type_error:
-      'x_mitre_collection_layers must be an array of supported collection layers.',
+    error: (issue) =>
+      issue.code === 'invalid_type'
+        ? 'x_mitre_collection_layers must be an array of supported collection layers.'
+        : 'x_mitre_collection_layers is invalid or missing',
   })
-  .describe('List of places the data can be collected from.');
+  .meta({ description: 'List of places the data can be collected from.' });
 
 export type XMitreCollectionLayers = z.infer<typeof xMitreCollectionLayersSchema>;
 
@@ -45,22 +45,16 @@ export type XMitreCollectionLayers = z.infer<typeof xMitreCollectionLayersSchema
 //
 /////////////////////////////////////
 
-export const dataSourceSchema = attackBaseDomainObjectSchema
+export const extensibleDataSourceSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-data-source'),
 
     type: createStixTypeValidator('x-mitre-data-source'),
 
-    // Optional in STIX but required in ATT&CK
-    created_by_ref: stixCreatedByRefSchema,
-
     description: descriptionSchema,
 
     // Optional in STIX but required in ATT&CK
     external_references: createAttackExternalReferencesSchema('x-mitre-data-source'),
-
-    // Optional in STIX but required in ATT&CK
-    object_marking_refs: objectMarkingRefsSchema,
 
     x_mitre_platforms: xMitrePlatformsSchema.optional(),
 
@@ -72,7 +66,14 @@ export const dataSourceSchema = attackBaseDomainObjectSchema
 
     x_mitre_collection_layers: xMitreCollectionLayersSchema,
   })
+  .required({
+    created_by_ref: true, // Optional in STIX but required in ATT&CK
+    object_marking_refs: true, // Optional in STIX but required in ATT&CK
+  })
   .strict();
 
+// No refinements currently exist on data sources, so just export an alias
+export const dataSourceSchema = extensibleDataSourceSchema;
+
 // Define the type for DataSource
-export type DataSource = z.infer<typeof dataSourceSchema>;
+export type DataSource = z.infer<typeof extensibleDataSourceSchema>;
