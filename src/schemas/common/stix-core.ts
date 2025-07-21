@@ -62,14 +62,6 @@ const stixBaseObjectSchema = z
       .optional(),
     extensions: extensionsSchema.optional(),
   })
-  // Specify which properties to make required:
-  .required({
-    id: true,
-    type: true,
-    spec_version: true,
-    created: true,
-    modified: true,
-  })
   // Disallow unknown keys. If there are any unknown keys in the input, Zod will throw an error.
   .strict();
 
