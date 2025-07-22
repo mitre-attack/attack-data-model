@@ -1,44 +1,16 @@
-import { describe, beforeEach, it, expect } from 'vitest';
+import { v4 as uuidv4 } from 'uuid';
+import { describe, expect, it } from 'vitest';
+import { createSyntheticStixObject } from '../../src/generator';
 import type {
-  Description,
-  StixCreatedTimestamp,
-  StixModifiedTimestamp,
+    Description
 } from '../../src/schemas/common/index';
 import { type Group, groupSchema } from '../../src/schemas/sdo/group.schema';
-import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Test suite for validating the Group schema.
  */
 describe('GroupSchema', () => {
-  let minimalGroup: Group;
-  let invalidGroup: Group;
-
-  beforeEach(() => {
-    minimalGroup = {
-      id: `intrusion-set--${uuidv4()}`,
-      type: 'intrusion-set',
-      spec_version: '2.1',
-      x_mitre_attack_spec_version: '2.1.0',
-      name: 'Test Name',
-      x_mitre_version: '1.0',
-      created: '2017-06-01T00:00:00.000Z' as StixCreatedTimestamp,
-      modified: '2017-06-01T00:00:00.000Z' as StixModifiedTimestamp,
-      x_mitre_domains: ['enterprise-attack'],
-      external_references: [
-        {
-          source_name: 'mitre-attack',
-          external_id: 'G1000',
-          url: 'https://attack.mitre.org/groups/G1000',
-        },
-        {
-          source_name: 'Dragos',
-          url: 'https://dragos.com/resource/allanite/',
-          description: 'Dragos Allanite Retrieved. 2019/10/27',
-        },
-      ],
-    };
-  });
+  const minimalGroup = createSyntheticStixObject('intrusion-set');
 
   /**
    * Section for valid input tests
