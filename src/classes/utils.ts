@@ -1,6 +1,4 @@
-import { createSyntheticStixObject } from '@/generator/index.js';
-import z, { ZodObject } from 'zod';
-import type { StixType, XMitrePlatforms } from '../schemas/common/index.js';
+import type { XMitrePlatforms } from '../schemas/common/index.js';
 import type { DataSource, Mitigation, Tactic, Technique } from '../schemas/sdo/index.js';
 import type { AttackObject } from '../schemas/sdo/stix-bundle.schema.js';
 import type { Relationship } from '../schemas/sro/relationship.schema.js';
@@ -73,18 +71,4 @@ export function getDataSources(
       return null;
     })
     .filter((dataSource) => dataSource !== null);
-}
-
-// Generate a partial schema to only validate the fields that are passed.
-// This is intended for use by ATT&CK Workbench, to validate parts of
-// objects in development before the entire object has to be validated.
-export function generatePartialSchema(stixType: StixType, attackSchema: ZodObject): ZodObject {
-  return z.looseObject({}).check((ctx) => {
-    const minimalObject = createSyntheticStixObject(stixType);
-    const testObject = { ...minimalObject, ...ctx.value };
-    const result = attackSchema.safeParse(testObject);
-    if (!result.success) {
-      ctx.issues.push(...result.error.issues);
-    }
-  });
 }

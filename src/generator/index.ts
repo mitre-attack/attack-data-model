@@ -347,7 +347,7 @@ const minimalTechnique = {
 };
 
 /**
- * Generates sample valid STIX objects for testing and for partial schemas.
+ * Generates sample valid STIX objects for testing.
  * Static objects are used for now, but this could eventually be replaced with a fake data
  * generator like `zod-mock`, once it supports zod v4.
  *
