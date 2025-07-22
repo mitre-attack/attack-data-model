@@ -1,9 +1,13 @@
 import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
+import {
+  xMitreDomainsSchema,
+  xMitreModifiedByRefSchema,
+  xMitrePlatformsSchema,
+} from '../common/common-properties.js';
+import { createAttackExternalReferencesSchema } from '../common/misc.js';
 import { createStixIdValidator } from '../common/stix-identifier.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
-import { xMitreDomainsSchema, xMitrePlatformsSchema } from '../common/common-properties.js';
-import { createAttackExternalReferencesSchema } from '../common/misc.js';
 
 /////////////////////////////////////
 //
@@ -127,6 +131,8 @@ export const extensibleAnalyticSchema = attackBaseDomainObjectSchema
     x_mitre_mutable_elements: xMitreMutableElementsSchema,
 
     x_mitre_domains: xMitreDomainsSchema,
+
+    x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
   })
   .required({
     created_by_ref: true,
