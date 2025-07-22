@@ -1,37 +1,12 @@
-import { describe, beforeEach, it, expect } from 'vitest';
-import { v4 as uuidv4 } from 'uuid';
+import { describe, expect, it } from 'vitest';
+import { createSyntheticStixObject } from '../../src/generator';
 import {
-  type DataComponent,
-  dataComponentSchema,
+    type DataComponent,
+    dataComponentSchema,
 } from '../../src/schemas/sdo/data-component.schema';
-import {
-  type StixCreatedTimestamp,
-  type StixModifiedTimestamp,
-  xMitreIdentity,
-  XMitreModifiedByRef,
-} from '../../src/schemas/common/index';
 
 describe('dataComponentSchema', () => {
-  let minimalDataComponent: DataComponent;
-
-  beforeEach(() => {
-    minimalDataComponent = {
-      type: 'x-mitre-data-component',
-      id: `x-mitre-data-component--${uuidv4()}`,
-      description: 'A user requested active directory credentials, such as a ticket or token.',
-      spec_version: '2.1',
-      created: '2017-06-01T00:00:00.000Z' as StixCreatedTimestamp,
-      created_by_ref: `identity--${uuidv4()}`,
-      modified: '2017-06-01T00:00:00.000Z' as StixModifiedTimestamp,
-      name: 'Network Connection Creation',
-      object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
-      x_mitre_modified_by_ref: xMitreIdentity as XMitreModifiedByRef,
-      x_mitre_data_source_ref: 'x-mitre-data-source--c000cd5c-bbb3-4606-af6f-6c6d9de0bbe3',
-      x_mitre_attack_spec_version: '2.1.0',
-      x_mitre_domains: ['enterprise-attack'],
-      x_mitre_version: '1.0',
-    };
-  });
+  const minimalDataComponent = createSyntheticStixObject('x-mitre-data-component');
 
   describe('Valid Inputs', () => {
     it('should accept minimal valid object (only required fields)', () => {

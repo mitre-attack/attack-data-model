@@ -1,50 +1,12 @@
-import { describe, beforeEach, it, expect } from 'vitest';
-import { v4 as uuidv4 } from 'uuid';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { createSyntheticStixObject } from '../../src/generator';
 import { type Tool, toolSchema } from '../../src/schemas/sdo/tool.schema';
-import {
-  type StixCreatedTimestamp,
-  type StixModifiedTimestamp,
-  type XMitreModifiedByRef,
-  xMitreIdentity,
-} from '../../src/schemas/common/index';
 
 /**
  * Test suite for validating the Tool schema.
  */
 describe('ToolSchema', () => {
-  let minimalTool: Tool;
-
-  beforeEach(() => {
-    minimalTool = {
-      id: `tool--${uuidv4()}`,
-      type: 'tool',
-      spec_version: '2.1',
-      created_by_ref: `identity--${uuidv4()}`, // Fixing created_by_ref to match the STIX identifier format
-      created: '2021-07-30T15:43:17.770Z' as StixCreatedTimestamp,
-      modified: '2024-04-11T00:06:01.264Z' as StixModifiedTimestamp,
-      name: 'Sliver',
-      description:
-        '[Sliver](https://attack.mitre.org/software/S0633) is an open source, cross-platform, red team command and control framework written in Golang.(Citation: Bishop Fox Sliver Framework August 2019)',
-      external_references: [
-        {
-          source_name: 'mitre-attack',
-          url: 'https://attack.mitre.org/software/S0049',
-          external_id: 'S0049',
-        },
-        {
-          source_name: 'F-Secure The Dukes',
-          description:
-            'F-Secure Labs. (2015, September 17). The Dukes: 7 years of Russian cyberespionage. Retrieved December 10, 2015.',
-          url: 'https://www.f-secure.com/documents/996508/1030745/dukes_whitepaper.pdf',
-        },
-      ],
-      object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
-      x_mitre_attack_spec_version: '2.1.0',
-      x_mitre_domains: ['enterprise-attack'],
-      x_mitre_modified_by_ref: xMitreIdentity as XMitreModifiedByRef,
-      x_mitre_version: '1.2',
-    };
-  });
+  const minimalTool = createSyntheticStixObject('tool');
 
   describe('Valid Inputs', () => {
     it('should accept minimal valid object (only required fields)', () => {

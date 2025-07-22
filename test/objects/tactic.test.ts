@@ -1,42 +1,12 @@
-import { describe, beforeEach, it, expect } from 'vitest';
-import {
-  type StixCreatedTimestamp,
-  type StixModifiedTimestamp,
-} from '../../src/schemas/common/index';
+import { describe, expect, it } from 'vitest';
+import { createSyntheticStixObject } from '../../src/generator';
 import { type Tactic, tacticSchema } from '../../src/schemas/sdo/tactic.schema';
-import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Test suite for validating the Tactic schema.
  */
 describe('tacticSchema', () => {
-  let minimalTactic: Tactic;
-
-  beforeEach(() => {
-    minimalTactic = {
-      type: 'x-mitre-tactic',
-      id: `x-mitre-tactic--${uuidv4()}`,
-      spec_version: '2.1',
-      created_by_ref: `identity--${uuidv4()}`,
-      created: '2017-05-31T21:32:29.203Z' as StixCreatedTimestamp,
-      modified: '2021-02-09T13:58:23.806Z' as StixModifiedTimestamp,
-      name: 'Execution',
-      description: 'The adversary is trying to run malicious code.',
-      external_references: [
-        {
-          external_id: 'TA0002',
-          url: 'https://attack.mitre.org/tactics/TA0002',
-          source_name: 'mitre-attack',
-        },
-      ],
-      x_mitre_shortname: 'execution',
-      object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
-      x_mitre_attack_spec_version: '2.1.0',
-      x_mitre_domains: ['enterprise-attack'],
-      x_mitre_modified_by_ref: 'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5',
-      x_mitre_version: '1.2',
-    };
-  });
+  const minimalTactic = createSyntheticStixObject('x-mitre-tactic');
 
   /**
    * Section for valid input tests

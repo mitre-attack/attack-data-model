@@ -1,40 +1,12 @@
-import { describe, beforeEach, it, expect } from 'vitest';
-import { v4 as uuidv4 } from 'uuid';
-import { type Mitigation, mitigationSchema } from '../../src/schemas/sdo/mitigation.schema';
+import { describe, expect, it } from 'vitest';
+import { createSyntheticStixObject } from '../../src/generator';
 import {
-  type StixCreatedTimestamp,
-  type StixModifiedTimestamp,
-  type ExternalReferences,
-  xMitreIdentity,
+    type ExternalReferences
 } from '../../src/schemas/common/index';
+import { type Mitigation, mitigationSchema } from '../../src/schemas/sdo/mitigation.schema';
 
 describe('MitigationSchema', () => {
-  let minimalMitigation: Mitigation;
-
-  beforeEach(() => {
-    minimalMitigation = {
-      id: `course-of-action--${uuidv4()}`,
-      type: 'course-of-action',
-      spec_version: '2.1',
-      x_mitre_attack_spec_version: '3.1.0',
-      name: 'Test Mitigation',
-      x_mitre_version: '1.0',
-      description: 'Test description',
-      created_by_ref: `identity--${uuidv4()}`,
-      created: '2017-06-01T00:00:00.000Z' as StixCreatedTimestamp,
-      modified: '2017-06-01T00:00:00.000Z' as StixModifiedTimestamp,
-      object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
-      x_mitre_domains: ['ics-attack'],
-      external_references: [
-        {
-          source_name: 'mitre-attack',
-          url: 'https://attack.mitre.org/mitigations/M0948',
-          external_id: 'M0000',
-        },
-      ],
-      x_mitre_modified_by_ref: xMitreIdentity,
-    };
-  });
+  const minimalMitigation = createSyntheticStixObject('course-of-action');
 
   describe('Valid Inputs', () => {
     it('should accept minimal valid object (only required fields)', () => {

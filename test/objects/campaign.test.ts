@@ -1,61 +1,15 @@
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { createSyntheticStixObject } from '../../src/generator';
 import type {
-  StixCreatedTimestamp,
-  StixModifiedTimestamp,
-  StixTimestamp,
+    StixTimestamp
 } from '../../src/schemas/common/index';
 import { type Campaign, campaignSchema } from '../../src/schemas/sdo/campaign.schema';
-import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Test suite for validating the Campaign schema.
  */
 describe('campaignSchema', () => {
-  let minimalCampaign: Campaign;
-
-  beforeEach(() => {
-    minimalCampaign = {
-      type: 'campaign',
-      id: `campaign--${uuidv4()}`,
-      spec_version: '2.1',
-      created_by_ref: `identity--${uuidv4()}`,
-      created: '2017-05-31T21:32:29.203Z' as StixCreatedTimestamp,
-      modified: '2021-02-09T13:58:23.806Z' as StixModifiedTimestamp,
-      name: 'Operation Dream Job',
-      description: 'Operation Dream Job was a cyber espionage operation...',
-      external_references: [
-        {
-          source_name: 'mitre-attack',
-          url: 'https://attack.mitre.org/campaigns/C0022',
-          external_id: 'C0022',
-        },
-        {
-          source_name: 'ESET Lazarus Jun 2020',
-          description:
-            'Breitenbacher, D and Osis, K. (2020, June 17). OPERATION IN(TER)CEPTION: Targeted Attacks Against European Aerospace and Military Companies. Retrieved December 20, 2021.',
-          url: 'https://www.welivesecurity.com/wp-content/uploads/2020/06/ESET_Operation_Interception.pdf',
-        },
-        {
-          source_name: 'ClearSky Lazarus Aug 2020',
-          description:
-            "ClearSky Research Team. (2020, August 13). Operation 'Dream Job' Widespread North Korean Espionage Campaign. Retrieved December 20, 2021.",
-          url: 'https://www.clearskysec.com/wp-content/uploads/2020/08/Dream-Job-Campaign.pdf',
-        },
-      ],
-      object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
-      x_mitre_attack_spec_version: '3.2.0',
-      x_mitre_domains: ['enterprise-attack'],
-      x_mitre_modified_by_ref: 'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5',
-      x_mitre_deprecated: false,
-      revoked: false,
-      aliases: ['Operation Dream Job', 'Operation North Star', 'Operation Interception'],
-      first_seen: '2019-09-01T04:00:00.000Z',
-      last_seen: '2020-08-01T04:00:00.000Z',
-      x_mitre_first_seen_citation: '(Citation: ESET Lazarus Jun 2020)',
-      x_mitre_last_seen_citation: '(Citation: ClearSky Lazarus Aug 2020)',
-      x_mitre_version: '1.2',
-    };
-  });
+  const minimalCampaign = createSyntheticStixObject('campaign');
 
   /**
    * Section for valid input tests

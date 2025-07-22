@@ -1,35 +1,13 @@
-import { describe, beforeEach, it, expect } from 'vitest';
-import type { StixCreatedTimestamp, StixModifiedTimestamp } from '../../src/schemas/common/index';
-import { type Collection, collectionSchema } from '../../src/schemas/sdo/collection.schema';
 import { v4 as uuidv4 } from 'uuid';
+import { describe, expect, it } from 'vitest';
+import { createSyntheticStixObject } from '../../src/generator';
+import { type Collection, collectionSchema } from '../../src/schemas/sdo/collection.schema';
 
 /**
  * Test suite for validating the Collection schema.
  */
 describe('collectionSchema', () => {
-  let minimalCollection: Collection;
-
-  beforeEach(() => {
-    minimalCollection = {
-      type: 'x-mitre-collection',
-      id: `x-mitre-collection--${uuidv4()}`,
-      spec_version: '2.1',
-      created_by_ref: `identity--${uuidv4()}`,
-      created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
-      modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
-      name: 'Enterprise ATT&CK',
-      description: 'Version 6.2 of the Enterprise ATT&CK dataset',
-      object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
-      x_mitre_attack_spec_version: '2.1.0',
-      x_mitre_version: '1.2',
-      x_mitre_contents: [
-        {
-          object_ref: 'attack-pattern--01a5a209-b94c-450b-b7f9-946497d91055',
-          object_modified: '2017-05-31T21:32:29.203Z' as StixModifiedTimestamp,
-        },
-      ],
-    };
-  });
+  const minimalCollection = createSyntheticStixObject('x-mitre-collection');
 
   /**
    * Section for valid input tests

@@ -1,27 +1,9 @@
-import { describe, beforeEach, it, expect } from 'vitest';
-import { v4 as uuidv4 } from 'uuid';
+import { describe, expect, it } from 'vitest';
+import { createSyntheticStixObject } from '../../src/generator';
 import { type Identity, identitySchema } from '../../src/schemas/sdo/identity.schema';
-import {
-  type StixCreatedTimestamp,
-  type StixModifiedTimestamp,
-} from '../../src/schemas/common/index';
 
 describe('IdentitySchema', () => {
-  let minimalIdentity: Identity;
-
-  beforeEach(() => {
-    minimalIdentity = {
-      type: 'identity',
-      id: `identity--${uuidv4()}`,
-      spec_version: '2.1',
-      created: '2017-06-01T00:00:00.000Z' as StixCreatedTimestamp,
-      modified: '2017-06-01T00:00:00.000Z' as StixModifiedTimestamp,
-      name: 'The MITRE Corporation',
-      object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
-      identity_class: 'organization',
-      x_mitre_attack_spec_version: '2.1.0',
-    };
-  });
+  const minimalIdentity = createSyntheticStixObject('identity');
 
   describe('Valid Inputs', () => {
     it('should accept minimal valid object (only required fields)', () => {

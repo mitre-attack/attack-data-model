@@ -1,39 +1,15 @@
-import { v4 as uuidv4 } from 'uuid';
-import { describe, beforeEach, it, expect } from 'vitest';
-import { type Asset, assetSchema } from '../../src/schemas/sdo/asset.schema';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { createSyntheticStixObject } from '../../src/generator';
 import {
-  type StixCreatedTimestamp,
-  type StixModifiedTimestamp,
-  xMitreIdentity,
+    xMitreIdentity
 } from '../../src/schemas/common/index';
+import { type Asset, assetSchema } from '../../src/schemas/sdo/asset.schema';
 
 /**
  * Test suite for validating the Asset schema.
  */
 describe('AssetSchema', () => {
-  let minimalAsset: Asset;
-
-  beforeEach(() => {
-    minimalAsset = {
-      id: `x-mitre-asset--${uuidv4()}`,
-      type: 'x-mitre-asset',
-      spec_version: '2.1',
-      created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
-      modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
-      name: 'Test Asset',
-      x_mitre_domains: ['ics-attack'],
-      x_mitre_version: '1.0',
-      created_by_ref: `identity--${uuidv4()}`,
-      external_references: [
-        {
-          source_name: 'mitre-attack',
-          external_id: 'A1234',
-        },
-      ],
-      object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
-      x_mitre_attack_spec_version: '3.2.0',
-    };
-  });
+  const minimalAsset = createSyntheticStixObject('x-mitre-asset');
 
   /**
    * Section for valid input tests
