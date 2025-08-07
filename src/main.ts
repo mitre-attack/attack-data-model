@@ -2,31 +2,31 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
-  type StixBundle,
+  stixBundleSchema,
   type AttackObject,
-  extensibleStixBundleSchema,
   type AttackObjects,
+  type StixBundle,
 } from './schemas/sdo/stix-bundle.schema.js';
 
 import {
-  techniqueSchema,
-  tacticSchema,
+  analyticSchema,
+  assetSchema,
+  campaignSchema,
+  collectionSchema,
+  dataComponentSchema,
+  dataSourceSchema,
+  detectionStrategySchema,
+  groupSchema,
+  identitySchema,
+  logSourceSchema,
+  malwareSchema,
+  markingDefinitionSchema,
   matrixSchema,
   mitigationSchema,
   relationshipSchema,
-  dataSourceSchema,
-  dataComponentSchema,
-  groupSchema,
-  malwareSchema,
+  tacticSchema,
+  techniqueSchema,
   toolSchema,
-  markingDefinitionSchema,
-  identitySchema,
-  collectionSchema,
-  campaignSchema,
-  assetSchema,
-  logSourceSchema,
-  detectionStrategySchema,
-  analyticSchema,
 } from './schemas/index.js';
 
 import {
@@ -199,7 +199,7 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
   const validObjects: AttackObject[] = [];
 
   // Validate the bundle's top-level properties
-  const baseBundleValidationResults = extensibleStixBundleSchema
+  const baseBundleValidationResults = stixBundleSchema
     .pick({
       id: true,
       type: true,

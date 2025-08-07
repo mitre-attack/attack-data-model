@@ -1,10 +1,12 @@
-import { z } from 'zod/v4';
+import { attackIdExamples, attackIdPatterns } from '@/schemas/common/attack-id.js';
 import {
   attackDomainSchema,
-  type AttackObject,
   type Aliases,
+  type AttackObject,
   type ExternalReferences,
   type KillChainPhase,
+  type Relationship,
+  type RelationshipType,
   type StixBundle,
   type Technique,
   type XMitreDataSources,
@@ -19,10 +21,8 @@ import {
   type XMitreRemoteSupport,
   type XMitreSystemRequirements,
   type XMitreTacticType,
-  type Relationship,
-  type RelationshipType,
 } from '@/schemas/index.js';
-import { attackIdPatterns, attackIdExamples } from '@/schemas/common/attack-id.js';
+import { z } from 'zod/v4';
 
 /**
  * Creates a refinement for validating that the first alias matches the object's name
@@ -66,7 +66,7 @@ export function createFirstAliasRefinement() {
  * @example
  * ```typescript
  * const validateFirstXMitreAlias = createFirstXMitreAliasRefinement();
- * const schema = extensibleSchema.superRefine(validateFirstXMitreAlias);
+ * const schema = baseSchema.superRefine(validateFirstXMitreAlias);
  * ```
  */
 export function createFirstXMitreAliasRefinement() {
@@ -170,7 +170,7 @@ export function createCitationsRefinement() {
  * @example
  * ```typescript
  * const validateFirstBundleObject = createFirstBundleObjectRefinement();
- * const schema = extensibleStixBundleSchema.superRefine(validateFirstBundleObject);
+ * const schema = stixBundleSchema.superRefine(validateFirstBundleObject);
  * ```
  */
 export function createFirstBundleObjectRefinement() {
