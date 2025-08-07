@@ -41,8 +41,8 @@ The ADM library version you need depends on which version of the ATT&CK dataset 
 
 | If you're working with...    | Install ADM version | Command                                              |
 | ---------------------------- | ------------------- | ---------------------------------------------------- |
-| ATT&CK v18.x (upcoming)      | 4.x (latest)        | `npm install @mitre-attack/attack-data-model@^4.0.0` |
-| ATT&CK v15.x to v17.x        | 3.x                 | `npm install @mitre-attack/attack-data-model@^3.0.0` |
+| ATT&CK v18.x (upcoming)      | 5.x (upcoming)      | `npm install @mitre-attack/attack-data-model@^5.0.0` |
+| ATT&CK v15.x to v17.x        | 4.x (latest)        | `npm install @mitre-attack/attack-data-model@^4.0.0` |
 | Older ATT&CK versions (<v15) | Not supported       | Consider upgrading your ATT&CK data                  |
 
 #### How to Check Your ATT&CK Version
