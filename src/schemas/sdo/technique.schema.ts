@@ -1,21 +1,21 @@
-import { z } from 'zod/v4';
-import {
-  attackBaseDomainObjectSchema,
-  descriptionSchema,
-  xMitrePlatformsSchema,
-  createStixIdValidator,
-  createStixTypeValidator,
-  xMitreModifiedByRefSchema,
-  xMitreDomainsSchema,
-  xMitreContributorsSchema,
-  killChainPhaseSchema,
-  createAttackExternalReferencesSchema,
-} from '../common/index.js';
 import {
   createAttackIdInExternalReferencesRefinement,
   createEnterpriseOnlyPropertiesRefinement,
   createMobileOnlyPropertiesRefinement,
 } from '@/refinements/index.js';
+import { z } from 'zod/v4';
+import {
+  attackBaseDomainObjectSchema,
+  createAttackExternalReferencesSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
+  descriptionSchema,
+  killChainPhaseSchema,
+  xMitreContributorsSchema,
+  xMitreDomainsSchema,
+  xMitreModifiedByRefSchema,
+  xMitrePlatformsSchema,
+} from '../common/index.js';
 
 /////////////////////////////////////
 //
@@ -325,7 +325,7 @@ export type XMitreDetection = z.infer<typeof xMitreDetectionSchema>;
 //
 /////////////////////////////////////
 
-export const extensibleTechniqueSchema = attackBaseDomainObjectSchema
+export const techniqueSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('attack-pattern'),
 
@@ -368,16 +368,11 @@ export const extensibleTechniqueSchema = attackBaseDomainObjectSchema
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
   })
-  .strict();
+  .strict()
+  .check((ctx) => {
+    createAttackIdInExternalReferencesRefinement()(ctx);
+    createEnterpriseOnlyPropertiesRefinement()(ctx);
+    createMobileOnlyPropertiesRefinement()(ctx);
+  });
 
-// Apply the refinements for techniques
-export const techniqueSchema = extensibleTechniqueSchema.check((ctx) => {
-  // Validates that the first external reference is a valid ATT&CK ID
-  createAttackIdInExternalReferencesRefinement()(ctx);
-  // Validates that the technique only contains properties permissible by the target tactic in Enterprise
-  createEnterpriseOnlyPropertiesRefinement()(ctx);
-  // Validates that the technique only contains properties permissible in Mobile (if the technique belongs to Mobile)
-  createMobileOnlyPropertiesRefinement()(ctx);
-});
-
-export type Technique = z.infer<typeof extensibleTechniqueSchema>;
+export type Technique = z.infer<typeof techniqueSchema>;

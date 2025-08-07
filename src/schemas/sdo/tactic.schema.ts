@@ -1,13 +1,13 @@
 import { z } from 'zod/v4';
 import {
   attackBaseDomainObjectSchema,
+  createAttackExternalReferencesSchema,
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
-  xMitreModifiedByRefSchema,
-  xMitreDomainsSchema,
   xMitreContributorsSchema,
-  createAttackExternalReferencesSchema,
+  xMitreDomainsSchema,
+  xMitreModifiedByRefSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -72,7 +72,7 @@ export type XMitreShortName = z.infer<typeof xMitreShortNameSchema>;
 //
 /////////////////////////////////////
 
-export const extensibleTacticSchema = attackBaseDomainObjectSchema
+export const tacticSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-tactic'),
 
@@ -97,7 +97,4 @@ export const extensibleTacticSchema = attackBaseDomainObjectSchema
   })
   .strict();
 
-// Alias unless/until tactics require at least one refinement
-export const tacticSchema = extensibleTacticSchema;
-
-export type Tactic = z.infer<typeof extensibleTacticSchema>;
+export type Tactic = z.infer<typeof tacticSchema>;

@@ -1,17 +1,17 @@
+import { createCitationsRefinement, createFirstAliasRefinement } from '@/refinements/index.js';
 import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import {
-  stixTimestampSchema,
-  descriptionSchema,
-  xMitreDomainsSchema,
-  createStixIdValidator,
   aliasesSchema,
   createAttackExternalReferencesSchema,
-  xMitreModifiedByRefSchema,
-  xMitreContributorsSchema,
+  createStixIdValidator,
   createStixTypeValidator,
+  descriptionSchema,
+  stixTimestampSchema,
+  xMitreContributorsSchema,
+  xMitreDomainsSchema,
+  xMitreModifiedByRefSchema,
 } from '../common/index.js';
-import { createFirstAliasRefinement, createCitationsRefinement } from '@/refinements/index.js';
 
 /////////////////////////////////////
 //
@@ -83,7 +83,7 @@ export type XMitreLastSeenCitation = z.infer<typeof xMitreLastSeenCitationSchema
 //
 /////////////////////////////////////
 
-export const extensibleCampaignSchema = attackBaseDomainObjectSchema
+export const campaignSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('campaign'),
 
@@ -120,13 +120,10 @@ export const extensibleCampaignSchema = attackBaseDomainObjectSchema
     object_marking_refs: true, // Optional in STIX but required in ATT&CK
     revoked: true, // Optional in STIX but required in ATT&CK
   })
-  .strict();
+  .strict()
+  .check((ctx) => {
+    createFirstAliasRefinement()(ctx);
+    createCitationsRefinement()(ctx);
+  });
 
-// Apply a single refinement that combines both refinements
-export const campaignSchema = extensibleCampaignSchema.check((ctx) => {
-  createFirstAliasRefinement()(ctx);
-  createCitationsRefinement()(ctx);
-});
-
-// Define the type for Campaign
-export type Campaign = z.infer<typeof extensibleCampaignSchema>;
+export type Campaign = z.infer<typeof campaignSchema>;

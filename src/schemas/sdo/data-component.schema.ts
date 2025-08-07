@@ -1,6 +1,5 @@
 import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
-import { createStixTypeValidator } from '../common/stix-type.js';
 import {
   createStixIdValidator,
   descriptionSchema,
@@ -9,6 +8,7 @@ import {
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
 } from '../common/index.js';
+import { createStixTypeValidator } from '../common/stix-type.js';
 
 /////////////////////////////////////
 //
@@ -29,7 +29,7 @@ export type XMitreDataSourceRef = z.infer<typeof xMitreDataSourceRefSchema>;
 //
 /////////////////////////////////////
 
-export const extensibleDataComponentSchema = attackBaseDomainObjectSchema
+export const dataComponentSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-data-component'),
 
@@ -51,7 +51,4 @@ export const extensibleDataComponentSchema = attackBaseDomainObjectSchema
   })
   .strict();
 
-// No refinements currently exist on data components, so just export an alias
-export const dataComponentSchema = extensibleDataComponentSchema;
-
-export type DataComponent = z.infer<typeof extensibleDataComponentSchema>;
+export type DataComponent = z.infer<typeof dataComponentSchema>;
