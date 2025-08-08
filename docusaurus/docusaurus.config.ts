@@ -4,7 +4,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'MITRE ATT&CK Data Model',
-  tagline: '',
+  tagline: 'A TypeScript library for working with MITRE ATT&CK® data using STIX 2.1',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -35,6 +35,9 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
+          editUrl: 'https://github.com/mitre-attack/attack-data-model/tree/main/docusaurus/',
+          showLastUpdateAuthor: true,
+          showLastUpdateTime: true,
         },
         // blog: {
         //   showReadingTime: false,
@@ -50,6 +53,17 @@ const config: Config = {
   ],
 
   themeConfig: {
+    // Enhanced metadata for better SEO and social sharing
+    metadata: [
+      {
+        name: 'keywords',
+        content: 'MITRE, ATT&CK, STIX, TypeScript, threat intelligence, cybersecurity, data model',
+      },
+      {
+        name: 'description',
+        content: 'A TypeScript library for working with MITRE ATT&CK® data using STIX 2.1. Provides type-safe access to ATT&CK objects.',
+      },
+    ],
     navbar: {
       title: 'ATT&CK Data Model',
       logo: {
@@ -59,9 +73,9 @@ const config: Config = {
       items: [
         {
           type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
+          sidebarId: 'documentationSidebar',
           position: 'left',
-          label: 'ATT&CK Schemas',
+          label: 'Documentation',
         },
         // {
         //   to: '/known-issues',
@@ -75,23 +89,70 @@ const config: Config = {
         },
       ],
     },
+    // Enable local search for better user experience
+    // Note: For production, consider configuring Algolia search
+    docs: {
+      sidebar: {
+        hideable: true,
+        autoCollapseCategories: false,
+      },
+    },
     footer: {
       links: [
         {
-          label: 'ATT&CK Website',
-          href: 'https://attack.mitre.org',
+          title: 'Documentation',
+          items: [
+            {
+              label: 'Tutorials',
+              to: '/docs/tutorials/',
+            },
+            {
+              label: 'How-to Guides',
+              to: '/docs/how-to-guides/',
+            },
+            {
+              label: 'Reference',
+              to: '/docs/reference/',
+            },
+            {
+              label: 'Explanation',
+              to: '/docs/explanation/',
+            },
+          ],
         },
         {
-          label: 'Contact Us',
-          href: 'https://attack.mitre.org/resources/engage-with-attack/contact',
+          title: 'Community',
+          items: [
+            {
+              label: 'GitHub',
+              href: 'https://github.com/mitre-attack/attack-data-model',
+            },
+            {
+              label: 'Issues',
+              href: 'https://github.com/mitre-attack/attack-data-model/issues',
+            },
+          ],
         },
         {
-          label: 'Terms of Use',
-          href: 'https://attack.mitre.org/resources/legal-and-branding/terms-of-use',
-        },
-        {
-          label: 'Privacy Policy',
-          href: 'https://attack.mitre.org/resources/legal-and-branding/privacy',
+          title: 'MITRE ATT&CK',
+          items: [
+            {
+              label: 'ATT&CK Website',
+              href: 'https://attack.mitre.org',
+            },
+            {
+              label: 'Contact Us',
+              href: 'https://attack.mitre.org/resources/engage-with-attack/contact',
+            },
+            {
+              label: 'Terms of Use',
+              href: 'https://attack.mitre.org/resources/legal-and-branding/terms-of-use',
+            },
+            {
+              label: 'Privacy Policy',
+              href: 'https://attack.mitre.org/resources/legal-and-branding/privacy',
+            },
+          ],
         },
       ],
       style: 'dark',

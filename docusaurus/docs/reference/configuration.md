@@ -1,0 +1,526 @@
+# Configuration Reference
+
+**Complete configuration options for all data source types**
+
+This reference documents all configuration parameters available when creating `DataSource` instances and initializing the ATT&CK Data Model library.
+
+## DataSource Configuration
+
+### Base Configuration
+
+All data sources require these base configuration options:
+
+```typescript
+interface DataSourceOptions {
+    source: 'attack' | 'file' | 'url' | 'taxii';
+    parsingMode?: 'strict' | 'relaxed';
+}
+```
+
+#### source
+
+**Type**: `'attack' | 'file' | 'url' | 'taxii'`
+**Required**: ✅
+**Description**: Specifies the type of data source to load
+
+| Value | Description |
+|-------|-------------|
+| `'attack'` | Official MITRE ATT&CK STIX 2.1 repository |
+| `'file'` | Local STIX bundle JSON file |
+| `'url'` | Remote URL serving STIX content |
+| `'taxii'` | TAXII 2.1 server *(coming soon)* |
+
+#### parsingMode
+
+**Type**: `'strict' | 'relaxed'`
+**Required**: ❌
+**Default**: `'strict'`
+**Description**: Controls validation behavior during data parsing
+
+| Mode | Behavior |
+|------|----------|
+| `'strict'` | All objects must pass validation; failures abort loading |
+| `'relaxed'` | Invalid objects are logged but skipped; loading continues |
+
+**Recommendations**:
+
+- Use `'strict'` for production applications with trusted data sources
+- Use `'relaxed'` for development, testing, or experimental data
+
+## Attack Source Configuration
+
+Configuration for loading official MITRE ATT&CK data.
+
+```typescript
+interface AttackSourceOptions extends DataSourceOptions {
+    source: 'attack';
+    domain: 'enterprise-attack' | 'mobile-attack' | 'ics-attack';
+    version?: string;
+}
+```
+
+### Complete Example
+
+```typescript
+const dataSource = new DataSource({
+    source: 'attack',
+    domain: 'enterprise-attack',
+    version: '15.1',
+    parsingMode: 'strict'
+});
+```
+
+### Attack-Specific Options
+
+#### domain
+
+**Type**: `'enterprise-attack' | 'mobile-attack' | 'ics-attack'`
+**Required**: ✅
+**Description**: ATT&CK domain to load
+
+| Domain | Description | Object Count (Approx.) |
+|--------|-------------|------------------------|
+| `'enterprise-attack'` | Enterprise techniques for Windows, Linux, macOS, containers, cloud | 600+ techniques, 14 tactics |
+| `'mobile-attack'` | Mobile-specific techniques for Android and iOS | 100+ techniques, 14 tactics |
+| `'ics-attack'` | Industrial Control Systems techniques | 80+ techniques, 11 tactics |
+
+#### version
+
+**Type**: `string`
+**Required**: ❌
+**Default**: `'latest'`
+**Description**: Specific ATT&CK version or 'latest' for most recent release
+
+**Available Versions**:
+
+- `'latest'` - Always loads the most recent release
+- `'15.1'` - ATT&CK v15.1 (current stable)
+- `'15.0'` - ATT&CK v15.0
+- `'14.1'` - ATT&CK v14.1
+- See [ATT&CK Releases](https://github.com/mitre-attack/attack-stix-data/releases) for all versions
+
+**Version Selection Guidelines**:
+
+- **Production**: Use specific version (e.g., `'15.1'`) for stability
+- **Development**: Use `'latest'` for newest features
+- **Research**: Use specific version for reproducible results
+
+## File Source Configuration
+
+Configuration for loading local STIX bundle files.
+
+```typescript
+interface FileSourceOptions extends DataSourceOptions {
+    source: 'file';
+    file: string;
+}
+```
+
+### Complete Example
+
+```typescript
+const dataSource = new DataSource({
+    source: 'file',
+    file: '/path/to/enterprise-attack.json',
+    parsingMode: 'relaxed'
+});
+```
+
+### File-Specific Options
+
+#### file
+
+**Type**: `string`
+**Required**: ✅
+**Description**: Path to STIX bundle JSON file (absolute or relative)
+
+**Path Resolution**:
+
+- Relative paths are resolved from current working directory
+- Use absolute paths for guaranteed location
+- File must be readable by the Node.js process
+
+**File Requirements**:
+
+```json
+{
+    "type": "bundle",
+    "id": "bundle--12345678-1234-1234-1234-123456789012",
+    "objects": [
+        // Array of STIX objects
+    ]
+}
+```
+
+**Common File Locations**:
+
+```typescript
+// Relative to project root
+file: './data/custom-attack.json'
+
+// Absolute path
+file: '/var/data/attack/enterprise.json'
+
+// User home directory
+file: path.join(os.homedir(), 'attack-data', 'bundle.json')
+```
+
+## URL Source Configuration
+
+Configuration for loading remote STIX bundles over HTTP/HTTPS.
+
+```typescript
+interface UrlSourceOptions extends DataSourceOptions {
+    source: 'url';
+    url: string;
+    timeout?: number;
+    headers?: Record<string, string>;
+    retryAttempts?: number;
+    retryDelay?: number;
+}
+```
+
+### Complete Example
+
+```typescript
+const dataSource = new DataSource({
+    source: 'url',
+    url: 'https://api.example.com/attack/enterprise.json',
+    timeout: 30000,
+    headers: {
+        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOi...',
+        'Accept': 'application/json',
+        'User-Agent': 'MyApp/1.0 ATT&CK-Data-Model'
+    },
+    retryAttempts: 3,
+    retryDelay: 1000,
+    parsingMode: 'strict'
+});
+```
+
+### URL-Specific Options
+
+#### url
+
+**Type**: `string`
+**Required**: ✅
+**Description**: HTTP/HTTPS URL to STIX bundle resource
+
+**URL Requirements**:
+
+- Must be accessible via HTTP or HTTPS
+- Should return JSON content with appropriate MIME type
+- Must contain valid STIX 2.1 bundle
+
+#### timeout
+
+**Type**: `number`
+**Required**: ❌
+**Default**: `10000` (10 seconds)
+**Description**: Request timeout in milliseconds
+
+**Timeout Guidelines**:
+
+- **Small datasets** (< 1 MB): 10-30 seconds
+- **Large datasets** (> 10 MB): 60-300 seconds
+- **Slow networks**: Increase proportionally
+
+#### headers
+
+**Type**: `Record<string, string>`
+**Required**: ❌
+**Description**: HTTP headers for authentication and content negotiation
+
+**Common Headers**:
+
+```typescript
+{
+    // Authentication
+    'Authorization': 'Bearer <token>',
+    'X-API-Key': '<api-key>',
+
+    // Content negotiation
+    'Accept': 'application/json',
+    'Accept': 'application/stix+json',
+
+    // User agent identification
+    'User-Agent': 'MyApp/1.0 (contact@example.com)',
+
+    // Custom headers
+    'X-Custom-Header': 'value'
+}
+```
+
+#### retryAttempts
+
+**Type**: `number`
+**Required**: ❌
+**Default**: `3`
+**Description**: Number of retry attempts on failure
+
+#### retryDelay
+
+**Type**: `number`
+**Required**: ❌
+**Default**: `1000` (1 second)
+**Description**: Base delay between retry attempts in milliseconds
+
+**Retry Logic**: Uses exponential backoff - each retry delay is multiplied by 2
+
+## TAXII Source Configuration
+
+Configuration for loading data from TAXII 2.1 servers *(coming soon)*.
+
+```typescript
+interface TaxiiSourceOptions extends DataSourceOptions {
+    source: 'taxii';
+    server: string;
+    collection: string;
+    credentials?: {
+        username: string;
+        password: string;
+    };
+    apiRoot?: string;
+    timeout?: number;
+}
+```
+
+### Planned Example
+
+```typescript
+const dataSource = new DataSource({
+    source: 'taxii',
+    server: 'https://cti-taxii.mitre.org',
+    collection: 'enterprise-attack',
+    credentials: {
+        username: 'user',
+        password: 'pass'
+    },
+    apiRoot: '/taxii2/',
+    timeout: 30000
+});
+```
+
+> **Note**: TAXII source support is planned for future releases.
+
+## Global Configuration
+
+### Environment Variables
+
+Configure library behavior through environment variables:
+
+#### ATTACK_DEBUG
+
+**Type**: `'true' | 'false'`
+**Default**: `'false'`
+**Description**: Enable verbose debug logging
+
+```bash
+export ATTACK_DEBUG=true
+node app.js
+```
+
+#### ATTACK_CACHE_DIR
+
+**Type**: `string`
+**Default**: `os.tmpdir()/attack-data-model`
+**Description**: Directory for caching downloaded data
+
+```bash
+export ATTACK_CACHE_DIR=/var/cache/attack-data
+node app.js
+```
+
+#### ATTACK_CACHE_TTL
+
+**Type**: `number`
+**Default**: `3600` (1 hour)
+**Description**: Cache time-to-live in seconds
+
+```bash
+export ATTACK_CACHE_TTL=7200  # 2 hours
+node app.js
+```
+
+#### ATTACK_MAX_BUNDLE_SIZE
+
+**Type**: `number`
+**Default**: `104857600` (100 MB)
+**Description**: Maximum bundle size in bytes
+
+```bash
+export ATTACK_MAX_BUNDLE_SIZE=209715200  # 200 MB
+node app.js
+```
+
+### Programmatic Configuration
+
+Configure library behavior programmatically:
+
+```typescript
+import { configure } from '@mitre-attack/attack-data-model';
+
+configure({
+    debug: true,
+    cacheDir: './data/cache',
+    cacheTtl: 3600,
+    maxBundleSize: 100 * 1024 * 1024, // 100 MB
+    userAgent: 'MyApp/1.0'
+});
+```
+
+#### Global Configuration Options
+
+```typescript
+interface GlobalConfiguration {
+    debug?: boolean;
+    cacheDir?: string;
+    cacheTtl?: number;
+    maxBundleSize?: number;
+    userAgent?: string;
+    retryAttempts?: number;
+    retryDelay?: number;
+}
+```
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `debug` | `boolean` | `false` | Enable debug logging |
+| `cacheDir` | `string` | OS temp dir | Cache directory path |
+| `cacheTtl` | `number` | `3600` | Cache TTL in seconds |
+| `maxBundleSize` | `number` | `104857600` | Max bundle size in bytes |
+| `userAgent` | `string` | Library default | HTTP User-Agent header |
+| `retryAttempts` | `number` | `3` | Default retry attempts |
+| `retryDelay` | `number` | `1000` | Default retry delay (ms) |
+
+## Configuration Validation
+
+### Validation Rules
+
+The library validates configuration during `DataSource` creation:
+
+```typescript
+// ✅ Valid configurations
+const validConfigs = [
+    { source: 'attack', domain: 'enterprise-attack' },
+    { source: 'file', file: './data.json' },
+    { source: 'url', url: 'https://example.com/data.json' }
+];
+
+// ❌ Invalid configurations
+const invalidConfigs = [
+    { source: 'attack' }, // Missing domain
+    { source: 'file' },   // Missing file path
+    { source: 'url' },    // Missing URL
+    { source: 'invalid' } // Invalid source type
+];
+```
+
+### Configuration Errors
+
+Common configuration errors and solutions:
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `Missing required option: domain` | Attack source without domain | Add `domain` property |
+| `Missing required option: file` | File source without path | Add `file` property |
+| `Missing required option: url` | URL source without URL | Add `url` property |
+| `Invalid source type` | Unknown source value | Use valid source type |
+| `Invalid domain` | Unknown domain value | Use valid ATT&CK domain |
+
+## Best Practices
+
+### Production Configuration
+
+```typescript
+// Recommended production setup
+const productionSource = new DataSource({
+    source: 'attack',
+    domain: 'enterprise-attack',
+    version: '15.1',              // Pin specific version
+    parsingMode: 'strict'         // Enforce data quality
+});
+
+// With global configuration
+configure({
+    debug: false,                 // Disable debug in production
+    cacheDir: '/var/cache/attack', // Persistent cache location
+    cacheTtl: 86400,             // 24 hour cache
+    userAgent: 'MyApp/2.1 (security-team@company.com)'
+});
+```
+
+### Development Configuration
+
+```typescript
+// Recommended development setup
+const devSource = new DataSource({
+    source: 'attack',
+    domain: 'enterprise-attack',
+    version: 'latest',           // Use latest for development
+    parsingMode: 'relaxed'       // More forgiving validation
+});
+
+// With debug logging
+configure({
+    debug: true,                 // Enable detailed logging
+    cacheDir: './dev-cache',     // Local cache directory
+    cacheTtl: 3600              // 1 hour cache for faster iteration
+});
+```
+
+### Performance Configuration
+
+```typescript
+// For high-performance scenarios
+const perfSource = new DataSource({
+    source: 'url',
+    url: 'https://cdn.example.com/attack-data.json',
+    timeout: 60000,              // Generous timeout
+    retryAttempts: 5,            // More retries
+    retryDelay: 2000,            // Longer retry delay
+    parsingMode: 'strict'
+});
+
+configure({
+    maxBundleSize: 500 * 1024 * 1024, // 500 MB for large datasets
+    cacheTtl: 604800                   // 7 day cache
+});
+```
+
+## Migration Guide
+
+### Upgrading from v1.x
+
+```typescript
+// v1.x configuration
+const oldConfig = {
+    dataSource: 'github',
+    attackVersion: '14.1',
+    strictMode: true
+};
+
+// v2.x equivalent
+const newConfig = new DataSource({
+    source: 'attack',
+    domain: 'enterprise-attack',
+    version: '14.1',
+    parsingMode: 'strict'
+});
+```
+
+### Environment Variable Changes
+
+| v1.x Variable | v2.x Variable | Notes |
+|---------------|---------------|-------|
+| `ATT_DEBUG` | `ATTACK_DEBUG` | Renamed for consistency |
+| `ATT_CACHE_PATH` | `ATTACK_CACHE_DIR` | Renamed and improved |
+| `ATT_VERSION` | *(removed)* | Now per-DataSource configuration |
+
+---
+
+## See Also
+
+- **[DataSource API](./api/data-sources)** - DataSource class documentation
+- **[Error Reference](./errors)** - Configuration error troubleshooting
+- **[How-to Guide: Error Handling](../how-to-guides/error-handling)** - Robust configuration patterns
