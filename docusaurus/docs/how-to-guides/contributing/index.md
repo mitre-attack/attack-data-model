@@ -1,4 +1,4 @@
-# Contributing to the ATT&CK Data Model (ADM)
+# Contributing
 
 **Step-by-step technical instructions for contributors**
 
