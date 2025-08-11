@@ -1,6 +1,6 @@
 # MITRE ATT&CK® Data Model
 
-**A TypeScript library for working with MITRE ATT&CK® data using STIX 2.1**
+**A TypeScript library for working with MITRE ATT&CK data using STIX 2.1**
 
 The ATT&CK Data Model (ADM) provides a type-safe, object-oriented interface for working with MITRE ATT&CK datasets.
 Built on STIX 2.1 compliance, it uses Zod schemas and TypeScript types to ensure data integrity while providing intuitive relationship navigation between ATT&CK objects.
@@ -150,7 +150,7 @@ For more detailed examples, please refer to the [examples](./examples/README.md)
 
 ## Compatibility Matrix
 
-Our [Compatibility documentation](https://mitre-attack.github.io/attack-data-model/explanation/versioning-philosophy) tracks the compatibility between versions of the ATT&CK Data Model (ADM) TypeScript API (`@mitre-attack/attack-data-model`) and versions of the MITRE ATT&CK® dataset (`mitre-attack/attack-stix-data`).
+Our [Compatibility documentation](https://mitre-attack.github.io/attack-data-model/explanation/versioning-philosophy) tracks the compatibility between versions of the ATT&CK Data Model (ADM) TypeScript API (`@mitre-attack/attack-data-model`) and versions of the MITRE ATT&CK dataset (`mitre-attack/attack-stix-data`).
 
 ## Contributing
 
@@ -164,6 +164,6 @@ This project is licensed under the Apache 2.0 License.
 
 Copyright 2020-2025 The MITRE Corporation.
 
-This project makes use of ATT&CK®
+This project makes use of ATT&CK
 
 [ATT&CK Terms of Use](https://attack.mitre.org/resources/terms-of-use/)

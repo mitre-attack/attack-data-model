@@ -1,6 +1,6 @@
 # ATT&CK Data Model Documentation
 
-*A TypeScript library for working with MITRE ATT&CK® data using STIX 2.1 bundles*
+*A TypeScript library for working with MITRE ATT&CK data using STIX 2.1 bundles*
 
 Welcome to the documentation for the ATT&CK Data Model library.
 This documentation aims to provide you with exactly the right type of information for your needs, whether you are a beginner or a seasoned pro.

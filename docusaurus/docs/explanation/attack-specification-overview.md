@@ -2,7 +2,7 @@
 
 **Understanding the structure and purpose of the ATT&CK specification**
 
-The ATT&CK specification defines the formal structure, semantics, and constraints that govern how MITRE ATT&CK® data is represented, validated, and consumed. Understanding the specification's design philosophy and architecture is crucial for working effectively with ATT&CK data and building robust applications that leverage the ATT&CK framework.
+The ATT&CK specification defines the formal structure, semantics, and constraints that govern how MITRE ATT&CK data is represented, validated, and consumed. Understanding the specification's design philosophy and architecture is crucial for working effectively with ATT&CK data and building robust applications that leverage the ATT&CK framework.
 
 ## What is the ATT&CK Specification?
 

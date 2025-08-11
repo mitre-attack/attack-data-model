@@ -2,7 +2,7 @@
 
 **Complete documentation for all ATT&CK Data Model classes and functions**
 
-The ATT&CK Data Model provides a comprehensive TypeScript API for working with MITRE ATT&CK® data. This reference section documents all public classes, methods, and functions available in the library.
+The ATT&CK Data Model provides a comprehensive TypeScript API for working with MITRE ATT&CK data. This reference section documents all public classes, methods, and functions available in the library.
 
 ## Core API Components
 

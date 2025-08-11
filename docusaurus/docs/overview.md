@@ -1,12 +1,12 @@
 # ATT&CK Data Model Overview
 
-**A comprehensive TypeScript library for MITRE ATT&CK® data**
+**A comprehensive TypeScript library for MITRE ATT&CK data**
 
 This page provides a high-level overview of the ATT&CK Data Model library architecture, its core concepts, and how all the pieces fit together.
 
 ## What is the ATT&CK Data Model?
 
-The ATT&CK Data Model (ADM) is a TypeScript library that provides type-safe, programmatic access to MITRE ATT&CK® datasets. It bridges the gap between raw STIX 2.1 data and developer-friendly TypeScript objects.
+The ATT&CK Data Model (ADM) is a TypeScript library that provides type-safe, programmatic access to MITRE ATT&CK datasets. It bridges the gap between raw STIX 2.1 data and developer-friendly TypeScript objects.
 
 ### Core Value Proposition
 

@@ -2,7 +2,7 @@
 
 **Learning-oriented guides for getting started with the ATT&CK Data Model**
 
-Welcome to the tutorials section! These step-by-step guides will teach you how to work with the MITRE ATT&CK® Data Model (ADM) from the ground up. Each tutorial is designed to be completed by anyone with basic TypeScript knowledge, regardless of their familiarity with ATT&CK.
+Welcome to the tutorials section! These step-by-step guides will teach you how to work with the MITRE ATT&CK Data Model (ADM) from the ground up. Each tutorial is designed to be completed by anyone with basic TypeScript knowledge, regardless of their familiarity with ATT&CK.
 
 ## What You'll Learn
 
