@@ -8,6 +8,11 @@ const sidebars: SidebarsConfig = {
       label: 'Documentation Home'
     },
     {
+      type: 'doc',
+      id: 'overview',
+      label: 'Documentation Overview'
+    },
+    {
       type: 'category',
       label: 'Tutorials',
       description: 'Learning-oriented guides for getting started',

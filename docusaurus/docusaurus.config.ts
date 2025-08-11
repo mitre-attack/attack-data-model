@@ -94,7 +94,7 @@ const config: Config = {
     docs: {
       sidebar: {
         hideable: true,
-        autoCollapseCategories: false,
+        autoCollapseCategories: true,
       },
     },
     footer: {
@@ -156,7 +156,7 @@ const config: Config = {
         },
       ],
       style: 'dark',
-      copyright: `© ${new Date().getFullYear()}, The MITRE Corporation. Built with Docusaurus.`,
+      copyright: `© ${new Date().getFullYear()}, The MITRE Corporation. Built with <a href="https://docusaurus.io">Docusaurus</a>.`,
     },
     prism: {
       theme: prismThemes.github,
