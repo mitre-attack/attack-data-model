@@ -52,15 +52,13 @@ export default function DocTypeIndicator({
 
   return (
     <div
-      className={clsx(
-        styles.docTypeIndicator,
-        styles[`size-${size}`],
-        className
-      )}
-      style={{
-        '--doc-type-color': config.color,
-        '--doc-type-bg-color': config.bgColor,
-      } as React.CSSProperties}
+      className={clsx(styles.docTypeIndicator, styles[`size-${size}`], className)}
+      style={
+        {
+          '--doc-type-color': config.color,
+          '--doc-type-bg-color': config.bgColor,
+        } as React.CSSProperties
+      }
     >
       <span className={styles.emoji} role="img" aria-label={config.label}>
         {config.emoji}
@@ -111,10 +109,12 @@ export function DocTypeCard({
     <a
       href={href}
       className={clsx(styles.docTypeCard, className)}
-      style={{
-        '--doc-type-color': config.color,
-        '--doc-type-bg-color': config.bgColor,
-      } as React.CSSProperties}
+      style={
+        {
+          '--doc-type-color': config.color,
+          '--doc-type-bg-color': config.bgColor,
+        } as React.CSSProperties
+      }
     >
       <div className={styles.cardHeader}>
         <DocTypeIndicator type={type} size="large" showLabel={false} />

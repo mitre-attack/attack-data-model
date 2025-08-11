@@ -11,9 +11,12 @@ These guides provide direct solutions to common problems you'll encounter when w
 - **[How to validate custom STIX bundles](./validate-bundles)** - Ensure your custom ATT&CK data meets specification requirements
 - **[How to handle parsing errors gracefully](./error-handling)** - Implement robust error handling for production applications
 
-### Customization & Extension
+### Contributing
 
-- **[How to extend schemas with custom fields](./extend-schemas)** - Add your own properties to ATT&CK objects while preserving validation
+- **[Development setup](./contributing/dev-setup)** - Clone, install, and run the project locally
+- **[Coding style & linting](./contributing/coding-style)** - ESLint, Prettier, commit rules
+- **[Running and writing tests](./contributing/tests)** - Vitest workflow and coverage
+- **[Updating docs & schemas](./contributing/docs)** - Auto-generating docs and writing guides
 
 ## Quick Solutions
 
