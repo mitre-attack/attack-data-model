@@ -7,7 +7,7 @@ async function exploreAttackData() {
   const dataSource = new DataSourceRegistration({
     source: 'attack', // Load from official ATT&CK repository
     domain: 'enterprise-attack', // Focus on Enterprise domain
-    version: '15.1', // Use specific version for consistency
+    version: '17.1', // Use specific version for consistency
     parsingMode: 'relaxed', // Continue even if some data has minor issues
   });
 
