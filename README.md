@@ -7,43 +7,121 @@ Built on STIX 2.1 compliance, it uses Zod schemas and TypeScript types to ensure
 
 ## Key Features
 
-- **Type-Safe**: Full TypeScript support with compile-time validation
-- **STIX 2.1 Compliant**: Standards-compliant
-- **Relationship Navigation**: Intuitive methods for exploring connections
-- **Multiple Data Sources**: Official repository, local files, URLs, TAXII
+- **Type-Safe Data Parsing**: ADM validates STIX 2.1 bundles using Zod schemas, ensuring data model compliance and type safety.
+- **Easy Relationship Navigation**: Each object instance contains pointers to related objects, simplifying the process of navigating between techniques, tactics, and other ATT&CK elements.
+- **Supports Multiple Data Sources**: Load ATT&CK datasets from different sources, including GitHub, local files, URLs, and TAXII 2.1 servers (more data sources in development).
+- Parsing, validation, and serialization of ATT&CK data
+- ES6 classes for object-oriented data manipulation
 
-## Quick Start
+## Supported Data Sources
+
+- **`attack`**: Load ATT&CK data from the official MITRE ATT&CK STIX 2.1 GitHub repository. This serves as the source of truth for MITRE ATT&CK content.
+- **`file`**: Load ATT&CK data from a local JSON file containing a STIX 2.1 bundle.
+- **`url`**: Load ATT&CK data from a URL endpoint serving STIX 2.1 content.
+- **`taxii`**: (Coming soon) Load ATT&CK data from a TAXII 2.1 server.
+
+## Installation
+
+### Quick Start (Latest Version)
+
+To install the latest version of the ADM from npm:
 
 ```bash
 npm install @mitre-attack/attack-data-model
 ```
 
-```typescript
+### Choosing the Right Version
+
+The ADM library version you need depends on which version of the ATT&CK dataset you're working with. The library follows its own versioning scheme (separate from ATT&CK releases) to support ongoing development while maintaining compatibility with specific ATT&CK data versions.
+
+#### Version Compatibility Guide
+
+| If you're working with...    | Install ADM version | Command                                              |
+| ---------------------------- | ------------------- | ---------------------------------------------------- |
+| ATT&CK v18.x (upcoming)      | 5.x (upcoming)      | `npm install @mitre-attack/attack-data-model@^5.0.0` |
+| ATT&CK v15.x to v17.x        | 4.x (latest)        | `npm install @mitre-attack/attack-data-model@^4.0.0` |
+| Older ATT&CK versions (<v15) | Not supported       | Consider upgrading your ATT&CK data                  |
+
+#### How to Check Your ATT&CK Version
+
+If you're unsure which version of ATT&CK data you have:
+
+1. **From a STIX bundle file**: Look for the `x_mitre_attack_spec_version` field in the collection object
+   ```json
+   {
+      "type": "x-mitre-collection",
+      "id": "x-mitre-collection--1f5f1533-f617-4ca8-9ab4-6a02367fa019",
+      "name": "Enterprise ATT&CK",
+      "x_mitre_attack_spec_version": "3.2.0",
+   }
+   ```
+1. **Check the compatibility matrix**: Check which spec version your STIX bundle or object is supported by in the [Compatibility Guide](./COMPATIBILITY.md)
+
+### Installing Specific Versions
+
+To install a specific version of the ADM:
+
+```bash
+# Install exact version
+npm install @mitre-attack/attack-data-model@4.0.0
+
+# Install latest patch within major version
+npm install @mitre-attack/attack-data-model@^4.0.0
+
+# Install latest minor/patch within major.minor version
+npm install @mitre-attack/attack-data-model@~4.0.0
+```
+
+### Version Mismatch Warnings
+
+The ADM will validate that your data matches the expected ATT&CK Specification version. If there's a mismatch, you may encounter:
+- **Validation errors**: When the data structure doesn't match what the ADM expects
+- **Missing properties**: When using older data with a newer ADM version
+- **Unrecognized fields**: When using newer data with an older ADM version
+
+### Recommended Approach
+
+For most users, we recommend:
+1. **Use the latest ADM version** (`npm install @mitre-attack/attack-data-model`)
+2. **Load current ATT&CK data** directly from the official repository (the ADM can do this automatically)
+3. **Keep both updated** regularly to access new techniques, updates, and features
+
+Example of loading the latest ATT&CK data:
+```javascript
 import { registerDataSource, loadDataModel, DataSource } from '@mitre-attack/attack-data-model';
 
 const dataSource = new DataSource({
     source: 'attack',
     domain: 'enterprise-attack',
-    version: '15.1'
+    version: '17.1',
+    parsingMode: 'strict'
 });
 
-const uuid = await registerDataSource(dataSource);
-const attackDataModel = loadDataModel(uuid);
-
-// Navigate relationships intuitively
-const technique = attackDataModel.techniques[0];
-const tactics = technique.getTactics();
-const mitigations = technique.getMitigations();
+const dataSource = await registerDataSource(dataSource);
+const attackEnterpriseLatest = loadDataModel(dataSource);
 ```
+
+For more details on version compatibility, see the [Compatibility Guide](./COMPATIBILITY.md).
+
+## ATT&CK Specification
+
+The ADM is built upon the [MITRE ATT&CK® Specification](./docs/SPEC.md), which formally defines the structure, properties, and relationships of ATT&CK objects. The ATT&CK Specification serves as the authoritative source for how ATT&CK data should be represented and interacted with.
+
+The ADM provides a codified expression of the ATT&CK Specification using Zod schemas and TypeScript types. By implementing the specification in code, the ADM ensures that all data parsed and manipulated through the library adheres to the defined standards of the ATT&CK data model. This includes strict validation of object structures, types, and required properties, providing developers with confidence in the integrity and consistency of the data they work with.
+
+While the ATT&CK Specification defines the data model itself, the ADM includes additional software engineering elements such as utility functions, classes, and methods to facilitate easier interaction with ATT&CK data. As such, the ADM is subject to its own development lifecycle and versioning, independent of the ATT&CK Specification.
+
+The version of the ATT&CK Specification that the ADM is based on is indicated in the [ATTACK_SPEC_VERSION](./ATTACK_SPEC_VERSION) file located in the repository. This file contains a single line specifying the semantic version of the ATT&CK Specification that the current ADM release is pinned to.
+
+It's important to note that the ADM's versioning may not directly align with the versioning of the ATT&CK Specification. The ADM follows its own semantic versioning release cadence to accommodate ongoing software engineering changes, enhancements, and fixes that may occur more frequently than updates to the ATT&CK Specification itself.
+
+By maintaining separate versioning, the ADM can evolve as a software library while remaining aligned with the underlying ATT&CK data model defined by the specification. This approach ensures that developers have access to the latest features and improvements in the ADM without being constrained by the update schedule of the ATT&CK Specification.
 
 ## Documentation
 
-For detailed API documentation and usage examples, please refer to the [documentation](https://mitre-attack.github.io/attack-data-model/)
+For detailed API documentation and usage examples, please refer to the [ATT&CK Data Model TypeScript API Documentation](docs/USAGE.md).
 
-- [Tutorials](https://mitre-attack.github.io/attack-data-model/tutorials/) - Learn by doing with step-by-step guides
-- [How-to Guides](https://mitre-attack.github.io/attack-data-model/how-to-guides/) - Solve specific problems quickly
-- [Reference](https://mitre-attack.github.io/attack-data-model/reference/) - Complete API and configuration documentation
-- [Explanation](https://mitre-attack.github.io/attack-data-model/explanation/) - Understand design decisions and architecture
+For additional context about the ATT&CK specification, please refer to the [ATT&CK Specification Guide](./docs/SPEC.md).
 
 ## Basic Usage
 
