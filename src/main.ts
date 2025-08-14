@@ -203,7 +203,6 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
     .pick({
       id: true,
       type: true,
-      spec_version: true,
     })
     .safeParse(rawData);
 

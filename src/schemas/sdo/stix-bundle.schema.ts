@@ -1,7 +1,6 @@
 import { createFirstBundleObjectRefinement } from '@/refinements/index.js';
 import { z } from 'zod/v4';
 import { createStixIdValidator } from '../common/stix-identifier.js';
-import { type StixSpecVersion, stixSpecVersionSchema } from '../common/stix-spec-version.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 import {
   type MarkingDefinition,
@@ -179,13 +178,7 @@ export type AttackObjects = z.infer<typeof attackObjectsSchema>;
 export const stixBundleSchema = z
   .object({
     id: createStixIdValidator('bundle'),
-
     type: createStixTypeValidator('bundle'),
-
-    spec_version: z
-      .literal(stixSpecVersionSchema.enum['2.1'] as StixSpecVersion)
-      .meta({ description: 'Only STIX 2.1 specification version is allowed' }),
-
     objects: attackObjectsSchema,
   })
   .strict()
