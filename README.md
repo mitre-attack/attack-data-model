@@ -5,6 +5,8 @@
 The ATT&CK Data Model (ADM) provides a type-safe, object-oriented interface for working with MITRE ATT&CK datasets.
 Built on STIX 2.1 compliance, it uses Zod schemas and TypeScript types to ensure data integrity while providing intuitive relationship navigation between ATT&CK objects.
 
+**[CLICK HERE](https://mitre-attack.github.io/attack-data-model) <sup>[1](#footnotes)</sup>** to browse the ATT&CK schemas in a user-friendly interface. 
+
 ## Key Features
 
 - **Type-Safe Data Parsing**: ADM validates STIX 2.1 bundles using Zod schemas, ensuring data model compliance and type safety.
@@ -88,9 +90,9 @@ For most users, we recommend:
 
 Example of loading the latest ATT&CK data:
 ```javascript
-import { registerDataSource, loadDataModel, DataSource } from '@mitre-attack/attack-data-model';
+import { registerDataSource, loadDataModel, DataSourceRegistration } from '@mitre-attack/attack-data-model';
 
-const dataSource = new DataSource({
+const dataSource = new DataSourceRegistration({
     source: 'attack',
     domain: 'enterprise-attack',
     version: '17.1',
@@ -130,12 +132,12 @@ For additional context about the ATT&CK specification, please refer to the [ATT&
 Here's an example script that demonstrates how to use the ADM library to load ATT&CK data from the official MITRE ATT&CK GitHub repository:
 
 ```typescript
-import { registerDataSource, loadDataModel, DataSource } from '@mitre-attack/attack-data-model';
+import { registerDataSource, loadDataModel, DataSourceRegistration } from '@mitre-attack/attack-data-model';
 
 (async () => {
 
-    // Instantiating a DataSource object will validate that the data source is accessible and readable
-    const dataSource = new DataSource({
+    // Instantiating a DataSourceRegistration object will validate that the data source is accessible and readable
+    const dataSource = new DataSourceRegistration({
         source: 'attack', // Built-in index to retrieve ATT&CK content from the official MITRE ATT&CK STIX 2.1 GitHub repository
         domain: 'enterprise-attack',
         version: '15.1', // Omitting 'version' will default to the latest version available in the repository
@@ -233,6 +235,10 @@ Our [Compatibility documentation](https://mitre-attack.github.io/attack-data-mod
 ## Contributing
 
 We welcome contributions! Please see our [CONTRIBUTING.md](./docs/CONTRIBUTING.md) file for details on how to contribute to this project.
+
+## Footnotes
+
+<sup>1</sup> The [schemas site](https://mitre-attack.github.io/attack-data-model) is dynamically generated from the contents of the `@latest` distribution channel / `main` branch. We do not currently maintain separate documentation for previous releases, though we hope to in the future.
 
 ## License
 
