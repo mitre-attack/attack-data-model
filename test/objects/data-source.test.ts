@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createSyntheticStixObject } from '../../src/generator';
-import {
-    type ExternalReferences
-} from '../../src/schemas/common/index';
+import { type ExternalReferences } from '../../src/schemas/common/index';
 import { type DataSource, dataSourceSchema } from '../../src/schemas/sdo/data-source.schema';
 
 describe('dataSourceSchema', () => {
