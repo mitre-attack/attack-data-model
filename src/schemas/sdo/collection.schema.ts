@@ -8,6 +8,7 @@ import {
   stixCreatedByRefSchema,
   stixIdentifierSchema,
   stixModifiedTimestampSchema,
+  xMitreModifiedByRefSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -57,6 +58,8 @@ export const extensibleCollectionSchema = attackBaseDomainObjectSchema
     }),
 
     x_mitre_contents: xMitreContentsSchema.min(1, 'At least one STIX object reference is required'),
+
+    x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
   })
   .strict();
 

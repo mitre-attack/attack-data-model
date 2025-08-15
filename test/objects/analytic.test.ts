@@ -1,51 +1,13 @@
-import { describe, beforeEach, it, expect } from 'vitest';
 import { v4 as uuidv4 } from 'uuid';
-import { type Analytic, analyticSchema, LogSourceRef } from '../../src/schemas/sdo/analytic.schema';
+import { describe, expect, it } from 'vitest';
+import { createSyntheticStixObject } from '../../src/generator';
 import {
-  type StixCreatedTimestamp,
-  type StixModifiedTimestamp,
-  type ExternalReferences,
+  type ExternalReferences
 } from '../../src/schemas/common/index';
+import { type Analytic, analyticSchema, LogSourceRef } from '../../src/schemas/sdo/analytic.schema';
 
 describe('analyticSchema', () => {
-  let minimalAnalytic: Analytic;
-
-  beforeEach(() => {
-    minimalAnalytic = {
-      type: 'x-mitre-analytic',
-      id: `x-mitre-analytic--${uuidv4()}`,
-      spec_version: '2.1',
-      created: '2025-10-31T00:00:00.000Z' as StixCreatedTimestamp,
-      created_by_ref: `identity--${uuidv4()}`,
-      modified: '2025-10-31T00:00:00.000Z' as StixModifiedTimestamp,
-      name: 'Suspicious PowerShell Activity',
-      object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
-      external_references: [
-        {
-          source_name: 'mitre-attack',
-          url: 'https://attack.mitre.org/analytics/AN0001',
-          external_id: 'AN0001',
-        },
-      ],
-      x_mitre_attack_spec_version: '2.1.0',
-      x_mitre_domains: ['enterprise-attack'],
-      x_mitre_platforms: ['Windows'],
-      x_mitre_version: '1.0',
-      x_mitre_detects: 'Adversary execution of PowerShell commands with suspicious parameters',
-      x_mitre_log_sources: [
-        {
-          ref: `x-mitre-log-source--${uuidv4()}`,
-          keys: ['PowerShell'],
-        },
-      ],
-      x_mitre_mutable_elements: [
-        {
-          field: 'TimeWindow',
-          description: 'Time window for correlation analysis',
-        },
-      ],
-    };
-  });
+  const minimalAnalytic = createSyntheticStixObject('x-mitre-analytic');
 
   describe('Valid Inputs', () => {
     it('should accept minimal valid object (only required fields)', () => {

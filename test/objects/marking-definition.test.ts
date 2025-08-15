@@ -1,29 +1,12 @@
-import { describe, beforeEach, it, expect } from 'vitest';
-import { v4 as uuidv4 } from 'uuid';
+import { describe, expect, it } from 'vitest';
+import { createSyntheticStixObject } from '../../src/generator';
 import { markingDefinitionSchema } from '../../src/schemas/smo/marking-definition.schema';
-import { type StixCreatedTimestamp } from '../../src/schemas/common/index';
 
 /**
  * Test suite for validating MarkingDefinition schema with "statement" type.
  */
 describe('MarkingDefinitionSchema (Statement)', () => {
-  let minimalMarkingDefinition: any; // MarkingDefinition
-
-  beforeEach(() => {
-    // Set up a minimal valid "statement" marking definition
-    minimalMarkingDefinition = {
-      definition: {
-        statement:
-          'Copyright 2015-2024, The MITRE Corporation. MITRE ATT&CK and ATT&CK are registered trademarks of The MITRE Corporation.',
-      },
-      id: `marking-definition--${uuidv4()}`,
-      type: 'marking-definition',
-      created: '2017-06-01T00:00:00.000Z' as StixCreatedTimestamp,
-      created_by_ref: `identity--${uuidv4()}`,
-      definition_type: 'statement',
-      spec_version: '2.1',
-    };
-  });
+  const minimalMarkingDefinition = createSyntheticStixObject('marking-definition');
 
   /**
    * Section for valid input tests

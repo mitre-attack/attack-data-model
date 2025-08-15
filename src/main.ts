@@ -205,6 +205,7 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
       type: true,
       spec_version: true,
     })
+    .loose() // <--- required to let `objects` pass-through without validation (otherwise it gets dropped and the ADM loads an empty list)
     .safeParse(rawData);
 
   if (!baseBundleValidationResults.success) {
