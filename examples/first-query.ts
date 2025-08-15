@@ -1,4 +1,8 @@
-import { registerDataSource, loadDataModel, DataSourceRegistration } from '@mitre-attack/attack-data-model';
+import {
+  registerDataSource,
+  loadDataModel,
+  DataSourceRegistration,
+} from '@mitre-attack/attack-data-model';
 
 async function exploreAttackData() {
   console.log('🎯 Loading ATT&CK Enterprise data...\n');
