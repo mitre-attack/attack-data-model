@@ -8,7 +8,7 @@ export {
   type Asset,
   type RelatedAsset,
   type RelatedAssets,
-  type XMitreSectors
+  type XMitreSectors,
 } from './asset.schema.js';
 
 export {
@@ -17,21 +17,21 @@ export {
   xMitreLastSeenCitationSchema,
   type Campaign,
   type XMitreFirstSeenCitation,
-  type XMitreLastSeenCitation
+  type XMitreLastSeenCitation,
 } from './campaign.schema.js';
 
 export {
   collectionSchema,
   objectVersionReferenceSchema,
   type Collection,
-  type ObjectVersionReference
+  type ObjectVersionReference,
 } from './collection.schema.js';
 
 export {
   dataComponentSchema,
   xMitreDataSourceRefSchema,
   type DataComponent,
-  type XMitreDataSourceRef
+  type XMitreDataSourceRef,
 } from './data-component.schema.js';
 
 export { detectionStrategySchema, type DetectionStrategy } from './detection-strategy.schema.js';
@@ -44,14 +44,14 @@ export {
   logSourceSchema,
   xMitreLogSourcePermutationsSchema,
   type LogSource,
-  type XMitreLogSourcePermutations
+  type XMitreLogSourcePermutations,
 } from './log-source.schema.js';
 
 export {
   dataSourceSchema,
   xMitreCollectionLayersSchema,
   type DataSource,
-  type XMitreCollectionLayers
+  type XMitreCollectionLayers,
 } from './data-source.schema.js';
 
 export { malwareSchema, type Malware } from './malware.schema.js';
@@ -60,7 +60,7 @@ export {
   matrixSchema,
   xMitreTacticRefsSchema,
   type Matrix,
-  type XMitreTacticRefs
+  type XMitreTacticRefs,
 } from './matrix.schema.js';
 
 export { mitigationSchema, type Mitigation } from './mitigation.schema.js';
@@ -71,7 +71,7 @@ export {
   tacticSchema,
   xMitreShortNameSchema,
   type Tactic,
-  type XMitreShortName
+  type XMitreShortName,
 } from './tactic.schema.js';
 
 export {
@@ -100,14 +100,9 @@ export {
   type XMitrePermissionsRequired,
   type XMitreRemoteSupport,
   type XMitreSystemRequirements,
-  type XMitreTacticType
+  type XMitreTacticType,
 } from './technique.schema.js';
 
 export { toolSchema, type Tool } from './tool.schema.js';
 
-export {
-  stixBundleSchema,
-  type AttackObject,
-  type StixBundle
-} from './stix-bundle.schema.js';
-
+export { stixBundleSchema, type AttackObject, type StixBundle } from './stix-bundle.schema.js';
