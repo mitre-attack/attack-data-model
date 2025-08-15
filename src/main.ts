@@ -2,31 +2,31 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
-  type StixBundle,
-  type AttackObject,
   extensibleStixBundleSchema,
+  type AttackObject,
   type AttackObjects,
+  type StixBundle,
 } from './schemas/sdo/stix-bundle.schema.js';
 
 import {
-  techniqueSchema,
-  tacticSchema,
+  analyticSchema,
+  assetSchema,
+  campaignSchema,
+  collectionSchema,
+  dataComponentSchema,
+  dataSourceSchema,
+  detectionStrategySchema,
+  groupSchema,
+  identitySchema,
+  logSourceSchema,
+  malwareSchema,
+  markingDefinitionSchema,
   matrixSchema,
   mitigationSchema,
   relationshipSchema,
-  dataSourceSchema,
-  dataComponentSchema,
-  groupSchema,
-  malwareSchema,
+  tacticSchema,
+  techniqueSchema,
   toolSchema,
-  markingDefinitionSchema,
-  identitySchema,
-  collectionSchema,
-  campaignSchema,
-  assetSchema,
-  logSourceSchema,
-  detectionStrategySchema,
-  analyticSchema,
 } from './schemas/index.js';
 
 import {
@@ -34,7 +34,7 @@ import {
   type ParsingMode,
 } from './data-sources/data-source-registration.js';
 
-import { AttackDataModel } from './classes/attack-data-model.js';
+import { AttackDataModel } from './api/attack-data-model.js';
 
 const readFile = async (path: string): Promise<string> => {
   if (typeof window !== 'undefined') {

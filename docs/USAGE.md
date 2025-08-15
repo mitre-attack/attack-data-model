@@ -92,7 +92,7 @@ Each sub-package serves a specific purpose:
 The library is designed with a hierarchical structure. Every directory exports its modules through an `index.ts` file, creating a clear and organized namespace. The top-level `index.ts` file exports all components, allowing for straightforward imports:
 
 ```typescript
-export * from './classes/index.js';
+export * from './api/index.js';
 export * from './data-sources/index.js';
 export * from './errors/index.js';
 export * from './schemas/index.js';

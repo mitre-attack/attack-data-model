@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
+import { type TechniqueCls, TechniqueImpl } from "../../src/api/sdo/technique.impl.js";
 import { techniqueSchema } from "../../src/schemas/sdo/technique.schema.js";
-import { type TechniqueCls, TechniqueImpl } from "../../src/classes/sdo/technique.impl.js";
 
 /*************************************************************************************************** */
 // Example 1: Valid Technique
