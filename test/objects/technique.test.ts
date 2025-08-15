@@ -1,38 +1,15 @@
-import { describe, beforeEach, it, expect } from 'vitest';
-import { v4 as uuidv4 } from 'uuid';
-import { type Technique, techniqueSchema } from '../../src/schemas/sdo/technique.schema';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { createSyntheticStixObject } from '../../src/generator';
 import {
-  type StixCreatedTimestamp,
-  type StixModifiedTimestamp,
-  xMitreIdentity,
+    xMitreIdentity
 } from '../../src/schemas/common/index';
+import { type Technique, techniqueSchema } from '../../src/schemas/sdo/technique.schema';
 
 /**
  * Test suite for validating the Technique schema.
  */
 describe('TechniqueSchema', () => {
-  let minimalTechnique: Technique;
-
-  beforeEach(() => {
-    minimalTechnique = {
-      id: `attack-pattern--${uuidv4()}`,
-      type: 'attack-pattern',
-      spec_version: '2.1',
-      created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
-      modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
-      name: 'Test Technique',
-      x_mitre_attack_spec_version: '2.1.0',
-      x_mitre_version: '1.0',
-      x_mitre_domains: ['enterprise-attack'],
-      x_mitre_is_subtechnique: false,
-      external_references: [
-        {
-          source_name: 'mitre-attack',
-          external_id: 'T1234',
-        },
-      ],
-    };
-  });
+  const minimalTechnique = createSyntheticStixObject('attack-pattern');
 
   /**
    * Section for valid input tests
@@ -116,10 +93,6 @@ describe('TechniqueSchema', () => {
 
     describe('x_mitre_detection', () => {
       testField('x_mitre_detection', 123, false);
-    });
-
-    describe('x_mitre_log_sources', () => {
-      testField('x_mitre_log_sources', 'invalid string', false);
     });
 
     describe('x_mitre_permissions_required', () => {
