@@ -1,32 +1,29 @@
-import { describe, beforeEach, it, expect, afterAll } from 'vitest';
-import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { z } from 'zod';
+import { createSyntheticStixObject } from '../../src/generator';
 import {
-  type Relationship,
-  relationshipSchema,
-  type RelationshipType,
-  relationshipTypeSchema,
-  validRelationshipObjectTypes,
-  invalidRelationships,
-  isValidRelationship,
-} from '../../src/schemas/sro/relationship.schema';
-import {
-  type Description,
-  type ExternalReferences,
-  type StixCreatedTimestamp,
-  type StixIdentifier,
-  type StixModifiedTimestamp,
-  type StixSpecVersion,
-  type StixType,
-  type XMitreModifiedByRef,
-  stixTypeSchema,
-  xMitreIdentity,
+    type Description,
+    type ExternalReferences,
+    type StixCreatedTimestamp,
+    type StixIdentifier,
+    type StixModifiedTimestamp,
+    type StixSpecVersion,
+    type StixType
 } from '../../src/schemas/common/index';
+import {
+    invalidRelationships,
+    isValidRelationship,
+    type Relationship,
+    relationshipSchema,
+    type RelationshipType,
+    validRelationshipObjectTypes
+} from '../../src/schemas/sro/relationship.schema';
 import { logger } from '../utils/logger';
 
 describe('RelationshipSchema', () => {
   let relationships: any[];
-  let minimalRelationship: Relationship;
+  const minimalRelationship = createSyntheticStixObject('relationship');
 
   const validRelationships: {
     sourceType: StixType;
@@ -70,20 +67,6 @@ describe('RelationshipSchema', () => {
 
   beforeEach(() => {
     relationships = global.attackData.objectsByType['relationship'];
-
-    minimalRelationship = {
-      id: `relationship--${uuidv4()}`,
-      type: stixTypeSchema.enum.relationship,
-      spec_version: '2.1',
-      created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
-      modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
-      relationship_type: relationshipTypeSchema.enum.uses,
-      source_ref: `${stixTypeSchema.enum.campaign}--${uuidv4()}`,
-      target_ref: `${stixTypeSchema.enum.malware}--${uuidv4()}`,
-      object_marking_refs: [`marking-definition--${uuidv4()}`],
-      x_mitre_attack_spec_version: '2.1.0',
-      x_mitre_modified_by_ref: xMitreIdentity as XMitreModifiedByRef,
-    };
   });
 
   describe('Valid Inputs', () => {

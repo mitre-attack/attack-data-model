@@ -1,42 +1,13 @@
-import { describe, beforeEach, it, expect } from 'vitest';
 import { v4 as uuidv4 } from 'uuid';
-import { type DetectionStrategy, detectionStrategySchema } from '../../src/schemas/sdo/detection-strategy.schema';
+import { describe, expect, it } from 'vitest';
+import { createSyntheticStixObject } from '../../src/generator';
 import {
-  type StixCreatedTimestamp,
-  type StixModifiedTimestamp,
-  type ExternalReferences,
-  type XMitreModifiedByRef,
-  xMitreIdentity,
+    type ExternalReferences
 } from '../../src/schemas/common/index';
+import { type DetectionStrategy, detectionStrategySchema } from '../../src/schemas/sdo/detection-strategy.schema';
 
 describe('detectionStrategySchema', () => {
-  let minimalDetectionStrategy: DetectionStrategy;
-
-  beforeEach(() => {
-    minimalDetectionStrategy = {
-      type: 'x-mitre-detection-strategy',
-      id: `x-mitre-detection-strategy--${uuidv4()}`,
-      spec_version: '2.1',
-      created: '2017-06-01T00:00:00.000Z' as StixCreatedTimestamp,
-      created_by_ref: `identity--${uuidv4()}`,
-      modified: '2017-06-01T00:00:00.000Z' as StixModifiedTimestamp,
-      name: 'PowerShell Command Line Detection',
-      object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
-      x_mitre_modified_by_ref: xMitreIdentity as XMitreModifiedByRef,
-      x_mitre_contributors: ["John Doe", "Jane Smith"],
-      external_references: [
-        {
-          source_name: 'mitre-attack',
-          url: 'https://attack.mitre.org/detection-strategies/DET0001',
-          external_id: 'DET0001',
-        },
-      ],
-      x_mitre_attack_spec_version: '2.1.0',
-      x_mitre_domains: ['enterprise-attack'],
-      x_mitre_version: '1.0',
-      x_mitre_analytics: [`x-mitre-analytic--${uuidv4()}`],
-    };
-  });
+  const minimalDetectionStrategy = createSyntheticStixObject('x-mitre-detection-strategy');
 
   describe('Valid Inputs', () => {
     it('should accept minimal valid object (only required fields)', () => {
