@@ -1,21 +1,21 @@
-import { z } from 'zod/v4';
-import {
-  attackBaseDomainObjectSchema,
-  descriptionSchema,
-  xMitrePlatformsSchema,
-  createStixIdValidator,
-  createStixTypeValidator,
-  xMitreModifiedByRefSchema,
-  xMitreDomainsSchema,
-  xMitreContributorsSchema,
-  killChainPhaseSchema,
-  createAttackExternalReferencesSchema,
-} from '../common/index.js';
 import {
   createAttackIdInExternalReferencesRefinement,
   createEnterpriseOnlyPropertiesRefinement,
   createMobileOnlyPropertiesRefinement,
-} from '@/refinements/index.js';
+} from '@/schemas/refinements/index.js';
+import { z } from 'zod/v4';
+import {
+  attackBaseDomainObjectSchema,
+  createAttackExternalReferencesSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
+  descriptionSchema,
+  killChainPhaseSchema,
+  xMitreContributorsSchema,
+  xMitreDomainsSchema,
+  xMitreModifiedByRefSchema,
+  xMitrePlatformsSchema,
+} from '../common/index.js';
 
 /////////////////////////////////////
 //

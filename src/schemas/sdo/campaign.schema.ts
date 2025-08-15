@@ -1,17 +1,20 @@
+import {
+  createCitationsRefinement,
+  createFirstAliasRefinement,
+} from '@/schemas/refinements/index.js';
 import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import {
-  stixTimestampSchema,
-  descriptionSchema,
-  xMitreDomainsSchema,
-  createStixIdValidator,
   aliasesSchema,
   createAttackExternalReferencesSchema,
-  xMitreModifiedByRefSchema,
-  xMitreContributorsSchema,
+  createStixIdValidator,
   createStixTypeValidator,
+  descriptionSchema,
+  stixTimestampSchema,
+  xMitreContributorsSchema,
+  xMitreDomainsSchema,
+  xMitreModifiedByRefSchema,
 } from '../common/index.js';
-import { createFirstAliasRefinement, createCitationsRefinement } from '@/refinements/index.js';
 
 /////////////////////////////////////
 //
