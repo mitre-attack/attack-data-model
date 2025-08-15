@@ -29,12 +29,132 @@ import {
   toolSchema,
 } from './schemas/index.js';
 
-import {
-  DataSourceRegistration,
-  type ParsingMode,
-} from './data-sources/data-source-registration.js';
-
 import { AttackDataModel } from './api/attack-data-model.js';
+import { attackDomainSchema, type AttackDomain } from './index.js';
+
+export type ParsingMode = 'strict' | 'relaxed';
+
+export type DataSourceOptions =
+  | {
+      source: 'attack';
+      domain: AttackDomain;
+      version?: string;
+      parsingMode?: ParsingMode;
+    }
+  | {
+      source: 'file';
+      path: string;
+      parsingMode?: ParsingMode;
+    }
+  | {
+      source: 'url';
+      url: string;
+      parsingMode?: ParsingMode;
+    }
+  | {
+      source: 'taxii';
+      url: string;
+      parsingMode?: ParsingMode;
+    };
+
+interface GitHubRelease {
+  tag_name: string;
+  name: string;
+  published_at: string;
+}
+
+function normalizeVersion(version: string): string {
+  return version.replace(/^v/, '');
+}
+
+export async function fetchAttackVersions(): Promise<string[]> {
+  const url = 'https://api.github.com/repos/mitre-attack/attack-stix-data/releases';
+
+  const response = await fetch(url, {
+    headers: {
+      Accept: 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const releases: GitHubRelease[] = await response.json();
+
+  const versions = releases
+    .map((release) => normalizeVersion(release.tag_name))
+    .sort((a, b) => {
+      const [aMajor, aMinor] = a.split('.').map(Number);
+      const [bMajor, bMinor] = b.split('.').map(Number);
+      if (bMajor !== aMajor) return bMajor - aMajor;
+      return bMinor - aMinor;
+    });
+
+  return versions;
+}
+
+export class DataSourceRegistration {
+  constructor(public readonly options: DataSourceOptions) {
+    this.validateOptions();
+  }
+
+  private async validateOptions(): Promise<void> {
+    const { source, parsingMode } = this.options;
+
+    if (parsingMode && !['strict', 'relaxed'].includes(parsingMode)) {
+      throw new Error(`Invalid parsingMode: ${parsingMode}. Expected 'strict' or 'relaxed'.`);
+    }
+
+    switch (source) {
+      case 'attack': {
+        await this.validateAttackOptions();
+        break;
+      }
+      case 'file': {
+        this.validateFileOptions();
+        break;
+      }
+      case 'url':
+      case 'taxii': {
+        throw new Error(`The ${source} source is not implemented yet.`);
+      }
+      default: {
+        throw new Error(`Unsupported data source type: ${source}`);
+      }
+    }
+  }
+
+  private async validateAttackOptions(): Promise<void> {
+    const { domain, version } = this.options as { domain: AttackDomain; version?: string };
+
+    if (!domain || !Object.values(attackDomainSchema.enum).includes(domain)) {
+      throw new Error(
+        `Invalid domain provided for 'attack' source. Expected one of: ${Object.values(
+          attackDomainSchema.enum,
+        ).join(', ')}`,
+      );
+    }
+
+    if (version) {
+      const supportedVersions = await fetchAttackVersions();
+      const normalizedVersion = version.replace(/^v/, '');
+      if (!supportedVersions.includes(normalizedVersion)) {
+        throw new Error(
+          `Invalid version: ${version}. Supported versions are: ${supportedVersions.join(', ')}`,
+        );
+      }
+    }
+  }
+
+  private validateFileOptions(): void {
+    const { path } = this.options as { path: string };
+    if (!path) {
+      throw new Error("The 'file' source requires a 'path' field to specify the file location.");
+    }
+  }
+}
 
 const readFile = async (path: string): Promise<string> => {
   if (typeof window !== 'undefined') {
