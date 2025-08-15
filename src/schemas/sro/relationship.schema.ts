@@ -1,3 +1,4 @@
+import { createFoundInRelationshipRefinement } from '@/schemas/refinements/index.js';
 import { z } from 'zod/v4';
 import {
   attackBaseRelationshipObjectSchema,
@@ -5,12 +6,11 @@ import {
   createStixTypeValidator,
   descriptionSchema,
   stixIdentifierSchema,
-  type StixIdentifier,
-  type StixType,
   stixTypeSchema,
   xMitreModifiedByRefSchema,
+  type StixIdentifier,
+  type StixType,
 } from '../common/index.js';
-import { createFoundInRelationshipRefinement } from '@/refinements/index.js';
 
 /////////////////////////////////////
 //

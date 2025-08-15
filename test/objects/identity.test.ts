@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { createSyntheticStixObject } from '../../src/generator';
 import { type Identity, identitySchema } from '../../src/schemas/sdo/identity.schema';
+import { createSyntheticStixObject } from '../../src/utils/index';
 
 describe('IdentitySchema', () => {
   const minimalIdentity = createSyntheticStixObject('identity');

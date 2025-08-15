@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { createSyntheticStixObject } from '../../src/generator';
+import { createSyntheticStixObject } from '../../src/utils/index';
 import {
     xMitreIdentity
 } from '../../src/schemas/common/index';

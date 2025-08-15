@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { createSyntheticStixObject } from '../../src/generator';
 import type {
-    StixTimestamp
+  StixTimestamp
 } from '../../src/schemas/common/index';
 import { type Campaign, campaignSchema } from '../../src/schemas/sdo/campaign.schema';
+import { createSyntheticStixObject } from '../../src/utils/index';
 
 /**
  * Test suite for validating the Campaign schema.

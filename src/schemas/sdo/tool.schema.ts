@@ -1,5 +1,8 @@
+import {
+  createFirstAliasRefinement,
+  createFirstXMitreAliasRefinement,
+} from '@/schemas/refinements/index.js';
 import { z } from 'zod/v4';
-import { softwareSchema } from './software.schema.js';
 import {
   createAttackExternalReferencesSchema,
   createOldMitreAttackIdSchema,
@@ -8,10 +11,7 @@ import {
   killChainPhaseSchema,
 } from '../common/index.js';
 import { ToolTypeOV } from '../common/open-vocabulary.js';
-import {
-  createFirstAliasRefinement,
-  createFirstXMitreAliasRefinement,
-} from '@/refinements/index.js';
+import { softwareSchema } from './software.schema.js';
 
 /////////////////////////////////////
 //

@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { createSyntheticStixObject } from '../../src/generator';
 import {
-    type ExternalReferences
+  type ExternalReferences
 } from '../../src/schemas/common/index';
 import { type Mitigation, mitigationSchema } from '../../src/schemas/sdo/mitigation.schema';
+import { createSyntheticStixObject } from '../../src/utils/index';
 
 describe('MitigationSchema', () => {
   const minimalMitigation = createSyntheticStixObject('course-of-action');

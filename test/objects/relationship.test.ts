@@ -1,24 +1,24 @@
 import { v4 as uuidv4 } from 'uuid';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { createSyntheticStixObject } from '../../src/generator';
 import {
-    type Description,
-    type ExternalReferences,
-    type StixCreatedTimestamp,
-    type StixIdentifier,
-    type StixModifiedTimestamp,
-    type StixSpecVersion,
-    type StixType
+  type Description,
+  type ExternalReferences,
+  type StixCreatedTimestamp,
+  type StixIdentifier,
+  type StixModifiedTimestamp,
+  type StixSpecVersion,
+  type StixType
 } from '../../src/schemas/common/index';
 import {
-    invalidRelationships,
-    isValidRelationship,
-    type Relationship,
-    relationshipSchema,
-    type RelationshipType,
-    validRelationshipObjectTypes
+  invalidRelationships,
+  isValidRelationship,
+  type Relationship,
+  relationshipSchema,
+  type RelationshipType,
+  validRelationshipObjectTypes
 } from '../../src/schemas/sro/relationship.schema';
+import { createSyntheticStixObject } from '../../src/utils/index';
 import { logger } from '../utils/logger';
 
 describe('RelationshipSchema', () => {

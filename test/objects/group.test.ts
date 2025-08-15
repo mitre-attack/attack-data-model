@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { describe, expect, it } from 'vitest';
-import { createSyntheticStixObject } from '../../src/generator';
 import type {
-    Description
+  Description
 } from '../../src/schemas/common/index';
 import { type Group, groupSchema } from '../../src/schemas/sdo/group.schema';
+import { createSyntheticStixObject } from '../../src/utils/index';
 
 /**
  * Test suite for validating the Group schema.

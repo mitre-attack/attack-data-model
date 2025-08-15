@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { createSyntheticStixObject } from '../../src/generator';
 import {
-    type DataComponent,
-    dataComponentSchema,
+  type DataComponent,
+  dataComponentSchema,
 } from '../../src/schemas/sdo/data-component.schema';
+import { createSyntheticStixObject } from '../../src/utils/index';
 
 describe('dataComponentSchema', () => {
   const minimalDataComponent = createSyntheticStixObject('x-mitre-data-component');

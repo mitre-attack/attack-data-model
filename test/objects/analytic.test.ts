@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { describe, expect, it } from 'vitest';
-import { createSyntheticStixObject } from '../../src/generator';
 import {
   type ExternalReferences
 } from '../../src/schemas/common/index';
 import { type Analytic, analyticSchema, LogSourceRef } from '../../src/schemas/sdo/analytic.schema';
+import { createSyntheticStixObject } from '../../src/utils/index';
 
 describe('analyticSchema', () => {
   const minimalAnalytic = createSyntheticStixObject('x-mitre-analytic');
