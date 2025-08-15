@@ -18,7 +18,7 @@ describe('README.md Code Examples', () => {
       // Maps to: README.md - "Installing Specific Versions" section
       // Code blocks: ```bash npm install @mitre-attack/attack-data-model@4.0.0
       const versions = ['4.0.0', '^4.0.0', '~4.0.0', '5.x', '17.1'];
-      versions.forEach(version => {
+      versions.forEach((version) => {
         expect(version).toMatch(/^[~^]?\d+(\.\d+)?(\.\d+)?$|\d+\.x$/);
       });
     });
@@ -27,7 +27,7 @@ describe('README.md Code Examples', () => {
       // Maps to: README.md - "How to Check Your ATT&CK Version" section
       // Code block: ```json { "type": "x-mitre-collection", "x_mitre_attack_spec_version": "3.2.0" }
       const collections = globalThis.attackData.objectsByType['x-mitre-collection'] || [];
-      
+
       if (collections.length > 0) {
         const collection = collections[0];
         expect(collection.x_mitre_attack_spec_version).toBeDefined();
@@ -38,13 +38,13 @@ describe('README.md Code Examples', () => {
 
   describe('Recommended Approach Example', () => {
     it('should work with the loading example from README', () => {
-      // Maps to: README.md - "Recommended Approach" section  
+      // Maps to: README.md - "Recommended Approach" section
       // Code block: ```javascript const dataSource = new DataSourceRegistration({ source: 'attack', ... });
       const dataSource = new DataSourceRegistration({
         source: 'attack',
         domain: 'enterprise-attack',
         version: '17.1',
-        parsingMode: 'strict'
+        parsingMode: 'strict',
       });
 
       expect(dataSource.options.source).toBe('attack');
@@ -62,7 +62,7 @@ describe('README.md Code Examples', () => {
         source: 'attack',
         domain: 'enterprise-attack',
         version: '15.1',
-        parsingMode: 'relaxed'
+        parsingMode: 'relaxed',
       });
 
       expect(dataSource.options.source).toBe('attack');
@@ -79,7 +79,7 @@ describe('README.md Code Examples', () => {
 
       expect(techniques.length).toBeGreaterThan(100);
       expect(tactics.length).toBeGreaterThan(5);
-      
+
       if (techniques.length > 0) {
         const technique = techniques[0];
         expect(technique.name).toBeDefined();
@@ -92,17 +92,17 @@ describe('README.md Code Examples', () => {
       // Maps to: README.md - "Basic Usage" section
       // Code pattern: if (technique.x_mitre_is_subtechnique) { console.log(technique.getParentTechnique()); }
       const techniques = globalThis.attackData.objectsByType['attack-pattern'] || [];
-      
-      const parentTechnique = techniques.find(t => 
-        'x_mitre_is_subtechnique' in t && t.x_mitre_is_subtechnique === false
+
+      const parentTechnique = techniques.find(
+        (t) => 'x_mitre_is_subtechnique' in t && t.x_mitre_is_subtechnique === false,
       );
 
       if (parentTechnique) {
         expect(parentTechnique.x_mitre_is_subtechnique).toBe(false);
       }
 
-      const subtechnique = techniques.find(t => 
-        'x_mitre_is_subtechnique' in t && t.x_mitre_is_subtechnique === true
+      const subtechnique = techniques.find(
+        (t) => 'x_mitre_is_subtechnique' in t && t.x_mitre_is_subtechnique === true,
       );
 
       if (subtechnique) {
@@ -140,10 +140,10 @@ describe('README.md Code Examples', () => {
       // Maps to: README.md - "Parsing and Validating a Tactic" section
       // Validates that real objects have the structure shown in examples
       const tactics = globalThis.attackData.objectsByType['x-mitre-tactic'] || [];
-      
+
       if (tactics.length > 0) {
         const tactic = tactics[0];
-        
+
         expect(tactic.id).toBeDefined();
         expect(tactic.type).toBe('x-mitre-tactic');
         expect(tactic.name).toBeDefined();
@@ -158,8 +158,8 @@ describe('README.md Code Examples', () => {
       // Maps to: README.md - "Handling Invalid Data" section
       // Code block: ```typescript const invalidTactic = { id: "...", type: "x-mitre-tactic" };
       const invalidTactic = {
-        id: "x-mitre-tactic--4ca45d45-df4d-4613-8980-bac22d278fa5",
-        type: "x-mitre-tactic",
+        id: 'x-mitre-tactic--4ca45d45-df4d-4613-8980-bac22d278fa5',
+        type: 'x-mitre-tactic',
         // Missing required fields like name, description, etc.
       };
 
@@ -174,11 +174,11 @@ describe('README.md Code Examples', () => {
       // Maps to: README.md - "How It Works" section, step 5
       // Text: "automatically processes all 'relationship' objects in the dataset"
       const relationships = globalThis.attackData.sros || [];
-      
+
       expect(relationships.length).toBeGreaterThan(0);
-      
-      const usesRelationship = relationships.find(rel => rel.relationship_type === 'uses');
-      
+
+      const usesRelationship = relationships.find((rel) => rel.relationship_type === 'uses');
+
       if (usesRelationship) {
         expect(usesRelationship.source_ref).toBeDefined();
         expect(usesRelationship.target_ref).toBeDefined();
@@ -191,7 +191,7 @@ describe('README.md Code Examples', () => {
     it('should demonstrate AttackDataModel instantiation', () => {
       // Maps to: README.md - Various sections showing AttackDataModel usage
       // Code pattern: new AttackDataModel(uuid, objects) constructor usage
-      const uuid = "test-unique-id";
+      const uuid = 'test-unique-id';
       const attackObjects: any[] = [];
       const testDataModel = new AttackDataModel(uuid, attackObjects);
 
