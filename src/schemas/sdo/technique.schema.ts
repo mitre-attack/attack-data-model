@@ -368,11 +368,14 @@ export const techniqueSchema = attackBaseDomainObjectSchema
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
   })
+  .meta({
+    description:
+      'Techniques describe specific methods adversaries use to achieve tactical objectives and are represented as [attack-pattern](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230921) objects following the STIX 2.1 specification.',
+  })
   .strict()
   .check((ctx) => {
     createAttackIdInExternalReferencesRefinement()(ctx);
     createEnterpriseOnlyPropertiesRefinement()(ctx);
     createMobileOnlyPropertiesRefinement()(ctx);
   });
-
 export type Technique = z.infer<typeof techniqueSchema>;
