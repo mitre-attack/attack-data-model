@@ -181,6 +181,9 @@ export const stixBundleSchema = z
     type: createStixTypeValidator('bundle'),
     objects: attackObjectsSchema,
   })
+  .meta({
+    description: 'A Bundle is a collection of arbitrary STIX Objects grouped together in a single container. A Bundle does not have any semantic meaning and the objects contained within the Bundle are not considered related by virtue of being in the same Bundle. A STIX Bundle Object is not a STIX Object but makes use of the type and id Common Properties.'
+  })
   .strict()
   .check((ctx) => {
     createFirstBundleObjectRefinement()(ctx);
