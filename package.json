@@ -48,29 +48,9 @@
   },
   "contributors": [
     {
-      "name": "Sean Sica",
-      "email": "ssica@mitre.org",
-      "url": "https://github.com/seansica"
-    },
-    {
-      "name": "Charissa Miller",
-      "email": "clmiller@mitre.org",
-      "url": "https://github.com/clemiller"
-    },
-    {
-      "name": "Anjali Pare",
-      "email": "apare@mitre.org",
-      "url": "https://github.com/adpare"
-    },
-    {
-      "name": "Erin Hall",
-      "email": "halle@mitre.org",
-      "url": "https://github.com/erinehall"
-    },
-    {
-      "name": "Jared Ondricek",
-      "email": "jondricek@mitre.org",
-      "url": "https://github.com/jondricek"
+      "name": "MITRE ATT&CK",
+      "email": "attack@mitre.org",
+      "url": "https://github.com/mitre-attack"
     }
   ],
   "files": [
