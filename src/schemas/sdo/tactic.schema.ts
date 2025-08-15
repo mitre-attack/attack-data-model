@@ -91,6 +91,10 @@ export const tacticSchema = attackBaseDomainObjectSchema
 
     x_mitre_contributors: xMitreContributorsSchema.optional(),
   })
+  .meta({
+    description:
+      "Tactics represent the adversary's tactical goals during an attack and are defined by `x-mitre-tactic` objects. As custom STIX types, they extend the generic STIX Domain Object pattern.",
+  })
   .required({
     created_by_ref: true, // Optional in STIX but required in ATT&CK
     object_marking_refs: true, // Optional in STIX but required in ATT&CK
