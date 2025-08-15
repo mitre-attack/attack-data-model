@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocusaurus=self.webpackChunkdocusaurus||[]).push([[472],{5513:s=>{s.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"known-issues","permalink":"/attack-data-model/blog/known-issues","unlisted":false,"date":"2025-08-15T12:48:24.000Z"}]}')}}]);
