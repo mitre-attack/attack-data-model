@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   stixBundleSchema,
   type AttackObject,
-  type AttackObjects,
   type StixBundle,
 } from './schemas/sdo/stix-bundle.schema.js';
 
@@ -221,7 +220,7 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
   }
 
   // Now process each object individually
-  const objects = rawData.objects as AttackObjects[];
+  const objects = rawData.objects as AttackObject[];
   for (let index = 0; index < objects.length; index++) {
     const obj = objects[index] as AttackObject;
     let objParseResult;
