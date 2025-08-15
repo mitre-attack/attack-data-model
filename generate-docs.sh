@@ -2,13 +2,13 @@
 
 WORKDIR="."
 SCHEMA_DIR="$WORKDIR/src/schemas"
-OUTPUT_DIR="docusaurus/docs"
-OVERVIEW="$OUTPUT_DIR/overview.md"
+OUTPUT_DIR="docusaurus/docs/reference/schemas"
+OVERVIEW="$OUTPUT_DIR/index.md"
 
 mkdir -p $OUTPUT_DIR
 
-# init overview.md
-echo "# ATT&CK Schemas" > $OVERVIEW
+# init index.md
+echo "# Schema Reference" > $OVERVIEW
 echo "" >> $OVERVIEW
 
 # attack spec version
@@ -30,7 +30,7 @@ find $SCHEMA_DIR -name "*.schema.ts" | while read schemaFile; do
 
 	# skip stix-bundle (manually generated) and add to overview page
 	if [[ "${fileName}" == "stix-bundle.schema.ts" ]]; then
-		echo "| STIX Bundle | SDO | [Schema](/docs/sdo/stix-bundle.schema) |" >> $OVERVIEW
+		echo "| STIX Bundle | SDO | [Schema](./sdo/stix-bundle.schema) |" >> $OVERVIEW
 		continue
 	fi
 
@@ -52,6 +52,6 @@ find $SCHEMA_DIR -name "*.schema.ts" | while read schemaFile; do
 	schemaLink="${relativePath/.ts/.md}"
 	stixType=$(dirname "$relativePath" | cut -d '/' -f 1 | tr '[:lower:]' '[:upper:]')
 
-	echo "| $title | $stixType | [Schema](/docs/$schemaLink) |" >> $OVERVIEW
+	echo "| $title | $stixType | [Schema](./$schemaLink) |" >> $OVERVIEW
 
 done

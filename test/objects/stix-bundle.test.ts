@@ -42,7 +42,6 @@ describe('StixBundleSchema', () => {
     minimalBundle = {
       id: `bundle--${uuidv4()}`,
       type: 'bundle',
-      spec_version: '2.1',
       objects: [minimalCollection],
     };
   });
@@ -117,10 +116,6 @@ describe('StixBundleSchema', () => {
 
     describe('type', () => {
       testField('type', 'invalid-type');
-    });
-
-    describe('spec_version', () => {
-      testField('spec_version', 'invalid-version');
     });
 
     describe('objects', () => {

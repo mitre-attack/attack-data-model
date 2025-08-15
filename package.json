@@ -33,6 +33,7 @@
     "build": "npx tsup --dts --format esm,cjs src",
     "prepublishOnly": "rm -rf dist && npm run build",
     "test": "vitest --run",
+    "test:coverage": "vitest --run --coverage",
     "test:interactive": "vitest",
     "export": "npm pack",
     "clean": "rm -rf test/**/*.js test/**/*.js.map test/**/*.d.ts test/**/*.ts.map src/**/*.js src/**/*.js.map src/**/*.d.ts examples/**/*.js examples/**/*.js.map dist",
@@ -47,29 +48,9 @@
   },
   "contributors": [
     {
-      "name": "Sean Sica",
-      "email": "ssica@mitre.org",
-      "url": "https://github.com/seansica"
-    },
-    {
-      "name": "Charissa Miller",
-      "email": "clmiller@mitre.org",
-      "url": "https://github.com/clemiller"
-    },
-    {
-      "name": "Anjali Pare",
-      "email": "apare@mitre.org",
-      "url": "https://github.com/adpare"
-    },
-    {
-      "name": "Erin Hall",
-      "email": "halle@mitre.org",
-      "url": "https://github.com/erinehall"
-    },
-    {
-      "name": "Jared Ondricek",
-      "email": "jondricek@mitre.org",
-      "url": "https://github.com/jondricek"
+      "name": "MITRE ATT&CK",
+      "email": "attack@mitre.org",
+      "url": "https://github.com/mitre-attack"
     }
   ],
   "files": [
@@ -92,6 +73,7 @@
     "@eslint/js": "^9.28.0",
     "@semantic-release/git": "^10.0.1",
     "@types/uuid": "^10.0.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "eslint": "^9.28.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.4.1",

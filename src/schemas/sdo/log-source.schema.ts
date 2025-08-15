@@ -1,11 +1,11 @@
 import { z } from 'zod/v4';
 import {
-  xMitreDomainsSchema,
-  xMitreModifiedByRefSchema,
   attackBaseDomainObjectSchema,
   createAttackExternalReferencesSchema,
   createStixIdValidator,
   createStixTypeValidator,
+  xMitreDomainsSchema,
+  xMitreModifiedByRefSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -55,7 +55,7 @@ export type XMitreLogSourcePermutations = z.infer<typeof xMitreLogSourcePermutat
 //
 /////////////////////////////////////
 
-export const extensibleLogSourceSchema = attackBaseDomainObjectSchema
+export const logSourceSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-log-source'),
 
@@ -76,6 +76,4 @@ export const extensibleLogSourceSchema = attackBaseDomainObjectSchema
   })
   .strict();
 
-export const logSourceSchema = extensibleLogSourceSchema;
-
-export type LogSource = z.infer<typeof extensibleLogSourceSchema>;
+export type LogSource = z.infer<typeof logSourceSchema>;

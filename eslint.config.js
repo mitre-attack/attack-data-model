@@ -1,13 +1,15 @@
-import globals from "globals";
-import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
+import pluginJs from '@eslint/js';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
-
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 export default [
-    { files: ["**/*.{js,mjs,cjs,ts}"] },
-    { languageOptions: { globals: globals.browser } },
-    pluginJs.configs.recommended,
-    ...tseslint.configs.recommended,
-    eslintPluginPrettierRecommended
+  {
+    ignores: ['node_modules', 'dist', 'docusaurus'],
+  },
+  { files: ['**/*.{js,mjs,cjs,ts}'] },
+  { languageOptions: { globals: globals.browser } },
+  pluginJs.configs.recommended,
+  ...tseslint.configs.recommended,
+  eslintPluginPrettierRecommended,
 ];

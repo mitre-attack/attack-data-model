@@ -2,31 +2,30 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
-  type StixBundle,
+  stixBundleSchema,
   type AttackObject,
-  extensibleStixBundleSchema,
-  type AttackObjects,
+  type StixBundle,
 } from './schemas/sdo/stix-bundle.schema.js';
 
 import {
-  techniqueSchema,
-  tacticSchema,
+  analyticSchema,
+  assetSchema,
+  campaignSchema,
+  collectionSchema,
+  dataComponentSchema,
+  dataSourceSchema,
+  detectionStrategySchema,
+  groupSchema,
+  identitySchema,
+  logSourceSchema,
+  malwareSchema,
+  markingDefinitionSchema,
   matrixSchema,
   mitigationSchema,
   relationshipSchema,
-  dataSourceSchema,
-  dataComponentSchema,
-  groupSchema,
-  malwareSchema,
+  tacticSchema,
+  techniqueSchema,
   toolSchema,
-  markingDefinitionSchema,
-  identitySchema,
-  collectionSchema,
-  campaignSchema,
-  assetSchema,
-  logSourceSchema,
-  detectionStrategySchema,
-  analyticSchema,
 } from './schemas/index.js';
 
 import {
@@ -199,11 +198,10 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
   const validObjects: AttackObject[] = [];
 
   // Validate the bundle's top-level properties
-  const baseBundleValidationResults = extensibleStixBundleSchema
+  const baseBundleValidationResults = stixBundleSchema
     .pick({
       id: true,
       type: true,
-      spec_version: true,
     })
     .loose() // <--- required to let `objects` pass-through without validation (otherwise it gets dropped and the ADM loads an empty list)
     .safeParse(rawData);
@@ -222,7 +220,7 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
   }
 
   // Now process each object individually
-  const objects = rawData.objects as AttackObjects[];
+  const objects = rawData.objects as AttackObject[];
   for (let index = 0; index < objects.length; index++) {
     const obj = objects[index] as AttackObject;
     let objParseResult;

@@ -1,3 +1,4 @@
+import { createFoundInRelationshipRefinement } from '@/refinements/index.js';
 import { z } from 'zod/v4';
 import {
   attackBaseRelationshipObjectSchema,
@@ -5,12 +6,11 @@ import {
   createStixTypeValidator,
   descriptionSchema,
   stixIdentifierSchema,
-  type StixIdentifier,
-  type StixType,
   stixTypeSchema,
   xMitreModifiedByRefSchema,
+  type StixIdentifier,
+  type StixType,
 } from '../common/index.js';
-import { createFoundInRelationshipRefinement } from '@/refinements/index.js';
 
 /////////////////////////////////////
 //
@@ -285,7 +285,7 @@ export function createRelationshipValidationRefinement() {
 //
 /////////////////////////////////////
 
-export const extensibleRelationshipSchema = attackBaseRelationshipObjectSchema
+export const relationshipSchema = attackBaseRelationshipObjectSchema
   .extend({
     id: createStixIdValidator('relationship'),
 
@@ -307,11 +307,10 @@ export const extensibleRelationshipSchema = attackBaseRelationshipObjectSchema
     name: true,
     x_mitre_version: true,
   })
-  .strict();
+  .strict()
+  .check((ctx) => {
+    createRelationshipValidationRefinement()(ctx);
+    createFoundInRelationshipRefinement()(ctx);
+  });
 
-export const relationshipSchema = extensibleRelationshipSchema.check((ctx) => {
-  createRelationshipValidationRefinement()(ctx);
-  createFoundInRelationshipRefinement()(ctx);
-});
-
-export type Relationship = z.infer<typeof extensibleRelationshipSchema>;
+export type Relationship = z.infer<typeof relationshipSchema>;

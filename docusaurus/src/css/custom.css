@@ -5,6 +5,7 @@
  */
 
 :root {
+  /* Primary brand colors */
   --ifm-color-primary: #c64227;
   --ifm-color-primary-dark: #b64227;
   --ifm-color-primary-darker: #a64227;
@@ -12,11 +13,50 @@
   --ifm-color-primary-light: #d64227;
   --ifm-color-primary-lighter: #e64227;
   --ifm-color-primary-lightest: #f64227;
+
+  /* Documentation type colors */
+  --doc-tutorial-color: #10b981;
+  --doc-tutorial-bg: #d1fae5;
+  --doc-tutorial-border: #6ee7b7;
+
+  --doc-howto-color: #f59e0b;
+  --doc-howto-bg: #fef3c7;
+  --doc-howto-border: #fcd34d;
+
+  --doc-reference-color: #3b82f6;
+  --doc-reference-bg: #dbeafe;
+  --doc-reference-border: #93c5fd;
+
+  --doc-explanation-color: #8b5cf6;
+  --doc-explanation-bg: #ede9fe;
+  --doc-explanation-border: #c4b5fd;
+
+  /* Enhanced typography */
+  --ifm-font-family-base: 'Inter', system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Ubuntu', 'Cantarell', 'Noto Sans', sans-serif;
+  --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
+
+  /* Code styling */
   --ifm-code-font-size: 95%;
+  --ifm-code-padding-horizontal: 0.375rem;
+  --ifm-code-padding-vertical: 0.125rem;
+  --ifm-code-border-radius: 0.375rem;
+
+  /* Enhanced spacing */
+  --ifm-spacing-horizontal: 1.5rem;
+  --ifm-global-spacing: 1.5rem;
+
+  /* Improved line heights */
+  --ifm-line-height-base: 1.6;
+  --ifm-heading-line-height: 1.3;
+
+  /* Code block styling */
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --ifm-pre-padding: 1.5rem;
+  --ifm-pre-border-radius: 0.5rem;
 }
 
 [data-theme='dark'] {
+  /* Primary brand colors for dark theme */
   --ifm-color-primary: #c64227;
   --ifm-color-primary-dark: #b64227;
   --ifm-color-primary-darker: #a64227;
@@ -24,5 +64,253 @@
   --ifm-color-primary-light: #d64227;
   --ifm-color-primary-lighter: #e64227;
   --ifm-color-primary-lightest: #f64227;
+
+  /* Documentation type colors for dark theme */
+  --doc-tutorial-color: #34d399;
+  --doc-tutorial-bg: #064e3b;
+  --doc-tutorial-border: #047857;
+
+  --doc-howto-color: #fbbf24;
+  --doc-howto-bg: #451a03;
+  --doc-howto-border: #92400e;
+
+  --doc-reference-color: #60a5fa;
+  --doc-reference-bg: #1e3a8a;
+  --doc-reference-border: #1d4ed8;
+
+  --doc-explanation-color: #a78bfa;
+  --doc-explanation-bg: #4c1d95;
+  --doc-explanation-border: #6d28d9;
+
+  /* Code block styling for dark theme */
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced typography */
+body {
+  font-family: var(--ifm-font-family-base);
+  line-height: var(--ifm-line-height-base);
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: var(--ifm-heading-line-height);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+/* Improved code styling */
+code {
+  font-family: var(--ifm-font-family-monospace);
+  font-weight: 500;
+  font-feature-settings: 'calt' 1;
+}
+
+pre code {
+  font-weight: 400;
+}
+
+/* Enhanced admonitions */
+.admonition {
+  border-radius: 0.5rem;
+  border-left-width: 4px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Documentation type-specific styling */
+.doc-tutorial {
+  border-left-color: var(--doc-tutorial-color);
+  background: var(--doc-tutorial-bg);
+}
+
+.doc-howto {
+  border-left-color: var(--doc-howto-color);
+  background: var(--doc-howto-bg);
+}
+
+.doc-reference {
+  border-left-color: var(--doc-reference-color);
+  background: var(--doc-reference-bg);
+}
+
+.doc-explanation {
+  border-left-color: var(--doc-explanation-color);
+  background: var(--doc-explanation-bg);
+}
+
+/* Enhanced table styling */
+table {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+/* Improved blockquote styling */
+blockquote {
+  border-left-color: var(--ifm-color-primary);
+  border-left-width: 4px;
+  border-radius: 0 0.375rem 0.375rem 0;
+  background: var(--ifm-color-emphasis-100);
+  margin: 1.5rem 0;
+  padding: 1rem 1.5rem;
+  font-style: normal;
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Enhanced button styling */
+.button {
+  font-weight: 500;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.button--primary {
+  background: var(--ifm-color-primary);
+}
+
+.button--primary:hover {
+  background: var(--ifm-color-primary-dark);
+}
+
+/* Enhanced card styling */
+.card {
+  border-radius: 0.75rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+/* Improved navbar styling */
+.navbar {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(8px);
+}
+
+/* Enhanced sidebar styling */
+.theme-doc-sidebar-container {
+  border-right: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.theme-doc-sidebar-item-category {
+  margin-bottom: 0.5rem;
+}
+
+.theme-doc-sidebar-item-link {
+  border-radius: 0.375rem;
+  transition: all 0.15s ease;
+}
+
+.theme-doc-sidebar-item-link:hover {
+  background: var(--ifm-color-emphasis-100);
+}
+
+.theme-doc-sidebar-item-link-level-1.theme-doc-sidebar-item-link--active {
+  background: var(--ifm-color-primary);
+  color: white;
+}
+
+/* Improved code block styling */
+.prism-code {
+  border-radius: var(--ifm-pre-border-radius);
+  font-family: var(--ifm-font-family-monospace);
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Enhanced search styling */
+.DocSearch-Button {
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.DocSearch-Button:hover {
+  background: var(--ifm-color-emphasis-200);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Utility classes for documentation types */
+.tutorial-accent {
+  color: var(--doc-tutorial-color);
+}
+
+.howto-accent {
+  color: var(--doc-howto-color);
+}
+
+.reference-accent {
+  color: var(--doc-reference-color);
+}
+
+.explanation-accent {
+  color: var(--doc-explanation-color);
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  :root {
+    --ifm-spacing-horizontal: 1rem;
+    --ifm-global-spacing: 1rem;
+    --ifm-pre-padding: 1rem;
+  }
+
+  blockquote {
+    margin: 1rem 0;
+    padding: 0.75rem 1rem;
+  }
+
+  .admonition {
+    margin: 1rem 0;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card,
+  .admonition,
+  table {
+    border-width: 2px;
+  }
+
+  .button {
+    border-width: 2px;
+  }
+}
+
+/* Focus improvements for accessibility */
+:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
 }

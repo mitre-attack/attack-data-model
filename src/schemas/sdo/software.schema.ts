@@ -1,15 +1,15 @@
 import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import {
-  descriptionSchema,
-  xMitrePlatformsSchema,
-  stixCreatedByRefSchema,
-  objectMarkingRefsSchema,
-  xMitreDomainsSchema,
   aliasesSchema,
-  xMitreModifiedByRefSchema,
-  externalReferencesSchema,
   createMultiStixTypeValidator,
+  descriptionSchema,
+  externalReferencesSchema,
+  objectMarkingRefsSchema,
+  stixCreatedByRefSchema,
+  xMitreDomainsSchema,
+  xMitreModifiedByRefSchema,
+  xMitrePlatformsSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -18,7 +18,7 @@ import {
 //
 /////////////////////////////////////
 
-export const extensibleSoftwareSchema = attackBaseDomainObjectSchema.extend({
+export const softwareSchema = attackBaseDomainObjectSchema.extend({
   type: createMultiStixTypeValidator(['malware', 'tool']),
 
   created_by_ref: stixCreatedByRefSchema.meta({
@@ -52,8 +52,4 @@ export const extensibleSoftwareSchema = attackBaseDomainObjectSchema.extend({
     .meta({ description: 'Alternative names used to identify this software.' }),
 });
 
-// Alias unless/until software requires at least one refinement
-export const softwareSchema = extensibleSoftwareSchema;
-
-// Define the type for Software
-export type Software = z.infer<typeof extensibleSoftwareSchema>;
+export type Software = z.infer<typeof softwareSchema>;

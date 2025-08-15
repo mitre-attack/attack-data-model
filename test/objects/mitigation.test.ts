@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createSyntheticStixObject } from '../../src/generator';
-import {
-    type ExternalReferences
-} from '../../src/schemas/common/index';
+import { type ExternalReferences } from '../../src/schemas/common/index';
 import { type Mitigation, mitigationSchema } from '../../src/schemas/sdo/mitigation.schema';
 
 describe('MitigationSchema', () => {
