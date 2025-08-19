@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # Configuration Reference
+
+<WorkInProgressNotice />
 
 **Complete configuration options for all data source types**
 

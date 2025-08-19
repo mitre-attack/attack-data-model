@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # DataSource
+
+<WorkInProgressNotice />
 
 **Data source configuration and registration for loading ATT&CK datasets**
 

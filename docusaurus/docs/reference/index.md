@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # Reference
+
+<WorkInProgressNotice />
 
 **Complete technical specifications and API documentation**
 

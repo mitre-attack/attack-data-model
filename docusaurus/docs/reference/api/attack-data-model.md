@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # AttackDataModel
+
+<WorkInProgressNotice />
 
 **Main class containing all ATT&CK objects with automatic relationship mapping**
 

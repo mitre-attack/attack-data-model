@@ -39,12 +39,6 @@ const config: Config = {
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
         },
-        // blog: {
-        //   showReadingTime: false,
-        //   path: 'blog',
-        //   routeBasePath: 'known-issues',
-        //   blogTitle: 'Known Issues',
-        // },
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -77,11 +71,6 @@ const config: Config = {
           position: 'left',
           label: 'Documentation',
         },
-        // {
-        //   to: '/known-issues',
-        //   label: 'Known Issues',
-        //   position: 'left',
-        // },
         {
           href: 'https://github.com/mitre-attack/attack-data-model',
           label: 'GitHub',
@@ -115,8 +104,8 @@ const config: Config = {
               to: '/docs/reference/',
             },
             {
-              label: 'Explanation',
-              to: '/docs/explanation/',
+              label: 'Principles',
+              to: '/docs/principles/',
             },
           ],
         },

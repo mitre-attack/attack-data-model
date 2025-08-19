@@ -23,28 +23,28 @@ const documentationTypes = [
     href: 'docs/reference/',
   },
   {
-    type: 'explanation' as const,
-    title: 'Explanation',
+    type: 'principles' as const,
+    title: 'Principles',
     description: 'Deep dives into the architecture, design philosophy, and trade-offs that shape the library.',
-    href: 'docs/explanation/',
+    href: 'docs/principles/',
   },
 ];
 
 const keyFeatures = [
   {
-    title: '🔒 Type-Safe',
+    title: 'Type-Safe',
     description: 'Full TypeScript support with compile-time validation and IntelliSense.',
   },
   {
-    title: '✅ STIX Compliant',
+    title: 'STIX Compliant',
     description: 'Built on STIX 2.1 standards for seamless threat intelligence integration.',
   },
   {
-    title: '🔗 Rich Relationships',
+    title: 'Rich Relationships',
     description: 'Intuitive navigation between techniques, tactics, groups, and more.',
   },
   {
-    title: '📊 Multi-Domain',
+    title: 'Multi-Domain',
     description: 'Supports Enterprise, Mobile, and ICS ATT&CK domains.',
   },
 ];
@@ -68,44 +68,29 @@ export default function HomepageFeatures(): JSX.Element {
         <div className="container">
           <div className="text--center margin-bottom--xl">
             <Heading as="h2" className={styles.sectionTitle}>
-              Choose Your Documentation Path
+              Let's Get Started
             </Heading>
             <p className={styles.sectionSubtitle}>
-              Our documentation aims to provide exactly the right information for your needs.
-              Let us know if anything is missing!
+              This is the official documentation for the ATT&CK Data Model library.
             </p>
           </div>
-          <div className={clsx('row', styles.docTypeGrid)}>
-            {documentationTypes.map((docType, idx) => (
-              <div key={idx} className="col col--6">
-                <DocTypeCard
-                  type={docType.type}
-                  title={docType.title}
-                  description={docType.description}
-                  href={docType.href}
-                  className={styles.docTypeCard}
-                />
+          <div className={styles.docTypeGrid}>
+            <div className="row">
+              <div className="col col--6">
+                <DocTypeCard {...documentationTypes[0]} className={styles.docTypeCard} />
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Key Features Section */}
-      <section className={styles.featuresSection}>
-        <div className="container">
-          <div className="text--center margin-bottom--xl">
-            <Heading as="h2" className={styles.sectionTitle}>
-              Library Features
-            </Heading>
-            <p className={styles.sectionSubtitle}>
-              Built for type safety, standards compliance, and developer experience
-            </p>
-          </div>
-          <div className="row">
-            {keyFeatures.map((feature, idx) => (
-              <KeyFeature key={idx} title={feature.title} description={feature.description} />
-            ))}
+              <div className="col col--6">
+                <DocTypeCard {...documentationTypes[1]} className={styles.docTypeCard} />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col col--6">
+                <DocTypeCard {...documentationTypes[2]} className={styles.docTypeCard} />
+              </div>
+              <div className="col col--6">
+                <DocTypeCard {...documentationTypes[3]} className={styles.docTypeCard} />
+              </div>
+            </div>
           </div>
         </div>
       </section>

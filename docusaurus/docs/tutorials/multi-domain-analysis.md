@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # Multi-Domain ATT&CK Analysis
+
+<WorkInProgressNotice />
 
 **Learn to work with Enterprise, Mobile, and ICS ATT&CK domains**
 

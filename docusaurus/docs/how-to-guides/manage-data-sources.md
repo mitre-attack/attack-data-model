@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # How to Manage Data Sources
+
+<WorkInProgressNotice />
 
 **Switch between different ATT&CK data sources efficiently**
 

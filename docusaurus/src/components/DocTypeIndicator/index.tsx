@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import styles from './styles.module.css';
 
-export type DocType = 'tutorial' | 'how-to' | 'reference' | 'explanation';
+export type DocType = 'tutorial' | 'how-to' | 'reference' | 'principles';
 
 export interface DocTypeIndicatorProps {
   type: DocType;
@@ -33,9 +33,9 @@ const docTypeConfig = {
     color: '#3b82f6', // blue-500
     bgColor: '#dbeafe', // blue-100
   },
-  explanation: {
+  principles: {
     emoji: '💡',
-    label: 'Explanation',
+    label: 'Principles',
     description: 'Understanding-oriented',
     color: '#8b5cf6', // violet-500
     bgColor: '#ede9fe', // violet-100

@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # Schema Design Principles
+
+<WorkInProgressNotice />
 
 **Validation philosophy, refinement patterns, and extensibility choices**
 

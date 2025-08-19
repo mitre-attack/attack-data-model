@@ -1,6 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # Your First ATT&CK Query
 
-**Learn the basics of loading and exploring ATT&CK data**
+<WorkInProgressNotice />
 
 In this tutorial, you'll learn how to install the ATT&CK Data Model library, load your first ATT&CK dataset, and explore techniques and tactics. By the end, you'll have a working script that can query ATT&CK data and understand the basic concepts of the ATT&CK framework.
 

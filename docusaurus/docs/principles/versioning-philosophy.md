@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # Versioning Philosophy
+
+<WorkInProgressNotice />
 
 **Understanding ATT&CK's multi-dimensional versioning approach**
 

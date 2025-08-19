@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # Utility Functions
+
+<WorkInProgressNotice />
 
 **Helper functions and data manipulation tools**
 

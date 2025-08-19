@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # Building a Technique Browser
+
+<WorkInProgressNotice />
 
 **Create a complete application that browses ATT&CK techniques**
 

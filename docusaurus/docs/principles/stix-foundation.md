@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # STIX 2.1 as the Foundation
+
+<WorkInProgressNotice />
 
 **Why STIX was chosen and how it shapes the architecture**
 

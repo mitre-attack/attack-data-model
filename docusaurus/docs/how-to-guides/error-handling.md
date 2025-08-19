@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # How to Handle Parsing Errors Gracefully
+
+<WorkInProgressNotice />
 
 **Implement robust error handling for production applications**
 

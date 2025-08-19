@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # Why the ATT&CK Data Model Exists
+
+<WorkInProgressNotice />
 
 **The problem context, solution approach, and value proposition**
 
@@ -26,7 +30,7 @@ MITRE ATT&CK, while invaluable for threat intelligence and security operations, 
 
 ### Before the ATT&CK Data Model
 
-Prior to this library, developers typically handled ATT&CK data in one of these ways:
+Prior to this library, developers typically handled ATT&CK data in one of two ways:
 
 #### 1. Direct JSON Manipulation
 
@@ -78,24 +82,6 @@ class AttackDataParser {
 - Inconsistent validation approaches
 - No standard patterns across teams
 - Maintenance burden for each team
-
-#### 3. Generic STIX Libraries
-
-```javascript
-// Generic STIX approach - doesn't understand ATT&CK semantics
-const stixParser = new STIXParser();
-const bundle = stixParser.parse(attackData);
-
-// Generic STIX relationships don't understand ATT&CK-specific patterns
-const relationships = bundle.relationships.filter(/* ... */);
-```
-
-**Problems**:
-
-- No ATT&CK-specific validation
-- Missing ATT&CK domain knowledge
-- No awareness of ATT&CK conventions
-- Generic tools don't optimize for ATT&CK use cases
 
 ### The Core Problems
 

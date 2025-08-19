@@ -230,7 +230,7 @@ For more detailed examples, please refer to the [examples](./examples/README.md)
 
 ## Compatibility Matrix
 
-Our [Compatibility documentation](https://mitre-attack.github.io/attack-data-model/explanation/versioning-philosophy) tracks the compatibility between versions of the ATT&CK Data Model (ADM) TypeScript API (`@mitre-attack/attack-data-model`) and versions of the MITRE ATT&CK dataset (`mitre-attack/attack-stix-data`).
+Our [Compatibility documentation](https://mitre-attack.github.io/attack-data-model/principles/versioning-philosophy) tracks the compatibility between versions of the ATT&CK Data Model (ADM) TypeScript API (`@mitre-attack/attack-data-model`) and versions of the MITRE ATT&CK dataset (`mitre-attack/attack-stix-data`).
 
 ## Contributing
 

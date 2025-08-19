@@ -1,8 +1,10 @@
 # Running and Writing Tests
 
-The project uses **[Vitest](https://vitest.dev/)**.
+The ATT&CK Data Model uses **[Vitest](https://vitest.dev/)** for testing.
 
 ## Execute the full suite
+
+Running the tests is straightforward enough:
 
 ```bash
 npm test

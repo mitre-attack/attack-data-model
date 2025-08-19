@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # API Reference
+
+<WorkInProgressNotice />
 
 **Complete documentation for all ATT&CK Data Model classes and functions**
 

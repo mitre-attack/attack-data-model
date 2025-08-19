@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # Compatibility
+
+<WorkInProgressNotice />
 
 **Understanding version relationships and compatibility across the ATT&CK ecosystem**
 

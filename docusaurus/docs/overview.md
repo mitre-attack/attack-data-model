@@ -1,4 +1,8 @@
-# ATT&CK Data Model Overview
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
+# Overview
+
+<WorkInProgressNotice />
 
 **A comprehensive TypeScript library for MITRE ATT&CK data**
 
@@ -10,11 +14,11 @@ The ATT&CK Data Model (ADM) is a TypeScript library that provides type-safe, pro
 
 ### Core Value Proposition
 
-- **🔒 Type Safety**: Full TypeScript support prevents runtime errors
-- **✅ STIX 2.1 Compliance**: Maintains standards compliance while adding usability
-- **🔗 Relationship Navigation**: Intuitive methods for exploring ATT&CK connections
-- **📊 Multi-Domain Support**: Works with Enterprise, Mobile, and ICS domains
-- **🚀 Performance Optimized**: Designed for both memory efficiency and query speed
+- **Type Safety**: Full TypeScript support prevents runtime errors
+- **STIX 2.1 Compliance**: Maintains standards compliance while adding usability
+- **Relationship Navigation**: Intuitive methods for exploring ATT&CK connections
+- **Multi-Domain Support**: Works with Enterprise, Mobile, and ICS domains
+- **Performance Optimized**: Designed for both memory efficiency and query speed
 
 ## Architecture Overview
 
@@ -228,10 +232,3 @@ const refinedSchema = customTechniqueSchema.check((data) => {
 - Detection rule development
 
 ---
-
-**Ready to dive deeper?** Explore our comprehensive documentation:
-
-- **[Tutorials](./tutorials/)** - Learn by building
-- **[How-to Guides](./how-to-guides/)** - Solve specific problems
-- **[Reference](./reference/)** - Complete API documentation
-- **[Explanation](./explanation/)** - Understand the design

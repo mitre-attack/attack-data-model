@@ -4,14 +4,10 @@
   background: var(--ifm-background-surface-color);
 }
 
-.featuresSection {
-  padding: 4rem 0;
-  background: var(--ifm-color-emphasis-100);
-}
-
 .quickStartSection {
   padding: 4rem 0;
-  background: var(--ifm-background-surface-color);
+  /* background: var(--ifm-background-surface-color); */
+  background: var(--ifm-color-emphasis-100);
 }
 
 /* Common section elements */
@@ -137,10 +133,6 @@
 }
 
 /* Dark theme adjustments */
-[data-theme='dark'] .featuresSection {
-  background: var(--ifm-color-emphasis-200);
-}
-
 [data-theme='dark'] .keyFeatureContent {
   background: var(--ifm-background-color);
   border-color: var(--ifm-color-emphasis-300);
@@ -162,7 +154,6 @@
   }
 
   .documentationSection,
-  .featuresSection,
   .quickStartSection {
     padding: 3rem 0;
   }
@@ -186,7 +177,6 @@
   }
 
   .documentationSection,
-  .featuresSection,
   .quickStartSection {
     padding: 2rem 0;
   }

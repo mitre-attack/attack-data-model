@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # Error Reference
+
+<WorkInProgressNotice />
 
 **Complete error codes, types, and resolution strategies**
 

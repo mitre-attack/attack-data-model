@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # How to Optimize Performance
+
+<WorkInProgressNotice />
 
 **Scale ATT&CK Data Model for large datasets and production workloads**
 

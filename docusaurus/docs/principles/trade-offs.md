@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # Architecture and Design Trade-offs
+
+<WorkInProgressNotice />
 
 **Understanding the key decisions and compromises in the ATT&CK Data Model**
 

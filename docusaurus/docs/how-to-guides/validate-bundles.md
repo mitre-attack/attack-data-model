@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # How to Validate Custom STIX Bundles
+
+<WorkInProgressNotice />
 
 **Ensure your custom ATT&CK data meets specification requirements**
 

@@ -1,4 +1,8 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
 # Object Design Rationale
+
+<WorkInProgressNotice />
 
 **Why ATT&CK objects are structured the way they are**
 

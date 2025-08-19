@@ -1,4 +1,9 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+import DocCardList from '@theme/DocCardList';
+
 # How-to Guides
+
+<WorkInProgressNotice />
 
 **Problem-oriented solutions for specific ATT&CK Data Model tasks**
 
@@ -6,45 +11,7 @@ These guides provide direct solutions to common problems you'll encounter when w
 
 ## Available Guides
 
-### Data Validation & Quality
-
-- **[How to validate custom STIX bundles](./validate-bundles)** - Ensure your custom ATT&CK data meets specification requirements
-- **[How to handle parsing errors gracefully](./error-handling)** - Implement robust error handling for production applications
-
-### Contributing
-
-- **[Development setup](./contributing/dev-setup)** - Clone, install, and run the project locally
-- **[Coding style & linting](./contributing/coding-style)** - ESLint, Prettier, commit rules
-- **[Running and writing tests](./contributing/tests)** - Vitest workflow and coverage
-- **[Updating docs & schemas](./contributing/docs)** - Auto-generating docs and writing guides
-
-## Quick Solutions
-
-**Looking for something specific?** Use these shortcuts:
-
-| Problem | Solution |
-|---------|----------|
-| My custom STIX data fails validation | [Validate Custom Bundles](./validate-bundles) |
-| I need to add custom fields to techniques | [Extend Schemas](./extend-schemas) |
-| My application crashes on invalid data | [Error Handling](./error-handling) |
-| I want to use multiple data sources | [Reference: DataSource API](../reference/api/data-sources) |
-| I need to optimize performance | [Explanation: Performance Trade-offs](../explanation/trade-offs) |
-
-## How-to Guide Principles
-
-These guides follow a problem-solving approach:
-
-- **Goal-oriented**: Each guide solves a specific problem
-- **Assumes knowledge**: You should be familiar with basic ATT&CK Data Model concepts
-- **Practical focus**: Direct steps to achieve your goal
-- **Flexible solutions**: Adaptable to different scenarios
-
-## Getting More Help
-
-- **New to the library?** Start with our [Tutorials](../tutorials/)
-- **Need complete API details?** Check the [Reference](../reference/)
-- **Want to understand design decisions?** Read the [Explanations](../explanation/)
-- **Have a specific question?** Search the documentation or check existing [GitHub Issues](https://github.com/mitre-attack/attack-data-model/issues)
+<DocCardList />
 
 ---
 

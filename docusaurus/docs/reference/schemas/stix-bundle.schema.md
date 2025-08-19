@@ -1,5 +1,7 @@
 # STIX Bundle Schema
 
+<!-- NOTE: Unlike the rest of the schema files, this file is maintained by hand! -->
+
 ## StixBundle
 
 _Object containing the following properties:_
@@ -14,4 +16,19 @@ _(\*) Required._
 
 ## AttackObjects
 
-_Array of at least 1 [Asset](../reference/schemas/sdo/asset.schema) | [Campaign](../reference/schemas/sdo/campaign.schema) | [Collection](../reference/schemas/sdo/collection.schema) | [DataComponent](../reference/schemas/sdo/data-component.schema) | [DataSource](../reference/schemas/sdo/data-source.schema) | [Group](../reference/schemas/sdo/group.schema) | [Identity](../reference/schemas/sdo/identity.schema) | [Malware](../reference/schemas/sdo/malware.schema) | [Matrix](../reference/schemas/sdo/matrix.schema) | [Mitigation](../reference/schemas/sdo/mitigation.schema) | [Tactic](../reference/schemas/sdo/tactic.schema) | [Technique](../reference/schemas/sdo/technique.schema) | [Tool](../reference/schemas/sdo/tool.schema) | [MarkingDefinition](../reference/schemas/smo/marking-definition.schema) | [Relationship](../reference/schemas/sro/relationship.schema) objects._
+Array of at least 1
+[Asset](sdo/asset.schema) |
+[Campaign](sdo/campaign.schema) |
+[Collection](sdo/collection.schema) |
+[DataComponent](sdo/data-component.schema) |
+[DataSource](sdo/data-source.schema) |
+[Group](sdo/group.schema) |
+[Identity](sdo/identity.schema) |
+[Malware](sdo/malware.schema) |
+[Matrix](sdo/matrix.schema) |
+[Mitigation](sdo/mitigation.schema) |
+[Tactic](sdo/tactic.schema) |
+[Technique](sdo/technique.schema) |
+[Tool](sdo/tool.schema) |
+[MarkingDefinition](smo/marking-definition.schema) |
+[Relationship](sro/relationship.schema) objects.
