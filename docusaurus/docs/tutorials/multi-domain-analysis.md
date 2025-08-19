@@ -282,5 +282,3 @@ Now that you understand cross-domain analysis, explore:
 **Version consistency**: Use the same version number across all domains to ensure compatibility in cross-domain comparisons.
 
 ---
-
-**Excellent work!** You now understand how to work with multiple ATT&CK domains and can perform comprehensive cross-domain threat analysis.

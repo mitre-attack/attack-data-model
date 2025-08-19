@@ -698,11 +698,3 @@ main().catch(console.error);
 ```
 
 ---
-
-## Next Steps
-
-- **Bundle Validation**: Learn how to [validate custom STIX bundles](./validate-bundles) before processing
-- **Schema Extension**: See how to [extend schemas with custom fields](./extend-schemas) for enhanced error detection
-- **Reference**: Check the [complete API documentation](../reference/) for error handling methods
-
-Your application now handles errors gracefully and provides reliable ATT&CK data access even in challenging environments!

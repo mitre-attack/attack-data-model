@@ -25,5 +25,3 @@ These tutorials will take you from zero knowledge to confidently using the ATT&C
 <DocCardList />
 
 ---
-
-**Ready to get started?** Begin with **[Your First ATT&CK Query](./your-first-query)** to load your first ATT&CK dataset!

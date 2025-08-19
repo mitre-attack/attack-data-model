@@ -239,11 +239,3 @@ const detectsBy = technique.x_mitre_data_sources ||
 4. **Plan Resources**: Budget time and resources for regular compatibility updates
 
 ---
-
-Understanding compatibility relationships helps you build robust applications that can evolve alongside the ATT&CK ecosystem. By planning for version changes and implementing defensive coding practices, you can maintain stable functionality while taking advantage of new capabilities as they become available.
-
-**Related Topics**:
-
-- [Versioning Philosophy](./versioning-philosophy) - Deep dive into ATT&CK's multi-dimensional versioning
-- [Configuration Reference](../reference/configuration) - All supported configuration options
-- [Error Handling Guide](../how-to-guides/error-handling) - Handle compatibility and parsing errors

@@ -443,16 +443,3 @@ STIX provides a stable foundation as ATT&CK specifications evolve:
 - **Version Management**: STIX versioning handles ATT&CK specification updates
 
 ---
-
-## Understanding the Foundation's Impact
-
-The STIX foundation isn't just a data format choice - it's an architectural philosophy that prioritizes:
-
-1. **Standards compliance** over proprietary optimization
-2. **Interoperability** over convenience
-3. **Long-term sustainability** over short-term simplicity
-4. **Community ecosystem** over isolated solutions
-
-This philosophy shapes every design decision in the ATT&CK Data Model. Understanding it helps you work effectively with the library and contribute to its evolution.
-
-**Next**: Explore how this foundation enables **[Schema Design Principles](./schema-design)** that balance STIX compliance with usability.

@@ -31,3 +31,5 @@ npm run test   # vitest tests
 
 You are now ready to hack on the library.
 Continue with [Coding Style & Linting](coding-style.md) for the mandatory style rules.
+
+---

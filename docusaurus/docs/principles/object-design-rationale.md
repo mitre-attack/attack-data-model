@@ -446,16 +446,3 @@ Understanding these design rationales helps you:
 - **Evaluate trade-offs** when extending the framework
 
 ---
-
-## The Design Philosophy in Practice
-
-Object design decisions reflect a consistent philosophy that prioritizes:
-
-1. **Standards compliance over convenience**
-2. **Semantic accuracy over simplicity**
-3. **Long-term sustainability over short-term optimization**
-4. **Community interoperability over isolated efficiency**
-
-Understanding this philosophy helps you work effectively with ATT&CK objects and contribute meaningfully to the framework's evolution.
-
-**Next**: Explore how **[Identifier Systems](./identifier-systems)** enable both machine processing and human comprehension of ATT&CK data.

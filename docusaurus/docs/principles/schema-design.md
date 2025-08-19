@@ -478,5 +478,3 @@ The schema design reflects a philosophical commitment to:
 Understanding these philosophical commitments helps you work effectively with the schema layer and contribute to its continued development.
 
 ---
-
-**Next**: Explore how these schema design decisions create **[Performance vs Flexibility Trade-offs](./trade-offs)** in the overall library architecture.

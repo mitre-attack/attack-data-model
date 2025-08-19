@@ -302,9 +302,3 @@ const highValueTargets = attackDataModel.techniques.filter(t => {
 ```
 
 ---
-
-## See Also
-
-- **[DataSource](./data-sources)** - Data source configuration and loading
-- **[Implementation Classes](../schemas/)** - Individual object class documentation
-- **[Relationships](../schemas/sro/relationship.schema)** - Relationship type specifications

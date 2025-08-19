@@ -42,3 +42,5 @@ Prefix your commit with one of the following:
 
 The library is compiled with `"strict": true` and imports must be path-alias aware (`@/…`).
 Run `npm run build` to catch any type errors locally.
+
+---

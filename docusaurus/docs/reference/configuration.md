@@ -522,9 +522,3 @@ const newConfig = new DataSource({
 | `ATT_VERSION` | *(removed)* | Now per-DataSource configuration |
 
 ---
-
-## See Also
-
-- **[DataSource API](./api/data-sources)** - DataSource class documentation
-- **[Error Reference](./errors)** - Configuration error troubleshooting
-- **[How-to Guide: Error Handling](../how-to-guides/error-handling)** - Robust configuration patterns

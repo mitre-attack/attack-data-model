@@ -407,11 +407,3 @@ echo "✅ All bundles validated successfully"
 ```
 
 ---
-
-## Next Steps
-
-- **Error Handling**: Learn [how to handle parsing errors gracefully](./error-handling)
-- **Schema Extension**: See [how to extend schemas with custom fields](./extend-schemas)
-- **Reference**: Check the [complete API documentation](../reference/)
-
-Your custom STIX bundles should now validate correctly and load reliably in the ATT&CK Data Model!

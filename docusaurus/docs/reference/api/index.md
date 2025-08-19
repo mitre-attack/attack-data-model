@@ -169,8 +169,4 @@ The library is designed for optimal TypeScript experience:
 **IDE Support:** Auto-completion, inline documentation, and error detection
 **Generic Support:** Type parameters for custom extensions and filtering
 
-## Next Steps
-
-- Browse the [Schema Reference](../schemas/) for detailed field documentation
-- Check the [Configuration Reference](../configuration) for setup options
-- See [How-to Guides](../../how-to-guides/) for practical implementation examples
+---

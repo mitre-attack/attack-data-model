@@ -190,5 +190,3 @@ This reference documentation follows these principles:
 **Looking for something specific?** Use the search functionality or check the relevant section above.
 
 ---
-
-**Need more context?** Visit the [Explanation](../explanation/) section for design rationale and architectural details.

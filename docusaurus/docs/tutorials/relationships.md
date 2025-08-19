@@ -431,5 +431,3 @@ You've completed all tutorials! Now you can:
 **Missing relationships**: Remember that ATT&CK data evolves. Some relationships may not exist in all versions or domains.
 
 ---
-
-**Congratulations!** You've mastered ATT&CK relationship navigation and completed the tutorial series. You now have the skills to build sophisticated security analysis tools and conduct advanced threat intelligence research!

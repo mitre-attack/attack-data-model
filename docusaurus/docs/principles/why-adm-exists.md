@@ -272,13 +272,3 @@ The ATT&CK Data Model's success is measured by:
 - **Industry standardization** around common ATT&CK data patterns
 
 ---
-
-## Next Steps in Understanding
-
-Now that you understand why the ATT&CK Data Model exists, explore how it achieves these goals:
-
-- **[STIX 2.1 as the Foundation](./stix-foundation)** - Why STIX compliance drives architectural decisions
-- **[Schema Design Principles](./schema-design)** - How validation and type safety are implemented
-- **[Performance vs Flexibility Trade-offs](./trade-offs)** - The balance between speed and usability
-
-The problem context shapes every design decision in the library. Understanding this context helps you use the library effectively and contribute to its continued evolution.

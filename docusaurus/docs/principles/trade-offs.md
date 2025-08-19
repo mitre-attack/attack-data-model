@@ -222,3 +222,5 @@ We decided to make use of Semantic Versioning with Major Version Breaking Change
 - Consider single-domain optimization if working with specific domains
 
 Understanding these trade-offs helps you make informed decisions about whether the ATT&CK Data Model's approach aligns with your specific requirements and constraints.
+
+---

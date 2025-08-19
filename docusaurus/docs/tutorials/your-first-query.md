@@ -202,5 +202,3 @@ Or explore other documentation:
 **TypeScript compilation errors**: Make sure you're using `npx tsx` to run TypeScript directly, or compile with `npx tsc` first.
 
 ---
-
-**Great job!** You've completed your first ATT&CK query and learned the fundamental concepts. Ready for the next challenge?

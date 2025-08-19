@@ -534,5 +534,3 @@ const config = {
 - [Reference: Configuration](../reference/configuration) - All configuration options
 
 ---
-
-**You're now equipped to scale the ATT&CK Data Model for production workloads!**

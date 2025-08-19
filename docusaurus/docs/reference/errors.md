@@ -385,9 +385,3 @@ console.log(`Object counts:`, status.objectCounts);
 4. **Update data sources to fix reference issues**
 
 ---
-
-## See Also
-
-- **[Configuration Reference](./configuration)** - Complete configuration options
-- **[How-to Guide: Error Handling](../how-to-guides/error-handling)** - Practical error handling strategies
-- **[Validation Guide](../how-to-guides/validate-bundles)** - Data validation techniques

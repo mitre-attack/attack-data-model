@@ -507,15 +507,3 @@ if (semver.lt(obj.x_mitre_attack_spec_version, MIN_SPEC_VERSION)) {
 ```
 
 ---
-
-## The Philosophy in Practice
-
-ATT&CK's multi-dimensional versioning reflects the reality that complex systems evolve along multiple independent axes. Rather than forcing artificial synchronization that would slow all evolution to the pace of the slowest component, the framework provides precise tracking for each type of change:
-
-- **STIX versions** track standards compliance
-- **ATT&CK specification versions** track feature availability
-- **Object versions** track content evolution
-
-Understanding this philosophy helps you build robust applications that can handle version complexity gracefully and evolve alongside the ATT&CK framework.
-
-**Next**: Return to the **[Explanation Overview](./)** to explore other aspects of ATT&CK Data Model architecture and design decisions.

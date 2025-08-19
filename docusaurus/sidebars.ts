@@ -100,6 +100,7 @@ const sidebars: SidebarsConfig = {
       link: { type: 'doc', id: 'principles/index' },
       items: [
         'principles/why-adm-exists',
+        'principles/why-zod',
         'principles/stix-foundation',
         'principles/attack-specification-overview',
         'principles/object-design-rationale',

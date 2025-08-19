@@ -14,7 +14,6 @@ function HomepageHeader() {
       <div className="container">
         <Heading as="h1" className="hero__title">
           <p>MITRE ATT&CK<sup>®</sup> Data Model</p>
-          <p>Documentation</p>
         </Heading>
         <p className="hero__subtitle"></p>
         <div className={styles.buttons}>

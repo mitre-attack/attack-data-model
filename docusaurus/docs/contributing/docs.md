@@ -39,3 +39,5 @@ Its pretty easy to add a new guide. Basically just do the following:
 
 1. Create your Markdown file inside `docusaurus/docs/<topic>/my-guide.md`
 2. Update `sidebars.ts` to include it
+
+---

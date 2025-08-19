@@ -448,5 +448,3 @@ You're now ready for more advanced topics:
 - **[Reference Documentation](../reference/)** - Explore the complete API
 
 ---
-
-**Excellent work!** You've built a complete ATT&CK technique browser and learned essential skills for working with ATT&CK data programmatically.

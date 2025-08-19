@@ -403,5 +403,3 @@ async function loadWithMonitoring(config: any) {
 - [Performance Optimization](./performance) - Scale for large datasets
 
 ---
-
-**You're now equipped to manage ATT&CK data sources effectively in any environment!**

@@ -271,3 +271,5 @@ Working code examples demonstrate specification usage patterns.
 #### "The specification is static"
 
 **Reality**: The specification evolves continuously with new object types, properties, and validation rules.
+
+---

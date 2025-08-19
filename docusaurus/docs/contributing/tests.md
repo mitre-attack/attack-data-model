@@ -38,3 +38,5 @@ When adding new schemas or refinement logic:
 
 1. Write **positive** test cases (`schema.parse` passes)
 2. Write **negative** test cases that assert specific error messages
+
+---

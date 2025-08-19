@@ -14,5 +14,3 @@ These guides provide direct solutions to common problems you'll encounter when w
 <DocCardList />
 
 ---
-
-**Can't find what you're looking for?** Consider [opening a GitHub Issue](https://github.com/mitre-attack/attack-data-model/issues/new) to request a new how-to guide.
