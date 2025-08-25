@@ -47,43 +47,47 @@ You should see the packages being installed. The installation may take a minute 
 Create a file named `first-query.ts` and add the following code:
 
 ```typescript
-import { registerDataSource, loadDataModel, DataSource } from '@mitre-attack/attack-data-model';
+import {
+  registerDataSource,
+  loadDataModel,
+  DataSourceRegistration,
+} from '@mitre-attack/attack-data-model';
 
 async function exploreAttackData() {
-    console.log('🎯 Loading ATT&CK Enterprise data...\n');
+  console.log('Loading ATT&CK Enterprise data...\n');
 
-    // Step 1: Create a data source
-    const dataSource = new DataSource({
-        source: 'attack',              // Load from official ATT&CK repository
-        domain: 'enterprise-attack',   // Focus on Enterprise domain
-        version: '15.1',               // Use specific version for consistency
-        parsingMode: 'relaxed'         // Continue even if some data has minor issues
-    });
+  // Step 1: Create a data source
+  const dataSource = new DataSourceRegistration({
+    source: 'attack', // Load from official ATT&CK repository
+    domain: 'enterprise-attack', // Focus on Enterprise domain
+    version: '17.1', // Use specific version for consistency
+    parsingMode: 'relaxed', // Continue even if some data has minor issues
+  });
 
-    try {
-        // Step 2: Register the data source
-        const uuid = await registerDataSource(dataSource);
+  try {
+    // Step 2: Register the data source
+    const uuid = await registerDataSource(dataSource);
 
-        if (uuid) {
-            console.log('✅ Data source registered successfully!\n');
+    if (uuid) {
+      console.log('Data source registered successfully!\n');
 
-            // Step 3: Load the data model
-            const attackDataModel = loadDataModel(uuid);
-            console.log(`📊 Loaded ${attackDataModel.techniques.length} techniques\n`);
+      // Step 3: Load the data model
+      const attackDataModel = loadDataModel(uuid);
+      console.log(`Loaded ${attackDataModel.techniques.length} techniques\n`);
 
-            // Step 4: Explore the first few techniques
-            console.log('🔍 First 5 techniques:');
-            attackDataModel.techniques.slice(0, 5).forEach((technique, index) => {
-                console.log(`${index + 1}. ${technique.name} (${technique.external_references[0].external_id})`);
-            });
-
-        } else {
-            console.error('❌ Failed to register data source');
-        }
-
-    } catch (error) {
-        console.error('❌ Error:', error);
+      // Step 4: Explore the first few techniques
+      console.log('First 5 techniques:');
+      attackDataModel.techniques.slice(0, 5).forEach((technique, index) => {
+        console.log(
+          `${index + 1}. ${technique.name} (${technique.external_references[0].external_id})`,
+        );
+      });
+    } else {
+      console.error('Failed to register data source');
     }
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 
 // Run the function
@@ -101,13 +105,13 @@ npx tsx first-query.ts
 You should see output similar to:
 
 ```shell
-🎯 Loading ATT&CK Enterprise data...
+Loading ATT&CK Enterprise data...
 
-✅ Data source registered successfully!
+Data source registered successfully!
 
-📊 Loaded 196+ techniques
+Loaded 196+ techniques
 
-🔍 First 5 techniques:
+First 5 techniques:
 1. OS Credential Dumping (T1003)
 2. Boot or Logon Autostart Execution (T1547)
 3. Process Injection (T1055)
@@ -122,18 +126,18 @@ You should see output similar to:
 Now let's look at more details about a specific technique. Add this code to your script after the previous console.log statements:
 
 ```typescript
-            console.log('\n🔎 Examining a specific technique:');
+            console.log('\nExamining a specific technique:');
             const firstTechnique = attackDataModel.techniques[0];
-
+            
             console.log(`Name: ${firstTechnique.name}`);
             console.log(`ID: ${firstTechnique.external_references[0].external_id}`);
             console.log(`Description: ${firstTechnique.description.substring(0, 100)}...`);
-
+            
             // Check if it's a subtechnique
             if (firstTechnique.x_mitre_is_subtechnique) {
-                console.log('📌 This is a sub-technique');
+                console.log('This is a sub-technique');
             } else {
-                console.log('📌 This is a parent technique');
+                console.log('This is a parent technique');
             }
 ```
 
@@ -142,12 +146,22 @@ Now let's look at more details about a specific technique. Add this code to your
 ATT&CK techniques are organized under tactics (the "why" behind adversary actions). Let's explore this relationship:
 
 ```typescript
-            console.log('\n🎯 Associated tactics:');
-            const tactics = firstTechnique.getTactics();
+            console.log('\nAssociated tactics:');
+            const killChainPhases = firstTechnique.kill_chain_phases || [];
+            const tacticShortnames = killChainPhases
+                .map(phase => phase.phase_name);
 
-            tactics.forEach((tactic) => {
-                console.log(`- ${tactic.name}: ${tactic.description.substring(0, 60)}...`);
-            });
+            const associatedTactics = attackDataModel.tactics.filter(
+                tactic => tacticShortnames.includes(tactic.x_mitre_shortname)
+            );
+
+            if (associatedTactics.length > 0) {
+                associatedTactics.forEach(tactic => {
+                console.log(`- ${tactic.name}: ${tactic.description.replace(/\n/g, ' ').substring(0, 60)}...`);
+                });
+            } else {
+            console.log('No tactics associated with this technique.');
+            }
 ```
 
 ## Step 7: Run Your Enhanced Script

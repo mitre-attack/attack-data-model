@@ -39,13 +39,14 @@ npm install -D typescript tsx @types/node
 Create a file named `multi-domain.ts` and add the following code:
 
 ```typescript
-import { registerDataSource, loadDataModel, DataSource } from '@mitre-attack/attack-data-model';
+import { registerDataSource, loadDataModel, DataSourceRegistration } from '@mitre-attack/attack-data-model';
 
 async function loadAllDomains() {
-    console.log('🌐 Loading all ATT&CK domains...\n');
+    console.log('Loading all ATT&CK domains...\n');
 
     // Define all three domains
-    const domains = [
+    type DomainName = "enterprise-attack" | "mobile-attack" | "ics-attack";
+    const domains: { name: DomainName; label: string }[] = [
         { name: 'enterprise-attack', label: 'Enterprise' },
         { name: 'mobile-attack', label: 'Mobile' },
         { name: 'ics-attack', label: 'ICS' }
@@ -55,12 +56,12 @@ async function loadAllDomains() {
 
     for (const domain of domains) {
         try {
-            console.log(`📡 Loading ${domain.label} domain...`);
+            console.log(`Loading ${domain.label} domain...`);
 
-            const dataSource = new DataSource({
+            const dataSource = new DataSourceRegistration({
                 source: 'attack',
                 domain: domain.name,
-                version: '15.1',
+                version: '17.1',
                 parsingMode: 'relaxed'
             });
 
@@ -68,11 +69,11 @@ async function loadAllDomains() {
             if (uuid) {
                 dataModels[domain.name] = loadDataModel(uuid);
                 const techniqueCount = dataModels[domain.name].techniques.length;
-                console.log(`✅ ${domain.label}: ${techniqueCount} techniques loaded\n`);
+                console.log(`${domain.label}: ${techniqueCount} techniques loaded\n`);
             }
 
         } catch (error) {
-            console.error(`❌ Failed to load ${domain.label} domain:`, error);
+            console.error(`Failed to load ${domain.label} domain:`, error);
         }
     }
 
@@ -86,7 +87,7 @@ Add this function to analyze differences between domains:
 
 ```typescript
 function analyzeDomainStatistics(dataModels: { [key: string]: any }) {
-    console.log('📊 Domain Comparison:\n');
+    console.log('Domain Comparison:\n');
 
     const stats: { [key: string]: any } = {};
 
@@ -126,7 +127,7 @@ Add this function to identify tactics that appear in multiple domains:
 
 ```typescript
 function findCommonTactics(dataModels: { [key: string]: any }) {
-    console.log('🎯 Tactic Analysis:\n');
+    console.log('Tactic Analysis:\n');
 
     const tacticsByDomain: { [key: string]: Set<string> } = {};
 
@@ -175,7 +176,7 @@ Add this function to find techniques that may be related across domains:
 
 ```typescript
 function analyzeCrossDomainTechniques(dataModels: { [key: string]: any }) {
-    console.log('🔍 Cross-Domain Technique Analysis:\n');
+    console.log('Cross-Domain Technique Analysis:\n');
 
     // Look for techniques with similar names across domains
     const enterpriseTechniques = dataModels['enterprise-attack']?.techniques || [];
@@ -215,7 +216,7 @@ async function performMultiDomainAnalysis() {
         const dataModels = await loadAllDomains();
 
         if (Object.keys(dataModels).length === 0) {
-            console.error('❌ No domains loaded successfully');
+            console.error('No domains loaded successfully');
             return;
         }
 
@@ -224,10 +225,10 @@ async function performMultiDomainAnalysis() {
         findCommonTactics(dataModels);
         analyzeCrossDomainTechniques(dataModels);
 
-        console.log('✅ Multi-domain analysis complete!');
+        console.log('Multi-domain analysis complete!');
 
     } catch (error) {
-        console.error('❌ Analysis failed:', error);
+        console.error('Analysis failed:', error);
     }
 }
 
