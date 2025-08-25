@@ -1,0 +1,536 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
+# How to Optimize Performance
+
+<WorkInProgressNotice />
+
+**Scale ATT&CK Data Model for large datasets and production workloads**
+
+This guide shows you how to optimize performance when working with large ATT&CK datasets, multiple domains, or production applications with high throughput requirements.
+
+## Problem Scenarios
+
+Use this guide when you experience:
+
+- Slow data loading times with large ATT&CK datasets
+- High memory usage when working with multiple domains
+- Performance bottlenecks in relationship navigation
+- Need to optimize for production throughput
+- Requirements for concurrent data access
+
+## Optimize Data Loading
+
+### Use Relaxed Parsing Mode
+
+```typescript
+// Faster loading - continues on validation errors
+const fastDataSource = new DataSource({
+    source: 'attack',
+    domain: 'enterprise-attack',
+    version: '15.1',
+    parsingMode: 'relaxed' // Skip strict validation for speed
+});
+
+// vs slower but more thorough validation
+const strictDataSource = new DataSource({
+    source: 'attack',
+    domain: 'enterprise-attack',
+    version: '15.1',
+    parsingMode: 'strict' // Full validation - slower but safer
+});
+```
+
+### Parallelize Multiple Domain Loading
+
+```typescript
+async function loadDomainsInParallel() {
+    const domains = [
+        { name: 'enterprise-attack', label: 'Enterprise' },
+        { name: 'mobile-attack', label: 'Mobile' },
+        { name: 'ics-attack', label: 'ICS' }
+    ];
+
+    // Load all domains simultaneously instead of sequentially
+    const loadPromises = domains.map(async (domain) => {
+        const dataSource = new DataSource({
+            source: 'attack',
+            domain: domain.name,
+            version: '15.1',
+            parsingMode: 'relaxed'
+        });
+
+        const uuid = await registerDataSource(dataSource);
+        return {
+            domain: domain.name,
+            label: domain.label,
+            model: loadDataModel(uuid)
+        };
+    });
+
+    // Wait for all to complete
+    const results = await Promise.all(loadPromises);
+
+    return results.reduce((acc, result) => {
+        acc[result.domain] = result.model;
+        return acc;
+    }, {} as { [key: string]: any });
+}
+```
+
+## Memory Optimization
+
+### Selective Data Loading
+
+```typescript
+class SelectiveAttackDataModel {
+    private fullModel: any;
+
+    constructor(model: any) {
+        this.fullModel = model;
+    }
+
+    // Only load techniques when needed
+    getTechniques(): any[] {
+        return this.fullModel.techniques;
+    }
+
+    // Get lightweight technique summaries
+    getTechniqueSummaries(): Array<{id: string, name: string, attackId: string}> {
+        return this.fullModel.techniques.map((t: any) => ({
+            id: t.id,
+            name: t.name,
+            attackId: t.external_references[0].external_id
+        }));
+    }
+
+    // Get specific technique by ID without loading all
+    getTechniqueById(id: string): any {
+        return this.fullModel.techniques.find((t: any) => t.id === id);
+    }
+
+    // Release memory for unused data
+    clearUnusedData() {
+        // Remove large description fields if not needed
+        this.fullModel.techniques.forEach((t: any) => {
+            if (t.description && t.description.length > 1000) {
+                t.description = t.description.substring(0, 200) + '...';
+            }
+        });
+    }
+}
+```
+
+### Implement Data Streaming
+
+```typescript
+class StreamingAttackProcessor {
+    private batchSize = 50;
+
+    async processTechniquesInBatches(
+        model: any,
+        processor: (batch: any[]) => Promise<void>
+    ) {
+        const techniques = model.techniques;
+
+        for (let i = 0; i < techniques.length; i += this.batchSize) {
+            const batch = techniques.slice(i, i + this.batchSize);
+
+            // Process batch
+            await processor(batch);
+
+            // Allow event loop to breathe
+            await new Promise(resolve => setImmediate(resolve));
+
+            console.log(`Processed ${Math.min(i + this.batchSize, techniques.length)}/${techniques.length} techniques`);
+        }
+    }
+}
+
+// Usage
+const processor = new StreamingAttackProcessor();
+await processor.processTechniquesInBatches(attackModel, async (batch) => {
+    // Process each batch of techniques
+    batch.forEach(technique => {
+        // Your processing logic here
+        console.log(`Processing: ${technique.name}`);
+    });
+});
+```
+
+## Optimize Relationship Navigation
+
+### Cache Relationship Results
+
+```typescript
+class CachedRelationshipNavigator {
+    private relationshipCache = new Map<string, any[]>();
+
+    getTactics(technique: any): any[] {
+        const cacheKey = `tactics_${technique.id}`;
+
+        if (this.relationshipCache.has(cacheKey)) {
+            return this.relationshipCache.get(cacheKey)!;
+        }
+
+        const tactics = technique.getTactics();
+        this.relationshipCache.set(cacheKey, tactics);
+
+        return tactics;
+    }
+
+    getMitigations(technique: any): any[] {
+        const cacheKey = `mitigations_${technique.id}`;
+
+        if (this.relationshipCache.has(cacheKey)) {
+            return this.relationshipCache.get(cacheKey)!;
+        }
+
+        const mitigations = technique.getMitigations();
+        this.relationshipCache.set(cacheKey, mitigations);
+
+        return mitigations;
+    }
+
+    clearCache() {
+        this.relationshipCache.clear();
+    }
+
+    getCacheStats() {
+        return {
+            size: this.relationshipCache.size,
+            memory: JSON.stringify([...this.relationshipCache.entries()]).length
+        };
+    }
+}
+```
+
+### Pre-compute Common Relationships
+
+```typescript
+class RelationshipIndexer {
+    private techniqueToTactics = new Map<string, string[]>();
+    private tacticToTechniques = new Map<string, string[]>();
+
+    buildIndexes(model: any) {
+        console.log('🔄 Building relationship indexes...');
+        const startTime = Date.now();
+
+        // Index technique → tactics relationships
+        model.techniques.forEach((technique: any) => {
+            const tacticIds = technique.getTactics().map((t: any) => t.id);
+            this.techniqueToTactics.set(technique.id, tacticIds);
+
+            // Build reverse index
+            tacticIds.forEach(tacticId => {
+                if (!this.tacticToTechniques.has(tacticId)) {
+                    this.tacticToTechniques.set(tacticId, []);
+                }
+                this.tacticToTechniques.get(tacticId)!.push(technique.id);
+            });
+        });
+
+        const buildTime = Date.now() - startTime;
+        console.log(`✅ Indexes built in ${buildTime}ms`);
+        console.log(`📊 Indexed ${this.techniqueToTactics.size} techniques`);
+    }
+
+    // Fast lookup without method calls
+    getTacticIdsForTechnique(techniqueId: string): string[] {
+        return this.techniqueToTactics.get(techniqueId) || [];
+    }
+
+    getTechniqueIdsForTactic(tacticId: string): string[] {
+        return this.tacticToTechniques.get(tacticId) || [];
+    }
+}
+```
+
+## Concurrent Access Patterns
+
+### Thread-Safe Data Access
+
+```typescript
+import { Worker, isMainThread, parentPort, workerData } from 'worker_threads';
+
+class ConcurrentAttackAnalyzer {
+    async analyzeInWorkers(model: any, numWorkers = 4) {
+        if (!isMainThread) {
+            // Worker thread code
+            this.workerAnalysis(workerData);
+            return;
+        }
+
+        // Main thread - distribute work
+        const techniques = model.techniques;
+        const chunkSize = Math.ceil(techniques.length / numWorkers);
+        const workers: Worker[] = [];
+        const results: any[] = [];
+
+        for (let i = 0; i < numWorkers; i++) {
+            const start = i * chunkSize;
+            const end = Math.min(start + chunkSize, techniques.length);
+            const chunk = techniques.slice(start, end);
+
+            const worker = new Worker(__filename, {
+                workerData: { techniques: chunk, workerId: i }
+            });
+
+            workers.push(worker);
+
+            worker.on('message', (result) => {
+                results.push(result);
+
+                if (results.length === numWorkers) {
+                    // All workers completed
+                    workers.forEach(w => w.terminate());
+                    this.combineResults(results);
+                }
+            });
+        }
+    }
+
+    private workerAnalysis(data: any) {
+        const { techniques, workerId } = data;
+
+        // Perform analysis on this chunk
+        const analysis = techniques.map((t: any) => ({
+            id: t.id,
+            name: t.name,
+            tacticCount: t.getTactics().length,
+            mitigationCount: t.getMitigations().length
+        }));
+
+        parentPort?.postMessage({
+            workerId,
+            results: analysis
+        });
+    }
+
+    private combineResults(results: any[]) {
+        const combined = results.flatMap(r => r.results);
+        console.log(`📊 Analyzed ${combined.length} techniques across ${results.length} workers`);
+    }
+}
+```
+
+## Production Optimization
+
+### Connection Pooling for Multiple Requests
+
+```typescript
+class AttackDataPool {
+    private pool: any[] = [];
+    private maxSize = 10;
+    private currentSize = 0;
+
+    async getModel(): Promise<any> {
+        if (this.pool.length > 0) {
+            return this.pool.pop();
+        }
+
+        if (this.currentSize < this.maxSize) {
+            this.currentSize++;
+            return await this.createModel();
+        }
+
+        // Wait for a model to be returned to the pool
+        return new Promise((resolve) => {
+            const checkPool = () => {
+                if (this.pool.length > 0) {
+                    resolve(this.pool.pop());
+                } else {
+                    setTimeout(checkPool, 10);
+                }
+            };
+            checkPool();
+        });
+    }
+
+    returnModel(model: any) {
+        this.pool.push(model);
+    }
+
+    private async createModel(): Promise<any> {
+        const dataSource = new DataSource({
+            source: 'attack',
+            domain: 'enterprise-attack',
+            parsingMode: 'relaxed'
+        });
+
+        const uuid = await registerDataSource(dataSource);
+        return loadDataModel(uuid);
+    }
+}
+
+// Usage
+const pool = new AttackDataPool();
+
+async function handleRequest(req: any, res: any) {
+    const model = await pool.getModel();
+
+    try {
+        // Process request using model
+        const techniques = model.techniques.slice(0, 10);
+        res.json(techniques);
+    } finally {
+        pool.returnModel(model);
+    }
+}
+```
+
+### Lazy Loading with Proxies
+
+```typescript
+class LazyAttackModel {
+    private model: any;
+    private loadedSections = new Set<string>();
+
+    constructor(model: any) {
+        this.model = model;
+
+        // Create proxy for lazy loading
+        return new Proxy(this, {
+            get(target, prop: string) {
+                if (prop === 'techniques' && !target.loadedSections.has('techniques')) {
+                    console.log('🔄 Lazy loading techniques...');
+                    target.loadedSections.add('techniques');
+                    // Trigger any expensive initialization here
+                }
+
+                return target.model[prop];
+            }
+        });
+    }
+}
+```
+
+## Monitoring Performance
+
+### Add Performance Metrics
+
+```typescript
+class PerformanceMonitor {
+    private metrics = new Map<string, number[]>();
+
+    time<T>(operation: string, fn: () => T): T {
+        const start = performance.now();
+        const result = fn();
+        const duration = performance.now() - start;
+
+        this.recordMetric(operation, duration);
+
+        return result;
+    }
+
+    async timeAsync<T>(operation: string, fn: () => Promise<T>): Promise<T> {
+        const start = performance.now();
+        const result = await fn();
+        const duration = performance.now() - start;
+
+        this.recordMetric(operation, duration);
+
+        return result;
+    }
+
+    private recordMetric(operation: string, duration: number) {
+        if (!this.metrics.has(operation)) {
+            this.metrics.set(operation, []);
+        }
+        this.metrics.get(operation)!.push(duration);
+    }
+
+    getStats(operation: string) {
+        const times = this.metrics.get(operation) || [];
+
+        if (times.length === 0) return null;
+
+        const sorted = [...times].sort((a, b) => a - b);
+
+        return {
+            count: times.length,
+            average: times.reduce((a, b) => a + b) / times.length,
+            median: sorted[Math.floor(sorted.length / 2)],
+            min: sorted[0],
+            max: sorted[sorted.length - 1],
+            p95: sorted[Math.floor(sorted.length * 0.95)]
+        };
+    }
+
+    printAllStats() {
+        console.log('\n📊 Performance Stats:');
+        for (const [operation, _] of this.metrics) {
+            const stats = this.getStats(operation);
+            if (stats) {
+                console.log(`${operation}:`);
+                console.log(`  Average: ${stats.average.toFixed(2)}ms`);
+                console.log(`  Median: ${stats.median.toFixed(2)}ms`);
+                console.log(`  95th percentile: ${stats.p95.toFixed(2)}ms`);
+                console.log(`  Count: ${stats.count}`);
+            }
+        }
+    }
+}
+
+// Usage
+const monitor = new PerformanceMonitor();
+
+const model = await monitor.timeAsync('data-loading', async () => {
+    const dataSource = new DataSource({
+        source: 'attack',
+        domain: 'enterprise-attack',
+        parsingMode: 'relaxed'
+    });
+    const uuid = await registerDataSource(dataSource);
+    return loadDataModel(uuid);
+});
+
+const tactics = monitor.time('get-tactics', () => {
+    return model.techniques[0].getTactics();
+});
+
+monitor.printAllStats();
+```
+
+## Configuration for Scale
+
+### Production Environment Variables
+
+```bash
+# .env.production
+NODE_ENV=production
+ATTACK_PARSING_MODE=strict
+ATTACK_VERSION=15.1
+ATTACK_CACHE_SIZE=100
+ATTACK_WORKER_THREADS=4
+ATTACK_MEMORY_LIMIT=2048
+```
+
+```typescript
+// Production configuration
+const config = {
+    parsingMode: process.env.ATTACK_PARSING_MODE || 'relaxed',
+    version: process.env.ATTACK_VERSION || '15.1',
+    cacheSize: parseInt(process.env.ATTACK_CACHE_SIZE || '10'),
+    workerThreads: parseInt(process.env.ATTACK_WORKER_THREADS || '2'),
+    memoryLimit: parseInt(process.env.ATTACK_MEMORY_LIMIT || '1024')
+};
+```
+
+## Key Performance Tips
+
+1. **Use Relaxed Parsing** in development, strict in production
+2. **Load Domains in Parallel** when you need multiple domains
+3. **Cache Relationship Results** for frequently accessed data
+4. **Pre-compute Indexes** for complex relationship queries
+5. **Implement Lazy Loading** for large datasets
+6. **Monitor Performance** with metrics and logging
+7. **Use Worker Threads** for CPU-intensive analysis
+8. **Pool Data Models** in high-throughput applications
+
+## Related Guides
+
+- [Manage Data Sources](./manage-data-sources) - Efficient data source management
+- [Handle Parsing Errors](./error-handling) - Deal with data quality issues
+- [Reference: Configuration](../reference/configuration) - All configuration options
+
+---

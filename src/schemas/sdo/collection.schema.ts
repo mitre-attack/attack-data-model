@@ -40,7 +40,7 @@ export type ObjectVersionReference = z.infer<typeof objectVersionReferenceSchema
 //
 /////////////////////////////////////
 
-export const extensibleCollectionSchema = attackBaseDomainObjectSchema
+export const collectionSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-collection'),
 
@@ -63,7 +63,4 @@ export const extensibleCollectionSchema = attackBaseDomainObjectSchema
   })
   .strict();
 
-// No refinements currently exist on collections, so just export an alias
-export const collectionSchema = extensibleCollectionSchema;
-
-export type Collection = z.infer<typeof extensibleCollectionSchema>;
+export type Collection = z.infer<typeof collectionSchema>;

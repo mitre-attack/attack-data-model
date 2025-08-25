@@ -1,9 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { describe, expect, it } from 'vitest';
 import { createSyntheticStixObject } from '../../src/generator';
-import {
-    type ExternalReferences
-} from '../../src/schemas/common/index';
+import { type ExternalReferences } from '../../src/schemas/common/index';
 import { type LogSource, logSourceSchema } from '../../src/schemas/sdo/log-source.schema';
 
 describe('logSourceSchema', () => {

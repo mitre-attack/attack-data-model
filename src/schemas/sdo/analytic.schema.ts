@@ -111,7 +111,7 @@ export type MutableElements = z.infer<typeof xMitreMutableElementsSchema>;
 //
 /////////////////////////////////////
 
-export const extensibleAnalyticSchema = attackBaseDomainObjectSchema
+export const analyticSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-analytic'),
 
@@ -140,6 +140,4 @@ export const extensibleAnalyticSchema = attackBaseDomainObjectSchema
   })
   .strict();
 
-export const analyticSchema = extensibleAnalyticSchema;
-
-export type Analytic = z.infer<typeof extensibleAnalyticSchema>;
+export type Analytic = z.infer<typeof analyticSchema>;

@@ -1,11 +1,214 @@
-.features {
-  display: flex;
-  align-items: center;
-  padding: 2rem 0;
-  width: 100%;
+/* Section styles */
+.documentationSection {
+  padding: 4rem 0;
+  background: var(--ifm-background-surface-color);
 }
 
-.featureSvg {
-  height: 200px;
-  width: 200px;
+.quickStartSection {
+  padding: 4rem 0;
+  /* background: var(--ifm-background-surface-color); */
+  background: var(--ifm-color-emphasis-100);
+}
+
+/* Common section elements */
+.sectionTitle {
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--ifm-heading-color);
+}
+
+.sectionSubtitle {
+  font-size: 1.125rem;
+  color: var(--ifm-color-emphasis-700);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Documentation cards grid */
+.docTypeGrid {
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.docTypeCard {
+  height: 100%;
+  margin-bottom: 2rem;
+}
+
+/* Key features */
+.keyFeature {
+  margin-bottom: 2rem;
+}
+
+.keyFeatureContent {
+  text-align: center;
+  padding: 1.5rem;
+  height: 100%;
+  border-radius: 0.75rem;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.keyFeatureContent:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px -8px var(--ifm-color-emphasis-400);
+}
+
+.keyFeatureTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--ifm-heading-color);
+}
+
+.keyFeatureDescription {
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Quick start section */
+.quickStartContent {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.codeBlock {
+  background: var(--ifm-code-background);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  height: 100%;
+}
+
+.codeBlock h4 {
+  margin: 0 0 1rem 0;
+  color: var(--ifm-heading-color);
+  font-weight: 600;
+}
+
+.codeBlock pre {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.codeBlock code {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  color: var(--ifm-color-emphasis-800);
+  font-family: var(--ifm-font-family-monospace);
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--ifm-color-primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  transition: all 0.2s ease;
+}
+
+.primaryButton:hover {
+  background: var(--ifm-color-primary-dark);
+  color: white;
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.primaryButton:active {
+  transform: translateY(0);
+}
+
+/* Dark theme adjustments */
+[data-theme='dark'] .keyFeatureContent {
+  background: var(--ifm-background-color);
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+[data-theme='dark'] .keyFeatureContent:hover {
+  box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='dark'] .codeBlock {
+  background: var(--ifm-background-color);
+  border-color: var(--ifm-color-emphasis-400);
+}
+
+/* Responsive design */
+@media (max-width: 996px) {
+  .sectionTitle {
+    font-size: 2rem;
+  }
+
+  .documentationSection,
+  .quickStartSection {
+    padding: 3rem 0;
+  }
+
+  .docTypeGrid {
+    gap: 1.5rem;
+  }
+
+  .keyFeatureContent {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .sectionTitle {
+    font-size: 1.75rem;
+  }
+
+  .sectionSubtitle {
+    font-size: 1rem;
+  }
+
+  .documentationSection,
+  .quickStartSection {
+    padding: 2rem 0;
+  }
+
+  .codeBlock {
+    padding: 1.25rem;
+  }
+
+  .codeBlock h4 {
+    font-size: 1rem;
+  }
+
+  .primaryButton {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+/* Focus styles for accessibility */
+.primaryButton:focus,
+.keyFeatureContent:focus {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .keyFeatureContent {
+    border-width: 2px;
+  }
+
+  .codeBlock {
+    border-width: 2px;
+  }
 }
