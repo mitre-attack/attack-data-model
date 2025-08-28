@@ -338,9 +338,9 @@ Detection strategies define high-level approaches for detecting specific adversa
 
 **Detection strategy-specific fields:**
 
-| Field                   | Type     | Description                                                                                              |
-| :---------------------- | :------- | -------------------------------------------------------------------------------------------------------- |
-| `x_mitre_analytics`     | string[] | Array of STIX IDs referencing `x-mitre-analytic` objects that implement this detection strategy.         |
+| Field                       | Type     | Description                                                                                              |
+| :-------------------------- | :------- | -------------------------------------------------------------------------------------------------------- |
+| `x_mitre_analytic_refs`     | string[] | Array of STIX IDs referencing `x-mitre-analytic` objects that implement this detection strategy.         |
 
 **Key characteristics:**
 - Each detection strategy has a one-to-one relationship with a specific ATT&CK technique
@@ -352,39 +352,44 @@ Detection strategies define high-level approaches for detecting specific adversa
 The following diagrams illustrate how Detection Strategies connect to other ATT&CK objects through both formal STIX Relationship Objects (SROs) and soft relationships (STIX ID references):
 
 ```
- ┌────────────────────┐                               
- │                    │                               
- │      <<SDO>>       │             ┌─────────────┐   
- │     Detection      │             │             │   
- │     Strategy       │   <<SRO>>   │  <<SDO>>    │   
- │                    ├─────────────►  Technique  │   
- │┌──────────────────┐│  "detects"  │             │   
- ││x_mitre_analytics ││             └─────────────┘   
- │└───────┬──────────┘│                               
- └────────┼───────────┘                               
-          │                                           
-          │ "Soft" relationship                       
-          │ (STIX ID reference)                       
-          │                                           
-┌─────────▼───────────┐                               
-│                     │                               
-│       <<SDO>>       │                               
-│      Analytic       │                               
-│                     │                               
-│┌───────────────────┐│                               
-││x_mitre_log_sources││                               
-│└────────┬──────────┘│                               
-└─────────┼───────────┘                               
-          │                                           
-          │ "Soft" relationship                       
-          │ (STIX ID reference)                       
-          │                                           
-    ┌─────▼──────┐                 ┌─────────────────┐
-    │            │                 │                 │
-    │  <<SDO>>   │     <<SRO>>     │    <<SDO>>      │
-    │ Log Source ◄─────────────────┤  Data Component │
-    │            │    "found-in"   │                 │
-    └────────────┘                 └─────────────────┘
+   ┌───────────────────────┐                               
+   │                       │                                    
+   │        <<SDO>>        │             ┌─────────────┐   
+   │       Detection       │             │             │   
+   │       Strategy        │   <<SRO>>   │  <<SDO>>    │   
+   │                       ├─────────────►  Technique  │   
+   │┌─────────────────────┐│  "detects"  │             │   
+   ││x_mitre_analytic_refs││             └─────────────┘   
+   │└──────────┬──────────┘│                                    
+   └───────────┼───────────┘                                    
+               │                                           
+               │ "Soft" relationship                       
+               │ (STIX ID reference)                       
+               │                                           
+┌──────────────▼────────────────┐                               
+│                               │                               
+│            <<SDO>>            │                               
+│           Analytic            │                               
+│                               │                               
+│┌─────────────────────────────┐│                               
+││x_mitre_log_source_references││                               
+│└─────────────┬───────────────┘│                               
+└──────────────┼────────────────┘                               
+               │                                           
+               │ "Soft" relationship                       
+               │ (array of objects:
+               │   {
+               │      x_mitre_log_source_ref: (Stix ID reference),
+               │      permutation_names: array
+               │   }
+               │ )                       
+               │                                           
+         ┌─────▼──────┐
+         │            │
+         │  <<SDO>>   │
+         │ Log Source │
+         │            │
+         └────────────┘
 ```
 
 ### Analytics
@@ -396,18 +401,17 @@ Analytics contain platform-specific detection logic and represent the implementa
 | Field                      | Type                    | Description                                                                            |
 | :------------------------- | :---------------------- | -------------------------------------------------------------------------------------- |
 | `x_mitre_platforms`        | string[] (max 1)        | Target platform for this analytic (Windows, Linux, macOS).                             |
-| `x_mitre_detects`          | string                  | Tool-agnostic description of the adversary behavior chain this analytic detects.       |
-| `x_mitre_log_sources`      | `log_source_ref[]`      | Array of log source references with specific permutation keys.                         |
+| `x_mitre_log_source_references`      | `log_source_reference[]`      | Array of log source references with specific permutation names.                         |
 | `x_mitre_mutable_elements` | `mutable_element[]`     | Array of tunable detection parameters for environment-specific adaptation.             |
 
 #### Log Source Reference Subtype
 
-The `log_source_ref` object links analytics to specific log source permutations:
+The `log_source_reference` object links analytics to specific log source permutations:
 
 | Field  | Type     | Description                                                                           |
 | ------ | -------- | ------------------------------------------------------------------------------------- |
-| `ref`  | string   | STIX ID of the referenced `x-mitre-log-source` object                                |
-| `keys` | string[] | Specific permutation keys from the log source's `x_mitre_log_source_permutations`     |
+| `x_mitre_log_source_ref`  | string   | STIX ID of the referenced `x-mitre-log-source` object                                |
+| `permutation_names` | string[] | Specific permutation names from the log source's `x_mitre_log_source_permutations`     |
 
 #### Mutable Element Subtype
 

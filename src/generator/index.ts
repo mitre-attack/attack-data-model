@@ -62,11 +62,11 @@ const minimalAnalytic = {
   ],
   x_mitre_domains: ['enterprise-attack'],
   x_mitre_platforms: ['Windows'],
-  x_mitre_detects: 'Adversary execution of PowerShell commands with suspicious parameters',
-  x_mitre_log_sources: [
+  description: 'Adversary execution of PowerShell commands with suspicious parameters',
+  x_mitre_log_source_references: [
     {
-      ref: 'x-mitre-log-source--1a2b3c4d-5e6f-789a-bcde-123456789abc',
-      keys: ['PowerShell'],
+      x_mitre_log_source_ref: 'x-mitre-log-source--1a2b3c4d-5e6f-789a-bcde-123456789abc',
+      permutation_names: ['PowerShell'],
     },
   ],
   x_mitre_mutable_elements: [
@@ -162,7 +162,7 @@ const minimalDetectionStrategy = {
     },
   ],
   x_mitre_domains: ['enterprise-attack'],
-  x_mitre_analytics: ['x-mitre-analytic--1a2b3c4d-5e6f-789a-bcde-123456789abc'],
+  x_mitre_analytic_refs: ['x-mitre-analytic--1a2b3c4d-5e6f-789a-bcde-123456789abc'],
 };
 
 const minimalGroup = {

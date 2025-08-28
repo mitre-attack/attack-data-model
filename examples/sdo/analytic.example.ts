@@ -26,11 +26,11 @@ const validAnalytic = {
 			"url": "https://attack.mitre.org/analytics/AN0001"
 		}
 	],
-	"x_mitre_detects": "Adversary execution of PowerShell commands with suspicious parameters",
-	"x_mitre_log_sources": [
+	"description": "Adversary execution of PowerShell commands with suspicious parameters",
+	"x_mitre_log_source_references": [
 		{
-			"ref": "x-mitre-log-source--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-			"keys": ["PowerShell"]
+			"x_mitre_log_source_ref": "x-mitre-log-source--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+			"permutation_names": ["PowerShell"]
 		}
     ],
     "x_mitre_platforms": ["Windows"],
@@ -84,15 +84,15 @@ const validAnalyticMultipleElements = {
 			"url": "https://attack.mitre.org/analytics/AN0002"
 		}
 	],
-	"x_mitre_detects": "Adversary process creation and execution patterns across multiple log sources",
-	"x_mitre_log_sources": [
+	"description": "Adversary process creation and execution patterns across multiple log sources",
+	"x_mitre_log_source_references": [
 		{
-			"ref": "x-mitre-log-source--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-			"keys": ["Sysmon", "EventCode=1"]
+			"x_mitre_log_source_ref": "x-mitre-log-source--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+			"permutation_names": ["Sysmon", "EventCode=1"]
 		},
 		{
-			"ref": "x-mitre-log-source--6ba7b811-9dad-11d1-80b4-00c04fd430c9",
-			"keys": ["Security", "EventCode=4688"]
+			"x_mitre_log_source_ref": "x-mitre-log-source--6ba7b811-9dad-11d1-80b4-00c04fd430c9",
+			"permutation_names": ["Security", "EventCode=4688"]
 		}
 	],
 	"x_mitre_mutable_elements": [
@@ -137,8 +137,8 @@ const invalidAnalyticMissingFields = {
 			"url": "https://attack.mitre.org/analytics/AN0003"
 		}
 	],
-	// Missing x_mitre_detects
-	// Missing x_mitre_log_sources
+	// Missing description
+	// Missing x_mitre_log_source_references
 	// Missing x_mitre_mutable_elements
 };
 
@@ -160,9 +160,9 @@ try {
 // ✖ x_mitre_platforms must be an array of strings
 //   → at x_mitre_platforms
 // ✖ Invalid input: expected string, received undefined
-//   → at x_mitre_detects
+//   → at description
 // ✖ Invalid input: expected array, received undefined
-//   → at x_mitre_log_sources
+//   → at x_mitre_log_source_references
 // ✖ Invalid input: expected array, received undefined
 //   → at x_mitre_mutable_elements
 // ✖ Invalid input: expected array, received undefined
@@ -188,14 +188,14 @@ try {
 //   → at type
 
 /*************************************************************************************************** */
-// Example 6: Invalid Analytic (empty log sources array)
+// Example 6: Invalid Analytic (empty log source references array)
 /*************************************************************************************************** */
 const invalidAnalyticEmptyLogSources = {
 	...validAnalytic,
-	"x_mitre_log_sources": []
+	"x_mitre_log_source_references": []
 };
 
-console.log("\nExample 6 - Invalid Analytic (empty log sources array):");
+console.log("\nExample 6 - Invalid Analytic (empty log source references array):");
 try {
 	analyticSchema.parse(invalidAnalyticEmptyLogSources);
 } catch (error) {
@@ -204,21 +204,21 @@ try {
 	}
 }
 // ✖ Too small: expected array to have >=1 items
-//   → at x_mitre_log_sources
+//   → at x_mitre_log_source_references
 
 /*************************************************************************************************** */
 // Example 7: Invalid Analytic (duplicate log source refs)
 /*************************************************************************************************** */
 const invalidAnalyticDuplicateLogSources = {
 	...validAnalytic,
-	"x_mitre_log_sources": [
+	"x_mitre_log_source_references": [
 		{
-			"ref": "x-mitre-log-source--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-			"keys": ["PowerShell"]
+			"x_mitre_log_source_ref": "x-mitre-log-source--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+			"permutation_names": ["PowerShell"]
 		},
 		{
-			"ref": "x-mitre-log-source--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-			"keys": ["Security"]
+			"x_mitre_log_source_ref": "x-mitre-log-source--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+			"permutation_names": ["Security"]
 		}
 	]
 };
@@ -231,8 +231,8 @@ try {
 		console.log(z.prettifyError(error));
 	}
 }
-// ✖ Duplicate log source permutation found: each (name, channel) pair must be unique
-//   → at x_mitre_log_sources.x_mitre_log_source_permutations
+// ✖ Duplicate log source ref found: each (x_mitre_log_source_ref, permutation_names) pair must be unique
+//   → at x_mitre_log_source_references.x_mitre_log_source_ref
 
 /*************************************************************************************************** */
 // Example 8: Invalid Analytic (empty mutable elements array)
@@ -254,49 +254,49 @@ try {
 //   → at x_mitre_mutable_elements
 
 /*************************************************************************************************** */
-// Example 9: Invalid Analytic (empty detects field)
+// Example 9: Invalid Analytic (empty description field)
 /*************************************************************************************************** */
-const invalidAnalyticEmptyDetects = {
+const invalidAnalyticEmptyDescription = {
 	...validAnalytic,
-	"x_mitre_detects": ""
+	"description": ""
 };
 
-console.log("\nExample 9 - Invalid Analytic (empty detects field):");
+console.log("\nExample 9 - Invalid Analytic (empty description field):");
 try {
-	analyticSchema.parse(invalidAnalyticEmptyDetects);
+	analyticSchema.parse(invalidAnalyticEmptyDescription);
 } catch (error) {
 	if (error instanceof z.core.$ZodError) {
 		console.log(z.prettifyError(error));
 	}
 }
 // ✖ Too small: expected string to have >=1 characters
-//   → at x_mitre_detects
+//   → at description
 
 /*************************************************************************************************** */
-// Example 10: Invalid Analytic (empty log source keys)
+// Example 10: Invalid Analytic (empty log source reference permutation_names)
 /*************************************************************************************************** */
-const invalidAnalyticEmptyKeys = {
+const invalidAnalyticEmptyPermutationNames = {
 	...validAnalytic,
-	"x_mitre_log_sources": [
+	"x_mitre_log_source_references": [
 		{
-			"ref": "x-mitre-log-source--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-			"keys": []
+			"x_mitre_log_source_ref": "x-mitre-log-source--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+			"permutation_names": []
 		}
 	]
 };
 
-console.log("\nExample 10 - Invalid Analytic (empty log source keys):");
+console.log("\nExample 10 - Invalid Analytic (empty log source reference permutation_names):");
 try {
-	analyticSchema.parse(invalidAnalyticEmptyKeys);
+	analyticSchema.parse(invalidAnalyticEmptyPermutationNames);
 } catch (error) {
 	if (error instanceof z.core.$ZodError) {
 		console.log(z.prettifyError(error));
 	}
 }
 // ✖ Too small: expected array to have >=1 items
-//   → at x_mitre_log_sources[0].keys
+//   → at x_mitre_log_source_references[0].permutation_names
 // ✖ Too small: expected array to have >=1 items
-//   → at x_mitre_log_sources[0].keys
+//   → at x_mitre_log_source_references[0].permutation_names
 
 /*************************************************************************************************** */
 // Example 11: Valid Analytic with Platform
@@ -313,7 +313,7 @@ const validAnalyticWithPlatform = {
 		}
 	],
 	"x_mitre_platforms": ["Windows"],
-	"x_mitre_detects": "Windows-specific process creation patterns indicating potential adversary activity"
+	"description": "Windows-specific process creation patterns indicating potential adversary activity"
 };
 
 console.log("\nExample 11 - Valid Analytic with Platform:");
@@ -363,11 +363,11 @@ const validMobileAnalytic = {
 		}
 	],
 	"x_mitre_platforms": ["Android"],
-	"x_mitre_detects": "Mobile applications requesting excessive or suspicious permissions",
-	"x_mitre_log_sources": [
+	"description": "Mobile applications requesting excessive or suspicious permissions",
+	"x_mitre_log_source_references": [
 		{
-			"ref": `x-mitre-log-source--${uuidv4()}`,
-			"keys": ["logcat", "system"]
+			"x_mitre_log_source_ref": `x-mitre-log-source--${uuidv4()}`,
+			"permutation_names": ["logcat", "system"]
 		}
 	],
 	"x_mitre_mutable_elements": [
@@ -382,19 +382,19 @@ console.log("\nExample 13 - Valid Mobile Analytic:");
 console.log(`SUCCESS ${analyticSchema.parse(validMobileAnalytic).name}`)
 
 /*************************************************************************************************** */
-// Example 14: Invalid Analytic (wrong log source STIX ID format)
+// Example 14: Invalid Analytic (wrong log source ref STIX ID format)
 /*************************************************************************************************** */
 const invalidAnalyticWrongLogSourceId = {
 	...validAnalytic,
-	"x_mitre_log_sources": [
+	"x_mitre_log_source_references": [
 		{
-			"ref": "x-mitre-analytic--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-			"keys": ["PowerShell"]
+			"x_mitre_log_source_ref": "x-mitre-analytic--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+			"permutation_names": ["PowerShell"]
 		}
 	]
 };
 
-console.log("\nExample 14 - Invalid Analytic (wrong log source STIX ID format):");
+console.log("\nExample 14 - Invalid Analytic (wrong log source ref STIX ID format):");
 try {
 	analyticSchema.parse(invalidAnalyticWrongLogSourceId);
 } catch (error) {
@@ -403,12 +403,12 @@ try {
 	}
 }
 // ✖ Invalid STIX Identifier: must start with 'x-mitre-log-source--'
-//   → at x_mitre_log_sources[0].ref
+//   → at x_mitre_log_source_references[0].x_mitre_log_source_ref
 
 /*************************************************************************************************** */
-// Example 15: Valid Analytic with Complex Log Source Keys
+// Example 15: Valid Analytic with Complex Log Source Permutation Names
 /*************************************************************************************************** */
-const validAnalyticComplexKeys = {
+const validAnalyticComplexPermutationNames = {
 	...validAnalytic,
 	"id": "x-mitre-analytic--7c93fd1a-1e6b-4b4e-be42-0d843216a442",
 	"name": "Advanced Process Monitoring",
@@ -419,11 +419,11 @@ const validAnalyticComplexKeys = {
 			"url": "https://attack.mitre.org/analytics/AN0030"
 		}
 	],
-	"x_mitre_detects": "Complex process creation and execution patterns using multiple log sources",
-	"x_mitre_log_sources": [
+	"description": "Complex process creation and execution patterns using multiple log sources",
+	"x_mitre_log_source_references": [
 		{
-			"ref": "x-mitre-log-source--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-			"keys": ["sysmon:1", "auditd:SYSCALL", "Security/Microsoft-Windows-Security-Auditing"]
+			"x_mitre_log_source_ref": "x-mitre-log-source--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+			"permutation_names": ["sysmon:1", "auditd:SYSCALL", "Security/Microsoft-Windows-Security-Auditing"]
 		}
 	],
 	"x_mitre_mutable_elements": [
@@ -434,8 +434,8 @@ const validAnalyticComplexKeys = {
 	]
 };
 
-console.log("\nExample 15 - Valid Analytic with Complex Log Source Keys:");
-console.log(`SUCCESS ${analyticSchema.parse(validAnalyticComplexKeys).name}`)
+console.log("\nExample 15 - Valid Analytic with Complex Log Source Permutation Names:");
+console.log(`SUCCESS ${analyticSchema.parse(validAnalyticComplexPermutationNames).name}`);
 
 /*************************************************************************************************** */
 // Example 16: Analytic with unknown property
@@ -457,19 +457,19 @@ try {
 // ✖ Unrecognized key: "foo"
 
 /*************************************************************************************************** */
-// Example 17: Invalid Analytic (duplicate keys in same log source)
+// Example 17: Invalid Analytic (duplicate permutation_names in same log source)
 /*************************************************************************************************** */
 const invalidAnalyticDuplicateKeys = {
 	...validAnalytic,
-	"x_mitre_log_sources": [
+	"x_mitre_log_source_references": [
 		{
-			"ref": "x-mitre-log-source--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-			"keys": ["PowerShell", "PowerShell"]
+			"x_mitre_log_source_ref": "x-mitre-log-source--6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+			"permutation_names": ["PowerShell", "PowerShell"]
 		}
 	]
 };
 
-console.log("\nExample 17 - Invalid Analytic (duplicate keys in same log source):");
+console.log("\nExample 17 - Invalid Analytic (duplicate permutation_names in same log source):");
 try {
 	analyticSchema.parse(invalidAnalyticDuplicateKeys);
 } catch (error) {
@@ -478,7 +478,7 @@ try {
 	}
 }
 // ✖ Duplicate log source permutation found: each (name, channel) pair must be unique
-//   → at x_mitre_log_sources.x_mitre_log_source_permutations
+//   → at x_mitre_log_source_references[0].permutation_names
 
 /*************************************************************************************************** */
 // Example 18: Invalid Analytic (empty mutable element field)

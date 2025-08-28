@@ -31,7 +31,7 @@ const validDetectionStrategy = {
 		"Security Research Team",
 		"John Smith"
 	],
-    "x_mitre_analytics": [
+    "x_mitre_analytic_refs": [
         `x-mitre-analytic--${uuidv4()}`,
         `x-mitre-analytic--${uuidv4()}`
 	]
@@ -84,7 +84,7 @@ const validDetectionStrategyWithContributors = {
 			"url": "https://attack.mitre.org/detection-strategies/DET0002"
 		}
 	],
-	"x_mitre_analytics": [
+	"x_mitre_analytic_refs": [
 		`x-mitre-analytic--${uuidv4()}`,
 		`x-mitre-analytic--${uuidv4()}`,
 		`x-mitre-analytic--${uuidv4()}`,
@@ -118,7 +118,7 @@ const invalidDetectionStrategyMissingFields = {
 		}
 	],
 	// Missing x_mitre_contributors (required)
-	// Missing x_mitre_analytics
+	// Missing x_mitre_analytic_refs
 };
 
 console.log("\nExample 4 - Invalid Detection Strategy (missing required fields):");
@@ -138,7 +138,7 @@ try {
 // ✖ Invalid input: expected array, received undefined
 //   → at x_mitre_contributors
 // ✖ Invalid input: expected array, received undefined
-//   → at x_mitre_analytics
+//   → at x_mitre_analytic_refs
 // ✖ Invalid input: expected array, received undefined
 //   → at x_mitre_domains
 
@@ -166,7 +166,7 @@ try {
 /*************************************************************************************************** */
 const invalidDetectionStrategyEmptyAnalytics = {
 	...validDetectionStrategy,
-	"x_mitre_analytics": []
+	"x_mitre_analytic_refs": []
 };
 
 console.log("\nExample 6 - Invalid Detection Strategy (empty analytics array):");
@@ -178,14 +178,14 @@ try {
 	}
 }
 // Validation error: ✖ Too small: expected array to have >=1 items
-//   → at x_mitre_analytics
+//   → at x_mitre_analytic_refs
 
 /*************************************************************************************************** */
 // Example 7: Invalid Detection Strategy (wrong analytic ID format)
 /*************************************************************************************************** */
 const invalidDetectionStrategyAnalyticID = {
 	...validDetectionStrategy,
-	"x_mitre_analytics": [
+	"x_mitre_analytic_refs": [
 		"invalid-analytic-id",
 		`x-mitre-analytic--${uuidv4()}`,
 	]
@@ -200,20 +200,20 @@ try {
 	}
 }
 // Validation error: ✖ Invalid STIX Identifier: must comply with format 'type--UUIDv4'
-//   → at x_mitre_analytics[0]
+//   → at x_mitre_analytic_refs[0]
 // ✖ Invalid STIX Identifier for STIX object: contains invalid STIX type 'invalid-analytic-id'
-//   → at x_mitre_analytics[0]
+//   → at x_mitre_analytic_refs[0]
 // ✖ Invalid STIX Identifier for STIX object: contains invalid UUIDv4 format
-//   → at x_mitre_analytics[0]
+//   → at x_mitre_analytic_refs[0]
 // ✖ Invalid STIX Identifier: must start with 'x-mitre-analytic--'
-//   → at x_mitre_analytics[0]
+//   → at x_mitre_analytic_refs[0]
 
 /*************************************************************************************************** */
 // Example 8: Invalid Detection Strategy (wrong STIX type in analytic ID)
 /*************************************************************************************************** */
 const invalidDetectionStrategyWrongStixType = {
 	...validDetectionStrategy,
-	"x_mitre_analytics": [
+	"x_mitre_analytic_refs": [
 		"x-mitre-detection-strategy--6ba7b810-9dad-11d1-80b4-00c04fd430c8"
 	]
 };
@@ -227,7 +227,7 @@ try {
 	}
 }
 // Validation error: ✖ Invalid STIX Identifier: must start with 'x-mitre-analytic--'
-//   → at x_mitre_analytics[0]
+//   → at x_mitre_analytic_refs[0]
 
 /*************************************************************************************************** */
 // Example 9: Valid Detection Strategy with Mobile Domain
@@ -260,7 +260,7 @@ const validMobileDetectionStrategy = {
 		"Mobile Security Research Lab",
 		"Dr. Sarah Johnson"
 	],
-	"x_mitre_analytics": [
+	"x_mitre_analytic_refs": [
 		`x-mitre-analytic--${uuidv4()}`,
 	]
 };
@@ -300,7 +300,7 @@ const validMultiDomainDetectionStrategy = {
 		"Cross-Platform Security Team",
 		"Industrial Control Systems Lab"
 	],
-	"x_mitre_analytics": [
+	"x_mitre_analytic_refs": [
 		`x-mitre-analytic--${uuidv4()}`,
 		`x-mitre-analytic--${uuidv4()}`,
 		`x-mitre-analytic--${uuidv4()}`,
@@ -392,7 +392,7 @@ const validDetectionStrategySpecialChars = {
 		"李小明",
 		"user@security-domain.com"
 	],
-	"x_mitre_analytics": [
+	"x_mitre_analytic_refs": [
 		`x-mitre-analytic--${uuidv4()}`,
 	]
 };
@@ -447,10 +447,10 @@ const validDetectionStrategyManyAnalytics = {
 	"x_mitre_contributors": [
 		"Comprehensive Detection Team"
 	],
-	"x_mitre_analytics": Array.from({ length: 20 }, (_, i) => 
+	"x_mitre_analytic_refs": Array.from({ length: 20 }, (_, i) => 
 		`x-mitre-analytic--${uuidv4()}`,
 	)
 };
 
 console.log("\nExample 15 - Valid Detection Strategy with Many Analytics:");
-console.log(`SUCCESS ${detectionStrategySchema.parse(validDetectionStrategyManyAnalytics).name} (${validDetectionStrategyManyAnalytics.x_mitre_analytics.length} analytics)`);
+console.log(`SUCCESS ${detectionStrategySchema.parse(validDetectionStrategyManyAnalytics).name} (${validDetectionStrategyManyAnalytics.x_mitre_analytic_refs.length} analytics)`);
