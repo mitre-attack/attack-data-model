@@ -20,14 +20,10 @@ export const xMitreLogSourcePermutationKey = z.string();
 export const xMitreLogSourceRefSchema = z
   .object({
     ref: createStixIdValidator('x-mitre-log-source'),
-    keys: z
-      .array(z.string())
-      .nonempty()
-      .meta({
-        description:
-          'Must match one of the elements in the ``x_mitre_log_source_permutations`` array',
-      })
-      .nonempty(),
+    keys: z.array(z.string()).nonempty().meta({
+      description:
+        'Must match one of the elements in the ``x_mitre_log_source_permutations`` array',
+    }),
   })
   .meta({
     description: 'A reference to a log source permutation',
