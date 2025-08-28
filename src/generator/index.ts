@@ -214,6 +214,7 @@ const minimalLogSource = {
     {
       name: 'Security',
       channel: 'Security',
+      data_component_name: 'Security',
     },
   ],
 };
