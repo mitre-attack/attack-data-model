@@ -29,11 +29,13 @@ const validLogSource = {
 	"x_mitre_log_source_permutations": [
 		{
 			"name": "sysmon",
-			"channel": "EventCode=10"
+			"channel": "EventCode=10",
+			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "auditd:SYSCALL",
-			"channel": "ptrace"
+			"channel": "ptrace",
+			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -83,15 +85,18 @@ const validLogSourceMultiplePermutations = {
 	"x_mitre_log_source_permutations": [
 		{
 			"name": "Security",
-			"channel": "Security"
+			"channel": "Security",
+			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "System",
-			"channel": "System"
+			"channel": "System",
+			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "Application",
-			"channel": "Application"
+			"channel": "Application",
+			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -190,11 +195,13 @@ const invalidLogSourceDuplicatePermutations = {
 	"x_mitre_log_source_permutations": [
 		{
 			"name": "Security",
-			"channel": "Security"
+			"channel": "Security",
+			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "Security",
-			"channel": "Security"
+			"channel": "Security",
+			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -227,15 +234,18 @@ const validLogSourceSameNameDifferentChannels = {
 	"x_mitre_log_source_permutations": [
 		{
 			"name": "Sysmon",
-			"channel": "EventCode=1"
+			"channel": "EventCode=1",
+			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "Sysmon",
-			"channel": "EventCode=3"
+			"channel": "EventCode=3",
+			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "Sysmon",
-			"channel": "EventCode=10"
+			"channel": "EventCode=10",
+			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -251,7 +261,8 @@ const invalidLogSourceEmptyPermutationName = {
 	"x_mitre_log_source_permutations": [
 		{
 			"name": "",
-			"channel": "Security"
+			"channel": "Security",
+			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -275,7 +286,8 @@ const invalidLogSourceEmptyPermutationChannel = {
 	"x_mitre_log_source_permutations": [
 		{
 			"name": "Security",
-			"channel": ""
+			"channel": "",
+			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -319,11 +331,13 @@ const validMobileLogSource = {
 	"x_mitre_log_source_permutations": [
 		{
 			"name": "logcat",
-			"channel": "system"
+			"channel": "system",
+			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "logcat",
-			"channel": "main"
+			"channel": "main",
+			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -359,15 +373,18 @@ const validMultiDomainLogSource = {
 	"x_mitre_log_source_permutations": [
 		{
 			"name": "pcap",
-			"channel": "network"
+			"channel": "network",
+			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "netflow",
-			"channel": "flow"
+			"channel": "flow",
+			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "firewall",
-			"channel": "traffic"
+			"channel": "traffic",
+			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -424,11 +441,13 @@ const validLogSourceSpecialChars = {
 	"x_mitre_log_source_permutations": [
 		{
 			"name": "Security/Application-Logs_2024",
-			"channel": "Microsoft-Windows-Security-Auditing/Operational"
+			"channel": "Microsoft-Windows-Security-Auditing/Operational",
+			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "EventLog:Security",
-			"channel": "EventID=4624"
+			"channel": "EventID=4624",
+			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -502,19 +521,23 @@ const validLogSourceComplexPermutations = {
 	"x_mitre_log_source_permutations": [
 		{
 			"name": "sysmon:1",
-			"channel": "process_creation"
+			"channel": "process_creation",
+			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "auditd:SYSCALL",
-			"channel": "execve"
+			"channel": "execve",
+			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "powershell:4104",
-			"channel": "script_block"
+			"channel": "script_block",
+			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "wmi:19",
-			"channel": "wmi_event"
+			"channel": "wmi_event",
+			"data_component_name": "Process Creation"
 		}
 	]
 };

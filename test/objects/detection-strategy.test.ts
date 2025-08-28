@@ -19,7 +19,7 @@ describe('detectionStrategySchema', () => {
         ...minimalDetectionStrategy,
         x_mitre_deprecated: false,
         x_mitre_contributors: ['John Doe', 'Jane Smith'],
-        x_mitre_analytics: [
+        x_mitre_analytic_refs: [
           `x-mitre-analytic--${uuidv4()}`,
           `x-mitre-analytic--${uuidv4()}`,
           `x-mitre-analytic--${uuidv4()}`,
@@ -31,7 +31,7 @@ describe('detectionStrategySchema', () => {
     it('should accept multiple analytics', () => {
       const multiAnalyticsDetectionStrategy: DetectionStrategy = {
         ...minimalDetectionStrategy,
-        x_mitre_analytics: [
+        x_mitre_analytic_refs: [
           `x-mitre-analytic--${uuidv4()}`,
           `x-mitre-analytic--${uuidv4()}`,
           `x-mitre-analytic--${uuidv4()}`,
@@ -89,16 +89,16 @@ describe('detectionStrategySchema', () => {
       testField('x_mitre_modified_by_ref', 'invalid-modified-by-ref');
     });
 
-    describe('x_mitre_analytics', () => {
+    describe('x_mitre_analytic_refs', () => {
       it('should reject empty array', () => {
-        const invalidObject = { ...minimalDetectionStrategy, x_mitre_analytics: [] };
+        const invalidObject = { ...minimalDetectionStrategy, x_mitre_analytic_refs: [] };
         expect(() => detectionStrategySchema.parse(invalidObject)).toThrow();
       });
 
       it('should reject analytics with invalid STIX ID format', () => {
         const invalidObject = {
           ...minimalDetectionStrategy,
-          x_mitre_analytics: ['invalid-analytic-id'],
+          x_mitre_analytic_refs: ['invalid-analytic-id'],
         };
         expect(() => detectionStrategySchema.parse(invalidObject)).toThrow();
       });
@@ -106,7 +106,7 @@ describe('detectionStrategySchema', () => {
       it('should reject analytics with wrong STIX type prefix', () => {
         const invalidObject = {
           ...minimalDetectionStrategy,
-          x_mitre_analytics: [`x-mitre-detection-strategy--${uuidv4()}`],
+          x_mitre_analytic_refs: [`x-mitre-detection-strategy--${uuidv4()}`],
         };
         expect(() => detectionStrategySchema.parse(invalidObject)).toThrow();
       });
@@ -114,7 +114,7 @@ describe('detectionStrategySchema', () => {
       it('should reject non-array value', () => {
         const invalidObject = {
           ...minimalDetectionStrategy,
-          x_mitre_analytics: 'not-an-array',
+          x_mitre_analytic_refs: 'not-an-array',
         };
         expect(() => detectionStrategySchema.parse(invalidObject)).toThrow();
       });
@@ -122,7 +122,7 @@ describe('detectionStrategySchema', () => {
       it('should reject analytics with malformed UUID', () => {
         const invalidObject = {
           ...minimalDetectionStrategy,
-          x_mitre_analytics: ['x-mitre-analytic--invalid-uuid'],
+          x_mitre_analytic_refs: ['x-mitre-analytic--invalid-uuid'],
         };
         expect(() => detectionStrategySchema.parse(invalidObject)).toThrow();
       });
@@ -225,7 +225,7 @@ describe('detectionStrategySchema', () => {
       const analyticId = `x-mitre-analytic--${uuidv4()}`;
       const detectionStrategyWithDuplicates: DetectionStrategy = {
         ...minimalDetectionStrategy,
-        x_mitre_analytics: [analyticId, analyticId, analyticId],
+        x_mitre_analytic_refs: [analyticId, analyticId, analyticId],
       };
       // Schema doesn't prevent duplicates, so this should pass
       expect(() => detectionStrategySchema.parse(detectionStrategyWithDuplicates)).not.toThrow();
@@ -235,7 +235,7 @@ describe('detectionStrategySchema', () => {
       const manyAnalytics = Array.from({ length: 100 }, () => `x-mitre-analytic--${uuidv4()}`);
       const detectionStrategyWithManyAnalytics: DetectionStrategy = {
         ...minimalDetectionStrategy,
-        x_mitre_analytics: manyAnalytics,
+        x_mitre_analytic_refs: manyAnalytics,
       };
       expect(() => detectionStrategySchema.parse(detectionStrategyWithManyAnalytics)).not.toThrow();
     });
@@ -275,7 +275,7 @@ describe('detectionStrategySchema', () => {
     it('should handle analytics from different UUIDs formats', () => {
       const detectionStrategyWithVariousUUIDs: DetectionStrategy = {
         ...minimalDetectionStrategy,
-        x_mitre_analytics: [
+        x_mitre_analytic_refs: [
           'x-mitre-analytic--550e8400-e29b-41d4-a716-446655440000', // Version 1 UUID format
           'x-mitre-analytic--6ba7b810-9dad-11d1-80b4-00c04fd430c8', // Version 1 UUID format
           'x-mitre-analytic--6ba7b811-9dad-11d1-80b4-00c04fd430c8', // Version 1 UUID format

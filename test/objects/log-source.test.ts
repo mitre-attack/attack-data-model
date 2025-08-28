@@ -1,9 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { describe, expect, it } from 'vitest';
 import { createSyntheticStixObject } from '../../src/generator';
-import {
-    type ExternalReferences
-} from '../../src/schemas/common/index';
+import { type ExternalReferences } from '../../src/schemas/common/index';
 import { type LogSource, logSourceSchema } from '../../src/schemas/sdo/log-source.schema';
 
 describe('logSourceSchema', () => {
@@ -22,10 +20,12 @@ describe('logSourceSchema', () => {
           {
             name: 'Security',
             channel: 'Security',
+            data_component_name: 'Process Creation',
           },
           {
             name: 'System',
             channel: 'System',
+            data_component_name: 'Process Creation',
           },
         ],
       };
@@ -39,14 +39,17 @@ describe('logSourceSchema', () => {
           {
             name: 'Application',
             channel: 'Application',
+            data_component_name: 'Process Creation',
           },
           {
             name: 'Security',
             channel: 'Security',
+            data_component_name: 'Process Creation',
           },
           {
             name: 'System',
             channel: 'System',
+            data_component_name: 'Process Creation',
           },
         ],
       };
@@ -109,7 +112,9 @@ describe('logSourceSchema', () => {
       it('should reject permutations with empty name', () => {
         const invalidObject = {
           ...minimalLogSource,
-          x_mitre_log_source_permutations: [{ name: '', channel: 'Security' }],
+          x_mitre_log_source_permutations: [
+            { name: '', channel: 'Security', data_component_name: 'Security' },
+          ],
         };
         expect(() => logSourceSchema.parse(invalidObject)).toThrow();
       });
@@ -117,7 +122,19 @@ describe('logSourceSchema', () => {
       it('should reject permutations with empty channel', () => {
         const invalidObject = {
           ...minimalLogSource,
-          x_mitre_log_source_permutations: [{ name: 'Security', channel: '' }],
+          x_mitre_log_source_permutations: [
+            { name: 'Security', channel: '', data_component_name: 'Security' },
+          ],
+        };
+        expect(() => logSourceSchema.parse(invalidObject)).toThrow();
+      });
+
+      it('should reject permutations with empty data component name', () => {
+        const invalidObject = {
+          ...minimalLogSource,
+          x_mitre_log_source_permutations: [
+            { name: 'Security', channel: 'Security', data_component_name: '' },
+          ],
         };
         expect(() => logSourceSchema.parse(invalidObject)).toThrow();
       });
@@ -125,7 +142,9 @@ describe('logSourceSchema', () => {
       it('should reject permutations missing name', () => {
         const invalidObject = {
           ...minimalLogSource,
-          x_mitre_log_source_permutations: [{ channel: 'Security' }],
+          x_mitre_log_source_permutations: [
+            { channel: 'Security', data_component_name: 'Security' },
+          ],
         };
         expect(() => logSourceSchema.parse(invalidObject)).toThrow();
       });
@@ -133,7 +152,15 @@ describe('logSourceSchema', () => {
       it('should reject permutations missing channel', () => {
         const invalidObject = {
           ...minimalLogSource,
-          x_mitre_log_source_permutations: [{ name: 'Security' }],
+          x_mitre_log_source_permutations: [{ name: 'Security', data_component_name: 'Security' }],
+        };
+        expect(() => logSourceSchema.parse(invalidObject)).toThrow();
+      });
+
+      it('should reject permutations missing data component name', () => {
+        const invalidObject = {
+          ...minimalLogSource,
+          x_mitre_log_source_permutations: [{ name: 'Security', channel: 'Security' }],
         };
         expect(() => logSourceSchema.parse(invalidObject)).toThrow();
       });
@@ -211,10 +238,12 @@ describe('logSourceSchema', () => {
           {
             name: 'Security',
             channel: 'Security',
+            data_component_name: 'Security',
           },
           {
             name: 'Security',
             channel: 'Security',
+            data_component_name: 'Security',
           },
         ],
       };
@@ -230,10 +259,12 @@ describe('logSourceSchema', () => {
           {
             name: 'Security',
             channel: 'Security',
+            data_component_name: 'Security',
           },
           {
             name: 'Security',
             channel: 'Application',
+            data_component_name: 'Security',
           },
         ],
       };
@@ -247,17 +278,19 @@ describe('logSourceSchema', () => {
           {
             name: 'Security',
             channel: 'EventLog',
+            data_component_name: 'Security',
           },
           {
             name: 'Application',
             channel: 'EventLog',
+            data_component_name: 'Security',
           },
         ],
       };
       expect(() => logSourceSchema.parse(logSourceWithSameChannel)).not.toThrow();
     });
 
-    it('should handle very long permutation names and channels', () => {
+    it('should handle very long permutation names, channels, and data component names', () => {
       const longString = 'A'.repeat(1000);
       const logSourceWithLongStrings: LogSource = {
         ...minimalLogSource,
@@ -265,6 +298,7 @@ describe('logSourceSchema', () => {
           {
             name: longString,
             channel: longString,
+            data_component_name: longString,
           },
         ],
       };
@@ -278,6 +312,7 @@ describe('logSourceSchema', () => {
           {
             name: 'Security/Application-Logs_2024',
             channel: 'Microsoft-Windows-Security-Auditing/Operational',
+            data_component_name: 'Security',
           },
         ],
       };
