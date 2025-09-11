@@ -9,7 +9,6 @@ import {
   type DetectionStrategy,
   type Group,
   type Identity,
-  type LogSource,
   type Malware,
   type MarkingDefinition,
   type Matrix,
@@ -36,7 +35,10 @@ const minimalSdo = {
   x_mitre_modified_by_ref: 'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5',
 };
 
-const minimalAsset = {
+type MinimalSdoKeys = keyof typeof minimalSdo;
+
+type MinimalAsset = Omit<Asset, MinimalSdoKeys>;
+const minimalAsset: MinimalAsset = {
   id: 'x-mitre-asset--1a2b3c4d-5e6f-789a-bcde-123456789abc',
   type: 'x-mitre-asset',
   name: 'Test Asset',
@@ -49,7 +51,8 @@ const minimalAsset = {
   ],
 };
 
-const minimalAnalytic = {
+type MinimalAnalytic = Omit<Analytic, MinimalSdoKeys>;
+const minimalAnalytic: MinimalAnalytic = {
   type: 'x-mitre-analytic',
   id: 'x-mitre-analytic--1a2b3c4d-5e6f-789a-bcde-123456789abc',
   name: 'Suspicious PowerShell Activity',
@@ -65,8 +68,14 @@ const minimalAnalytic = {
   description: 'Adversary execution of PowerShell commands with suspicious parameters',
   x_mitre_log_source_references: [
     {
-      x_mitre_log_source_ref: 'x-mitre-log-source--1a2b3c4d-5e6f-789a-bcde-123456789abc',
-      permutation_names: ['PowerShell'],
+      x_mitre_data_component_ref: 'x-mitre-data-component--1a2b3c4d-5e6f-789a-bcde-123456789abc',
+      name: 'PowerShell',
+      channel: '1',
+    },
+    {
+      x_mitre_data_component_ref: 'x-mitre-data-component--1a2b3c4d-5e6f-789a-bcde-123456789abc',
+      name: 'PowerShell',
+      channel: '2',
     },
   ],
   x_mitre_mutable_elements: [
@@ -77,7 +86,8 @@ const minimalAnalytic = {
   ],
 };
 
-const minimalCampaign = {
+type MinimalCampaign = Omit<Campaign, MinimalSdoKeys>;
+const minimalCampaign: MinimalCampaign = {
   type: 'campaign',
   id: 'campaign--1a2b3c4d-5e6f-789a-bcde-123456789abc',
   name: 'Operation Dream Job',
@@ -111,7 +121,8 @@ const minimalCampaign = {
   x_mitre_last_seen_citation: '(Citation: ClearSky Lazarus Aug 2020)',
 };
 
-const minimalCollection = {
+type MinimalCollection = Omit<Collection, MinimalSdoKeys>;
+const minimalCollection: MinimalCollection = {
   type: 'x-mitre-collection',
   id: 'x-mitre-collection--1a2b3c4d-5e6f-789a-bcde-123456789abc',
   name: 'Enterprise ATT&CK',
@@ -124,16 +135,28 @@ const minimalCollection = {
   ],
 };
 
-const minimalDataComponent = {
+type MinimalDataComponent = Omit<DataComponent, MinimalSdoKeys>;
+const minimalDataComponent: MinimalDataComponent = {
   type: 'x-mitre-data-component',
   id: 'x-mitre-data-component--1a2b3c4d-5e6f-789a-bcde-123456789abc',
   description: 'A user requested active directory credentials, such as a ticket or token.',
   name: 'Network Connection Creation',
   x_mitre_data_source_ref: 'x-mitre-data-source--c000cd5c-bbb3-4606-af6f-6c6d9de0bbe3',
   x_mitre_domains: ['enterprise-attack'],
+  x_mitre_log_sources: [
+    {
+      name: 'WinEventLog:Security',
+      channel: 'EventCode=4769',
+    },
+    {
+      name: 'WinEventLog:Security',
+      channel: 'EventCode=4768',
+    },
+  ],
 };
 
-const minimalDataSource = {
+type MinimalDataSource = Omit<DataSource, MinimalSdoKeys>;
+const minimalDataSource: MinimalDataSource = {
   type: 'x-mitre-data-source',
   id: 'x-mitre-data-source--1a2b3c4d-5e6f-789a-bcde-123456789abc',
   description: 'Test log source description',
@@ -141,7 +164,7 @@ const minimalDataSource = {
   external_references: [
     {
       source_name: 'mitre-attack',
-      url: 'https://attack.mitre.org/datasources/DS0014', // TODO change this after website updates to use logsources
+      url: 'https://attack.mitre.org/datasources/DS0014',
       external_id: 'DS0014',
     },
   ],
@@ -149,7 +172,8 @@ const minimalDataSource = {
   x_mitre_collection_layers: ['Host'],
 };
 
-const minimalDetectionStrategy = {
+type MinimalDetectionStrategy = Omit<DetectionStrategy, MinimalSdoKeys>;
+const minimalDetectionStrategy: MinimalDetectionStrategy = {
   type: 'x-mitre-detection-strategy',
   id: 'x-mitre-detection-strategy--1a2b3c4d-5e6f-789a-bcde-123456789abc',
   name: 'PowerShell Command Line Detection',
@@ -165,7 +189,8 @@ const minimalDetectionStrategy = {
   x_mitre_analytic_refs: ['x-mitre-analytic--1a2b3c4d-5e6f-789a-bcde-123456789abc'],
 };
 
-const minimalGroup = {
+type MinimalGroup = Omit<Group, MinimalSdoKeys>;
+const minimalGroup: MinimalGroup = {
   id: 'intrusion-set--1a2b3c4d-5e6f-789a-bcde-123456789abc',
   type: 'intrusion-set',
   name: 'Test Name',
@@ -197,32 +222,8 @@ const minimalIdentity = {
   x_mitre_attack_spec_version: '3.2.0',
 };
 
-const minimalLogSource = {
-  type: 'x-mitre-log-source',
-  id: 'x-mitre-log-source--1a2b3c4d-5e6f-789a-bcde-123456789abc',
-  name: 'Process Creation',
-  object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
-  external_references: [
-    {
-      source_name: 'mitre-attack',
-      url: 'https://attack.mitre.org/logsources/LS0001',
-      external_id: 'LS0001',
-    },
-  ],
-  x_mitre_domains: ['enterprise-attack'],
-  x_mitre_log_source_permutations: [
-    {
-      name: 'wineventlog:security',
-      channel: 'EventCode=4688',
-    },
-    {
-      name: 'sysmon',
-      channel: 'EventCode=1',
-    },
-  ],
-};
-
-const minimalMalware = {
+type MinimalMalware = Omit<Malware, MinimalSdoKeys>;
+const minimalMalware: MinimalMalware = {
   type: 'malware',
   id: 'malware--1a2b3c4d-5e6f-789a-bcde-123456789abc',
   name: 'HAMMERTOSS',
@@ -252,7 +253,8 @@ const minimalMarkingDefinition = {
   spec_version: '2.1',
 };
 
-const minimalMatrix = {
+type MinimalMatrix = Omit<Matrix, MinimalSdoKeys>;
+const minimalMatrix: MinimalMatrix = {
   id: 'x-mitre-matrix--1a2b3c4d-5e6f-789a-bcde-123456789abc',
   type: 'x-mitre-matrix',
   name: 'Test Matrix',
@@ -269,7 +271,8 @@ const minimalMatrix = {
   tactic_refs: ['x-mitre-tactic--69da72d2-f550-41c5-ab9e-e8255707f28a'],
 };
 
-const minimalMitigation = {
+type MinimalMitigation = Omit<Mitigation, MinimalSdoKeys>;
+const minimalMitigation: MinimalMitigation = {
   id: 'course-of-action--1a2b3c4d-5e6f-789a-bcde-123456789abc',
   type: 'course-of-action',
   name: 'Test Mitigation',
@@ -298,7 +301,8 @@ const minimalRelationship = {
   x_mitre_modified_by_ref: 'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5',
 };
 
-const minimalTactic = {
+type MinimalTactic = Omit<Tactic, MinimalSdoKeys>;
+const minimalTactic: MinimalTactic = {
   type: 'x-mitre-tactic',
   id: 'x-mitre-tactic--1a2b3c4d-5e6f-789a-bcde-123456789abc',
   name: 'Execution',
@@ -314,7 +318,8 @@ const minimalTactic = {
   x_mitre_domains: ['enterprise-attack'],
 };
 
-const minimalTool = {
+type MinimalTool = Omit<Tool, MinimalSdoKeys>;
+const minimalTool: MinimalTool = {
   id: 'tool--1a2b3c4d-5e6f-789a-bcde-123456789abc',
   type: 'tool',
   name: 'Sliver',
@@ -336,7 +341,8 @@ const minimalTool = {
   x_mitre_domains: ['enterprise-attack'],
 };
 
-const minimalTechnique = {
+type MinimalTechnique = Omit<Technique, MinimalSdoKeys>;
+const minimalTechnique: MinimalTechnique = {
   id: 'attack-pattern--1a2b3c4d-5e6f-789a-bcde-123456789abc',
   type: 'attack-pattern',
   name: 'Test Technique',
@@ -396,8 +402,6 @@ export function createSyntheticStixObject(
       return minimalMarkingDefinition as MarkingDefinition;
     case 'relationship':
       return minimalRelationship as Relationship;
-    case 'x-mitre-log-source':
-      return { ...minimalSdo, ...minimalLogSource } as LogSource;
     case 'x-mitre-detection-strategy':
       return { ...minimalSdo, ...minimalDetectionStrategy } as DetectionStrategy;
     case 'x-mitre-analytic':
