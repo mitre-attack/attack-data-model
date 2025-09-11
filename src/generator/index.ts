@@ -200,7 +200,7 @@ const minimalIdentity = {
 const minimalLogSource = {
   type: 'x-mitre-log-source',
   id: 'x-mitre-log-source--1a2b3c4d-5e6f-789a-bcde-123456789abc',
-  name: 'Windows Security Event Log',
+  name: 'Process Creation',
   object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
   external_references: [
     {
@@ -212,9 +212,12 @@ const minimalLogSource = {
   x_mitre_domains: ['enterprise-attack'],
   x_mitre_log_source_permutations: [
     {
-      name: 'Security',
-      channel: 'Security',
-      data_component_name: 'Security',
+      name: 'wineventlog:security',
+      channel: 'EventCode=4688',
+    },
+    {
+      name: 'sysmon',
+      channel: 'EventCode=1',
     },
   ],
 };

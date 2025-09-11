@@ -445,7 +445,10 @@ The `log_source_permutation` object defines platform-specific collection configu
 | --------- | ------ | -------------------------------------------------------------------- |
 | `name`    | string | Log source identifier (e.g., "sysmon", "auditd")                     |
 | `channel` | string | Specific log channel or event type (e.g., "1" for Sysmon Process Creation) |
-| `data_component_name` | string | Name of the specific data component. |
+
+**Uniqueness constraints:**
+- Each `(name, channel)` tuple must be unique within a log source's permutations array
+- The parent log source's `name` field indicates the associated data component
 
 **Example:** A single log source for 'Process Creation' might contain permutations for:
 - Windows: (name: "sysmon", channel: "1")

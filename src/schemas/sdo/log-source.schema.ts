@@ -1,11 +1,11 @@
 import { z } from 'zod/v4';
 import {
-  xMitreDomainsSchema,
-  xMitreModifiedByRefSchema,
   attackBaseDomainObjectSchema,
   createAttackExternalReferencesSchema,
   createStixIdValidator,
   createStixTypeValidator,
+  xMitreDomainsSchema,
+  xMitreModifiedByRefSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -17,11 +17,12 @@ import {
 
 export const xMitreLogSourcePermutationsSchema = z
   .array(
-    z.object({
-      name: z.string().nonempty(),
-      channel: z.string().nonempty(),
-      data_component_name: z.string().nonempty(),
-    }),
+    z
+      .object({
+        name: z.string().nonempty(),
+        channel: z.string().nonempty(),
+      })
+      .strict(),
   )
   .nonempty()
   .refine(

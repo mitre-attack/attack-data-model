@@ -30,12 +30,10 @@ const validLogSource = {
 		{
 			"name": "sysmon",
 			"channel": "EventCode=10",
-			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "auditd:SYSCALL",
 			"channel": "ptrace",
-			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -86,17 +84,14 @@ const validLogSourceMultiplePermutations = {
 		{
 			"name": "Security",
 			"channel": "Security",
-			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "System",
 			"channel": "System",
-			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "Application",
 			"channel": "Application",
-			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -196,12 +191,10 @@ const invalidLogSourceDuplicatePermutations = {
 		{
 			"name": "Security",
 			"channel": "Security",
-			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "Security",
 			"channel": "Security",
-			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -235,17 +228,14 @@ const validLogSourceSameNameDifferentChannels = {
 		{
 			"name": "Sysmon",
 			"channel": "EventCode=1",
-			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "Sysmon",
 			"channel": "EventCode=3",
-			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "Sysmon",
 			"channel": "EventCode=10",
-			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -262,7 +252,6 @@ const invalidLogSourceEmptyPermutationName = {
 		{
 			"name": "",
 			"channel": "Security",
-			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -287,7 +276,6 @@ const invalidLogSourceEmptyPermutationChannel = {
 		{
 			"name": "Security",
 			"channel": "",
-			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -332,12 +320,10 @@ const validMobileLogSource = {
 		{
 			"name": "logcat",
 			"channel": "system",
-			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "logcat",
 			"channel": "main",
-			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -374,17 +360,14 @@ const validMultiDomainLogSource = {
 		{
 			"name": "pcap",
 			"channel": "network",
-			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "netflow",
 			"channel": "flow",
-			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "firewall",
 			"channel": "traffic",
-			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -442,12 +425,10 @@ const validLogSourceSpecialChars = {
 		{
 			"name": "Security/Application-Logs_2024",
 			"channel": "Microsoft-Windows-Security-Auditing/Operational",
-			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "EventLog:Security",
 			"channel": "EventID=4624",
-			"data_component_name": "Process Creation"
 		}
 	]
 };
@@ -522,22 +503,18 @@ const validLogSourceComplexPermutations = {
 		{
 			"name": "sysmon:1",
 			"channel": "process_creation",
-			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "auditd:SYSCALL",
 			"channel": "execve",
-			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "powershell:4104",
 			"channel": "script_block",
-			"data_component_name": "Process Creation"
 		},
 		{
 			"name": "wmi:19",
 			"channel": "wmi_event",
-			"data_component_name": "Process Creation"
 		}
 	]
 };
