@@ -28,7 +28,6 @@ const supportedRelationshipTypes = [
   'attributed-to',
   'targets',
   'revoked-by',
-  'found-in',
 ] as const;
 
 export const relationshipTypeSchema = z
@@ -47,7 +46,6 @@ export const validRelationshipObjectTypes = [
   stixTypeSchema.enum['tool'],
   stixTypeSchema.enum['x-mitre-data-component'],
   stixTypeSchema.enum['x-mitre-asset'],
-  stixTypeSchema.enum['x-mitre-log-source'],
 ];
 
 type RelationshipMap = Record<RelationshipType, { source: StixType[]; target: StixType[] }>;
@@ -92,10 +90,6 @@ const relationshipMap: RelationshipMap = {
   'revoked-by': {
     source: validRelationshipObjectTypes,
     target: validRelationshipObjectTypes,
-  },
-  'found-in': {
-    source: [stixTypeSchema.enum['x-mitre-data-component']],
-    target: [stixTypeSchema.enum['x-mitre-log-source']],
   },
 } as const;
 

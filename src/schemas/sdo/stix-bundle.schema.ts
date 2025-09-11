@@ -5,7 +5,6 @@ import { type Malware, malwareSchema } from './malware.schema.js';
 import { type Asset, assetSchema } from './asset.schema.js';
 import { type Campaign, campaignSchema } from './campaign.schema.js';
 import { type DataComponent, dataComponentSchema } from './data-component.schema.js';
-import { type LogSource, logSourceSchema } from './log-source.schema.js';
 import { type DataSource, dataSourceSchema } from './data-source.schema.js';
 import { type Identity, identitySchema } from './identity.schema.js';
 import { type Matrix, matrixSchema } from './matrix.schema.js';
@@ -31,7 +30,7 @@ export type AttackObject =
   | Campaign
   | Collection
   | DataComponent
-  | (DataSource | LogSource)
+  | DataSource
   | Identity
   | Matrix
   | Tool
@@ -66,9 +65,6 @@ const schemaMap = {
   },
   get 'x-mitre-detection-strategy'() {
     return detectionStrategySchema;
-  },
-  get 'x-mitre-log-source'() {
-    return logSourceSchema;
   },
   get 'x-mitre-analytic'() {
     return analyticSchema;
