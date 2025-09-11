@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { createSyntheticStixObject } from '../../src/generator';
 import {
-    type DataComponent,
-    dataComponentSchema,
+  type DataComponent,
+  dataComponentSchema,
 } from '../../src/schemas/sdo/data-component.schema';
 
 describe('dataComponentSchema', () => {
@@ -65,8 +65,61 @@ describe('dataComponentSchema', () => {
       testField('x_mitre_modified_by_ref', 'invalid-modified-by-ref');
     });
 
-    describe('x_mitre_data_source_ref', () => {
-      testField('x_mitre_data_source_ref', 'invalid-data-source-ref');
+    describe('x_mitre_log_sources', () => {
+      it('should reject empty array', () => {
+        const invalidObject = { ...minimalDataComponent, x_mitre_log_sources: [] };
+        expect(() => dataComponentSchema.parse(invalidObject)).toThrow();
+      });
+
+      it('should reject log sources with empty name', () => {
+        const invalidObject = {
+          ...minimalDataComponent,
+          x_mitre_log_sources: [{ name: '', channel: 'Security' }],
+        };
+        expect(() => dataComponentSchema.parse(invalidObject)).toThrow();
+      });
+
+      it('should reject log sources with empty channel', () => {
+        const invalidObject = {
+          ...minimalDataComponent,
+          x_mitre_log_sources: [{ name: 'Security', channel: '' }],
+        };
+        expect(() => dataComponentSchema.parse(invalidObject)).toThrow();
+      });
+
+      it('should reject log sources with erroneous keys', () => {
+        const invalidObject = {
+          ...minimalDataComponent,
+          x_mitre_log_sources: [
+            { name: 'Security', channel: 'Security', foobar: '' }, // foobar not allowed
+          ],
+        };
+        expect(() => dataComponentSchema.parse(invalidObject)).toThrow();
+      });
+
+      it('should reject log sources missing name', () => {
+        const invalidObject = {
+          ...minimalDataComponent,
+          x_mitre_log_sources: [{ channel: 'Security' }],
+        };
+        expect(() => dataComponentSchema.parse(invalidObject)).toThrow();
+      });
+
+      it('should reject log sources missing channel', () => {
+        const invalidObject = {
+          ...minimalDataComponent,
+          x_mitre_log_sources: [{ name: 'Security' }],
+        };
+        expect(() => dataComponentSchema.parse(invalidObject)).toThrow();
+      });
+
+      it('should reject non-array value', () => {
+        const invalidObject = {
+          ...minimalDataComponent,
+          x_mitre_log_sources: 'not-an-array',
+        };
+        expect(() => dataComponentSchema.parse(invalidObject)).toThrow();
+      });
     });
 
     // Optional Fields Testing
@@ -82,6 +135,96 @@ describe('dataComponentSchema', () => {
         unknown_property: true,
       } as DataComponent;
       expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
+    });
+
+    it('should enforce strict mode', () => {
+      const invalidDataComponent = {
+        ...minimalDataComponent,
+        foo: 'bar', // Not a valid field
+      };
+      expect(() => dataComponentSchema.parse(invalidDataComponent)).toThrow();
+    });
+  });
+
+  describe('Edge Cases and Special Scenarios', () => {
+    it('should reject log sources with identical (name, channel) pairs', () => {
+      const dataComponentWithIdenticalLogSources: DataComponent = {
+        ...minimalDataComponent,
+        x_mitre_log_sources: [
+          {
+            name: 'Security',
+            channel: 'Security',
+          },
+          {
+            name: 'Security',
+            channel: 'Security',
+          },
+        ],
+      };
+      expect(() => dataComponentSchema.parse(dataComponentWithIdenticalLogSources)).toThrow(
+        /Duplicate log source found/,
+      );
+    });
+
+    it('should allow log sources with same name but different channel', () => {
+      const dataComponentWithLogSourceWithSameName: DataComponent = {
+        ...minimalDataComponent,
+        x_mitre_log_sources: [
+          {
+            name: 'Security',
+            channel: 'Security',
+          },
+          {
+            name: 'Security',
+            channel: 'Application',
+          },
+        ],
+      };
+      expect(() => dataComponentSchema.parse(dataComponentWithLogSourceWithSameName)).not.toThrow();
+    });
+
+    it('should allow log sources with same channel but different name', () => {
+      const dataComponentWithLogSourcesWithSameChannel: DataComponent = {
+        ...minimalDataComponent,
+        x_mitre_log_sources: [
+          {
+            name: 'Security',
+            channel: 'EventLog',
+          },
+          {
+            name: 'Application',
+            channel: 'EventLog',
+          },
+        ],
+      };
+      expect(() => dataComponentSchema.parse(dataComponentWithLogSourcesWithSameChannel)).not.toThrow();
+    });
+
+    it('should handle very long log source names and channels', () => {
+      const longString = 'A'.repeat(1000);
+      const logSourceWithLongStrings: DataComponent = {
+        ...minimalDataComponent,
+        x_mitre_log_sources: [
+          {
+            name: longString,
+            channel: longString,
+          },
+        ],
+      };
+      expect(() => dataComponentSchema.parse(logSourceWithLongStrings)).not.toThrow();
+    });
+
+    it('should handle special characters in log source fields', () => {
+      const logSourceWithSpecialChars: DataComponent = {
+        ...minimalDataComponent,
+        x_mitre_log_sources: [
+          {
+            name: 'Security/Application-Logs_2024',
+            channel: 'Microsoft-Windows-Security-Auditing/Operational',
+          },
+        ],
+      };
+      expect(() => dataComponentSchema.parse(logSourceWithSpecialChars)).not.toThrow();
     });
   });
 });
