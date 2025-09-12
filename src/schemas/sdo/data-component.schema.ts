@@ -97,7 +97,8 @@ export const extensibleDataComponentSchema = attackBaseDomainObjectSchema
      */
     x_mitre_data_source_ref: xMitreDataSourceRefSchema.optional(),
 
-    x_mitre_log_sources: xMitreLogSourcesSchema,
+    // TODO change to required in spec release 4.x
+    x_mitre_log_sources: xMitreLogSourcesSchema.optional(),
   })
   .strict();
 
