@@ -1,3 +1,4 @@
+import { createFoundInRelationshipRefinement } from '@/refinements/index.js';
 import { z } from 'zod/v4';
 import {
   attackBaseRelationshipObjectSchema,
@@ -5,12 +6,11 @@ import {
   createStixTypeValidator,
   descriptionSchema,
   stixIdentifierSchema,
-  type StixIdentifier,
-  type StixType,
   stixTypeSchema,
   xMitreModifiedByRefSchema,
+  type StixIdentifier,
+  type StixType,
 } from '../common/index.js';
-import { createFoundInRelationshipRefinement } from '@/refinements/index.js';
 
 /////////////////////////////////////
 //
@@ -74,7 +74,8 @@ const relationshipMap: RelationshipMap = {
   },
   detects: {
     source: [
-      stixTypeSchema.enum['x-mitre-data-component'], // TODO remove in attack spec 4.0.0 / adm release 5.x
+      // TODO remove DC --<detects>--> Technique in spec release 4.x
+      stixTypeSchema.enum['x-mitre-data-component'],
       stixTypeSchema.enum['x-mitre-detection-strategy'],
     ],
     target: [stixTypeSchema.enum['attack-pattern']],
@@ -294,14 +295,26 @@ export const extensibleRelationshipSchema = attackBaseRelationshipObjectSchema
     target_ref: stixIdentifierSchema.meta({ description: 'The ID of the target (to) object.' }),
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
-
-    x_mitre_log_source_channel: z.string().nonempty().optional(),
   })
   .omit({
     name: true,
     x_mitre_version: true,
   })
-  .strict();
+  .strict()
+  .transform((data) => {
+    // Check for deprecated pattern
+    const [sourceType] = data.source_ref.split('--') as [StixType];
+    if (
+      sourceType === 'x-mitre-data-component' &&
+      data.relationship_type === 'detects' &&
+      data.target_ref.startsWith('attack-pattern--')
+    ) {
+      console.warn(
+        'DEPRECATION WARNING: x-mitre-data-component -> detects -> attack-pattern relationships are deprecated',
+      );
+    }
+    return data;
+  });
 
 export const relationshipSchema = extensibleRelationshipSchema.check((ctx) => {
   createRelationshipValidationRefinement()(ctx);
