@@ -103,7 +103,6 @@ const sidebars: SidebarsConfig = {
         'principles/why-zod',
         'principles/stix-foundation',
         'principles/attack-specification-overview',
-        'principles/object-design-rationale',
         'principles/versioning-philosophy',
         'principles/schema-design',
         'principles/compatibility',
