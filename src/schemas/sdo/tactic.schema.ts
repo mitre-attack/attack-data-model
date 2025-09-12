@@ -1,13 +1,13 @@
 import { z } from 'zod/v4';
 import {
   attackBaseDomainObjectSchema,
+  createAttackExternalReferencesSchema,
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
-  xMitreModifiedByRefSchema,
-  xMitreDomainsSchema,
   xMitreContributorsSchema,
-  createAttackExternalReferencesSchema,
+  xMitreDomainsSchema,
+  xMitreModifiedByRefSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -72,7 +72,7 @@ export type XMitreShortName = z.infer<typeof xMitreShortNameSchema>;
 //
 /////////////////////////////////////
 
-export const extensibleTacticSchema = attackBaseDomainObjectSchema
+export const tacticSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-tactic'),
 
@@ -91,13 +91,14 @@ export const extensibleTacticSchema = attackBaseDomainObjectSchema
 
     x_mitre_contributors: xMitreContributorsSchema.optional(),
   })
+  .meta({
+    description:
+      "Tactics represent the adversary's tactical goals during an attack and are defined by `x-mitre-tactic` objects. As custom STIX types, they extend the generic STIX Domain Object pattern.",
+  })
   .required({
     created_by_ref: true, // Optional in STIX but required in ATT&CK
     object_marking_refs: true, // Optional in STIX but required in ATT&CK
   })
   .strict();
 
-// Alias unless/until tactics require at least one refinement
-export const tacticSchema = extensibleTacticSchema;
-
-export type Tactic = z.infer<typeof extensibleTacticSchema>;
+export type Tactic = z.infer<typeof tacticSchema>;

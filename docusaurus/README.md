@@ -25,7 +25,7 @@ $ npm install
 The `generate-docs.sh` script is used to automate the process of converting Zod schemas into Markdown.
 
 ```bash
-$ npm run autodocs
+$ npm run gendocs
 ```
 
 ## Local Development

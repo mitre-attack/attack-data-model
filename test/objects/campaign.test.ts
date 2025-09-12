@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createSyntheticStixObject } from '../../src/generator';
-import type {
-    StixTimestamp
-} from '../../src/schemas/common/index';
+import type { StixTimestamp } from '../../src/schemas/common/index';
 import { type Campaign, campaignSchema } from '../../src/schemas/sdo/campaign.schema';
 
 /**

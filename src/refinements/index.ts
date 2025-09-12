@@ -64,7 +64,7 @@ export function createFirstAliasRefinement() {
  * @example
  * ```typescript
  * const validateFirstXMitreAlias = createFirstXMitreAliasRefinement();
- * const schema = extensibleSchema.superRefine(validateFirstXMitreAlias);
+ * const schema = baseSchema.superRefine(validateFirstXMitreAlias);
  * ```
  */
 export function createFirstXMitreAliasRefinement() {
@@ -168,7 +168,7 @@ export function createCitationsRefinement() {
  * @example
  * ```typescript
  * const validateFirstBundleObject = createFirstBundleObjectRefinement();
- * const schema = extensibleStixBundleSchema.superRefine(validateFirstBundleObject);
+ * const schema = stixBundleSchema.superRefine(validateFirstBundleObject);
  * ```
  */
 export function createFirstBundleObjectRefinement() {

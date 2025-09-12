@@ -279,7 +279,7 @@ export function createRelationshipValidationRefinement() {
 //
 /////////////////////////////////////
 
-export const extensibleRelationshipSchema = attackBaseRelationshipObjectSchema
+export const relationshipSchema = attackBaseRelationshipObjectSchema
   .extend({
     id: createStixIdValidator('relationship'),
 
@@ -300,6 +300,9 @@ export const extensibleRelationshipSchema = attackBaseRelationshipObjectSchema
     x_mitre_version: true,
   })
   .strict()
+  .check((ctx) => {
+    createRelationshipValidationRefinement()(ctx);
+  })
   .transform((data) => {
     // Check for deprecated pattern
     const [sourceType] = data.source_ref.split('--') as [StixType];
@@ -315,8 +318,4 @@ export const extensibleRelationshipSchema = attackBaseRelationshipObjectSchema
     return data;
   });
 
-export const relationshipSchema = extensibleRelationshipSchema.check((ctx) => {
-  createRelationshipValidationRefinement()(ctx);
-});
-
-export type Relationship = z.infer<typeof extensibleRelationshipSchema>;
+export type Relationship = z.infer<typeof relationshipSchema>;

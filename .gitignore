@@ -1,3 +1,6 @@
+# auto-generated schema documentation
+docusaurus/docs/reference/schemas/
+
 # TypeScript artifacts
 *.d.ts
 *.ts.map

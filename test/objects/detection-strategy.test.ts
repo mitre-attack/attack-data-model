@@ -1,10 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { describe, expect, it } from 'vitest';
 import { createSyntheticStixObject } from '../../src/generator';
+import { type ExternalReferences } from '../../src/schemas/common/index';
 import {
-    type ExternalReferences
-} from '../../src/schemas/common/index';
-import { type DetectionStrategy, detectionStrategySchema } from '../../src/schemas/sdo/detection-strategy.schema';
+  type DetectionStrategy,
+  detectionStrategySchema,
+} from '../../src/schemas/sdo/detection-strategy.schema';
 
 describe('detectionStrategySchema', () => {
   const minimalDetectionStrategy = createSyntheticStixObject('x-mitre-detection-strategy');
@@ -44,7 +45,11 @@ describe('detectionStrategySchema', () => {
   });
 
   describe('Field-Specific Tests', () => {
-    const testField = (fieldName: keyof DetectionStrategy, invalidValue: any, isRequired = true) => {
+    const testField = (
+      fieldName: keyof DetectionStrategy,
+      invalidValue: any,
+      isRequired = true,
+    ) => {
       it(`should reject invalid values for ${fieldName}`, () => {
         const invalidObject = { ...minimalDetectionStrategy, [fieldName]: invalidValue };
         expect(() => detectionStrategySchema.parse(invalidObject)).toThrow();

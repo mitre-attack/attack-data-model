@@ -1,10 +1,10 @@
 > [!IMPORTANT]
 > **Documentation Notice**
-> 
+>
 > This document is **not the source of truth** for the ATT&CK specification. The authoritative source is the **ATT&CK Data Model (ADM) TypeScript library**.
-> 
-> 📖 **Browse ATT&CK schemas:** https://mitre-attack.github.io/attack-data-model/
-> 
+>
+> 📖 **Browse ATT&CK schemas:** <https://mitre-attack.github.io/attack-data-model/>
+>
 > While maintained to the best of our ability, this documentation may drift from the ADM library. If you find discrepancies, please [open a GitHub Issue](https://github.com/mitre-attack/attack-data-model/issues).
 
 # The ATT&CK Specification
@@ -60,8 +60,7 @@ There are three general ways that ATT&CK extends the STIX 2.1 specification:
 | `x_mitre_domains`                         | string[] | Identifies the domains the object is found in. See [domains](#domains) for more information.<br>Not found on objects of type `relationship`, `identity`, or `marking-definition`.                                                                                                                                                                           |
 | `x_mitre_attack_spec_version`<sup>1</sup> | string   | The version of the ATT&CK specification used by the object. Consuming software can use this field to determine if the data format is supported. Current version is 3.3.0. |
 
-
-- New relationship types. Unlike custom object types and extended fields, custom relationship types are **not** prefixed with `x_mitre_`. You can find a full list of relationship types in the [Relationships](#Relationships) section, which also mentions whether the type is a default STIX type.
+- New relationship types. Unlike custom object types and extended fields, custom relationship types are **not** prefixed with `x_mitre_`. You can find a full list of relationship types in the [Relationships](#relationships) section, which also mentions whether the type is a default STIX type.
 
 Please see also the STIX documentation on [customizing STIX](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part1-stix-core/stix-v2.0-csprd01-part1-stix-core.html#_Toc476227365).
 
@@ -93,7 +92,7 @@ The `x_mitre_domains` (string array) field identifies the "domain" to which the 
 | `mobile-attack`     | Mobile         |
 | `ics-attack`        | ATT&CK for ICS |
 
-Most objects in ATT&CK belong in a single technology domain, but an object _may_ be included in multiple domains. 
+Most objects in ATT&CK belong in a single technology domain, but an object _may_ be included in multiple domains.
 
 `x_mitre_domains` is supported on all ATT&CK object types except the following:
 
@@ -127,6 +126,7 @@ ATT&CK IDs are human-readable identifiers commonly used for referencing objects 
 | [Log Source](#log-sources)                | `LSxxxx`                                |
 
 **Important limitations:**
+
 - ATT&CK IDs are not guaranteed to be unique (see [Collisions with Technique ATT&CK IDs](#collisions-with-technique-attck-ids))
 - Matrices within the same domain share identical ATT&CK IDs
 - Relationship objects do not have ATT&CK IDs
@@ -213,6 +213,7 @@ Sub-techniques are specialized implementations of parent techniques, providing m
 Procedures describe specific instances of technique implementation by adversaries. Unlike other ATT&CK concepts, procedures are not represented by dedicated STIX objects. Instead, they are modeled as `uses` relationships where the `target_ref` points to a technique (`attack-pattern`).
 
 **Procedure relationships:**
+
 - **Source objects:** Groups (`intrusion-set`) or software (`malware`/`tool`)
 - **Target objects:** Techniques (`attack-pattern`)
 - **Content:** Procedure details are captured in the relationship's `description` field
@@ -250,6 +251,7 @@ Software represents tools and malicious code used by adversaries to accomplish t
 Data sources and data components define the telemetry and observational data that security teams can use to detect adversary techniques. This hierarchical model provides granular mapping between detection capabilities and techniques.
 
 **Structural relationships:**
+
 - Data components are nested within data sources but maintain separate STIX objects
 - Each data component has exactly one parent data source
 - Data sources can contain multiple data components
@@ -364,6 +366,7 @@ Detection strategies define high-level approaches for detecting specific adversa
 | `x_mitre_analytic_refs`     | string[] | Array of STIX IDs referencing `x-mitre-analytic` objects that implement this detection strategy.         |
 
 **Key characteristics:**
+
 - Each detection strategy has a one-to-one relationship with a specific ATT&CK technique
 - Detection strategies typically reference 1-3 analytics (one for each supported platform)
 - Uses soft relationships (STIX ID references) to analytics for flexibility

@@ -1,15 +1,15 @@
 import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
+import {
+  createAttackExternalReferencesSchema,
+  descriptionSchema,
+  xMitreContributorsSchema,
+  xMitreDomainsSchema,
+  xMitreModifiedByRefSchema,
+  xMitrePlatformsSchema,
+} from '../common/index.js';
 import { createStixIdValidator } from '../common/stix-identifier.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
-import {
-  xMitrePlatformsSchema,
-  xMitreDomainsSchema,
-  descriptionSchema,
-  xMitreModifiedByRefSchema,
-  xMitreContributorsSchema,
-  createAttackExternalReferencesSchema,
-} from '../common/index.js';
 
 /////////////////////////////////////
 //
@@ -45,7 +45,7 @@ export type XMitreCollectionLayers = z.infer<typeof xMitreCollectionLayersSchema
 //
 /////////////////////////////////////
 
-export const extensibleDataSourceSchema = attackBaseDomainObjectSchema
+export const dataSourceSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-data-source'),
 
@@ -72,8 +72,4 @@ export const extensibleDataSourceSchema = attackBaseDomainObjectSchema
   })
   .strict();
 
-// No refinements currently exist on data sources, so just export an alias
-export const dataSourceSchema = extensibleDataSourceSchema;
-
-// Define the type for DataSource
-export type DataSource = z.infer<typeof extensibleDataSourceSchema>;
+export type DataSource = z.infer<typeof dataSourceSchema>;

@@ -13,13 +13,12 @@ function HomepageHeader() {
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
         <Heading as="h1" className="hero__title">
-          {siteConfig.title}
-          <p>Documentation</p>
+          <p>MITRE ATT&CK<sup>®</sup> Data Model</p>
         </Heading>
         <p className="hero__subtitle"></p>
         <div className={styles.buttons}>
-          <Link className="button button--secondary button--lg" to="/docs/overview">
-            Browse ATT&CK Schemas
+          <Link className="button button--secondary button--lg" to="/docs">
+            Get Started
           </Link>
         </div>
       </div>
