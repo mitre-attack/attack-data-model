@@ -1,18 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 
 import type { Technique } from '../../schemas/sdo/technique.schema.js';
-import { TacticImpl } from './tactic.impl.js';
-import { MitigationImpl } from './mitigation.impl.js';
-import { LogSourceImpl } from './log-source.impl.js';
-import { AssetImpl } from './asset.impl.js';
 import { AttackBaseImpl } from '../common/attack-object.impl.js';
+import { AssetImpl } from './asset.impl.js';
 import { DataComponentImpl } from './data-component.impl.js';
+import { MitigationImpl } from './mitigation.impl.js';
+import { TacticImpl } from './tactic.impl.js';
 
 export class TechniqueImpl extends AttackBaseImpl {
   private _subTechniques: TechniqueImpl[] = [];
   private _tactics: TacticImpl[] = [];
   private _mitigations: MitigationImpl[] = [];
-  private _logSources: LogSourceImpl[] = [];
   private _parentTechnique?: TechniqueImpl;
   private _relatedTechniques: TechniqueImpl[] = [];
   private _targetAssets: AssetImpl[] = [];
@@ -40,10 +38,6 @@ export class TechniqueImpl extends AttackBaseImpl {
     this._mitigations.push(mitigation);
   }
 
-  addLogSource(logSource: LogSourceImpl): void {
-    this._logSources.push(logSource);
-  }
-
   addRelatedTechnique(technique: TechniqueImpl): void {
     this._relatedTechniques.push(technique);
   }
@@ -67,10 +61,6 @@ export class TechniqueImpl extends AttackBaseImpl {
 
   getMitigations(): MitigationImpl[] {
     return this._mitigations;
-  }
-
-  getLogSources(): LogSourceImpl[] {
-    return this._logSources;
   }
 
   getParentTechnique(): TechniqueImpl | undefined {

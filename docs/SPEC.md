@@ -30,7 +30,6 @@ ATT&CK uses a mix of predefined and custom STIX objects to implement ATT&CK conc
 | [Asset](#assets)                                                                                                                          | `x-mitre-asset`                                                                                                                                                                                                                                                               | yes          |
 | [Detection Strategy](#detection-strategies) <sup>3</sup>                                                                                  | `x-mitre-detection-strategy`                                                                                                                                                                                                                                                  | yes          |
 | [Analytic](#analytics) <sup>3</sup>                                                                                                       | `x-mitre-analytic`                                                                                                                                                                                                                                                            | yes          |
-| [Log Source](#log-sources) <sup>3</sup>                                                                                                   | `x-mitre-log-source`                                                                                                                                                                                                                                                          | yes          |
 
 <sup>1</sup> This type was added in the upgrade to STIX 2.1 and is not available in [the STIX 2.0 dataset](https://github.com/mitre/cti).
 
@@ -255,7 +254,7 @@ Data sources and data components define the telemetry and observational data tha
 - Each data component has exactly one parent data source
 - Data sources can contain multiple data components
 - Data components can map to multiple techniques via `detects` relationships (deprecated as of 3.3.0)
-- Data components can map to log sources via `found-in` relationships (new in 3.3.0)
+- Data components now contain embedded log source configurations in their `x_mitre_log_sources` field
 
 **Architecture overview:**
 
@@ -279,7 +278,10 @@ Data sources and data components define the telemetry and observational data tha
 
 **Legacy compatibility:** Prior to ATT&CK v10, data sources were stored in the `x_mitre_data_sources` field on techniques. This field remains available for backward compatibility and accurately reflects current data sources, but lacks the granularity of the component-based model. **The ICS domain continues to use only the legacy `x_mitre_data_sources` field.**
 
-#### Data Sources
+#### Data Sources (Deprecated)
+
+> [!WARNING]
+> **Deprecation Notice**: Data Sources (`x-mitre-data-source`) are deprecated as of ATT&CK Specification 3.3.0 and superseded by the Detection Strategy framework. They remain supported for backward compatibility but will be removed in ATT&CK Specification 4.0.0. Data Components remain supported and are integrated into the new Detection Strategy framework through Log Sources.
 
 Data sources represent categories of information that can be collected for detection purposes. They are defined as `x-mitre-data-source` objects extending the generic [STIX Domain Object pattern](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230920).
 
@@ -299,6 +301,25 @@ Data components represent specific types of information within a data source tha
 | Field                     | Type                           | Description                                             |
 | :------------------------ | :----------------------------- | ------------------------------------------------------- |
 | `x_mitre_data_source_ref` | embedded relationship (string) | STIX ID of the data source this component is a part of. |
+| `x_mitre_log_sources`     | `log_source[]`                 | Array of log source objects containing platform-specific collection configurations. |
+
+#### Log Source Subtype
+
+The `log_source` object defines platform-specific collection configurations embedded within data components:
+
+| Field     | Type   | Description                                                          |
+| --------- | ------ | -------------------------------------------------------------------- |
+| `name`    | string | Log source identifier (e.g., "sysmon", "auditd")                     |
+| `channel` | string | Specific log channel or event type (e.g., "1" for Sysmon Process Creation) |
+
+**Uniqueness constraints:**
+- Each `(name, channel)` tuple must be unique within a data component's `x_mitre_log_sources` array
+- Log sources are scoped to their containing data component
+
+**Example:** A data component for 'Process Creation' might contain log sources for:
+- Windows: (name: "sysmon", channel: "1")
+- Linux: (name: "auditd", channel: "SYSCALL")  
+- macOS: (name: "unified_logs", channel: "process")
 
 ### Campaigns
 
@@ -366,30 +387,55 @@ The following diagrams illustrate how Detection Strategies connect to other ATT&
                │ "Soft" relationship                       
                │ (STIX ID reference)                       
                │                                           
-┌──────────────▼────────────────┐                               
-│                               │                               
-│            <<SDO>>            │                               
-│           Analytic            │                               
-│                               │                               
-│┌─────────────────────────────┐│                               
-││x_mitre_log_source_references││                               
-│└─────────────┬───────────────┘│                               
-└──────────────┼────────────────┘                               
-               │                                           
-               │ "Soft" relationship                       
-               │ (array of objects:
-               │   {
-               │      x_mitre_log_source_ref: (Stix ID reference),
-               │      permutation_names: array
-               │   }
-               │ )                       
-               │                                           
-         ┌─────▼──────┐
-         │            │
-         │  <<SDO>>   │
-         │ Log Source │
-         │            │
-         └────────────┘
+┌──────────────▼─────────────────────────┐                               
+│                                        │                               
+│              <<SDO>>                   │                               
+│             Analytic                   │                               
+│                                        │                               
+│┌──────────────────────────────────────┐│                               
+││    x_mitre_log_source_references:    ││                               
+││                                      ││                               
+││ [                                    ││                               
+││   {                                  ││                               
+││     x_mitre_data_component_ref,      ││                           
+││     name: "sysmon",                  ││                               
+││     channel: "1"                     ││                               
+││   },                                 ││                               
+││   {                                  ││                               
+││     x_mitre_data_component_ref,      ││                           
+││     name: "auditd",                  ││                               
+││     channel: "SYSCALL"               ││                               
+││   }                                  ││                               
+││ ]                                    ││                               
+│└──────────────┬───────────────────────┘│                               
+└───────────────┼────────────────────────┘                               
+                │                                           
+                │ "Soft" relationships                      
+                │ (x_mitre_data_component_ref points to     
+                │  Data Component; name & channel index     
+                │  into matching log source within that     
+                │  Data Component)                          
+                │                                           
+       ┌────────▼────────────────┐
+       │                         │
+       │       <<SDO>>           │
+       │   Data Component        │
+       │                         │
+       │┌───────────────────────┐│
+       ││ x_mitre_log_sources:  ││
+       ││                       ││
+       ││ [                     ││
+       ││   {                   ││
+       ││     name: "sysmon",   ││
+       ││     channel: "1"      ││
+       ││   },                  ││
+       ││   {                   ││
+       ││     name: "auditd",   ││
+       ││     channel: "SYSCALL"││
+       ││   }                   ││
+       ││ ]                     ││
+       │└───────────────────────┘│
+       └─────────────────────────┘
 ```
 
 ### Analytics
@@ -401,17 +447,18 @@ Analytics contain platform-specific detection logic and represent the implementa
 | Field                      | Type                    | Description                                                                            |
 | :------------------------- | :---------------------- | -------------------------------------------------------------------------------------- |
 | `x_mitre_platforms`        | string[] (max 1)        | Target platform for this analytic (Windows, Linux, macOS).                             |
-| `x_mitre_log_source_references`      | `log_source_reference[]`      | Array of log source references with specific permutation names.                         |
+| `x_mitre_log_source_references`  | `log_source_reference[]` | Array of data component references with specific log source details.                   |
 | `x_mitre_mutable_elements` | `mutable_element[]`     | Array of tunable detection parameters for environment-specific adaptation.             |
 
 #### Log Source Reference Subtype
 
-The `log_source_reference` object links analytics to specific log source permutations:
+The `log_source_reference` object links analytics to specific data components with log source details:
 
-| Field  | Type     | Description                                                                           |
-| ------ | -------- | ------------------------------------------------------------------------------------- |
-| `x_mitre_log_source_ref`  | string   | STIX ID of the referenced `x-mitre-log-source` object                                |
-| `permutation_names` | string[] | Specific permutation names from the log source's `x_mitre_log_source_permutations`     |
+| Field                        | Type   | Description                                                                           |
+| ---------------------------- | ------ | ------------------------------------------------------------------------------------- |
+| `x_mitre_data_component_ref` | string | STIX ID of the referenced `x-mitre-data-component` object                            |
+| `name`                       | string | Log source name from the data component's `x_mitre_log_sources` array                |
+| `channel`                    | string | Log source channel from the data component's `x_mitre_log_sources` array             |
 
 #### Mutable Element Subtype
 
@@ -422,35 +469,6 @@ The `mutable_element` object defines tunable parameters within analytics:
 | `field`       | string | Name of the detection field that can be tuned                                   |
 | `description` | string | Rationale for tunability and environment-specific considerations                 |
 
-### Log Sources
-
-Log sources define immutable configurations for collecting security telemetry across different platforms and deployment scenarios. They are defined as `x-mitre-log-source` objects extending the generic [STIX Domain Object pattern](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230920).
-
-**Log source-specific fields:**
-
-| Field                            | Type                          | Description                                                    |
-| :------------------------------- | :---------------------------- | -------------------------------------------------------------- |
-| `x_mitre_log_source_permutations` | `log_source_permutation[]`   | Array of platform-specific log collection configurations.       |
-
-**Key characteristics:**
-- Each log source contains multiple permutations for different deployment scenarios
-- Permutations represent different ways to collect the same type of data across platforms
-- Connected to data components via `found-in` relationships
-
-#### Log Source Permutation Subtype
-
-The `log_source_permutation` object defines platform-specific collection configurations:
-
-| Field     | Type   | Description                                                          |
-| --------- | ------ | -------------------------------------------------------------------- |
-| `name`    | string | Log source identifier (e.g., "sysmon", "auditd")                     |
-| `channel` | string | Specific log channel or event type (e.g., "1" for Sysmon Process Creation) |
-| `data_component_name` | string | Name of the specific data component. |
-
-**Example:** A single log source for 'Process Creation' might contain permutations for:
-- Windows: (name: "sysmon", channel: "1")
-- Linux: (name: "auditd", channel: "SYSCALL")
-- macOS: (name: "unified_logs", channel: "process")
 
 ### Relationships
 
@@ -472,7 +490,6 @@ Relationship objects frequently include `description` fields that provide contex
 | `attack-pattern`         | `subtechnique-of` | `attack-pattern`    | Yes          | Sub-technique of a technique, where the `source_ref` is the sub-technique and the `target_ref` is the parent technique.                                                                                                                                                                                               |
 | `x-mitre-data-component` | `detects`         | `attack-pattern`    | Yes          | **Deprecated as of ATT&CK Specification 3.3.0.** Data component detecting a technique. This relationship type will be removed in ATT&CK Specification 4.0.0.                                                                                                                                                           |
 | `x-mitre-detection-strategy` | `detects`     | `attack-pattern`    | Yes          | Detection strategy for detecting a technique.                                                                                                                                                         |
-| `x-mitre-data-component` | `found-in`        | `x-mitre-log-source` | Yes         | Data component telemetry found in a log source.                                                                                                                                                      |
 | `attack-pattern` | `targets` | `x-mitre-asset` | Yes | Technique targets an asset. |
 | any type                 | `revoked-by`      | any type            | Yes          | The target object is a replacement for the source object. Only occurs where the objects are of the same type, and the source object will have the property `revoked = true`. See [Working with deprecated and revoked objects](#working-with-deprecated-and-revoked-objects) for more information on revoked objects. |
 

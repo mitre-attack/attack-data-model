@@ -11,6 +11,5 @@ export * from './mitigation.impl.js';
 export * from './tactic.impl.js';
 export * from './technique.impl.js';
 export * from './tool.impl.js';
-export * from './log-source.impl.js';
 export * from './detection-strategy.impl.js';
 export * from './analytic.impl.js';

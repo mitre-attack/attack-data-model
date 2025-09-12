@@ -1,46 +1,48 @@
-export { analyticSchema, type Analytic, extensibleAnalyticSchema } from './analytic.schema.js';
+export { analyticSchema, extensibleAnalyticSchema, type Analytic } from './analytic.schema.js';
 
 export {
-  xMitreSectorsSchema,
-  type XMitreSectors,
+  assetSchema,
+  extensibleAssetSchema,
   relatedAssetSchema,
   relatedAssetsSchema,
+  xMitreSectorsSchema,
+  type Asset,
   type RelatedAsset,
   type RelatedAssets,
-  extensibleAssetSchema,
-  assetSchema,
-  type Asset,
+  type XMitreSectors,
 } from './asset.schema.js';
 
 export {
+  campaignSchema,
+  extensibleCampaignSchema,
   xMitreFirstSeenCitationSchema,
   xMitreLastSeenCitationSchema,
+  type Campaign,
   type XMitreFirstSeenCitation,
   type XMitreLastSeenCitation,
-  extensibleCampaignSchema,
-  campaignSchema,
-  type Campaign,
 } from './campaign.schema.js';
 
 export {
-  objectVersionReferenceSchema,
-  type ObjectVersionReference,
-  extensibleCollectionSchema,
   collectionSchema,
+  extensibleCollectionSchema,
+  objectVersionReferenceSchema,
   type Collection,
+  type ObjectVersionReference,
 } from './collection.schema.js';
 
 export {
-  xMitreDataSourceRefSchema,
-  type XMitreDataSourceRef,
-  extensibleDataComponentSchema,
   dataComponentSchema,
+  extensibleDataComponentSchema,
+  xMitreDataSourceRefSchema,
+  xMitreLogSourcesSchema,
   type DataComponent,
+  type XMitreDataSourceRef,
+  type XMitreLogSources,
 } from './data-component.schema.js';
 
 export {
-  extensibleDetectionStrategySchema,
   detectionStrategySchema,
+  extensibleDetectionStrategySchema,
   type DetectionStrategy,
 } from './detection-strategy.schema.js';
 
@@ -49,29 +51,21 @@ export { extensibleGroupSchema, groupSchema, type Group } from './group.schema.j
 export { extensibleIdentitySchema, identitySchema, type Identity } from './identity.schema.js';
 
 export {
-  xMitreLogSourcePermutationsSchema,
-  type XMitreLogSourcePermutations,
-  extensibleLogSourceSchema,
-  logSourceSchema,
-  type LogSource,
-} from './log-source.schema.js';
-
-export {
-  xMitreCollectionLayersSchema,
-  type XMitreCollectionLayers,
-  extensibleDataSourceSchema,
   dataSourceSchema,
+  extensibleDataSourceSchema,
+  xMitreCollectionLayersSchema,
   type DataSource,
+  type XMitreCollectionLayers,
 } from './data-source.schema.js';
 
 export { extensibleMalwareSchema, malwareSchema, type Malware } from './malware.schema.js';
 
 export {
-  xMitreTacticRefsSchema,
-  type XMitreTacticRefs,
   extensibleMatrixSchema,
   matrixSchema,
+  xMitreTacticRefsSchema,
   type Matrix,
+  type XMitreTacticRefs,
 } from './matrix.schema.js';
 
 export {
@@ -83,50 +77,50 @@ export {
 export { extensibleSoftwareSchema, softwareSchema, type Software } from './software.schema.js';
 
 export {
-  xMitreShortNameSchema,
-  type XMitreShortName,
   extensibleTacticSchema,
   tacticSchema,
+  xMitreShortNameSchema,
   type Tactic,
+  type XMitreShortName,
 } from './tactic.schema.js';
 
 export {
-  xMitreNetworkRequirementsSchema,
-  type XMitreNetworkRequirements,
-  xMitreEffectivePermissionsSchema,
-  type XMitreEffectivePermissions,
-  xMitreImpactTypeSchema,
-  type XMitreImpactType,
-  xMitreSystemRequirementsSchema,
-  type XMitreSystemRequirements,
-  xMitreRemoteSupportSchema,
-  type XMitreRemoteSupport,
-  xMitrePermissionsRequiredSchema,
-  type XMitrePermissionsRequired,
-  xMitreDataSourceSchema,
-  xMitreDataSourcesSchema,
-  type XMitreDataSource,
-  type XMitreDataSources,
-  xMitreIsSubtechniqueSchema,
-  type XMitreIsSubtechnique,
-  xMitreTacticTypeSchema,
-  type XMitreTacticType,
-  xMitreDefenseBypassesSchema,
-  type XMitreDefenseBypasses,
-  xMitreDetectionSchema,
-  type XMitreDetection,
   extensibleTechniqueSchema,
   techniqueSchema,
+  xMitreDataSourceSchema,
+  xMitreDataSourcesSchema,
+  xMitreDefenseBypassesSchema,
+  xMitreDetectionSchema,
+  xMitreEffectivePermissionsSchema,
+  xMitreImpactTypeSchema,
+  xMitreIsSubtechniqueSchema,
+  xMitreNetworkRequirementsSchema,
+  xMitrePermissionsRequiredSchema,
+  xMitreRemoteSupportSchema,
+  xMitreSystemRequirementsSchema,
+  xMitreTacticTypeSchema,
   type Technique,
+  type XMitreDataSource,
+  type XMitreDataSources,
+  type XMitreDefenseBypasses,
+  type XMitreDetection,
+  type XMitreEffectivePermissions,
+  type XMitreImpactType,
+  type XMitreIsSubtechnique,
+  type XMitreNetworkRequirements,
+  type XMitrePermissionsRequired,
+  type XMitreRemoteSupport,
+  type XMitreSystemRequirements,
+  type XMitreTacticType,
 } from './technique.schema.js';
 
 export { extensibleToolSchema, toolSchema, type Tool } from './tool.schema.js';
 
 export {
-  type AttackObject,
   attackObjectsSchema,
-  type AttackObjects,
   extensibleStixBundleSchema,
   stixBundleSchema,
+  type AttackObject,
+  type AttackObjects,
   type StixBundle,
 } from './stix-bundle.schema.js';
