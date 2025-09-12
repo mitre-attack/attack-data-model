@@ -63,10 +63,6 @@ export class TechniqueImpl extends AttackBaseImpl {
     return this._mitigations;
   }
 
-  getLogSources(): LogSourceImpl[] {
-    return this._logSources;
-  }
-
   getParentTechnique(): TechniqueImpl | undefined {
     return this._parentTechnique;
   }

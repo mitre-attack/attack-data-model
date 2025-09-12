@@ -1,29 +1,31 @@
 // Import Types
+import type { Analytic } from '@/schemas/sdo/analytic.schema.js';
 import type { Asset } from '@/schemas/sdo/asset.schema.js';
 import type { Campaign } from '@/schemas/sdo/campaign.schema.js';
 import type { Collection } from '@/schemas/sdo/collection.schema.js';
 import type { DataComponent } from '@/schemas/sdo/data-component.schema.js';
 import type { DataSource } from '@/schemas/sdo/data-source.schema.js';
+import type { DetectionStrategy } from '@/schemas/sdo/detection-strategy.schema.js';
 import type { Group } from '@/schemas/sdo/group.schema.js';
 import type { Identity } from '@/schemas/sdo/identity.schema.js';
 import type { Malware } from '@/schemas/sdo/malware.schema.js';
 import type { Matrix } from '@/schemas/sdo/matrix.schema.js';
 import type { Mitigation } from '@/schemas/sdo/mitigation.schema.js';
+import type { AttackObject } from '@/schemas/sdo/stix-bundle.schema.js';
 import type { Tactic } from '@/schemas/sdo/tactic.schema.js';
 import type { Technique } from '@/schemas/sdo/technique.schema.js';
 import type { Tool } from '@/schemas/sdo/tool.schema.js';
 import type { MarkingDefinition } from '@/schemas/smo/marking-definition.schema.js';
 import type { Relationship } from '@/schemas/sro/relationship.schema.js';
-import type { AttackObject } from '@/schemas/sdo/stix-bundle.schema.js';
-import type { DetectionStrategy } from '@/schemas/sdo/detection-strategy.schema.js';
-import type { Analytic } from '@/schemas/sdo/analytic.schema.js';
 
 // Import ES6 Classes
+import { AnalyticImpl } from './sdo/analytic.impl.js';
 import { AssetImpl } from './sdo/asset.impl.js';
 import { CampaignImpl } from './sdo/campaign.impl.js';
 import { CollectionImpl } from './sdo/collection.impl.js';
 import { DataComponentImpl } from './sdo/data-component.impl.js';
 import { DataSourceImpl } from './sdo/data-source.impl.js';
+import { DetectionStrategyImpl } from './sdo/detection-strategy.impl.js';
 import { GroupImpl } from './sdo/group.impl.js';
 import { IdentityImpl } from './sdo/identity.impl.js';
 import { MalwareImpl } from './sdo/malware.impl.js';
@@ -34,8 +36,6 @@ import { TechniqueImpl } from './sdo/technique.impl.js';
 import { ToolImpl } from './sdo/tool.impl.js';
 import { MarkingDefinitionImpl } from './smo/marking-definition.impl.js';
 import { RelationshipImpl } from './sro/relationship.impl.js';
-import { DetectionStrategyImpl } from './sdo/detection-strategy.impl.js';
-import { AnalyticImpl } from './sdo/analytic.impl.js';
 
 export class AttackDataModel {
   public techniques: TechniqueImpl[] = [];
@@ -298,13 +298,6 @@ export class AttackDataModel {
             }
             break;
 
-          case 'found-in':
-            if (sourceObj instanceof DataComponentImpl && targetObj instanceof LogSourceImpl) {
-              sourceObj.addFoundIn(targetObj);
-              targetObj.addFoundBy(sourceObj);
-            }
-            break;
-
           default:
             break;
         }
@@ -331,6 +324,5 @@ export type AnyAttackObject =
   | MitigationImpl
   | RelationshipImpl
   | MarkingDefinitionImpl
-  | LogSourceImpl
   | DetectionStrategyImpl
   | AnalyticImpl;
