@@ -2,8 +2,11 @@ import { createFirstBundleObjectRefinement } from '@/refinements/index.js';
 import { z } from 'zod/v4';
 import { createStixIdValidator } from '../common/stix-identifier.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
-import { type MarkingDefinition } from '../smo/marking-definition.schema.js';
-import { type Relationship } from '../sro/relationship.schema.js';
+import {
+  markingDefinitionSchema,
+  type MarkingDefinition,
+} from '../smo/marking-definition.schema.js';
+import { relationshipSchema, type Relationship } from '../sro/relationship.schema.js';
 import { type Analytic, analyticSchema } from './analytic.schema.js';
 import { type Asset, assetSchema } from './asset.schema.js';
 import { type Campaign, campaignSchema } from './campaign.schema.js';
