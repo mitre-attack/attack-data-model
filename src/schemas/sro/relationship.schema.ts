@@ -1,4 +1,3 @@
-import { createFoundInRelationshipRefinement } from '@/refinements/index.js';
 import { z } from 'zod/v4';
 import {
   attackBaseRelationshipObjectSchema,
@@ -318,7 +317,6 @@ export const extensibleRelationshipSchema = attackBaseRelationshipObjectSchema
 
 export const relationshipSchema = extensibleRelationshipSchema.check((ctx) => {
   createRelationshipValidationRefinement()(ctx);
-  createFoundInRelationshipRefinement()(ctx);
 });
 
 export type Relationship = z.infer<typeof extensibleRelationshipSchema>;
