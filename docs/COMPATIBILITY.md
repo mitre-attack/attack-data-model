@@ -48,19 +48,6 @@ We plan to:
 - **Backward Compatibility**: Where feasible, maintain backward compatibility with previous ATT&CK Specifications and releases.
 - **Deprecation Notices**: Provide deprecation warnings in documentation and release notes when dropping support for older versions.
 
-## Contributing to Compatibility
-
-Community contributions are welcome to help expand compatibility:
-
-- **Issue Reporting**: Report any compatibility issues you encounter with specific ATT&CK versions or specifications.
-- **Pull Requests**: Submit pull requests to add support for additional ATT&CK versions or to improve compatibility.
-
-## Contact and Support
-
-For questions or support regarding compatibility:
-
-- **GitHub Issues**: [Open an issue](https://github.com/mitre-attack/attack-data-model/issues) on the repository.
-- **Email**: Contact the maintainers at [attack@mitre.org](mailto:attack@mitre.org).
 
 ---
 
