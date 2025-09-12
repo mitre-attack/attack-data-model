@@ -300,19 +300,8 @@ export const relationshipSchema = attackBaseRelationshipObjectSchema
     x_mitre_version: true,
   })
   .strict()
-  .transform((data) => {
-    // Check for deprecated pattern
-    const [sourceType] = data.source_ref.split('--') as [StixType];
-    if (
-      sourceType === 'x-mitre-data-component' &&
-      data.relationship_type === 'detects' &&
-      data.target_ref.startsWith('attack-pattern--')
-    ) {
-      console.warn(
-        'DEPRECATION WARNING: x-mitre-data-component -> detects -> attack-pattern relationships are deprecated',
-      );
-    }
-    return data;
+  .check((ctx) => {
+    createRelationshipValidationRefinement()(ctx);
   });
 
 export type Relationship = z.infer<typeof relationshipSchema>;
