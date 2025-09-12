@@ -25,6 +25,48 @@ export type XMitreDataSourceRef = z.infer<typeof xMitreDataSourceRefSchema>;
 
 /////////////////////////////////////
 //
+// Log Sources
+// (x_mitre_log_sources)
+//
+/////////////////////////////////////
+
+export const xMitreLogSourcesSchema = z
+  .array(
+    z
+      .object({
+        name: z.string().nonempty(),
+        channel: z.string().nonempty(),
+      })
+      .strict(),
+  )
+  .nonempty()
+  .refine(
+    // Reject duplicate (name, channel) pairs
+    // Allow same name with different channels
+    // Allow same channel with different names
+    (permutations) => {
+      const seen = new Set<string>();
+
+      for (const perm of permutations) {
+        const key = `${perm.name}|${perm.channel}`;
+        if (seen.has(key)) {
+          return false;
+        }
+        seen.add(key);
+      }
+
+      return true;
+    },
+    {
+      message: 'Duplicate log source found: each (name, channel) pair must be unique',
+      path: ['x_mitre_log_sources'],
+    },
+  );
+
+export type XMitreLogSources = z.infer<typeof xMitreLogSourcesSchema>;
+
+/////////////////////////////////////
+//
 // MITRE Data Component
 //
 /////////////////////////////////////
@@ -47,7 +89,16 @@ export const dataComponentSchema = attackBaseDomainObjectSchema
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
-    x_mitre_data_source_ref: xMitreDataSourceRefSchema,
+    /**
+     * DEPRECATION NOTICE:
+     * Data Sources are deprecated and will be removed in a future release
+     * Consequently, ``x_mitre_data_source_ref`` has been changed to optional
+     * TODO Remove ``x_mitre_data_source_ref`` in the next major release
+     */
+    x_mitre_data_source_ref: xMitreDataSourceRefSchema.optional(),
+
+    // TODO change to required in spec release 4.x
+    x_mitre_log_sources: xMitreLogSourcesSchema.optional(),
   })
   .strict();
 

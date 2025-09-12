@@ -30,8 +30,10 @@ export {
 export {
   dataComponentSchema,
   xMitreDataSourceRefSchema,
+  xMitreLogSourcesSchema,
   type DataComponent,
   type XMitreDataSourceRef,
+  type XMitreLogSources,
 } from './data-component.schema.js';
 
 export { detectionStrategySchema, type DetectionStrategy } from './detection-strategy.schema.js';
@@ -39,13 +41,6 @@ export { detectionStrategySchema, type DetectionStrategy } from './detection-str
 export { groupSchema, type Group } from './group.schema.js';
 
 export { identitySchema, type Identity } from './identity.schema.js';
-
-export {
-  logSourceSchema,
-  xMitreLogSourcePermutationsSchema,
-  type LogSource,
-  type XMitreLogSourcePermutations,
-} from './log-source.schema.js';
 
 export {
   dataSourceSchema,
@@ -105,4 +100,10 @@ export {
 
 export { toolSchema, type Tool } from './tool.schema.js';
 
-export { stixBundleSchema, type AttackObject, type StixBundle } from './stix-bundle.schema.js';
+export {
+  attackObjectsSchema,
+  stixBundleSchema,
+  type AttackObject,
+  type AttackObjects,
+  type StixBundle,
+} from './stix-bundle.schema.js';

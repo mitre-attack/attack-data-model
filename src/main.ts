@@ -17,7 +17,6 @@ import {
   detectionStrategySchema,
   groupSchema,
   identitySchema,
-  logSourceSchema,
   malwareSchema,
   markingDefinitionSchema,
   matrixSchema,
@@ -274,9 +273,6 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
         break;
       case 'relationship':
         objParseResult = relationshipSchema.safeParse(obj);
-        break;
-      case 'x-mitre-log-source':
-        objParseResult = logSourceSchema.safeParse(obj);
         break;
       case 'x-mitre-detection-strategy':
         objParseResult = detectionStrategySchema.safeParse(obj);
