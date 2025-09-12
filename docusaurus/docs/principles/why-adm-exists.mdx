@@ -4,11 +4,10 @@ import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
 
 <WorkInProgressNotice />
 
-**The problem context, solution approach, and value proposition**
+The ATT&CK Data Model library didn't emerge from a vacuum - it was created to solve specific, recurring problems that users face when working with MITRE ATT&CK data.
+Understanding these problems and the solution approach helps clarify when and why to use this library.
 
-The ATT&CK Data Model library didn't emerge in a vacuum - it was created to solve specific, recurring problems that security teams and researchers face when working with MITRE ATT&CK data. Understanding these problems and the solution approach helps clarify when and why to use this library.
-
-## The Problem Context
+## The Problem
 
 ### ATT&CK Data Complexity
 
@@ -16,8 +15,8 @@ MITRE ATT&CK, while invaluable for threat intelligence and security operations, 
 
 **Raw Data Challenges**:
 
-- ATT&CK data is distributed as STIX 2.1 JSON bundles containing hundreds of objects
-- Relationships between objects are expressed through separate relationship objects, not direct references
+- ATT&CK data is distributed as STIX 2.1 JSON bundles containing thousands of objects
+- Relationships between objects are primarily expressed through separate relationship objects, not direct references
 - Objects have complex validation rules that aren't immediately obvious from the JSON structure
 - Different ATT&CK domains (Enterprise, Mobile, ICS) have subtle but important differences
 
@@ -25,7 +24,6 @@ MITRE ATT&CK, while invaluable for threat intelligence and security operations, 
 
 - No built-in type safety - easy to access non-existent properties or use wrong data types
 - Relationship navigation requires manual lookup and cross-referencing
-- Validation errors are cryptic and don't point to specific ATT&CK requirements
 - No clear patterns for common operations like "find all techniques used by a group"
 
 ### Before the ATT&CK Data Model
@@ -85,16 +83,15 @@ class AttackDataParser {
 
 ### The Core Problems
 
-Through observing these patterns across security teams, several core problems emerged:
+Through observing these patterns across users, several core problems emerged:
 
-1. **Repetitive Boilerplate**: Every team reimplemented the same relationship navigation logic
-2. **Validation Gaps**: Data quality issues only discovered at runtime, often in production
-3. **Type Safety Absence**: No compile-time guarantees about data structure
-4. **Knowledge Duplication**: ATT&CK domain knowledge scattered across individual implementations
-5. **Version Compatibility**: Difficulty updating to new ATT&CK versions
-6. **Testing Challenges**: Hard to test applications against different ATT&CK datasets
+1. **Repetitive Boilerplate**: Every team and tool reimplemented the same relationship navigation logic
+2. **Validation Gaps**: Data quality issues only discovered at runtime
+3. **Knowledge Duplication**: ATT&CK domain knowledge scattered across individual implementations
+4. **Version Compatibility**: Difficulty updating to new ATT&CK versions
+5. **Testing Challenges**: Hard to test applications against different ATT&CK datasets
 
-## The Solution Approach
+## The Solution
 
 ### Design Philosophy
 
