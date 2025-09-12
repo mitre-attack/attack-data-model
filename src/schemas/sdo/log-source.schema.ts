@@ -20,6 +20,7 @@ export const xMitreLogSourcePermutationsSchema = z
     z.object({
       name: z.string().nonempty(),
       channel: z.string().nonempty(),
+      data_component_name: z.string().nonempty(),
     }),
   )
   .nonempty()

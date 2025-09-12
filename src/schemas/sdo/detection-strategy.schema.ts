@@ -27,7 +27,7 @@ export const detectionStrategySchema = attackBaseDomainObjectSchema
 
     x_mitre_contributors: xMitreContributorsSchema,
 
-    x_mitre_analytics: z.array(createStixIdValidator('x-mitre-analytic')).nonempty(),
+    x_mitre_analytic_refs: z.array(createStixIdValidator('x-mitre-analytic')).nonempty(),
 
     x_mitre_domains: xMitreDomainsSchema,
   })

@@ -52,9 +52,13 @@ const readFile = async (path: string): Promise<string> => {
   }
 };
 
-const GITHUB_BASE_URL =
-  process.env.GITHUB_BASE_URL ||
-  'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
+let GITHUB_BASE_URL = '';
+if (typeof window == 'undefined') {
+  // Node.js environment - check environment variables
+  GITHUB_BASE_URL =
+    process.env.GITHUB_BASE_URL ||
+    'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
+}
 
 interface DataSourceMap {
   [key: string]: {
