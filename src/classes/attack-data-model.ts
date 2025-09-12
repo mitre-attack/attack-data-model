@@ -15,7 +15,6 @@ import type { Tool } from '@/schemas/sdo/tool.schema.js';
 import type { MarkingDefinition } from '@/schemas/smo/marking-definition.schema.js';
 import type { Relationship } from '@/schemas/sro/relationship.schema.js';
 import type { AttackObject } from '@/schemas/sdo/stix-bundle.schema.js';
-import type { LogSource } from '@/schemas/sdo/log-source.schema.js';
 import type { DetectionStrategy } from '@/schemas/sdo/detection-strategy.schema.js';
 import type { Analytic } from '@/schemas/sdo/analytic.schema.js';
 
@@ -35,7 +34,6 @@ import { TechniqueImpl } from './sdo/technique.impl.js';
 import { ToolImpl } from './sdo/tool.impl.js';
 import { MarkingDefinitionImpl } from './smo/marking-definition.impl.js';
 import { RelationshipImpl } from './sro/relationship.impl.js';
-import { LogSourceImpl } from './sdo/log-source.impl.js';
 import { DetectionStrategyImpl } from './sdo/detection-strategy.impl.js';
 import { AnalyticImpl } from './sdo/analytic.impl.js';
 
@@ -55,7 +53,6 @@ export class AttackDataModel {
   public matrices: MatrixImpl[] = [];
   public collections: CollectionImpl[] = [];
   public relationships: RelationshipImpl[] = [];
-  public logSources: LogSourceImpl[] = [];
   public detectionStrategies: DetectionStrategyImpl[] = [];
   public analytics: AnalyticImpl[] = [];
 
@@ -205,14 +202,6 @@ export class AttackDataModel {
           const relationship = new RelationshipImpl(object as Relationship);
           this.relationships.push(relationship);
           objectMap.set(object.id, relationship);
-          break;
-        }
-
-        // LOG SOURCE
-        case 'x-mitre-log-source': {
-          const logSource = new LogSourceImpl(object as LogSource);
-          this.logSources.push(logSource);
-          objectMap.set(object.id, logSource);
           break;
         }
 
