@@ -58,12 +58,6 @@ const attackIdConfig = {
     example: 'DS####',
     stixTypes: ['x-mitre-data-source'] as const,
   },
-  'log-source': {
-    pattern: /^LS\d{4}$/,
-    message: 'Must match ATT&CK Log Source ID format (DS####)',
-    example: 'LS####',
-    stixTypes: ['x-mitre-log-source'] as const,
-  },
   campaign: {
     pattern: /^C\d{4}$/,
     message: 'Must match ATT&CK Campaign ID format (C####)',
@@ -110,7 +104,6 @@ export const stixTypeToAttackIdMapping: Record<StixTypesWithAttackIds, AttackIdT
   'x-mitre-data-source': 'data-source',
   campaign: 'campaign',
   'x-mitre-data-component': 'data-component',
-  'x-mitre-log-source': 'log-source',
   'x-mitre-detection-strategy': 'detection-strategy',
   'x-mitre-analytic': 'analytic',
 };

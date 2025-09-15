@@ -12,7 +12,7 @@ import { createStixTypeValidator } from '../common/stix-type.js';
 
 /////////////////////////////////////
 //
-// MITRE Log Source Reference
+// MITRE Log Source
 //
 /////////////////////////////////////
 
@@ -20,21 +20,25 @@ export const xMitreLogSourcePermutationName = z.string();
 
 export const xMitreLogSourceReferenceSchema = z
   .object({
-    x_mitre_log_source_ref: createStixIdValidator('x-mitre-log-source'),
-    permutation_names: z.array(z.string()).nonempty().meta({
-      description:
-        'Must match one of the elements in the ``x_mitre_log_source_permutations`` array',
-    }),
+    x_mitre_data_component_ref: createStixIdValidator('x-mitre-data-component'),
+    name: z
+      .string()
+      .nonempty()
+      .meta({ description: 'The name of the log source that the analytic is referencing' }),
+    channel: z
+      .string()
+      .nonempty()
+      .meta({ description: 'The channel of the log source that the analytic is referencing' }),
   })
   .meta({
-    description: 'A reference to a log source permutation',
+    description: 'A reference to a log source',
   });
 
 export type LogSourceReference = z.infer<typeof xMitreLogSourceReferenceSchema>;
 
 /////////////////////////////////////
 //
-// MITRE Log Source References (plural)
+// MITRE Log Sources (plural)
 //
 /////////////////////////////////////
 
@@ -42,37 +46,30 @@ export const xMitreLogSourceReferencesSchema = z
   .array(xMitreLogSourceReferenceSchema)
   .nonempty()
   .refine(
-    // Reject duplicate x_mitre_log_source_ref (cannot reference the same log source twice)
-    // Reject duplicate permutation name elements for each x_mitre_log_source_ref (cannot reference the same permutation name twice)
+    // Reject duplicate log source references, delineated by (x_mitre_data_component_ref, name, channel)
+    // An analytic cannot reference the same log source twice
     (logSourceReferences) => {
       const seenRefs = new Set<string>();
 
       for (const logSourceRef of logSourceReferences) {
-        if (seenRefs.has(logSourceRef.x_mitre_log_source_ref)) {
+        const key = `${logSourceRef.x_mitre_data_component_ref}|${logSourceRef.name}|${logSourceRef.channel}`;
+        if (seenRefs.has(key)) {
           return false;
         }
-        seenRefs.add(logSourceRef.x_mitre_log_source_ref);
-
-        const seenPermutationNames = new Set<string>();
-        for (const key of logSourceRef.permutation_names) {
-          if (seenPermutationNames.has(key)) {
-            return false;
-          }
-          seenPermutationNames.add(key);
-        }
+        seenRefs.add(key);
       }
 
       return true;
     },
     {
       message:
-        'Duplicate log source permutation found: each (x_mitre_log_source_ref, permutation_names) pair must be unique',
+        'Duplicate log source reference found: each (x_mitre_data_component_ref, name, channel) tuple must be unique',
       path: ['x_mitre_log_source_references'],
     },
   )
   .meta({
     description:
-      'A list of log source STIX IDs, plus the specific permutation names, e.g., sysmon:1 or auditd:SYSCALL.',
+      "A list of log source references, delineated by the proprietor's STIX ID and the (name, channel) that is being targeted",
   });
 
 export type LogSourceReferences = z.infer<typeof xMitreLogSourceReferencesSchema>;
