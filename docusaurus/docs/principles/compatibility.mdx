@@ -18,16 +18,16 @@ This page tracks the compatibility between versions of the ATT&CK® Data Model (
 ## Compatibility Details
 
 - **ATT&CK Specification v3.3.0**:
-  - **Features**:
-    - Introduces support for three new SDOs:
-      - MITRE Detection Strategies (`x-mitre-detection-strategy`) <sup>[[schema](../src/schemas/sdo/detection-strategy.schema.ts)]</sup>
-      - MITRE Analytics (`x-mitre-analytic`) <sup>[[schema](../src/schemas/sdo/analytic.schema.ts)]</sup>
-      - MITRE Log Sources (`x-mitre-log-sources`) <sup>[[schema](../src/schemas/sdo/log-source.schema.ts)]</sup>
-    - MITRE Data Sources (`x-mitre-data-sources`) <sup>[[schema](../src/schemas/sdo/data-source.schema.ts)]</sup> are _deprecated_ and will be removed in ATT&CK Specification v4.0.0
-    - Supports all content introduced in ATT&CK Release v18.x and earlier, including new techniques, tactics, and relationships.
-  - **Notes**:
-    - Ensure that you are using the correct domain (e.g., `enterprise-attack`, `mobile-attack`) when loading data to avoid inconsistencies.
-    - The ADM's Zod schemas and TypeScript types are aligned with the ATT&CK Specification v4.0.0, providing a codified expression of the specification.
+  - **New SDOs**:
+    - MITRE Detection Strategies (`x-mitre-detection-strategy`) <sup>[[schema](../src/schemas/sdo/detection-strategy.schema.ts)]</sup>
+    - MITRE Analytics (`x-mitre-analytic`) <sup>[[schema](../src/schemas/sdo/analytic.schema.ts)]</sup>
+  - **Schema Changes**:
+    - Added `x_mitre_log_sources` field to MITRE Data Components for tracking security telemetry across platforms
+  - **Deprecations**:
+    - MITRE Data Sources (`x-mitre-data-sources`) <sup>[[schema](../src/schemas/sdo/data-source.schema.ts)]</sup> (removal in v4.0.0)
+    - `x-mitre-data-component` --[detects]--> `attack-pattern` SROs (replaced by Detection Strategy framework)
+  - **Content Support**:
+    - ATT&CK Release v18.x and later
 
 ## Using Other Versions
 
@@ -60,4 +60,5 @@ We plan to:
 This project makes use of ATT&CK®.
 
 [ATT&CK Terms of Use](https://attack.mitre.org/resources/terms-of-use/)
+
 ---
