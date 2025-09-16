@@ -1,23 +1,23 @@
 import { describe, it, expect } from 'vitest';
-import { DataSourceRegistration } from '../../src/data-sources/data-source-registration.js';
-import { AttackDataModel } from '../../src/classes/attack-data-model.js';
+import { ContentOriginRegistration } from '../../src/main.js';
+import { AttackDataModel } from '../../src/api/attack-data-model.js';
 
 describe('examples/first-query.ts Code Example', () => {
-  describe('DataSourceRegistration Configuration', () => {
+  describe('ContentOriginRegistration Configuration', () => {
     it('should use the exact configuration from the example', () => {
       // Maps to: examples/first-query.ts - lines 7-12
-      // Code: const dataSource = new DataSourceRegistration({ source: 'attack', domain: 'enterprise-attack', version: '17.1', parsingMode: 'relaxed' });
-      const dataSource = new DataSourceRegistration({
-        source: 'attack',
+      // Code: const contentOrigin = new ContentOriginRegistration({ source: 'mitre', domain: 'enterprise-attack', version: '17.1', parsingMode: 'relaxed' });
+      const contentOrigin = new ContentOriginRegistration({
+        source: 'mitre',
         domain: 'enterprise-attack',
         version: '17.1',
         parsingMode: 'relaxed',
       });
 
-      expect(dataSource.options.source).toBe('attack');
-      expect(dataSource.options.domain).toBe('enterprise-attack');
-      expect(dataSource.options.version).toBe('17.1');
-      expect(dataSource.options.parsingMode).toBe('relaxed');
+      expect(contentOrigin.options.source).toBe('mitre');
+      expect((contentOrigin.options as any).domain).toBe('enterprise-attack');
+      expect((contentOrigin.options as any).version).toBe('17.1');
+      expect(contentOrigin.options.parsingMode).toBe('relaxed');
     });
   });
 
@@ -92,24 +92,24 @@ describe('examples/first-query.ts Code Example', () => {
   describe('Async Function Pattern Validation', () => {
     it('should validate the async function structure used in the example', () => {
       // Maps to: examples/first-query.ts - lines 3-38
-      // Code: async function exploreAttackData() { try { const uuid = await registerDataSource(dataSource); } catch (error) { ... } }
+      // Code: async function exploreAttackData() { try { const uuid = await registerContentOrigin(contentOrigin); } catch (error) { ... } }
 
       // Test that the async pattern components work
       const testAsyncPattern = async () => {
-        const dataSource = new DataSourceRegistration({
-          source: 'attack',
+        const contentOrigin = new ContentOriginRegistration({
+          source: 'mitre',
           domain: 'enterprise-attack',
           version: '17.1',
           parsingMode: 'relaxed',
         });
 
         // The example checks these properties exist
-        expect(dataSource.options.source).toBeDefined();
-        expect(dataSource.options.domain).toBeDefined();
-        expect(dataSource.options.version).toBeDefined();
-        expect(dataSource.options.parsingMode).toBeDefined();
+        expect(contentOrigin.options.source).toBeDefined();
+        expect((contentOrigin.options as any).domain).toBeDefined();
+        expect((contentOrigin.options as any).version).toBeDefined();
+        expect(contentOrigin.options.parsingMode).toBeDefined();
 
-        return dataSource;
+        return contentOrigin;
       };
 
       expect(testAsyncPattern).not.toThrow();
@@ -165,21 +165,21 @@ describe('examples/first-query.ts Code Example', () => {
   describe('Import Statement Validation', () => {
     it('should validate the imports used in the example', () => {
       // Maps to: examples/first-query.ts - line 1
-      // Code: import { registerDataSource, loadDataModel, DataSourceRegistration } from '@mitre-attack/attack-data-model';
+      // Code: import { registerContentOrigin, loadDataModel, ContentOriginRegistration } from '@mitre-attack/attack-data-model';
 
       // Test that the imported classes/functions exist and are usable
-      expect(DataSourceRegistration).toBeDefined();
-      expect(typeof DataSourceRegistration).toBe('function');
+      expect(ContentOriginRegistration).toBeDefined();
+      expect(typeof ContentOriginRegistration).toBe('function');
 
-      // Test that DataSourceRegistration can be instantiated as shown in the example
-      const dataSource = new DataSourceRegistration({
-        source: 'attack',
+      // Test that ContentOriginRegistration can be instantiated as shown in the example
+      const contentOrigin = new ContentOriginRegistration({
+        source: 'mitre',
         domain: 'enterprise-attack',
         version: '17.1',
         parsingMode: 'relaxed',
       });
 
-      expect(dataSource).toBeInstanceOf(DataSourceRegistration);
+      expect(contentOrigin).toBeInstanceOf(ContentOriginRegistration);
     });
   });
 });
