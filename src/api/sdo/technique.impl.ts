@@ -3,7 +3,6 @@ import { techniqueSchema } from '@/schemas/sdo/technique.schema.js';
 import type { AttackObject, Technique } from '@/schemas/sdo/index.js';
 import type { TacticImpl } from './tactic.impl.js';
 import type { MitigationImpl } from './mitigation.impl.js';
-import type { LogSourceImpl } from './log-source.impl.js';
 import type { AssetImpl } from './asset.impl.js';
 import type { DataComponentImpl } from './data-component.impl.js';
 import type { StixModifiedTimestamp, XMitrePlatform } from '@/schemas/common/index.js';
@@ -13,7 +12,6 @@ export class TechniqueImpl extends Validated(techniqueSchema) {
   #subTechniques: TechniqueImpl[] = [];
   #tactics: TacticImpl[] = [];
   #mitigations: MitigationImpl[] = [];
-  #logSources: LogSourceImpl[] = [];
   #parentTechnique?: TechniqueImpl;
   #relatedTechniques: TechniqueImpl[] = [];
   #targetAssets: AssetImpl[] = [];
@@ -40,12 +38,6 @@ export class TechniqueImpl extends Validated(techniqueSchema) {
   addMitigation(mitigation: MitigationImpl): void {
     if (!this.#mitigations.includes(mitigation)) {
       this.#mitigations.push(mitigation);
-    }
-  }
-
-  addLogSource(logSource: LogSourceImpl): void {
-    if (!this.#logSources.includes(logSource)) {
-      this.#logSources.push(logSource);
     }
   }
 
@@ -78,10 +70,6 @@ export class TechniqueImpl extends Validated(techniqueSchema) {
 
   getMitigations(): readonly MitigationImpl[] {
     return [...this.#mitigations];
-  }
-
-  getLogSources(): readonly LogSourceImpl[] {
-    return [...this.#logSources];
   }
 
   getParentTechnique(): TechniqueImpl | undefined {
