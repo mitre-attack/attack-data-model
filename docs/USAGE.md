@@ -9,7 +9,7 @@ The ATT&CK Data Model (ADM) TypeScript API provides a structured and type-safe w
 - **Type-Safe Data Parsing**: Validates STIX 2.1 data using Zod schemas, ensuring compliance with the ATT&CK Data Model.
 - **Object-Oriented Interface**: Provides ES6 class wrappers for ATT&CK objects, enabling intuitive interaction and relationship navigation.
 - **Relationship Mapping**: Automatically processes relationships between objects, allowing easy traversal of the ATT&CK data model.
-- **Flexible Data Sources**: Supports loading data from various sources, including the official MITRE ATT&CK GitHub repository, local files, URLs, and TAXII 2.1 servers (some data sources are under development).
+- **Flexible Content Origins**: Supports loading data from various content origins, including the official MITRE ATT&CK GitHub repository, local files, URLs, and TAXII 2.1 servers (some content origins are under development).
 
 ## Installation
 
@@ -65,7 +65,7 @@ When installed, the library has the following directory structure:
 │   ├── sdo
 │   ├── smo
 │   └── sro
-├── data-sources
+├── content-origins
 ├── errors
 └── schemas
     ├── common
@@ -84,7 +84,7 @@ Each sub-package serves a specific purpose:
 - **`classes`**: Contains ES6 class wrappers for ATT&CK objects, providing methods for relationship navigation and data manipulation.
   - **`common`**: Base classes and shared components.
   - **`sdo`**, **`smo`**, **`sro`**: Class implementations corresponding to the schemas.
-- **`data-sources`**: Modules for loading ATT&CK data from various sources.
+- **`content-origins`**: Modules for loading ATT&CK data from various content origins.
 - **`errors`**: Custom error classes used throughout the library.
 
 ### Hierarchical Structure
@@ -209,20 +209,20 @@ console.log(attackDataModel.campaigns);  // Access campaigns
 
 ### Initializing with Data
 
-To use the `AttackDataModel`, you need to load it with data from a data source:
+To use the `AttackDataModel`, you need to load it with data from a content origin:
 
 ```typescript
-import { registerDataSource, loadDataModel, DataSource } from '@mitre-attack/attack-data-model';
+import { registerContentOrigin, loadDataModel, ContentOriginRegistration } from '@mitre-attack/attack-data-model';
 
 (async () => {
-  const dataSource = new DataSource({
-    source: 'attack',
+  const contentOrigin = new ContentOriginRegistration({
+    source: 'mitre',
     domain: 'enterprise-attack',
     version: '15.1',
     parsingMode: 'relaxed',
   });
 
-  const uuid = await registerDataSource(dataSource);
+  const uuid = await registerContentOrigin(contentOrigin);
   const attackDataModel = loadDataModel(uuid);
 
   // Now you can interact with the data model
@@ -288,13 +288,13 @@ console.log(campaign.name);
 const techniques = campaign.getTechniques();
 ```
 
-## Data Sources
+## Content Origins
 
-The library supports loading data from various sources through the `DataSource` class.
+The library supports loading data from various content origins through the `ContentOriginRegistration` class.
 
-### Supported Data Sources
+### Supported Content Origins
 
-- **`attack`**: Official MITRE ATT&CK STIX 2.1 GitHub repository.
+- **`mitre`**: Official MITRE ATT&CK STIX 2.1 GitHub repository.
 - **`file`**: (Coming soon) Local JSON files containing STIX 2.1 bundles.
 - **`url`**: (Coming soon) URLs serving STIX 2.1 content.
 - **`taxii`**: (Coming soon) TAXII 2.1 servers.
@@ -302,17 +302,17 @@ The library supports loading data from various sources through the `DataSource` 
 ### Loading Data from the ATT&CK GitHub Repository
 
 ```typescript
-import { registerDataSource, loadDataModel, DataSource } from '@mitre-attack/attack-data-model';
+import { registerContentOrigin, loadDataModel, ContentOriginRegistration } from '@mitre-attack/attack-data-model';
 
 (async () => {
-  const dataSource = new DataSource({
-    source: 'attack',
+  const contentOrigin = new ContentOriginRegistration({
+    source: 'mitre',
     domain: 'enterprise-attack',
     version: '15.1',
     parsingMode: 'relaxed',
   });
 
-  const uuid = await registerDataSource(dataSource);
+  const uuid = await registerContentOrigin(contentOrigin);
   const attackDataModel = loadDataModel(uuid);
 
   // Access ATT&CK objects
@@ -399,18 +399,18 @@ try {
 
 ## Advanced Usage
 
-### Custom Data Sources
+### Custom Content Origins
 
-You can create custom data sources by extending the `DataSource` class or by providing your own data loading logic.
+You can create custom content origins by extending the `ContentOriginRegistration` class or by providing your own data loading logic.
 
 ```typescript
 import { DataSource } from '@mitre-attack/attack-data-model';
 
-class CustomDataSource extends DataSource {
+class CustomContentOrigin extends ContentOriginRegistration {
   // Implement custom data loading logic
 }
 
-const customDataSource = new CustomDataSource({
+const customContentOrigin = new CustomContentOrigin({
   source: 'custom',
   // ... other options
 });

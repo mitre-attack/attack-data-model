@@ -32,9 +32,9 @@ import { attackDomainSchema, type AttackDomain } from './index.js';
 
 export type ParsingMode = 'strict' | 'relaxed';
 
-export type DataSourceOptions =
+export type ContentOriginOptions =
   | {
-      source: 'attack';
+      source: 'mitre';
       domain: AttackDomain;
       version?: string;
       parsingMode?: ParsingMode;
@@ -93,8 +93,8 @@ export async function fetchAttackVersions(): Promise<string[]> {
   return versions;
 }
 
-export class DataSourceRegistration {
-  constructor(public readonly options: DataSourceOptions) {
+export class ContentOriginRegistration {
+  constructor(public readonly options: ContentOriginOptions) {
     this.validateOptions();
   }
 
@@ -106,8 +106,8 @@ export class DataSourceRegistration {
     }
 
     switch (source) {
-      case 'attack': {
-        await this.validateAttackOptions();
+      case 'mitre': {
+        await this.validateMitreOptions();
         break;
       }
       case 'file': {
@@ -119,17 +119,17 @@ export class DataSourceRegistration {
         throw new Error(`The ${source} source is not implemented yet.`);
       }
       default: {
-        throw new Error(`Unsupported data source type: ${source}`);
+        throw new Error(`Unsupported content origin type: ${source}`);
       }
     }
   }
 
-  private async validateAttackOptions(): Promise<void> {
+  private async validateMitreOptions(): Promise<void> {
     const { domain, version } = this.options as { domain: AttackDomain; version?: string };
 
     if (!domain || !Object.values(attackDomainSchema.enum).includes(domain)) {
       throw new Error(
-        `Invalid domain provided for 'attack' source. Expected one of: ${Object.values(
+        `Invalid domain provided for 'mitre' source. Expected one of: ${Object.values(
           attackDomainSchema.enum,
         ).join(', ')}`,
       );
@@ -179,31 +179,33 @@ if (typeof window == 'undefined') {
     'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
 }
 
-interface DataSourceMap {
+interface ContentOriginMap {
   [key: string]: {
     id: string;
     model: AttackDataModel;
   };
 }
 
-// Data structure to track registered data sources
-const dataSources: DataSourceMap = {};
+// Data structure to track registered content origins
+const contentOrigins: ContentOriginMap = {};
 
 /**
- * Registers a new data source by fetching and caching ATT&CK data based on the provided options.
- * Generates a unique ID for each registered data source.
+ * Registers a new content origin by fetching and caching ATT&CK data based on the provided options.
+ * Generates a unique ID for each registered content origin.
  *
- * @param registration - A DataSourceRegistration object containing the source, domain, version, etc.
- * @returns The unique ID of the registered data source.
+ * @param registration - A ContentOriginRegistration object containing the source, domain, version, etc.
+ * @returns The unique ID of the registered content origin.
  */
-export async function registerDataSource(registration: DataSourceRegistration): Promise<string> {
+export async function registerContentOrigin(
+  registration: ContentOriginRegistration,
+): Promise<string> {
   const { source, parsingMode = 'strict' } = registration.options;
 
   let rawData: StixBundle;
-  const uniqueId = uuidv4(); // Generate a unique ID for the data source
+  const uniqueId = uuidv4(); // Generate a unique ID for the content origin
 
   switch (source) {
-    case 'attack': {
+    case 'mitre': {
       const { domain, version } = registration.options;
       rawData = await fetchAttackDataFromGitHub(domain, version);
       break;
@@ -220,7 +222,7 @@ export async function registerDataSource(registration: DataSourceRegistration): 
       break;
     }
     default:
-      throw new Error(`Unsupported source type: ${source}`);
+      throw new Error(`Unsupported content origin type: ${source}`);
   }
 
   console.log('Retrieved data');
@@ -232,10 +234,10 @@ export async function registerDataSource(registration: DataSourceRegistration): 
   const model = new AttackDataModel(uniqueId, parsedAttackObjects);
   console.log('Initialized data model.');
 
-  // Store the model and its unique ID in the dataSources map
-  dataSources[uniqueId] = { id: uniqueId, model };
+  // Store the model and its unique ID in the contentOrigins map
+  contentOrigins[uniqueId] = { id: uniqueId, model };
 
-  return uniqueId; // Return the unique identifier of the data source
+  return uniqueId; // Return the unique identifier of the content origin
 }
 
 /**
@@ -438,15 +440,15 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
 }
 
 /**
- * Returns the data model of the registered data source, given the data source's unique ID.
+ * Returns the data model of the registered content origin, given the content origin's unique ID.
  *
  * @param id - The unique ID of the data model to retrieve.
  * @returns The corresponding AttackDataModel instance.
  */
 export function loadDataModel(id: string): AttackDataModel {
-  const dataSource = dataSources[id];
-  if (!dataSource) {
-    throw new Error(`Data source with ID ${id} not found.`);
+  const contentOrigin = contentOrigins[id];
+  if (!contentOrigin) {
+    throw new Error(`Content origin with ID ${id} not found.`);
   }
-  return dataSource.model;
+  return contentOrigin.model;
 }

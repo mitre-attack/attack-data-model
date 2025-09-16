@@ -1,24 +1,24 @@
 import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
 
-# DataSource
+# ContentOriginRegistration
 
 <WorkInProgressNotice />
 
-**Data source configuration and registration for loading ATT&CK datasets**
+**Content origin configuration and registration for loading ATT&CK datasets**
 
-The `DataSource` class defines where and how to load ATT&CK data. It supports multiple source types including the official ATT&CK repository, local files, remote URLs, and TAXII servers.
+The `ContentOriginRegistration` class defines where and how to load ATT&CK data. It supports multiple content origin types including the official ATT&CK repository, local files, remote URLs, and TAXII servers.
 
 ## Constructor
 
 ```typescript
-new DataSource(options: DataSourceOptions)
+new ContentOriginRegistration(options: ContentOriginOptions)
 ```
 
-### DataSourceOptions Interface
+### ContentOriginOptions Interface
 
 ```typescript
-interface DataSourceOptions {
-    source: 'attack' | 'file' | 'url' | 'taxii';
+interface ContentOriginOptions {
+    source: 'mitre' | 'file' | 'url' | 'taxii';
     parsingMode?: 'strict' | 'relaxed';
 
     // Attack source options
@@ -45,13 +45,13 @@ interface DataSourceOptions {
 
 ## Source Types
 
-### Attack Repository Source
+### MITRE Repository Source
 
 Load data from the official MITRE ATT&CK STIX 2.1 repository.
 
 ```typescript
-const dataSource = new DataSource({
-    source: 'attack',
+const contentOrigin = new ContentOriginRegistration({
+    source: 'mitre',
     domain: 'enterprise-attack',
     version: '15.1',
     parsingMode: 'strict'
@@ -62,7 +62,7 @@ const dataSource = new DataSource({
 
 | Option | Type | Required | Default | Description |
 |--------|------|----------|---------|-------------|
-| `source` | `'attack'` | ✅ | - | Specifies ATT&CK repository source |
+| `source` | `'mitre'` | ✅ | - | Specifies MITRE ATT&CK repository source |
 | `domain` | `'enterprise-attack'` \| `'mobile-attack'` \| `'ics-attack'` | ✅ | - | ATT&CK domain to load |
 | `version` | `string` | ❌ | `'latest'` | Specific version (e.g., '15.1') or 'latest' |
 | `parsingMode` | `'strict'` \| `'relaxed'` | ❌ | `'strict'` | Validation strictness |
@@ -85,7 +85,7 @@ const dataSource = new DataSource({
 Load data from local STIX 2.1 bundle files.
 
 ```typescript
-const dataSource = new DataSource({
+const contentOrigin = new ContentOriginRegistration({
     source: 'file',
     file: '/path/to/enterprise-attack.json',
     parsingMode: 'relaxed'
@@ -129,7 +129,7 @@ const dataSource = new DataSource({
 Load data from remote URLs serving STIX 2.1 content.
 
 ```typescript
-const dataSource = new DataSource({
+const contentOrigin = new ContentOriginRegistration({
     source: 'url',
     url: 'https://example.com/attack-data.json',
     timeout: 30000,
@@ -162,7 +162,7 @@ const dataSource = new DataSource({
 Load data from TAXII 2.1 servers.
 
 ```typescript
-const dataSource = new DataSource({
+const contentOrigin = new ContentOriginRegistration({
     source: 'taxii',
     server: 'https://cti-taxii.mitre.org',
     collection: 'attack-patterns',
@@ -217,38 +217,38 @@ parsingMode: 'relaxed'
 
 ## Registration and Loading
 
-### registerDataSource()
+### registerContentOrigin()
 
-Validates and registers a data source for use.
+Validates and registers a content origin for use.
 
 ```typescript
-async function registerDataSource(dataSource: DataSource): Promise<string | null>
+async function registerContentOrigin(contentOrigin: ContentOriginRegistration): Promise<string | null>
 ```
 
 **Parameters**:
 
-- `dataSource` - Configured DataSource instance
+- `contentOrigin` - Configured ContentOriginRegistration instance
 
 **Returns**:
 
-- `string` - UUID for the registered data source on success
+- `string` - UUID for the registered content origin on success
 - `null` - Registration failed
 
 **Example**:
 
 ```typescript
-import { registerDataSource } from '@mitre-attack/attack-data-model';
+import { registerContentOrigin } from '@mitre-attack/attack-data-model';
 
-const dataSource = new DataSource({
-    source: 'attack',
+const contentOrigin = new ContentOriginRegistration({
+    source: 'mitre',
     domain: 'enterprise-attack',
     version: '15.1'
 });
 
 try {
-    const uuid = await registerDataSource(dataSource);
+    const uuid = await registerContentOrigin(contentOrigin);
     if (uuid) {
-        console.log(`Data source registered: ${uuid}`);
+        console.log(`Content origin registered: ${uuid}`);
     } else {
         console.error('Registration failed');
     }

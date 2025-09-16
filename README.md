@@ -11,13 +11,13 @@ Built on STIX 2.1 compliance, it uses Zod schemas and TypeScript types to ensure
 
 - **Type-Safe Data Parsing**: ADM validates STIX 2.1 bundles using Zod schemas, ensuring data model compliance and type safety.
 - **Easy Relationship Navigation**: Each object instance contains pointers to related objects, simplifying the process of navigating between techniques, tactics, and other ATT&CK elements.
-- **Supports Multiple Data Sources**: Load ATT&CK datasets from different sources, including GitHub, local files, URLs, and TAXII 2.1 servers (more data sources in development).
+- **Supports Multiple Content Origins**: Load ATT&CK datasets from different content origins, including GitHub, local files, URLs, and TAXII 2.1 servers (more content origins in development).
 - Parsing, validation, and serialization of ATT&CK data
 - ES6 classes for object-oriented data manipulation
 
-## Supported Data Sources
+## Supported Content Origins
 
-- **`attack`**: Load ATT&CK data from the official MITRE ATT&CK STIX 2.1 GitHub repository. This serves as the source of truth for MITRE ATT&CK content.
+- **`mitre`**: Load ATT&CK data from the official MITRE ATT&CK STIX 2.1 GitHub repository. This serves as the source of truth for MITRE ATT&CK content.
 - **`file`**: Load ATT&CK data from a local JSON file containing a STIX 2.1 bundle.
 - **`url`**: Load ATT&CK data from a URL endpoint serving STIX 2.1 content.
 - **`taxii`**: (Coming soon) Load ATT&CK data from a TAXII 2.1 server.
@@ -90,17 +90,17 @@ For most users, we recommend:
 
 Example of loading the latest ATT&CK data:
 ```javascript
-import { registerDataSource, loadDataModel, DataSourceRegistration } from '@mitre-attack/attack-data-model';
+import { registerContentOrigin, loadDataModel, ContentOriginRegistration } from '@mitre-attack/attack-data-model';
 
-const dataSource = new DataSourceRegistration({
-    source: 'attack',
+const contentOrigin = new ContentOriginRegistration({
+    source: 'mitre',
     domain: 'enterprise-attack',
     version: '17.1',
     parsingMode: 'strict'
 });
 
-const dataSource = await registerDataSource(dataSource);
-const attackEnterpriseLatest = loadDataModel(dataSource);
+const dataSourceId = await registerContentOrigin(contentOrigin);
+const attackEnterpriseLatest = loadDataModel(dataSourceId);
 ```
 
 For more details on version compatibility, see the [Compatibility Guide](./COMPATIBILITY.md).
@@ -132,21 +132,21 @@ For additional context about the ATT&CK specification, please refer to the [ATT&
 Here's an example script that demonstrates how to use the ADM library to load ATT&CK data from the official MITRE ATT&CK GitHub repository:
 
 ```typescript
-import { registerDataSource, loadDataModel, DataSourceRegistration } from '@mitre-attack/attack-data-model';
+import { registerContentOrigin, loadDataModel, ContentOriginRegistration } from '@mitre-attack/attack-data-model';
 
 (async () => {
 
-    // Instantiating a DataSourceRegistration object will validate that the data source is accessible and readable
-    const dataSource = new DataSourceRegistration({
-        source: 'attack', // Built-in index to retrieve ATT&CK content from the official MITRE ATT&CK STIX 2.1 GitHub repository
+    // Instantiating a ContentOriginRegistration object will validate that the content origin is accessible and readable
+    const contentOrigin = new ContentOriginRegistration({
+        source: 'mitre', // Built-in index to retrieve ATT&CK content from the official MITRE ATT&CK STIX 2.1 GitHub repository
         domain: 'enterprise-attack',
         version: '15.1', // Omitting 'version' will default to the latest version available in the repository
         parsingMode: 'relaxed' // 'strict' or 'relaxed' - 'relaxed' mode will attempt to parse and serialize data even if it contains errors or warnings
     });
 
     try {
-        // Register the data source and retrieve the unique ID
-        const uuid = await registerDataSource(dataSource);
+        // Register the content origin and retrieve the unique ID
+        const uuid = await registerContentOrigin(contentOrigin);
         if (uuid) {
             // Load the dataset using the unique ID
             const attackEnterpriseLatest = loadDataModel(uuid);
@@ -217,7 +217,7 @@ For more detailed examples, please refer to the [examples](./examples/README.md)
 
 ## How It Works
 
-1. **Data Registration**: Datasets are registered via `registerDataSource`. You specify the source of the data (e.g., `attack`, `file`, `url`, `taxii`) and provide any necessary options (such as `domain` and `version` for ATT&CK datasets). This function returns a unique identifier for the registered data source.
+1. **Content Origin Registration**: Datasets are registered via `registerContentOrigin`. You specify the content origin (e.g., `mitre`, `file`, `url`, `taxii`) and provide any necessary options (such as `domain` and `version` for ATT&CK datasets). This function returns a unique identifier for the registered content origin.
 2. **Data Loading**: The `loadDataModel` function is used to load registered data models by their unique identifier.
 3. **Parsing and Validation**: Once the data is loaded, it is parsed by Zod schemas, ensuring that the data conforms to the expected STIX 2.1 specification.
 4. **Serialization**: Valid objects are converted into TypeScript class instances, allowing for type-safe interaction and relationship navigation.
