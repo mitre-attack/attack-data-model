@@ -1,8 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { createSyntheticStixObject } from '../../src/utils/index';
-import {
-    xMitreIdentity
-} from '../../src/schemas/common/index';
+import { createSyntheticStixObject } from '../../src/generator';
+import { xMitreIdentity } from '../../src/schemas/common/index';
 import { type Technique, techniqueSchema } from '../../src/schemas/sdo/technique.schema';
 
 /**

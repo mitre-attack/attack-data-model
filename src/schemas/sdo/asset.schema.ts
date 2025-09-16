@@ -1,14 +1,14 @@
 import { z } from 'zod/v4';
 import {
   attackBaseDomainObjectSchema,
-  descriptionSchema,
-  xMitrePlatformsSchema,
-  xMitreDomainsSchema,
-  createStixIdValidator,
-  xMitreContributorsSchema,
-  xMitreModifiedByRefSchema,
   createAttackExternalReferencesSchema,
+  createStixIdValidator,
   createStixTypeValidator,
+  descriptionSchema,
+  xMitreContributorsSchema,
+  xMitreDomainsSchema,
+  xMitreModifiedByRefSchema,
+  xMitrePlatformsSchema,
 } from '../common/index.js';
 
 /////////////////////////////////////
@@ -78,7 +78,7 @@ export type RelatedAssets = z.infer<typeof relatedAssetsSchema>;
 //
 /////////////////////////////////////
 
-export const extensibleAssetSchema = attackBaseDomainObjectSchema
+export const assetSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-asset'),
 
@@ -107,7 +107,4 @@ export const extensibleAssetSchema = attackBaseDomainObjectSchema
   })
   .strict();
 
-// No refinements currently exist on assets, so just export an alias
-export const assetSchema = extensibleAssetSchema;
-
-export type Asset = z.infer<typeof extensibleAssetSchema>;
+export type Asset = z.infer<typeof assetSchema>;

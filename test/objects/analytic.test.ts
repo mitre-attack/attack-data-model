@@ -1,10 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 import { describe, expect, it } from 'vitest';
+import { createSyntheticStixObject } from '../../src/generator';
+import { type ExternalReferences } from '../../src/schemas/common/index';
 import {
-  type ExternalReferences
-} from '../../src/schemas/common/index';
-import { type Analytic, analyticSchema, LogSourceRef } from '../../src/schemas/sdo/analytic.schema';
-import { createSyntheticStixObject } from '../../src/utils/index';
+  type Analytic,
+  analyticSchema,
+  LogSourceReference,
+} from '../../src/schemas/sdo/analytic.schema';
 
 describe('analyticSchema', () => {
   const minimalAnalytic = createSyntheticStixObject('x-mitre-analytic');
@@ -19,14 +21,16 @@ describe('analyticSchema', () => {
         ...minimalAnalytic,
         x_mitre_deprecated: false,
         x_mitre_platforms: ['Windows'],
-        x_mitre_log_sources: [
+        x_mitre_log_source_references: [
           {
-            ref: `x-mitre-log-source--${uuidv4()}`,
-            keys: ['PowerShell'],
+            x_mitre_data_component_ref: `x-mitre-data-component--${uuidv4()}`,
+            name: 'PowerShell',
+            channel: '1'
           },
           {
-            ref: `x-mitre-log-source--${uuidv4()}`,
-            keys: ['Security', 'System'],
+            x_mitre_data_component_ref: `x-mitre-data-component--${uuidv4()}`,
+            name: 'Security',
+            channel: '2'
           },
         ],
         x_mitre_mutable_elements: [
@@ -43,21 +47,24 @@ describe('analyticSchema', () => {
       expect(() => analyticSchema.parse(fullAnalytic)).not.toThrow();
     });
 
-    it('should accept multiple log sources and mutable elements', () => {
+    it('should accept multiple log source references and mutable elements', () => {
       const multiElementAnalytic: Analytic = {
         ...minimalAnalytic,
-        x_mitre_log_sources: [
+        x_mitre_log_source_references: [
           {
-            ref: `x-mitre-log-source--${uuidv4()}`,
-            keys: ['PowerShell'],
+            x_mitre_data_component_ref: `x-mitre-data-component--${uuidv4()}`,
+            name: 'WinEventLog:Security',
+            channel: 'EventCode=4769'
           },
           {
-            ref: `x-mitre-log-source--${uuidv4()}`,
-            keys: ['Security', 'Application'],
+            x_mitre_data_component_ref: `x-mitre-data-component--${uuidv4()}`,
+            name: 'WinEventLog:Security',
+            channel: 'EventCode=4624'
           },
           {
-            ref: `x-mitre-log-source--${uuidv4()}`,
-            keys: ['Sysmon'],
+            x_mitre_data_component_ref: `x-mitre-data-component--${uuidv4()}`,
+            name: 'foo',
+            channel: 'bar'
           },
         ],
         x_mitre_mutable_elements: [
@@ -96,12 +103,12 @@ describe('analyticSchema', () => {
 
     describe('id', () => {
       testField('id', 'invalid-id');
-      testField('id', `x-mitre-log-source--${uuidv4()}`); // Wrong prefix
+      testField('id', `x-mitre-data-component--${uuidv4()}`); // Wrong prefix
     });
 
     describe('type', () => {
       testField('type', 'invalid-type');
-      testField('type', 'x-mitre-log-source'); // Wrong type
+      testField('type', 'x-mitre-data-component'); // Wrong type
     });
 
     describe('created_by_ref', () => {
@@ -121,98 +128,126 @@ describe('analyticSchema', () => {
       testField('x_mitre_domains', ['invalid-mitre-domains']);
     });
 
-    describe('x_mitre_detects', () => {
-      testField('x_mitre_detects', ''); // Empty string should fail
-      testField('x_mitre_detects', 123); // Non-string should fail
+    describe('description', () => {
+      testField('description', ''); // Empty string should fail
+      testField('description', 123); // Non-string should fail
     });
 
-    describe('x_mitre_log_sources', () => {
+    describe('x_mitre_log_source_references', () => {
       it('should reject empty array', () => {
-        const invalidObject = { ...minimalAnalytic, x_mitre_log_sources: [] };
+        const invalidObject = { ...minimalAnalytic, x_mitre_log_source_references: [] };
         expect(() => analyticSchema.parse(invalidObject)).toThrow();
       });
 
-      it('should reject log source refs with invalid ref format', () => {
+      it('should reject log source references with invalid x_mitre_data_component_ref format', () => {
         const invalidObject = {
           ...minimalAnalytic,
-          x_mitre_log_sources: [{ ref: 'invalid-ref', keys: ['PowerShell'] }],
-        };
-        expect(() => analyticSchema.parse(invalidObject)).toThrow();
-      });
-
-      it('should reject log source refs with wrong STIX type prefix', () => {
-        const invalidObject = {
-          ...minimalAnalytic,
-          x_mitre_log_sources: [{ ref: `x-mitre-analytic--${uuidv4()}`, keys: ['PowerShell'] }],
-        };
-        expect(() => analyticSchema.parse(invalidObject)).toThrow();
-      });
-
-      it('should reject log source refs with empty keys array', () => {
-        const invalidObject = {
-          ...minimalAnalytic,
-          x_mitre_log_sources: [{ ref: `x-mitre-log-source--${uuidv4()}`, keys: [] }],
-        };
-        expect(() => analyticSchema.parse(invalidObject)).toThrow();
-      });
-
-      it('should reject log source refs missing ref field', () => {
-        const invalidObject = {
-          ...minimalAnalytic,
-          x_mitre_log_sources: [{ keys: ['PowerShell'] }],
-        };
-        expect(() => analyticSchema.parse(invalidObject)).toThrow();
-      });
-
-      it('should reject log source refs missing keys field', () => {
-        const invalidObject = {
-          ...minimalAnalytic,
-          x_mitre_log_sources: [{ ref: `x-mitre-log-source--${uuidv4()}` }],
-        };
-        expect(() => analyticSchema.parse(invalidObject)).toThrow();
-      });
-
-      it('should reject identical log source refs', () => {
-        const duplicateRef: LogSourceRef = {
-          ref: `x-mitre-log-source--${uuidv4()}`,
-          keys: ['PowerShell'],
-        };
-        const invalidObject = {
-          ...minimalAnalytic,
-          x_mitre_log_sources: [duplicateRef, duplicateRef],
-        };
-        expect(() => analyticSchema.parse(invalidObject)).toThrow();
-      });
-
-      it('should reject duplicate log source refs with duplicate ref keys', () => {
-        const duplicateId = `x-mitre-log-source--${uuidv4()}`;
-        const invalidObject = {
-          ...minimalAnalytic,
-          x_mitre_log_sources: [
+          x_mitre_log_source_references: [
             {
-              ref: duplicateId,
-              keys: ['Foo'],
-            },
-            {
-              ref: duplicateId,
-              keys: ['Bar'],
+              x_mitre_data_component_ref: 'invalid-data-component-ref',
+              name: 'PowerShell',
+              channel: '1'
             },
           ],
         };
         expect(() => analyticSchema.parse(invalidObject)).toThrow();
       });
 
-      it('should accept log source refs with overlapping keys', () => {
+      it('should reject log source references with wrong STIX type prefix', () => {
         const invalidObject = {
           ...minimalAnalytic,
-          x_mitre_log_sources: [
+          x_mitre_log_source_references: [
             {
-              ref: `x-mitre-log-source--${uuidv4()}`,
-              keys: ['PowerShell'],
+              x_mitre_data_component_ref: `x-mitre-analytic--${uuidv4()}`,
+              name: 'PowerShell',
+              channel: '1'
+            },
+          ],
+        };
+        expect(() => analyticSchema.parse(invalidObject)).toThrow();
+      });
+
+      it('should reject log source references with empty name', () => {
+        const invalidObject = {
+          ...minimalAnalytic,
+          x_mitre_log_source_references: [
+            {
+              x_mitre_data_component_ref: `x-mitre-data-component--${uuidv4()}`,
+              name: '',
+              channel: '1'
+            },
+          ],
+        };
+        expect(() => analyticSchema.parse(invalidObject)).toThrow();
+      });
+
+      it('should reject log source references with empty channel', () => {
+        const invalidObject = {
+          ...minimalAnalytic,
+          x_mitre_log_source_references: [
+            {
+              x_mitre_data_component_ref: `x-mitre-data-component--${uuidv4()}`,
+              name: 'foobar',
+              channel: ''
+            },
+          ],
+        };
+        expect(() => analyticSchema.parse(invalidObject)).toThrow();
+      });
+
+      it('should reject log source references missing x_mitre_data_component_ref field', () => {
+        const invalidObject = {
+          ...minimalAnalytic,
+          x_mitre_log_source_references: [
+            {
+              name: 'PowerShell',
+              channel: '1'
+            }
+          ],
+        };
+        expect(() => analyticSchema.parse(invalidObject)).toThrow();
+      });
+
+      it('should reject log source references missing name field', () => {
+        const invalidObject = {
+          ...minimalAnalytic,
+          x_mitre_log_source_references: [
+            {
+              x_mitre_data_component_ref: `x-mitre-data-component--${uuidv4()}`,
+              channel: '1'
+            },
+          ],
+        };
+        expect(() => analyticSchema.parse(invalidObject)).toThrow();
+      });
+
+      it('should reject identical log source references', () => {
+        const duplicateRef: LogSourceReference = {
+          x_mitre_data_component_ref: `x-mitre-data-component--${uuidv4()}`,
+          name: 'PowerShell',
+          channel: '1'
+        };
+        const invalidObject = {
+          ...minimalAnalytic,
+          x_mitre_log_source_references: [duplicateRef, duplicateRef],
+        };
+        expect(() => analyticSchema.parse(invalidObject)).toThrow();
+      });
+
+      it('should accept log source references with overlapping x_mitre_data_component_ref + name (different channel only)', () => {
+        const dupeId = `x-mitre-data-component--${uuidv4()}`;
+        const invalidObject = {
+          ...minimalAnalytic,
+          x_mitre_log_source_references: [
+            {
+              x_mitre_data_component_ref: dupeId,
+              name: 'PowerShell',
+              channel: '1' // <-- different
             },
             {
-              ref: `x-mitre-log-source--${uuidv4()}`,
-              keys: ['PowerShell'],
+              x_mitre_data_component_ref: dupeId,
+              name: 'PowerShell',
+              channel: '2' // <-- different
             },
           ],
         };
@@ -222,7 +257,7 @@ describe('analyticSchema', () => {
       it('should reject non-array value', () => {
         const invalidObject = {
           ...minimalAnalytic,
-          x_mitre_log_sources: 'not-an-array',
+          x_mitre_log_source_references: 'not-an-array',
         };
         expect(() => analyticSchema.parse(invalidObject)).toThrow();
       });
@@ -336,35 +371,22 @@ describe('analyticSchema', () => {
   });
 
   describe('Edge Cases and Special Scenarios', () => {
-    it('should handle very long detects description', () => {
+    it('should handle very long description', () => {
       const longString = 'A'.repeat(1000);
-      const analyticWithLongDetects: Analytic = {
+      const analyticWithLongDescription: Analytic = {
         ...minimalAnalytic,
-        x_mitre_detects: longString,
+        description: longString,
       };
-      expect(() => analyticSchema.parse(analyticWithLongDetects)).not.toThrow();
+      expect(() => analyticSchema.parse(analyticWithLongDescription)).not.toThrow();
     });
 
-    it('should handle special characters in detects description', () => {
+    it('should handle special characters in description', () => {
       const analyticWithSpecialChars: Analytic = {
         ...minimalAnalytic,
-        x_mitre_detects:
+        description:
           'Adversary execution of PowerShell commands with suspicious parameters: $var = "test"; & cmd /c "dir"',
       };
       expect(() => analyticSchema.parse(analyticWithSpecialChars)).not.toThrow();
-    });
-
-    it('should handle multiple keys in log source refs', () => {
-      const analyticWithMultipleKeys: Analytic = {
-        ...minimalAnalytic,
-        x_mitre_log_sources: [
-          {
-            ref: `x-mitre-log-source--${uuidv4()}`,
-            keys: ['PowerShell', 'Security', 'Application', 'System'],
-          },
-        ],
-      };
-      expect(() => analyticSchema.parse(analyticWithMultipleKeys)).not.toThrow();
     });
 
     it('should handle very long field names and descriptions in mutable elements', () => {
@@ -394,17 +416,28 @@ describe('analyticSchema', () => {
       expect(() => analyticSchema.parse(analyticWithSpecialChars)).not.toThrow();
     });
 
-    it('should handle complex log source key patterns', () => {
-      const analyticWithComplexKeys: Analytic = {
+    it('should handle complex log source permutation name patterns', () => {
+      const analyticWithComplexPermutationNames: Analytic = {
         ...minimalAnalytic,
-        x_mitre_log_sources: [
+        x_mitre_log_source_references: [
           {
-            ref: `x-mitre-log-source--${uuidv4()}`,
-            keys: ['sysmon:1', 'auditd:SYSCALL', 'Security/Microsoft-Windows-Security-Auditing'],
+            x_mitre_data_component_ref: `x-mitre-data-component--${uuidv4()}`,
+            name: 'sysmon:1',
+            channel: '1'
+          },
+          {
+            x_mitre_data_component_ref: `x-mitre-data-component--${uuidv4()}`,
+            name: 'auditd:SYSCALL',
+            channel: '1'
+          },
+          {
+            x_mitre_data_component_ref: `x-mitre-data-component--${uuidv4()}`,
+            name: 'Security/Microsoft-Windows-Security-Auditing',
+            channel: '1'
           },
         ],
       };
-      expect(() => analyticSchema.parse(analyticWithComplexKeys)).not.toThrow();
+      expect(() => analyticSchema.parse(analyticWithComplexPermutationNames)).not.toThrow();
     });
   });
 });

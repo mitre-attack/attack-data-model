@@ -1,6 +1,5 @@
 import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
-import { createStixTypeValidator } from '../common/stix-type.js';
 import {
   createAttackExternalReferencesSchema,
   createOldMitreAttackIdSchema,
@@ -11,6 +10,7 @@ import {
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
 } from '../common/index.js';
+import { createStixTypeValidator } from '../common/stix-type.js';
 
 /////////////////////////////////////
 //
@@ -18,7 +18,7 @@ import {
 //
 /////////////////////////////////////
 
-export const extensibleMitigationSchema = attackBaseDomainObjectSchema
+export const mitigationSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('course-of-action'),
 
@@ -47,8 +47,4 @@ export const extensibleMitigationSchema = attackBaseDomainObjectSchema
   })
   .strict();
 
-// Alias unless/until mitigations require at least one refinement
-export const mitigationSchema = extensibleMitigationSchema;
-
-// Define the type for Mitigation
-export type Mitigation = z.infer<typeof extensibleMitigationSchema>;
+export type Mitigation = z.infer<typeof mitigationSchema>;

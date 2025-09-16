@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  type ExternalReferences
-} from '../../src/schemas/common/index';
+import { type ExternalReferences } from '../../src/schemas/common/index';
 import { type Mitigation, mitigationSchema } from '../../src/schemas/sdo/mitigation.schema';
 import { createSyntheticStixObject } from '../../src/utils/index';
 

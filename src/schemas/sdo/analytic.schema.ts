@@ -1,6 +1,7 @@
 import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import {
+  descriptionSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
@@ -15,25 +16,25 @@ import { createStixTypeValidator } from '../common/stix-type.js';
 //
 /////////////////////////////////////
 
-export const xMitreLogSourcePermutationKey = z.string();
+export const xMitreLogSourcePermutationName = z.string();
 
-export const xMitreLogSourceRefSchema = z
+export const xMitreLogSourceReferenceSchema = z
   .object({
-    ref: createStixIdValidator('x-mitre-log-source'),
-    keys: z
-      .array(z.string())
+    x_mitre_data_component_ref: createStixIdValidator('x-mitre-data-component'),
+    name: z
+      .string()
       .nonempty()
-      .meta({
-        description:
-          'Must match one of the elements in the ``x_mitre_log_source_permutations`` array',
-      })
-      .nonempty(),
+      .meta({ description: 'The name of the log source that the analytic is referencing' }),
+    channel: z
+      .string()
+      .nonempty()
+      .meta({ description: 'The channel of the log source that the analytic is referencing' }),
   })
   .meta({
-    description: 'A reference to a log source permutation',
+    description: 'A reference to a log source',
   });
 
-export type LogSourceRef = z.infer<typeof xMitreLogSourceRefSchema>;
+export type LogSourceReference = z.infer<typeof xMitreLogSourceReferenceSchema>;
 
 /////////////////////////////////////
 //
@@ -41,43 +42,37 @@ export type LogSourceRef = z.infer<typeof xMitreLogSourceRefSchema>;
 //
 /////////////////////////////////////
 
-export const xMitreLogSourceRefsSchema = z
-  .array(xMitreLogSourceRefSchema)
+export const xMitreLogSourceReferencesSchema = z
+  .array(xMitreLogSourceReferenceSchema)
   .nonempty()
   .refine(
-    // Reject duplicate refs (cannot reference the same log source twice)
-    // Reject duplicate key elements for each ref (cannot reference the same key twice)
-    (logSourceRefs) => {
+    // Reject duplicate log source references, delineated by (x_mitre_data_component_ref, name, channel)
+    // An analytic cannot reference the same log source twice
+    (logSourceReferences) => {
       const seenRefs = new Set<string>();
 
-      for (const logSourceRef of logSourceRefs) {
-        if (seenRefs.has(logSourceRef.ref)) {
+      for (const logSourceRef of logSourceReferences) {
+        const key = `${logSourceRef.x_mitre_data_component_ref}|${logSourceRef.name}|${logSourceRef.channel}`;
+        if (seenRefs.has(key)) {
           return false;
         }
-        seenRefs.add(logSourceRef.ref);
-
-        const seenKeys = new Set<string>();
-        for (const key of logSourceRef.keys) {
-          if (seenKeys.has(key)) {
-            return false;
-          }
-          seenKeys.add(key);
-        }
+        seenRefs.add(key);
       }
 
       return true;
     },
     {
-      message: 'Duplicate log source permutation found: each (name, channel) pair must be unique',
-      path: ['x_mitre_log_source_permutations'],
+      message:
+        'Duplicate log source reference found: each (x_mitre_data_component_ref, name, channel) tuple must be unique',
+      path: ['x_mitre_log_source_references'],
     },
   )
   .meta({
     description:
-      'A list of log source STIX IDs, plus the specific channel or event type, e.g., sysmon:1 or auditd:SYSCALL.',
+      "A list of log source references, delineated by the proprietor's STIX ID and the (name, channel) that is being targeted",
   });
 
-export type LogSourceRefs = z.infer<typeof xMitreLogSourceRefsSchema>;
+export type LogSourceReferences = z.infer<typeof xMitreLogSourceReferencesSchema>;
 
 /////////////////////////////////////
 //
@@ -111,22 +106,19 @@ export type MutableElements = z.infer<typeof xMitreMutableElementsSchema>;
 //
 /////////////////////////////////////
 
-export const extensibleAnalyticSchema = attackBaseDomainObjectSchema
+export const analyticSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('x-mitre-analytic'),
 
     type: createStixTypeValidator('x-mitre-analytic'),
 
-    x_mitre_platforms: xMitrePlatformsSchema.max(1), // 0 or 1
+    description: descriptionSchema.nonempty(),
 
-    x_mitre_detects: z.string().nonempty().meta({
-      description:
-        'A tool-agnostic description of the adversary behavior chain this analytic looks for.',
-    }),
+    x_mitre_platforms: xMitrePlatformsSchema.max(1), // 0 or 1
 
     external_references: createAttackExternalReferencesSchema('x-mitre-analytic'),
 
-    x_mitre_log_sources: xMitreLogSourceRefsSchema,
+    x_mitre_log_source_references: xMitreLogSourceReferencesSchema,
 
     x_mitre_mutable_elements: xMitreMutableElementsSchema,
 
@@ -140,6 +132,4 @@ export const extensibleAnalyticSchema = attackBaseDomainObjectSchema
   })
   .strict();
 
-export const analyticSchema = extensibleAnalyticSchema;
-
-export type Analytic = z.infer<typeof extensibleAnalyticSchema>;
+export type Analytic = z.infer<typeof analyticSchema>;

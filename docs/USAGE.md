@@ -104,68 +104,44 @@ The library provides Zod schemas for all ATT&CK object types, enabling validatio
 
 ### Accessing Schemas
 
-Schemas are available under the `schemas` directory. You can import them directly from the package root:
+Schemas and their associated TypeScript types are available under the `schemas` directory. You can import them directly from the package root:
 
 ```typescript
-import { tacticSchema } from '@mitre-attack/attack-data-model';
-```
-
-Notably, there are two versions of each ATT&CK type available: 
-
-* One "extensible" schema (denoted by its `extensible` prefix) that returns a `ZodType`
-* One "standard" schema that returns a `ZodEffect` 
-
-The extensible schemas (e.g., `extensibleCampaignSchema`) return a `ZodType` by intentionally omitting all Zod refinements. You should use these schemas if you are looking to extend or modify the baseline schema behaviors. 
-
-For example, let's say you wish to augment ATT&CK campaigns with your own custom fields—you can do this with the `extensibleCampaignSchema` as follows:
-
-```typescript
-// Using the extensible schema for type definition or extension
-import { extensibleCampaignSchema } from '@mitre-attack/attack-data-model';
-const myCustomCampaignSchema = extensibleCampaignSchema.extend({ /* additional fields */ });
-```
-
-This would not work for the "standard" `campaignSchema`.
-
-`campaignSchema` returns a `ZodEffect` by nature of employing Zod refinements. We leverage refinements to execute advanced validation checks (e.g., validating that the first reference in `external_references` contains a valid ATT&CK ID). You can use the refined schemas like you would any other Zod schema, with the added disclaimer that they are less extensible than their aforementioned counterparts:
-
-```typescript
-// Using the refined schema for validation
 import { campaignSchema } from '@mitre-attack/attack-data-model';
-const validCampaign = campaignSchema.parse(rawCampaignData);
+import type { Campaign } from '@mitre-attack/attack-data-model';
 ```
 
-And don't worry—you can still use these refinements with your custom schemas. Each ATT&CK refinement is decoupled so they can be used modularly. They are exported as factory functions in the `refinements` sub-package:
+Many of the ATT&CK schemas use Zod refinements. We leverage refinements to execute advanced validation checks (e.g., validating that the first reference in `external_references` contains a valid ATT&CK ID).
+
+Unfortunately, in current versions of Zod, if a schema is modified with one of the object methods (`pick`, `omit`, `extend`), the refinements will be discarded.
+
+For example, let's say you wish to augment ATT&CK campaigns with your own custom fields:
 
 ```typescript
-// Step 1 - import the refinements you want to use
-import { createFirstAliasRefinement, createCitationsRefinement } from '@mitre-attack/attack-data-model';
+import { campaignSchema } from '@mitre-attack/attack-data-model';
+const myCustomCampaignSchema = campaignSchema.extend({ /* additional fields */ });
+```
 
-// Step 2 - initialize the refinements
-const validateFirstAlias = createFirstAliasRefinement();
-const validateCitations = createCitationsRefinement();
+`myCustomCampaignSchema` would not be valid, as it is missing the refinements that were originally present in `campaignSchema`.
 
-// Step 3 - apply a single refinement that combines the imported refinements
-const myCustomCampaignSchema = extensibleCampaignSchema
+You can still use the original refinements in your custom schemas, it will just take an extra step. Each ATT&CK refinement is decoupled so they can be used modularly. They are exported as factory functions in the `refinements` sub-package:
+
+```typescript
+// Import the original schema, and the refinements you want to use
+import { campaignSchema, createFirstAliasRefinement, createCitationsRefinement } from '@mitre-attack/attack-data-model';
+
+// Apply a single refinement that combines the imported refinements
+const myCustomCampaignSchema = campaignSchema
   .extend({ /* additional fields */ })
-  .superRefine((val, ctx) => {
-    validateFirstAlias(val, ctx);
-    validateCitations(val, ctx);
+  .check((ctx) => {
+    createFirstAliasRefinement()(ctx);
+    createCitationsRefinement()(ctx);
   });
 ```
 
-Notably, all ATT&CK schemas export only one TypeScript type, named in accordance with the refined schema, but inferred from the extensible schema. Since the refinements only add validation rules (rejected values) without changing the shape of valid data, a single type definition is sufficient:
+You will have to look in the original schema file, in this case [/src/schemas/sdo/campaign.schema.ts](/src/schemas/sdo/campaign.schema.ts) to see which refinements, if any, should be applied to the ATT&CK schema that you wish to extend.
 
-```typescript
-// An extensible schema for customizing or augmenting ATT&CK campaigns
-import { extensibleCampaignSchema } from '@mitre-attack/attack-data-model';
-
-// An inelastic but fully implemented schema for validating ATT&CK campaigns
-import { campaignSchema } from '@mitre-attack/attack-data-model';
-
-// One type definition for *all* ATT&CK campaigns (custom or otherwise)
-import type { Campaign } from '@mitre-attack/attack-data-model';
-```
+This [GitHub issue](https://github.com/colinhacks/zod/issues/4874) and [pull request](https://github.com/colinhacks/zod/pull/4865) describe the behavior and an upcoming `safeExtend` method that will allow you to extend the ATT&CK schemas without having to reapply the refinements.
 
 ### Validating Data
 

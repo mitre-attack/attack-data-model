@@ -1,6 +1,6 @@
+import { createFirstAliasRefinement } from '@/refinements/index.js';
 import { attackBaseDomainObjectSchema } from '@/schemas/common/attack-base-object.js';
 import { createStixTypeValidator } from '@/schemas/common/stix-type.js';
-import { createFirstAliasRefinement } from '@/schemas/refinements/index.js';
 import { z } from 'zod/v4';
 import {
   aliasesSchema,
@@ -13,7 +13,7 @@ import {
 import { AttackMotivationOV, AttackResourceLevelOV } from '../common/open-vocabulary.js';
 
 // Group Schema
-export const extensibleGroupSchema = attackBaseDomainObjectSchema
+export const groupSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('intrusion-set'),
 
@@ -68,12 +68,9 @@ export const extensibleGroupSchema = attackBaseDomainObjectSchema
       description: 'The secondary reasons, motivations, or purposes behind this Intrusion Set',
     }),
   })
-  .strict();
+  .strict()
+  .check((ctx) => {
+    createFirstAliasRefinement()(ctx);
+  });
 
-export const groupSchema = extensibleGroupSchema.check((ctx) => {
-  // validate that when aliases are present, the first alias must match the object's name
-  createFirstAliasRefinement()(ctx);
-});
-
-// Define the TypeScript type
-export type Group = z.infer<typeof extensibleGroupSchema>;
+export type Group = z.infer<typeof groupSchema>;

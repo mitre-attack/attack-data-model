@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  type ExternalReferences
-} from '../../src/schemas/common/index';
+import { type ExternalReferences } from '../../src/schemas/common/index';
 import { type DataSource, dataSourceSchema } from '../../src/schemas/sdo/data-source.schema';
 import { createSyntheticStixObject } from '../../src/utils/index';
 

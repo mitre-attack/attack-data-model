@@ -8,7 +8,7 @@ import {
   type StixIdentifier,
   type StixModifiedTimestamp,
   type StixSpecVersion,
-  type StixType
+  type StixType,
 } from '../../src/schemas/common/index';
 import {
   invalidRelationships,
@@ -16,7 +16,7 @@ import {
   type Relationship,
   relationshipSchema,
   type RelationshipType,
-  validRelationshipObjectTypes
+  validRelationshipObjectTypes,
 } from '../../src/schemas/sro/relationship.schema';
 import { createSyntheticStixObject } from '../../src/utils/index';
 import { logger } from '../utils/logger';
@@ -283,7 +283,7 @@ describe('RelationshipSchema', () => {
     const validRelationships: Relationship[] = [];
     const errors: { relationship: Relationship; issues: z.ZodIssue[] }[] = [];
 
-    for (let relationship of relationships) {
+    for (const relationship of relationships) {
       const result = relationshipSchema.safeParse(relationship);
       if (result.success) {
         validRelationships.push(relationship);

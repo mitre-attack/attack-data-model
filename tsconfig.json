@@ -1,4 +1,4 @@
-{ 
+{
   // These settings were informed by the TypeScript documentation for writing TypeScript libraries:
   // https://www.typescriptlang.org/docs/handbook/modules/guides/choosing-compiler-options.html#im-writing-a-library
   "compilerOptions": {
@@ -22,10 +22,9 @@
     "rootDir": "src",
     // Configures module resolution paths, allowing "@/" to resolve to "./src/"
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
+      "@/*": ["./src/*"],
+      "@mitre-attack/attack-data-model": ["./src/index.ts"]
+    }
   },
   // Specifies which files to include in the compilation
   "include": [

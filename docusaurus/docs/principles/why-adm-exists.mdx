@@ -1,0 +1,271 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
+# Why the ATT&CK Data Model Exists
+
+<WorkInProgressNotice />
+
+The ATT&CK Data Model library didn't emerge from a vacuum - it was created to solve specific, recurring problems that users face when working with MITRE ATT&CK data.
+Understanding these problems and the solution approach helps clarify when and why to use this library.
+
+## The Problem
+
+### ATT&CK Data Complexity
+
+MITRE ATT&CK, while invaluable for threat intelligence and security operations, presents several challenges when used programmatically:
+
+**Raw Data Challenges**:
+
+- ATT&CK data is distributed as STIX 2.1 JSON bundles containing thousands of objects
+- Relationships between objects are primarily expressed through separate relationship objects, not direct references
+- Objects have complex validation rules that aren't immediately obvious from the JSON structure
+- Different ATT&CK domains (Enterprise, Mobile, ICS) have subtle but important differences
+
+**Developer Experience Challenges**:
+
+- No built-in type safety - easy to access non-existent properties or use wrong data types
+- Relationship navigation requires manual lookup and cross-referencing
+- No clear patterns for common operations like "find all techniques used by a group"
+
+### Before the ATT&CK Data Model
+
+Prior to this library, developers typically handled ATT&CK data in one of two ways:
+
+#### 1. Direct JSON Manipulation
+
+```javascript
+// Raw approach - fragile and error-prone
+const attackData = JSON.parse(fs.readFileSync('enterprise-attack.json'));
+const techniques = attackData.objects.filter(obj => obj.type === 'attack-pattern');
+
+// Find tactics for a technique - manual relationship lookup
+const technique = techniques.find(t => t.external_references[0].external_id === 'T1055');
+const tacticRelationships = attackData.objects.filter(obj =>
+    obj.type === 'relationship' &&
+    obj.source_ref === technique.id &&
+    obj.relationship_type === 'uses'
+);
+const tactics = tacticRelationships.map(rel =>
+    attackData.objects.find(obj => obj.id === rel.target_ref)
+);
+```
+
+**Problems**:
+
+- No type safety
+- Manual relationship traversal
+- No validation
+- Fragile to data structure changes
+
+#### 2. Custom Wrapper Classes
+
+```javascript
+// Custom approach - reinventing the wheel
+class AttackDataParser {
+    constructor(jsonData) {
+        this.techniques = jsonData.objects.filter(obj => obj.type === 'attack-pattern');
+        this.tactics = jsonData.objects.filter(obj => obj.type === 'x-mitre-tactic');
+        // ... more filtering and indexing
+    }
+
+    getTacticsForTechnique(techniqueId) {
+        // Custom relationship logic
+        // ... dozens of lines of relationship traversal
+    }
+}
+```
+
+**Problems**:
+
+- Reinventing relationship logic
+- Inconsistent validation approaches
+- No standard patterns across teams
+- Maintenance burden for each team
+
+### The Core Problems
+
+Through observing these patterns across users, several core problems emerged:
+
+1. **Repetitive Boilerplate**: Every team and tool reimplemented the same relationship navigation logic
+2. **Validation Gaps**: Data quality issues only discovered at runtime
+3. **Knowledge Duplication**: ATT&CK domain knowledge scattered across individual implementations
+4. **Version Compatibility**: Difficulty updating to new ATT&CK versions
+5. **Testing Challenges**: Hard to test applications against different ATT&CK datasets
+
+## The Solution
+
+### Design Philosophy
+
+The ATT&CK Data Model was designed with a specific philosophy:
+
+**"Provide a type-safe, relationship-aware, standards-compliant interface to ATT&CK data that eliminates boilerplate while preserving flexibility."**
+
+This philosophy drives several key decisions:
+
+#### Standards Compliance First
+
+Rather than creating a new data format, the library builds on STIX 2.1 compliance. This ensures:
+
+- Interoperability with existing STIX tools
+- Long-term compatibility as standards evolve
+- No vendor lock-in - data remains in standard formats
+
+#### Type Safety Without Performance Cost
+
+TypeScript integration provides compile-time safety while Zod schemas enable runtime validation. This combination eliminates entire classes of bugs while maintaining performance.
+
+#### Relationship Navigation as First-Class Feature
+
+Instead of treating relationships as secondary, the library makes relationship traversal the primary interface. Methods like `technique.getTactics()` abstract away the complexity of STIX relationship objects.
+
+### Architecture Decisions
+
+#### Three-Layer Design
+
+1. **Schema Layer**: Zod schemas provide validation and TypeScript type inference
+2. **Class Layer**: Implementation classes add relationship navigation methods
+3. **Data Layer**: Flexible data source architecture supports multiple ATT&CK distributions
+
+This separation allows using only the layers you need - schemas for validation, classes for navigation, or the complete stack for full functionality.
+
+#### Immutable Data Model
+
+ATT&CK data represents shared threat intelligence that shouldn't be accidentally modified. Immutability prevents bugs while enabling safe concurrent access.
+
+#### Extensibility Through Standards
+
+Custom fields and extensions follow STIX conventions, ensuring that customizations remain interoperable with other STIX tools.
+
+## Value Proposition
+
+### For Security Engineers
+
+**Before**: "I spend hours writing relationship traversal code and debugging data format issues."
+
+**After**: "I focus on security logic while the library handles data complexity."
+
+```typescript
+// Before - manual relationship lookup
+const tacticsForTechnique = attackData.objects
+    .filter(obj => obj.type === 'relationship' && obj.source_ref === techniqueId)
+    .map(rel => attackData.objects.find(obj => obj.id === rel.target_ref));
+
+// After - simple method call
+const tactics = technique.getTactics();
+```
+
+### For Application Developers
+
+**Before**: "I'm not sure if my code will break when ATT&CK releases new data."
+
+**After**: "Type safety and validation catch issues at build time, not runtime."
+
+```typescript
+// TypeScript catches these errors at compile time
+const technique = attackDataModel.techniques[0];
+technique.nonExistentProperty; // ❌ Compile error
+technique.name.toNumber();     // ❌ Compile error - name is string
+technique.name.toUpperCase();  // ✅ Works - IntelliSense shows available methods
+```
+
+### For Research Teams
+
+**Before**: "Each researcher implements their own ATT&CK data parsing, leading to inconsistent results."
+
+**After**: "Standardized data access ensures reproducible research across team members."
+
+```typescript
+// Consistent API across different research projects
+const credentialAccessTechniques = attackDataModel.techniques.filter(technique =>
+    technique.getTactics().some(tactic => tactic.name === 'Credential Access')
+);
+```
+
+### For Enterprise Security Teams
+
+**Before**: "We can't confidently deploy ATT&CK-based tools because data validation is unreliable."
+
+**After**: "Strict validation and type safety enable confident production deployments."
+
+```typescript
+// Validation ensures data meets all ATT&CK requirements
+try {
+    const uuid = await registerDataSource(dataSource);
+    const model = loadDataModel(uuid); // Guaranteed valid data
+} catch (ValidationError) {
+    // Handle invalid data before it reaches production
+}
+```
+
+## When to Use This Library
+
+### Strong Fit Scenarios
+
+The ATT&CK Data Model is particularly valuable when you:
+
+- **Build applications** that work with ATT&CK data regularly
+- **Need reliability** in production systems processing threat intelligence
+- **Want type safety** to catch errors at development time
+- **Work across teams** and need consistent ATT&CK data access patterns
+- **Update frequently** to new ATT&CK versions and need migration confidence
+- **Integrate with STIX tools** while maintaining ATT&CK-specific functionality
+
+### Alternative Approaches
+
+The library might not be the best fit if you:
+
+- **Need minimal dependencies** and are comfortable with manual JSON processing
+- **Use non-STIX ATT&CK distributions** exclusively
+- **Only need one-time data analysis** rather than ongoing application development
+- **Work primarily with non-ATT&CK threat intelligence** frameworks
+
+## Impact on the Ecosystem
+
+### Standardization Benefits
+
+By providing a common interface to ATT&CK data, the library enables:
+
+- **Consistent tooling** across different organizations
+- **Shareable code patterns** for common ATT&CK operations
+- **Reduced learning curve** for new team members
+- **Improved integration** between different security tools
+
+### Community Development
+
+The library serves as a foundation for:
+
+- **Specialized ATT&CK tools** that build on the data model
+- **Educational resources** that can assume a common data interface
+- **Research reproducibility** through standardized data access
+- **Best practices** for working with structured threat intelligence
+
+## Future Evolution
+
+### Adaptation to Standards
+
+As STIX and ATT&CK specifications evolve, the library serves as an adaptation layer:
+
+- **Version compatibility** handling across ATT&CK releases
+- **Standards updates** integrated transparently for users
+- **Deprecation management** with clear migration paths
+- **Extension points** for emerging threat intelligence standards
+
+### Ecosystem Growth
+
+The library enables ecosystem development through:
+
+- **Plugin architectures** for custom data sources
+- **Extension patterns** for organization-specific additions
+- **Integration points** with security orchestration platforms
+- **API stability** that enables long-term tool development
+
+## Measuring Success
+
+The ATT&CK Data Model's success is measured by:
+
+- **Reduced development time** for ATT&CK-based applications
+- **Fewer runtime errors** related to data handling
+- **Increased adoption** of ATT&CK in security tools
+- **Community contributions** that extend the library's capabilities
+- **Industry standardization** around common ATT&CK data patterns
+
+---

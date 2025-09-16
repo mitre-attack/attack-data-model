@@ -2,9 +2,8 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
-  extensibleStixBundleSchema,
+  stixBundleSchema,
   type AttackObject,
-  type AttackObjects,
   type StixBundle,
 } from './schemas/sdo/stix-bundle.schema.js';
 
@@ -18,7 +17,6 @@ import {
   detectionStrategySchema,
   groupSchema,
   identitySchema,
-  logSourceSchema,
   malwareSchema,
   markingDefinitionSchema,
   matrixSchema,
@@ -173,9 +171,13 @@ const readFile = async (path: string): Promise<string> => {
   }
 };
 
-const GITHUB_BASE_URL =
-  process.env.GITHUB_BASE_URL ||
-  'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
+let GITHUB_BASE_URL = '';
+if (typeof window == 'undefined') {
+  // Node.js environment - check environment variables
+  GITHUB_BASE_URL =
+    process.env.GITHUB_BASE_URL ||
+    'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
+}
 
 interface DataSourceMap {
   [key: string]: {
@@ -319,11 +321,10 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
   const validObjects: AttackObject[] = [];
 
   // Validate the bundle's top-level properties
-  const baseBundleValidationResults = extensibleStixBundleSchema
+  const baseBundleValidationResults = stixBundleSchema
     .pick({
       id: true,
       type: true,
-      spec_version: true,
     })
     .loose() // <--- required to let `objects` pass-through without validation (otherwise it gets dropped and the ADM loads an empty list)
     .safeParse(rawData);
@@ -342,7 +343,7 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
   }
 
   // Now process each object individually
-  const objects = rawData.objects as AttackObjects[];
+  const objects = rawData.objects as AttackObject[];
   for (let index = 0; index < objects.length; index++) {
     const obj = objects[index] as AttackObject;
     let objParseResult;
@@ -392,9 +393,6 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
         break;
       case 'relationship':
         objParseResult = relationshipSchema.safeParse(obj);
-        break;
-      case 'x-mitre-log-source':
-        objParseResult = logSourceSchema.safeParse(obj);
         break;
       case 'x-mitre-detection-strategy':
         objParseResult = detectionStrategySchema.safeParse(obj);

@@ -1,7 +1,7 @@
 import {
   createFirstAliasRefinement,
   createFirstXMitreAliasRefinement,
-} from '@/schemas/refinements/index.js';
+} from '@/refinements/index.js';
 import { z } from 'zod/v4';
 import {
   createAttackExternalReferencesSchema,
@@ -19,7 +19,7 @@ import { softwareSchema } from './software.schema.js';
 //
 /////////////////////////////////////
 
-export const extensibleToolSchema = softwareSchema
+export const toolSchema = softwareSchema
   .extend({
     id: createStixIdValidator('tool'),
 
@@ -47,12 +47,10 @@ export const extensibleToolSchema = softwareSchema
 
     x_mitre_old_attack_id: createOldMitreAttackIdSchema('tool').optional(),
   })
-  .strict();
+  .strict()
+  .check((ctx) => {
+    createFirstXMitreAliasRefinement()(ctx);
+    createFirstAliasRefinement()(ctx);
+  });
 
-// Apply a single refinement that combines both refinements
-export const toolSchema = extensibleToolSchema.check((ctx) => {
-  createFirstXMitreAliasRefinement()(ctx);
-  createFirstAliasRefinement()(ctx);
-});
-// Define the type for Tool
-export type Tool = z.infer<typeof extensibleToolSchema>;
+export type Tool = z.infer<typeof toolSchema>;

@@ -1,14 +1,13 @@
 # MITRE ATT&CK® Data Model
 
-The ATT&CK Data Model (ADM) is a TypeScript library that provides a structured way to interact with MITRE ATT&CK datasets. It uses Zod schemas, TypeScript types, and ES6 classes to create a type-safe, object-oriented interface for navigating the ATT&CK data model. This library is designed to parse, validate, and serialize STIX 2.1 formatted content, making it easy to work with ATT&CK-related data in a programmatic and intuitive way.
+**A TypeScript library for working with MITRE ATT&CK data using STIX 2.1**
 
-You can browse the ATT&CK schemas in a user-friendly interface at:
+The ATT&CK Data Model (ADM) provides a type-safe, object-oriented interface for working with MITRE ATT&CK datasets.
+Built on STIX 2.1 compliance, it uses Zod schemas and TypeScript types to ensure data integrity while providing intuitive relationship navigation between ATT&CK objects.
 
-https://mitre-attack.github.io/attack-data-model/. 
+**[CLICK HERE](https://mitre-attack.github.io/attack-data-model) <sup>[1](#footnotes)</sup>** to browse the ATT&CK schemas in a user-friendly interface. 
 
-This site is dynamically generated from the contents of the `@latest` distribution channel / `main` branch. Please note that we do not currently maintain separate documentation for previous releases.
-
-## Features
+## Key Features
 
 - **Type-Safe Data Parsing**: ADM validates STIX 2.1 bundles using Zod schemas, ensuring data model compliance and type safety.
 - **Easy Relationship Navigation**: Each object instance contains pointers to related objects, simplifying the process of navigating between techniques, tactics, and other ATT&CK elements.
@@ -91,9 +90,9 @@ For most users, we recommend:
 
 Example of loading the latest ATT&CK data:
 ```javascript
-import { registerDataSource, loadDataModel, DataSource } from '@mitre-attack/attack-data-model';
+import { registerDataSource, loadDataModel, DataSourceRegistration } from '@mitre-attack/attack-data-model';
 
-const dataSource = new DataSource({
+const dataSource = new DataSourceRegistration({
     source: 'attack',
     domain: 'enterprise-attack',
     version: '17.1',
@@ -133,12 +132,12 @@ For additional context about the ATT&CK specification, please refer to the [ATT&
 Here's an example script that demonstrates how to use the ADM library to load ATT&CK data from the official MITRE ATT&CK GitHub repository:
 
 ```typescript
-import { registerDataSource, loadDataModel, DataSource } from '@mitre-attack/attack-data-model';
+import { registerDataSource, loadDataModel, DataSourceRegistration } from '@mitre-attack/attack-data-model';
 
 (async () => {
-    
-    // Instantiating a DataSource object will validate that the data source is accessible and readable
-    const dataSource = new DataSource({
+
+    // Instantiating a DataSourceRegistration object will validate that the data source is accessible and readable
+    const dataSource = new DataSourceRegistration({
         source: 'attack', // Built-in index to retrieve ATT&CK content from the official MITRE ATT&CK STIX 2.1 GitHub repository
         domain: 'enterprise-attack',
         version: '15.1', // Omitting 'version' will default to the latest version available in the repository
@@ -160,7 +159,7 @@ import { registerDataSource, loadDataModel, DataSource } from '@mitre-attack/att
 
             // Type hinting is supported for all object properties
             if (technique.x_mitre_is_subtechnique) {
-                
+
                 // Access related objects with helpful getter methods
                 console.log(technique.getParentTechnique());
             }
@@ -231,20 +230,24 @@ For more detailed examples, please refer to the [examples](./examples/README.md)
 
 ## Compatibility Matrix
 
-Our [COMPATIBILITY.md](./docs/COMPATIBILITY.md) document tracks the compatibility between versions of the ATT&CK Data Model (ADM) TypeScript API (`@mitre-attack/attack-data-model`) and versions of the MITRE ATT&CK® dataset (`mitre-attack/attack-stix-data`).
+Our [Compatibility documentation](https://mitre-attack.github.io/attack-data-model/principles/versioning-philosophy) tracks the compatibility between versions of the ATT&CK Data Model (ADM) TypeScript API (`@mitre-attack/attack-data-model`) and versions of the MITRE ATT&CK dataset (`mitre-attack/attack-stix-data`).
 
 ## Contributing
 
 We welcome contributions! Please see our [CONTRIBUTING.md](./docs/CONTRIBUTING.md) file for details on how to contribute to this project.
 
+## Footnotes
+
+<sup>1</sup> The [schemas site](https://mitre-attack.github.io/attack-data-model) is dynamically generated from the contents of the `@latest` distribution channel / `main` branch. We do not currently maintain separate documentation for previous releases, though we hope to in the future.
+
 ## License
 
 This project is licensed under the Apache 2.0 License.
 
-## Notice 
+## Notice
 
 Copyright 2020-2025 The MITRE Corporation.
 
-This project makes use of ATT&CK®
+This project makes use of ATT&CK
 
 [ATT&CK Terms of Use](https://attack.mitre.org/resources/terms-of-use/)

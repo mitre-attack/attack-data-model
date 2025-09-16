@@ -2,7 +2,7 @@ import {
   createAttackIdInExternalReferencesRefinement,
   createEnterpriseOnlyPropertiesRefinement,
   createMobileOnlyPropertiesRefinement,
-} from '@/schemas/refinements/index.js';
+} from '@/refinements/index.js';
 import { z } from 'zod/v4';
 import {
   attackBaseDomainObjectSchema,
@@ -325,7 +325,7 @@ export type XMitreDetection = z.infer<typeof xMitreDetectionSchema>;
 //
 /////////////////////////////////////
 
-export const extensibleTechniqueSchema = attackBaseDomainObjectSchema
+export const techniqueSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('attack-pattern'),
 
@@ -368,16 +368,14 @@ export const extensibleTechniqueSchema = attackBaseDomainObjectSchema
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
   })
-  .strict();
-
-// Apply the refinements for techniques
-export const techniqueSchema = extensibleTechniqueSchema.check((ctx) => {
-  // Validates that the first external reference is a valid ATT&CK ID
-  createAttackIdInExternalReferencesRefinement()(ctx);
-  // Validates that the technique only contains properties permissible by the target tactic in Enterprise
-  createEnterpriseOnlyPropertiesRefinement()(ctx);
-  // Validates that the technique only contains properties permissible in Mobile (if the technique belongs to Mobile)
-  createMobileOnlyPropertiesRefinement()(ctx);
-});
-
-export type Technique = z.infer<typeof extensibleTechniqueSchema>;
+  .meta({
+    description:
+      'Techniques describe specific methods adversaries use to achieve tactical objectives and are represented as [attack-pattern](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230921) objects following the STIX 2.1 specification.',
+  })
+  .strict()
+  .check((ctx) => {
+    createAttackIdInExternalReferencesRefinement()(ctx);
+    createEnterpriseOnlyPropertiesRefinement()(ctx);
+    createMobileOnlyPropertiesRefinement()(ctx);
+  });
+export type Technique = z.infer<typeof techniqueSchema>;

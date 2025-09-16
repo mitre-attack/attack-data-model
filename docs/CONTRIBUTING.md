@@ -61,9 +61,21 @@ When submitting a pull request:
 5. Increase the version numbers in any examples files and the README.md to the new version that this Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
 6. Include a description of your changes and why they're necessary.
 
+## Developer Setup
+
+### Requirements
+
+- [Node.js](https://nodejs.org/) v18.20
+
+### Install dependences
+
+```bash
+npm install
+```
+
 ## Developer Workflow
 
-To maintain code quality and consistency, we use **ESLint**, **Prettier**, and **Husky** as part of the development workflow. Below is an overview of how each tool is configured and how it affects the contribution process:
+To maintain code quality and consistency, we use **ESLint**, **Prettier**, and **Husky** as part of the development workflow. These tools are installed and configured by the [Developer Setup](#developer-setup) steps above. Below is an overview of how each tool is configured and how it affects the contribution process:
 
 ### ESLint and Prettier Configuration
 
