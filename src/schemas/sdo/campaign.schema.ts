@@ -1,4 +1,7 @@
-import { createCitationsRefinement, createFirstAliasRefinement } from '@/refinements/index.js';
+import {
+  createCitationsRefinement,
+  createFirstAliasRefinement,
+} from '@/schemas/refinements/index.js';
 import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import {

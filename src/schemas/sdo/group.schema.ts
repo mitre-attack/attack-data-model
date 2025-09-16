@@ -1,6 +1,6 @@
-import { createFirstAliasRefinement } from '@/refinements/index.js';
 import { attackBaseDomainObjectSchema } from '@/schemas/common/attack-base-object.js';
 import { createStixTypeValidator } from '@/schemas/common/stix-type.js';
+import { createFirstAliasRefinement } from '@/schemas/refinements/index.js';
 import { z } from 'zod/v4';
 import {
   aliasesSchema,

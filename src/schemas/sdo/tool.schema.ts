@@ -1,7 +1,7 @@
 import {
   createFirstAliasRefinement,
   createFirstXMitreAliasRefinement,
-} from '@/refinements/index.js';
+} from '@/schemas/refinements/index.js';
 import { z } from 'zod/v4';
 import {
   createAttackExternalReferencesSchema,

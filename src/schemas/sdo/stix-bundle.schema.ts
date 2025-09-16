@@ -1,12 +1,12 @@
-import { createFirstBundleObjectRefinement } from '@/refinements/index.js';
+import { createFirstBundleObjectRefinement } from '@/schemas/refinements/index.js';
 import { z } from 'zod/v4';
 import { createStixIdValidator } from '../common/stix-identifier.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 import {
-  markingDefinitionSchema,
   type MarkingDefinition,
+  markingDefinitionSchema,
 } from '../smo/marking-definition.schema.js';
-import { relationshipSchema, type Relationship } from '../sro/relationship.schema.js';
+import { type Relationship, relationshipSchema } from '../sro/relationship.schema.js';
 import { type Analytic, analyticSchema } from './analytic.schema.js';
 import { type Asset, assetSchema } from './asset.schema.js';
 import { type Campaign, campaignSchema } from './campaign.schema.js';
