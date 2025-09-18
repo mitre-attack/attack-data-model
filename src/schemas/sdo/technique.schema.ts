@@ -2,7 +2,7 @@ import {
   createAttackIdInExternalReferencesRefinement,
   createEnterpriseOnlyPropertiesRefinement,
   createMobileOnlyPropertiesRefinement,
-} from '@/refinements/index.js';
+} from '@/schemas/refinements/index.js';
 import { z } from 'zod/v4';
 import {
   attackBaseDomainObjectSchema,

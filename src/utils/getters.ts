@@ -1,10 +1,10 @@
+import { DataSourceImpl } from '../api/sdo/data-source.impl.js';
+import { MitigationImpl } from '../api/sdo/mitigation.impl.js';
+import { TacticImpl } from '../api/sdo/tactic.impl.js';
 import type { XMitrePlatforms } from '../schemas/common/index.js';
 import type { DataSource, Mitigation, Tactic, Technique } from '../schemas/sdo/index.js';
 import type { AttackObject } from '../schemas/sdo/stix-bundle.schema.js';
 import type { Relationship } from '../schemas/sro/relationship.schema.js';
-import { DataSourceImpl } from './sdo/data-source.impl.js';
-import { MitigationImpl } from './sdo/mitigation.impl.js';
-import { TacticImpl } from './sdo/tactic.impl.js';
 
 export function getSubTechniques(
   technique: Technique,

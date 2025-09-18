@@ -27,12 +27,132 @@ import {
   toolSchema,
 } from './schemas/index.js';
 
-import {
-  DataSourceRegistration,
-  type ParsingMode,
-} from './data-sources/data-source-registration.js';
+import { AttackDataModel } from './api/attack-data-model.js';
+import { attackDomainSchema, type AttackDomain } from './index.js';
 
-import { AttackDataModel } from './classes/attack-data-model.js';
+export type ParsingMode = 'strict' | 'relaxed';
+
+export type ContentOriginOptions =
+  | {
+      source: 'mitre';
+      domain: AttackDomain;
+      version?: string;
+      parsingMode?: ParsingMode;
+    }
+  | {
+      source: 'file';
+      path: string;
+      parsingMode?: ParsingMode;
+    }
+  | {
+      source: 'url';
+      url: string;
+      parsingMode?: ParsingMode;
+    }
+  | {
+      source: 'taxii';
+      url: string;
+      parsingMode?: ParsingMode;
+    };
+
+interface GitHubRelease {
+  tag_name: string;
+  name: string;
+  published_at: string;
+}
+
+function normalizeVersion(version: string): string {
+  return version.replace(/^v/, '');
+}
+
+export async function fetchAttackVersions(): Promise<string[]> {
+  const url = 'https://api.github.com/repos/mitre-attack/attack-stix-data/releases';
+
+  const response = await fetch(url, {
+    headers: {
+      Accept: 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const releases: GitHubRelease[] = await response.json();
+
+  const versions = releases
+    .map((release) => normalizeVersion(release.tag_name))
+    .sort((a, b) => {
+      const [aMajor, aMinor] = a.split('.').map(Number);
+      const [bMajor, bMinor] = b.split('.').map(Number);
+      if (bMajor !== aMajor) return bMajor - aMajor;
+      return bMinor - aMinor;
+    });
+
+  return versions;
+}
+
+export class ContentOriginRegistration {
+  constructor(public readonly options: ContentOriginOptions) {
+    this.validateOptions();
+  }
+
+  private async validateOptions(): Promise<void> {
+    const { source, parsingMode } = this.options;
+
+    if (parsingMode && !['strict', 'relaxed'].includes(parsingMode)) {
+      throw new Error(`Invalid parsingMode: ${parsingMode}. Expected 'strict' or 'relaxed'.`);
+    }
+
+    switch (source) {
+      case 'mitre': {
+        await this.validateMitreOptions();
+        break;
+      }
+      case 'file': {
+        this.validateFileOptions();
+        break;
+      }
+      case 'url':
+      case 'taxii': {
+        throw new Error(`The ${source} source is not implemented yet.`);
+      }
+      default: {
+        throw new Error(`Unsupported content origin type: ${source}`);
+      }
+    }
+  }
+
+  private async validateMitreOptions(): Promise<void> {
+    const { domain, version } = this.options as { domain: AttackDomain; version?: string };
+
+    if (!domain || !Object.values(attackDomainSchema.enum).includes(domain)) {
+      throw new Error(
+        `Invalid domain provided for 'mitre' source. Expected one of: ${Object.values(
+          attackDomainSchema.enum,
+        ).join(', ')}`,
+      );
+    }
+
+    if (version) {
+      const supportedVersions = await fetchAttackVersions();
+      const normalizedVersion = version.replace(/^v/, '');
+      if (!supportedVersions.includes(normalizedVersion)) {
+        throw new Error(
+          `Invalid version: ${version}. Supported versions are: ${supportedVersions.join(', ')}`,
+        );
+      }
+    }
+  }
+
+  private validateFileOptions(): void {
+    const { path } = this.options as { path: string };
+    if (!path) {
+      throw new Error("The 'file' source requires a 'path' field to specify the file location.");
+    }
+  }
+}
 
 const readFile = async (path: string): Promise<string> => {
   if (typeof window !== 'undefined') {
@@ -59,31 +179,33 @@ if (typeof window == 'undefined') {
     'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
 }
 
-interface DataSourceMap {
+interface ContentOriginMap {
   [key: string]: {
     id: string;
     model: AttackDataModel;
   };
 }
 
-// Data structure to track registered data sources
-const dataSources: DataSourceMap = {};
+// Data structure to track registered content origins
+const contentOrigins: ContentOriginMap = {};
 
 /**
- * Registers a new data source by fetching and caching ATT&CK data based on the provided options.
- * Generates a unique ID for each registered data source.
+ * Registers a new content origin by fetching and caching ATT&CK data based on the provided options.
+ * Generates a unique ID for each registered content origin.
  *
- * @param registration - A DataSourceRegistration object containing the source, domain, version, etc.
- * @returns The unique ID of the registered data source.
+ * @param registration - A ContentOriginRegistration object containing the source, domain, version, etc.
+ * @returns The unique ID of the registered content origin.
  */
-export async function registerDataSource(registration: DataSourceRegistration): Promise<string> {
+export async function registerContentOrigin(
+  registration: ContentOriginRegistration,
+): Promise<string> {
   const { source, parsingMode = 'strict' } = registration.options;
 
   let rawData: StixBundle;
-  const uniqueId = uuidv4(); // Generate a unique ID for the data source
+  const uniqueId = uuidv4(); // Generate a unique ID for the content origin
 
   switch (source) {
-    case 'attack': {
+    case 'mitre': {
       const { domain, version } = registration.options;
       rawData = await fetchAttackDataFromGitHub(domain, version);
       break;
@@ -100,7 +222,7 @@ export async function registerDataSource(registration: DataSourceRegistration): 
       break;
     }
     default:
-      throw new Error(`Unsupported source type: ${source}`);
+      throw new Error(`Unsupported content origin type: ${source}`);
   }
 
   console.log('Retrieved data');
@@ -112,10 +234,10 @@ export async function registerDataSource(registration: DataSourceRegistration): 
   const model = new AttackDataModel(uniqueId, parsedAttackObjects);
   console.log('Initialized data model.');
 
-  // Store the model and its unique ID in the dataSources map
-  dataSources[uniqueId] = { id: uniqueId, model };
+  // Store the model and its unique ID in the contentOrigins map
+  contentOrigins[uniqueId] = { id: uniqueId, model };
 
-  return uniqueId; // Return the unique identifier of the data source
+  return uniqueId; // Return the unique identifier of the content origin
 }
 
 /**
@@ -318,15 +440,15 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
 }
 
 /**
- * Returns the data model of the registered data source, given the data source's unique ID.
+ * Returns the data model of the registered content origin, given the content origin's unique ID.
  *
  * @param id - The unique ID of the data model to retrieve.
  * @returns The corresponding AttackDataModel instance.
  */
 export function loadDataModel(id: string): AttackDataModel {
-  const dataSource = dataSources[id];
-  if (!dataSource) {
-    throw new Error(`Data source with ID ${id} not found.`);
+  const contentOrigin = contentOrigins[id];
+  if (!contentOrigin) {
+    throw new Error(`Content origin with ID ${id} not found.`);
   }
-  return dataSource.model;
+  return contentOrigin.model;
 }

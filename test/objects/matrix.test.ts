@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { createSyntheticStixObject } from '../../src/generator';
 import { type Matrix, matrixSchema } from '../../src/schemas/sdo/matrix.schema';
+import { createSyntheticStixObject } from '../../src/utils/index';
 
 /**
  * Test suite for validating the Matrix schema.
