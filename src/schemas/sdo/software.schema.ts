@@ -5,8 +5,8 @@ import {
   createMultiStixTypeValidator,
   descriptionSchema,
   externalReferencesSchema,
-  objectMarkingRefsSchema,
   stixCreatedByRefSchema,
+  xMitreContributorsSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
@@ -29,13 +29,11 @@ export const softwareSchema = attackBaseDomainObjectSchema.extend({
 
   external_references: externalReferencesSchema,
 
-  object_marking_refs: objectMarkingRefsSchema,
-
   // Malware: Required
   // Tool: Optional
   x_mitre_platforms: xMitrePlatformsSchema.optional(),
 
-  x_mitre_contributors: z.array(z.string()).optional(),
+  x_mitre_contributors: xMitreContributorsSchema.optional(),
 
   x_mitre_aliases: aliasesSchema.optional().meta({
     description:
