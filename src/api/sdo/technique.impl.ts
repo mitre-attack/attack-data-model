@@ -1,11 +1,11 @@
-import { Validated } from '../common/index.js';
+import type { StixModifiedTimestamp, XMitrePlatform } from '@/schemas/common/index.js';
+import type { AttackObject } from '@/schemas/sdo/index.js';
 import { techniqueSchema } from '@/schemas/sdo/technique.schema.js';
-import type { AttackObject, Technique } from '@/schemas/sdo/index.js';
-import type { TacticImpl } from './tactic.impl.js';
-import type { MitigationImpl } from './mitigation.impl.js';
+import { Validated } from '../common/index.js';
 import type { AssetImpl } from './asset.impl.js';
 import type { DataComponentImpl } from './data-component.impl.js';
-import type { StixModifiedTimestamp, XMitrePlatform } from '@/schemas/common/index.js';
+import type { MitigationImpl } from './mitigation.impl.js';
+import type { TacticImpl } from './tactic.impl.js';
 
 export class TechniqueImpl extends Validated(techniqueSchema) {
   // Relationship tracking (mutable, not part of the JSON data)
@@ -24,37 +24,37 @@ export class TechniqueImpl extends Validated(techniqueSchema) {
   }
 
   addSubTechnique(subTechnique: TechniqueImpl): void {
-    if (!this.#subTechniques.includes(subTechnique)) {
+    if (!this.#subTechniques.some((t) => t.id === subTechnique.id)) {
       this.#subTechniques.push(subTechnique);
     }
   }
 
   addTactic(tactic: TacticImpl): void {
-    if (!this.#tactics.includes(tactic)) {
+    if (!this.#tactics.some((t) => t.id === tactic.id)) {
       this.#tactics.push(tactic);
     }
   }
 
   addMitigation(mitigation: MitigationImpl): void {
-    if (!this.#mitigations.includes(mitigation)) {
+    if (!this.#mitigations.some((m) => m.id === mitigation.id)) {
       this.#mitigations.push(mitigation);
     }
   }
 
   addRelatedTechnique(technique: TechniqueImpl): void {
-    if (!this.#relatedTechniques.includes(technique)) {
+    if (!this.#relatedTechniques.some((t) => t.id === technique.id)) {
       this.#relatedTechniques.push(technique);
     }
   }
 
   addTargetAsset(asset: AssetImpl): void {
-    if (!this.#targetAssets.includes(asset)) {
+    if (!this.#targetAssets.some((a) => a.id === asset.id)) {
       this.#targetAssets.push(asset);
     }
   }
 
   addDetectingDataComponent(dataComponent: DataComponentImpl): void {
-    if (!this.#detectingDataComponents.includes(dataComponent)) {
+    if (!this.#detectingDataComponents.some((dc) => dc.id === dataComponent.id)) {
       this.#detectingDataComponents.push(dataComponent);
     }
   }
@@ -88,7 +88,6 @@ export class TechniqueImpl extends Validated(techniqueSchema) {
     return [...this.#detectingDataComponents];
   }
 
-  // Common functionality
   getRevokedBy(): AttackObject | undefined {
     return this.#revokedBy;
   }
@@ -97,6 +96,7 @@ export class TechniqueImpl extends Validated(techniqueSchema) {
     this.#revokedBy = obj;
   }
 
+  // Business logic methods
   isDeprecated(): boolean {
     return this.x_mitre_deprecated ?? false;
   }
@@ -118,40 +118,33 @@ export class TechniqueImpl extends Validated(techniqueSchema) {
     return attackId ? `${attackId}: ${this.name}` : this.name;
   }
 
-  // Get tactics from kill chain phases
   getTacticNames(): string[] {
     return this.kill_chain_phases?.map((phase) => phase.phase_name) ?? [];
   }
 
-  // Get platforms as a comma-separated string
   getPlatformsString(): string {
     return this.x_mitre_platforms?.join(', ') ?? '';
   }
 
-  // Check if technique applies to a specific platform
   supportsPlatform(platform: string): boolean {
     return this.x_mitre_platforms?.includes(platform as XMitrePlatform) ?? false;
   }
 
-  // Create a new instance with updated fields
   with(updates: Partial<TechniqueImpl>): TechniqueImpl {
     const newData = { ...this, ...updates };
     return new TechniqueImpl(newData);
   }
 
-  // Create a new instance with updated modified timestamp
   touch(): TechniqueImpl {
     return this.with({
       modified: new Date().toISOString() as StixModifiedTimestamp,
     });
   }
 
-  // Equality check
   equals(other: TechniqueImpl): boolean {
     return this.id === other.id && this.modified === other.modified;
   }
 
-  // Check if this version is newer than another
   isNewerThan(other: TechniqueImpl): boolean {
     if (this.id !== other.id) {
       throw new Error('Cannot compare different techniques');
@@ -159,5 +152,3 @@ export class TechniqueImpl extends Validated(techniqueSchema) {
     return new Date(this.modified) > new Date(other.modified);
   }
 }
-
-export type TechniqueCls = Technique & typeof TechniqueImpl;
