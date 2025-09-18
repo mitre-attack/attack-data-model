@@ -7,6 +7,7 @@ import {
   createAttackExternalReferencesSchema,
   createStixIdValidator,
   stixTimestampSchema,
+  xMitreContributorsSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
 } from '../common/index.js';
@@ -30,7 +31,7 @@ export const groupSchema = attackBaseDomainObjectSchema
 
     x_mitre_domains: xMitreDomainsSchema,
 
-    x_mitre_contributors: z.array(z.string()).optional(),
+    x_mitre_contributors: xMitreContributorsSchema.optional(),
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
 
