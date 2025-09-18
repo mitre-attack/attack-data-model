@@ -263,6 +263,7 @@ export const objectMarkingRefsSchema = z
       'Identifier must start with "marking-definition--"',
     ),
   )
+  .nonempty()
   .meta({
     description: 'The list of marking-definition objects to be applied to this object.',
   });
