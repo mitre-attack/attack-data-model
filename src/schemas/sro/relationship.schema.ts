@@ -303,19 +303,18 @@ export const relationshipSchema = attackBaseRelationshipObjectSchema
   .check((ctx) => {
     createRelationshipValidationRefinement()(ctx);
   })
-  .transform((data) => {
+  .check((ctx) => {
     // Check for deprecated pattern
-    const [sourceType] = data.source_ref.split('--') as [StixType];
+    const [sourceType] = ctx.value.source_ref.split('--') as [StixType];
     if (
       sourceType === 'x-mitre-data-component' &&
-      data.relationship_type === 'detects' &&
-      data.target_ref.startsWith('attack-pattern--')
+      ctx.value.relationship_type === 'detects' &&
+      ctx.value.target_ref.startsWith('attack-pattern--')
     ) {
       console.warn(
         'DEPRECATION WARNING: x-mitre-data-component -> detects -> attack-pattern relationships are deprecated',
       );
     }
-    return data;
   });
 
 export type Relationship = z.infer<typeof relationshipSchema>;
