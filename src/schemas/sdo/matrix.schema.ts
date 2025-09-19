@@ -15,10 +15,13 @@ import { createStixTypeValidator } from '../common/stix-type.js';
 //
 /////////////////////////////////////
 
-export const xMitreTacticRefsSchema = z.array(createStixIdValidator('x-mitre-tactic')).meta({
-  description:
-    'An ordered list of x-mitre-tactic STIX IDs corresponding to the tactics of the matrix. The order determines the appearance within the matrix.',
-});
+export const xMitreTacticRefsSchema = z
+  .array(createStixIdValidator('x-mitre-tactic'))
+  .nonempty()
+  .meta({
+    description:
+      'An ordered list of x-mitre-tactic STIX IDs corresponding to the tactics of the matrix. The order determines the appearance within the matrix.',
+  });
 
 export type XMitreTacticRefs = z.infer<typeof xMitreTacticRefsSchema>;
 
