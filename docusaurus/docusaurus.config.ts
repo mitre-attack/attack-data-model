@@ -46,6 +46,19 @@ const config: Config = {
     ],
   ],
 
+  plugins: [
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'schema',
+        path: 'schema',
+        routeBasePath: 'schema',
+        sidebarPath: './sidebarsSchema.ts',
+        // ... other options
+      },
+    ],
+  ],
+
   themeConfig: {
     // Enhanced metadata for better SEO and social sharing
     metadata: [
@@ -70,6 +83,13 @@ const config: Config = {
           sidebarId: 'documentationSidebar',
           position: 'left',
           label: 'Documentation',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'schemaSidebar',
+          position: 'left',
+          label: 'Schema',
+          docsPluginId: 'schema',
         },
         {
           href: 'https://github.com/mitre-attack/attack-data-model',
