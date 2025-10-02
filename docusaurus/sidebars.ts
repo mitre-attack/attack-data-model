@@ -41,16 +41,16 @@ const sidebars: SidebarsConfig = {
       description: 'Information-oriented technical specifications',
       link: { type: 'doc', id: 'reference/index' },
       items: [
-        {
-          type: 'category',
-          label: 'API Documentation',
-          link: { type: 'doc', id: 'reference/api/index' },
-          items: [
-            'reference/api/data-sources',
-            'reference/api/attack-data-model',
-            'reference/api/utilities',
-          ],
-        },
+        // {
+        //   type: 'category',
+        //   label: 'API Documentation',
+        //   link: { type: 'doc', id: 'reference/api/index' },
+        //   items: [
+        //     'reference/api/data-sources',
+        //     'reference/api/attack-data-model',
+        //     'reference/api/utilities',
+        //   ],
+        // },
         // {
         //   type: 'category',
         //   label: 'Schema Reference',

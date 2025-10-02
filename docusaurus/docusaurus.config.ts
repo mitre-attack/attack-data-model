@@ -57,6 +57,16 @@ const config: Config = {
         // ... other options
       },
     ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'api',
+        path: 'api',
+        routeBasePath: 'api',
+        sidebarPath: './sidebarsAPI.ts',
+        // ... other options
+      },
+    ],
   ],
 
   themeConfig: {
@@ -92,9 +102,21 @@ const config: Config = {
           docsPluginId: 'schemas',
         },
         {
+          type: 'docSidebar',
+          sidebarId: 'apiSidebar',
+          position: 'left',
+          label: 'API',
+          docsPluginId: 'api',
+        },
+        {
           type: 'docsVersionDropdown',
           position: 'right',
           docsPluginId: 'schemas',
+        },
+        {
+          type: 'docsVersionDropdown',
+          position: 'right',
+          docsPluginId: 'api',
         },
         {
           href: 'https://github.com/mitre-attack/attack-data-model',
