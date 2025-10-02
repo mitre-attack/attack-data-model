@@ -50,10 +50,10 @@ const config: Config = {
     [
       '@docusaurus/plugin-content-docs',
       {
-        id: 'schema',
-        path: 'schema',
-        routeBasePath: 'schema',
-        sidebarPath: './sidebarsSchema.ts',
+        id: 'schemas',
+        path: 'schemas',
+        routeBasePath: 'schemas',
+        sidebarPath: './sidebarsSchemas.ts',
         // ... other options
       },
     ],
@@ -86,10 +86,10 @@ const config: Config = {
         },
         {
           type: 'docSidebar',
-          sidebarId: 'schemaSidebar',
+          sidebarId: 'schemasSidebar',
           position: 'left',
-          label: 'Schema',
-          docsPluginId: 'schema',
+          label: 'Schemas',
+          docsPluginId: 'schemas',
         },
         {
           href: 'https://github.com/mitre-attack/attack-data-model',
