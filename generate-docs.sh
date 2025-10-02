@@ -2,7 +2,7 @@
 
 WORKDIR="."
 SCHEMA_DIR="$WORKDIR/src/schemas"
-OUTPUT_DIR="docusaurus/docs/reference/schemas"
+OUTPUT_DIR="docusaurus/schemas"
 OVERVIEW="$OUTPUT_DIR/index.mdx"
 
 mkdir -p $OUTPUT_DIR

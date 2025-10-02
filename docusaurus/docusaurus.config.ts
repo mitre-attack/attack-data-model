@@ -92,6 +92,11 @@ const config: Config = {
           docsPluginId: 'schemas',
         },
         {
+          type: 'docsVersionDropdown',
+          position: 'right',
+          docsPluginId: 'schemas',
+        },
+        {
           href: 'https://github.com/mitre-attack/attack-data-model',
           label: 'GitHub',
           position: 'right',
