@@ -30,7 +30,7 @@ find $SCHEMA_DIR -name "*.schema.ts" | while read schemaFile; do
 
 	# skip stix-bundle (manually generated) and add to overview page
 	if [[ "${fileName}" == "stix-bundle.schema.ts" ]]; then
-		echo "| STIX Bundle | SDO | [Schema](./sdo/stix-bundle.schema) |" >> $OVERVIEW
+		echo "| STIX Bundle | SDO | [Schema](./stix-bundle.schema) |" >> $OVERVIEW
 		continue
 	fi
 
