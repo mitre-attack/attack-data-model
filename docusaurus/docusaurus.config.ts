@@ -147,8 +147,12 @@ const config: Config = {
               to: '/docs/how-to-guides/',
             },
             {
-              label: 'Reference',
-              to: '/docs/reference/',
+              label: 'Schema Reference',
+              to: '/schemas/',
+            },
+            {
+              label: 'API Reference',
+              to: '/api/',
             },
             {
               label: 'Principles',
