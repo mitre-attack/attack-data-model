@@ -127,12 +127,12 @@ const config: Config = {
         {
           type: 'docsVersionDropdown',
           position: 'right',
-          docsPluginId: 'schemas'
+          docsPluginId: 'schemas',
         },
         {
           type: 'docsVersionDropdown',
           position: 'right',
-          docsPluginId: 'api'
+          docsPluginId: 'api',
         },
         // {
         //   type: "custom-Dropdown",
