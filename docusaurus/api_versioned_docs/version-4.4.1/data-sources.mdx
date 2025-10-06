@@ -1,0 +1,425 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
+# DataSource
+
+<WorkInProgressNotice />
+
+**Data source configuration and registration for loading ATT&CK datasets**
+
+The `DataSource` class defines where and how to load ATT&CK data. It supports multiple source types including the official ATT&CK repository, local files, remote URLs, and TAXII servers.
+
+## Constructor
+
+```typescript
+new DataSource(options: DataSourceOptions)
+```
+
+### DataSourceOptions Interface
+
+```typescript
+interface DataSourceOptions {
+    source: 'attack' | 'file' | 'url' | 'taxii';
+    parsingMode?: 'strict' | 'relaxed';
+
+    // Attack source options
+    domain?: 'enterprise-attack' | 'mobile-attack' | 'ics-attack';
+    version?: string;
+
+    // File source options
+    file?: string;
+
+    // URL source options
+    url?: string;
+    timeout?: number;
+    headers?: Record<string, string>;
+
+    // TAXII source options (coming soon)
+    server?: string;
+    collection?: string;
+    credentials?: {
+        username: string;
+        password: string;
+    };
+}
+```
+
+## Source Types
+
+### Attack Repository Source
+
+Load data from the official MITRE ATT&CK STIX 2.1 repository.
+
+```typescript
+const dataSource = new DataSource({
+    source: 'attack',
+    domain: 'enterprise-attack',
+    version: '15.1',
+    parsingMode: 'strict'
+});
+```
+
+**Configuration Options**:
+
+| Option | Type | Required | Default | Description |
+|--------|------|----------|---------|-------------|
+| `source` | `'attack'` | ✅ | - | Specifies ATT&CK repository source |
+| `domain` | `'enterprise-attack'` \| `'mobile-attack'` \| `'ics-attack'` | ✅ | - | ATT&CK domain to load |
+| `version` | `string` | ❌ | `'latest'` | Specific version (e.g., '15.1') or 'latest' |
+| `parsingMode` | `'strict'` \| `'relaxed'` | ❌ | `'strict'` | Validation strictness |
+
+**Available Versions**:
+
+- `'latest'` - Most recent release
+- `'15.1'` - Version 15.1 (latest stable)
+- `'15.0'` - Version 15.0
+- See [ATT&CK releases](https://github.com/mitre-attack/attack-stix-data/releases) for all versions
+
+**Domain Content**:
+
+- `enterprise-attack` - Techniques for Windows, Linux, macOS, containers, cloud
+- `mobile-attack` - Mobile-specific techniques for Android and iOS
+- `ics-attack` - Industrial Control Systems techniques
+
+### File Source
+
+Load data from local STIX 2.1 bundle files.
+
+```typescript
+const dataSource = new DataSource({
+    source: 'file',
+    file: '/path/to/enterprise-attack.json',
+    parsingMode: 'relaxed'
+});
+```
+
+**Configuration Options**:
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `source` | `'file'` | ✅ | Specifies file source |
+| `file` | `string` | ✅ | Absolute or relative path to STIX bundle JSON file |
+| `parsingMode` | `'strict'` \| `'relaxed'` | ❌ | Validation strictness (default: 'strict') |
+
+**File Requirements**:
+
+- Must be valid JSON format
+- Must contain a STIX 2.1 bundle with `type: "bundle"`
+- Should include ATT&CK objects with proper schemas
+
+**Example File Structure**:
+
+```json
+{
+    "type": "bundle",
+    "id": "bundle--12345678-1234-1234-1234-123456789012",
+    "objects": [
+        {
+            "type": "attack-pattern",
+            "id": "attack-pattern--...",
+            "name": "Process Injection",
+            // ... other technique properties
+        }
+        // ... more objects
+    ]
+}
+```
+
+### URL Source
+
+Load data from remote URLs serving STIX 2.1 content.
+
+```typescript
+const dataSource = new DataSource({
+    source: 'url',
+    url: 'https://example.com/attack-data.json',
+    timeout: 30000,
+    headers: {
+        'Authorization': 'Bearer token123',
+        'Accept': 'application/json'
+    },
+    parsingMode: 'strict'
+});
+```
+
+**Configuration Options**:
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `source` | `'url'` | ✅ | Specifies URL source |
+| `url` | `string` | ✅ | HTTP/HTTPS URL to STIX bundle |
+| `timeout` | `number` | ❌ | Request timeout in milliseconds (default: 10000) |
+| `headers` | `Record<string, string>` | ❌ | HTTP headers for authentication/content negotiation |
+| `parsingMode` | `'strict'` \| `'relaxed'` | ❌ | Validation strictness (default: 'strict') |
+
+**URL Requirements**:
+
+- Must be accessible via HTTP/HTTPS
+- Should return JSON content with proper MIME type
+- Must contain valid STIX 2.1 bundle
+
+### TAXII Source (Coming Soon)
+
+Load data from TAXII 2.1 servers.
+
+```typescript
+const dataSource = new DataSource({
+    source: 'taxii',
+    server: 'https://cti-taxii.mitre.org',
+    collection: 'attack-patterns',
+    credentials: {
+        username: 'user',
+        password: 'pass'
+    }
+});
+```
+
+> **Note**: TAXII source support is planned for future releases.
+
+## Parsing Modes
+
+### Strict Mode
+
+```typescript
+parsingMode: 'strict'
+```
+
+**Behavior**:
+
+- All objects must pass schema validation
+- Any validation failure aborts the entire loading process
+- Relationships must reference valid objects
+- Recommended for production use with trusted data sources
+
+**Use Cases**:
+
+- Production applications requiring data integrity
+- Applications with strict compliance requirements
+- Testing and validation scenarios
+
+### Relaxed Mode
+
+```typescript
+parsingMode: 'relaxed'
+```
+
+**Behavior**:
+
+- Invalid objects are logged but skipped
+- Loading continues even with validation errors
+- Broken relationships are ignored
+- Useful for experimental or incomplete datasets
+
+**Use Cases**:
+
+- Development and testing with custom data
+- Loading datasets with known minor issues
+- Research scenarios with experimental data
+
+## Registration and Loading
+
+### registerDataSource()
+
+Validates and registers a data source for use.
+
+```typescript
+async function registerDataSource(dataSource: DataSource): Promise<string | null>
+```
+
+**Parameters**:
+
+- `dataSource` - Configured DataSource instance
+
+**Returns**:
+
+- `string` - UUID for the registered data source on success
+- `null` - Registration failed
+
+**Example**:
+
+```typescript
+import { registerDataSource } from '@mitre-attack/attack-data-model';
+
+const dataSource = new DataSource({
+    source: 'attack',
+    domain: 'enterprise-attack',
+    version: '15.1'
+});
+
+try {
+    const uuid = await registerDataSource(dataSource);
+    if (uuid) {
+        console.log(`Data source registered: ${uuid}`);
+    } else {
+        console.error('Registration failed');
+    }
+} catch (error) {
+    console.error('Registration error:', error);
+}
+```
+
+### loadDataModel()
+
+Loads a previously registered data source.
+
+```typescript
+function loadDataModel(uuid: string): AttackDataModel
+```
+
+**Parameters**:
+
+- `uuid` - UUID returned from `registerDataSource()`
+
+**Returns**:
+
+- `AttackDataModel` - Populated data model instance
+
+**Throws**:
+
+- Error if UUID is invalid or data source not registered
+
+**Example**:
+
+```typescript
+import { loadDataModel } from '@mitre-attack/attack-data-model';
+
+const attackDataModel = loadDataModel(uuid);
+console.log(`Loaded ${attackDataModel.techniques.length} techniques`);
+```
+
+## Data Source Validation
+
+During registration, data sources undergo validation:
+
+### Network Sources (attack, url)
+
+1. **Connectivity Check** - Verify the source is accessible
+2. **Content Validation** - Ensure valid JSON and STIX structure
+3. **Schema Compliance** - Validate ATT&CK objects against schemas
+4. **Relationship Integrity** - Check all relationships reference valid objects
+
+### File Sources
+
+1. **File Existence** - Verify file exists and is readable
+2. **JSON Parsing** - Ensure valid JSON format
+3. **Bundle Structure** - Validate STIX bundle format
+4. **Content Validation** - Same as network sources
+
+## Caching and Performance
+
+### Automatic Caching
+
+Registered data sources are cached in memory for fast repeated access:
+
+```typescript
+// First registration - downloads and validates
+const uuid1 = await registerDataSource(dataSource);
+
+// Subsequent loads - uses cached data
+const model1 = loadDataModel(uuid1);
+const model2 = loadDataModel(uuid1); // Fast - from cache
+```
+
+### Cache Management
+
+```typescript
+// Check if a data source is cached
+import { isDataSourceCached } from '@mitre-attack/attack-data-model';
+
+if (isDataSourceCached(uuid)) {
+    console.log('Data source is cached');
+}
+
+// Clear cache (if needed)
+import { clearDataSourceCache } from '@mitre-attack/attack-data-model';
+clearDataSourceCache(uuid);
+```
+
+## Error Handling
+
+### Common Errors
+
+| Error Type | Cause | Solution |
+|------------|-------|----------|
+| `NetworkError` | URL unreachable, timeout | Check network connectivity, increase timeout |
+| `FileNotFoundError` | File path invalid | Verify file exists and is readable |
+| `ValidationError` | Invalid STIX data | Fix data format or use relaxed mode |
+| `AuthenticationError` | Invalid credentials | Check username/password for TAXII sources |
+
+### Error Examples
+
+```typescript
+try {
+    const uuid = await registerDataSource(dataSource);
+} catch (error) {
+    if (error.message.includes('ENOTFOUND')) {
+        console.error('Network error: Check internet connection');
+    } else if (error.message.includes('timeout')) {
+        console.error('Request timeout: Try increasing timeout value');
+    } else if (error.message.includes('validation')) {
+        console.error('Data validation failed: Check data format');
+    } else {
+        console.error('Unknown error:', error);
+    }
+}
+```
+
+## Configuration Examples
+
+### Complete Examples
+
+**Production Enterprise Setup**:
+
+```typescript
+const productionSource = new DataSource({
+    source: 'attack',
+    domain: 'enterprise-attack',
+    version: '15.1',
+    parsingMode: 'strict'
+});
+```
+
+**Development with Local Data**:
+
+```typescript
+const devSource = new DataSource({
+    source: 'file',
+    file: './data/custom-attack.json',
+    parsingMode: 'relaxed'
+});
+```
+
+**Remote Data with Authentication**:
+
+```typescript
+const remoteSource = new DataSource({
+    source: 'url',
+    url: 'https://api.example.com/attack/data',
+    timeout: 60000,
+    headers: {
+        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOi...',
+        'Accept': 'application/stix+json'
+    },
+    parsingMode: 'strict'
+});
+```
+
+**Multi-Domain Loading**:
+
+```typescript
+const domains = ['enterprise-attack', 'mobile-attack', 'ics-attack'];
+const dataSources = domains.map(domain => new DataSource({
+    source: 'attack',
+    domain: domain as any,
+    version: 'latest'
+}));
+
+const registrations = await Promise.all(
+    dataSources.map(ds => registerDataSource(ds))
+);
+
+const models = registrations
+    .filter(uuid => uuid !== null)
+    .map(uuid => loadDataModel(uuid!));
+```
+
+---

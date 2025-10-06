@@ -1,0 +1,64 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
+# Common Usage Patterns
+
+<WorkInProgressNotice />
+
+## Loading Data Models
+
+```typescript
+import { registerDataSource, loadDataModel, DataSource } from '@mitre-attack/attack-data-model';
+
+// Register a data source
+const dataSource = new DataSource({
+    source: 'attack',
+    domain: 'enterprise-attack',
+    version: '15.1'
+});
+
+const uuid = await registerDataSource(dataSource);
+const attackDataModel = loadDataModel(uuid);
+```
+
+## Accessing ATT&CK Objects
+
+```typescript
+// Get all techniques
+const techniques = attackDataModel.techniques;
+
+// Get all tactics
+const tactics = attackDataModel.tactics;
+
+// Get all groups
+const groups = attackDataModel.groups;
+```
+
+## Relationship Navigation
+
+```typescript
+// Get techniques used by a group
+const group = attackDataModel.groups[0];
+const techniquesUsed = group.getTechniques();
+
+// Get tactics for a technique
+const technique = attackDataModel.techniques[0];
+const tactics = technique.getTactics();
+
+// Get mitigations for a technique
+const mitigations = technique.getMitigations();
+```
+
+## Schema Validation
+
+```typescript
+import { techniqueSchema } from '@mitre-attack/attack-data-model';
+
+try {
+    const validTechnique = techniqueSchema.parse(rawTechniqueData);
+    console.log('Validation successful:', validTechnique.name);
+} catch (error) {
+    console.error('Validation failed:', error);
+}
+```
+
+---
