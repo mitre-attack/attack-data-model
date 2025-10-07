@@ -9,19 +9,6 @@ const sidebars: SidebarsConfig = {
     'errors',
     'configuration',
     'common-usage-patterns',
-    // {
-    //   type: 'category',
-    //   label: 'API Documentation',
-    //   link: { type: 'doc', id: 'index' },
-    //   items: [
-    //     'data-sources',
-    //     'attack-data-model',
-    //     'utilities',
-    //     'errors',
-    //     'configuration',
-    //     'common-usage-patterns',
-    //   ],
-    // },
   ],
 };
 

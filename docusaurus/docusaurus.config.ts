@@ -134,28 +134,6 @@ const config: Config = {
           position: 'right',
           docsPluginId: 'api',
         },
-        // {
-        //   type: "custom-Dropdown",
-        //   label: "API Version",
-        //   position: "right",
-        //   items: [
-        //     { to: "/api/next/", label: "development" },
-        //     { to: "/api/4.4/", label: "4.4.1" },
-        //   ],
-        //   routerRgx: "/api/",
-        //   classNames: "api-dropdown",
-        // },
-        // {
-        //   type: "custom-Dropdown",
-        //   label: "Schema Version",
-        //   position: "right",
-        //   items: [
-        //     { to: "/schemas/next/", label: "development" },
-        //     { to: "/schemas/3.3.0/", label: "3.3.0" },
-        //   ],
-        //   routerRgx: "/schemas/",
-        //   classNames: "schemas-dropdown",
-        // },
         {
           href: 'https://github.com/mitre-attack/attack-data-model',
           label: 'GitHub',
