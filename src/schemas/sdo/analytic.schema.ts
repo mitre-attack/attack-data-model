@@ -118,9 +118,9 @@ export const analyticSchema = attackBaseDomainObjectSchema
 
     external_references: createAttackExternalReferencesSchema('x-mitre-analytic'),
 
-    x_mitre_log_source_references: xMitreLogSourceReferencesSchema,
+    x_mitre_log_source_references: xMitreLogSourceReferencesSchema.optional(),
 
-    x_mitre_mutable_elements: xMitreMutableElementsSchema,
+    x_mitre_mutable_elements: xMitreMutableElementsSchema.optional(),
 
     x_mitre_domains: xMitreDomainsSchema,
 
