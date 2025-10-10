@@ -30,7 +30,7 @@ const config: Config = {
 
   presets: [
     [
-      'classic',
+      '@docusaurus/preset-classic',
       {
         docs: {
           sidebarPath: './sidebars.ts',
@@ -41,7 +41,7 @@ const config: Config = {
         theme: {
           customCss: './src/css/custom.css',
         },
-      } satisfies Preset.Options,
+      },
     ],
   ],
 
@@ -58,10 +58,8 @@ const config: Config = {
         versions: {
           current: {
             label: 'latest',
-            // path: '1.0.0',
           },
         },
-        // ... other options
       },
     ],
     [
@@ -76,10 +74,8 @@ const config: Config = {
         versions: {
           current: {
             label: 'latest',
-            // path: '',
           },
         },
-        // ... other options
       },
     ],
   ],
