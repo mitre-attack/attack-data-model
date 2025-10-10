@@ -109,7 +109,7 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'schemasSidebar',
           position: 'left',
-          label: 'Schemas',
+          label: 'STIX Schemas',
           docsPluginId: 'schemas',
         },
         {
