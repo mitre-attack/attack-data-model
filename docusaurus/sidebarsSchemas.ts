@@ -3,6 +3,9 @@ import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
 const sidebars: SidebarsConfig = {
   schemasSidebar: [
     'index',
+    'attack-ids',
+    'common-properties',
+    'relationship-types',
     'stix-bundle.schema',
     {
       type: 'category',
@@ -34,6 +37,7 @@ const sidebars: SidebarsConfig = {
         },
       ],
     },
+    'changelog-schema',
   ],
 };
 

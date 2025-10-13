@@ -9,6 +9,7 @@ const sidebars: SidebarsConfig = {
     'errors',
     'configuration',
     'common-usage-patterns',
+    'changelog-api',
   ],
 };
 

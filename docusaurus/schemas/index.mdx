@@ -1,62 +1,46 @@
-> [!IMPORTANT]
-> **Documentation Notice**
->
-> This document is **not the source of truth** for the ATT&CK specification. The authoritative source is the **ATT&CK Data Model (ADM) TypeScript library**.
->
-> 📖 **Browse ATT&CK schemas:** <https://mitre-attack.github.io/attack-data-model/>
->
-> While maintained to the best of our ability, this documentation may drift from the ADM library. If you find discrepancies, please [open a GitHub Issue](https://github.com/mitre-attack/attack-data-model/issues).
+import OverviewTable from './attack-concept-table.mdx'
 
 # The ATT&CK Specification
+
+The ATT&CK specification is built atop the [STIX 2.1 specification](https://oasis-open.github.io/cti-documentation/resources#stix-21-specification). It is a codified expression of the concepts outlined in the [MITRE ATT&CK Philosophy Paper](https://attack.mitre.org/docs/ATTACK_Design_and_Philosophy_March_2020.pdf), expressed in the ATT&CK Data Model (ADM).
+
+ATT&CK uses a mix of predefined and custom STIX objects to implement ATT&CK concepts. The following table is a mapping of ATT&CK concepts to STIX 2.1 objects:
+
+## STIX Bundle Object
+
+A STIX Bundle Object is not a STIX Object, rather it is a collection of arbitrary STIX Objects grouped together in a single container.
+ATT&CK distributes a STIX bundle for each ATT&CK domain.
+
+| ATT&CK Concept | STIX Object |
+|:-------------- |:----------- |
+| [STIX Bundle](./stix-bundle.schema) | `bundle` ([STIX 2.0](https://docs.oasis-open.org/cti/stix/v2.0/cs01/part1-stix-core/stix-v2.0-cs01-part1-stix-core.html#_Toc496709292), [STIX 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_gms872kuzdmg)) |
+
+<OverviewTable />
 
 ## ATT&CK Object Definitions
 
 ### Matrices
 
-ATT&CK matrices define the structural layout and organization of tactics within each domain. Matrix data is stored in `x-mitre-matrix` objects, which are custom STIX types that extend the generic [STIX Domain Object pattern](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230920).
-
-**Matrix-specific fields:**
-
-| Field         | Type     | Description                                                                                                                                                                                                                          |
-| :------------ | :------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `tactic_refs` | string[] | Ordered array of STIX IDs referencing `x-mitre-tactic` objects. The sequence in this array determines the display order of tactics within the matrix layout. |
+ATT&CK matrices define the structural layout and organization of tactics within each domain.
+Matrix data is stored in `x-mitre-matrix` objects, which are custom STIX types that extend the generic
+[STIX Domain Object pattern](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230920).
 
 ### Tactics
 
-Tactics represent the adversary's tactical goals during an attack and are defined by `x-mitre-tactic` objects. As custom STIX types, they extend the generic [STIX Domain Object pattern](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230920).
-
-**Tactic-specific fields:**
-
-| Field               | Type   | Description                                                                                                                                                             |
-| :------------------ | :----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `x_mitre_shortname` | string | Short identifier used to associate techniques with this tactic. This value matches the `kill_chain_phases.phase_name` field in techniques that belong to this tactic. |
+Tactics represent the adversary's tactical goals during an attack and are defined by `x-mitre-tactic` objects.
+As custom STIX types, they extend the generic
+[STIX Domain Object pattern](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230920).
 
 ### Techniques
 
-Techniques describe specific methods adversaries use to achieve tactical objectives and are represented as [attack-pattern](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230921) objects following the STIX 2.1 specification.
-
-**Technique-specific fields:**
-
-| Field                           | Type     | Applies to                                             | Description                                                                                                                                                                       |
-| :------------------------------ | :------- | :----------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `x_mitre_detection`             | string   | All techniques                                         | Strategies for identifying if a technique has been used by an adversary.                                                                                                          |
-| `x_mitre_platforms`             | string[] | All techniques                                         | List of platforms that apply to the technique.                                                                                                                                    |
-| `x_mitre_data_sources`          | string[] | Enterprise and ICS domains                             | Sources of information that may be used to identify the action or result of the action being performed.                                                                           |
-| `x_mitre_is_subtechnique`       | boolean  | Enterprise domain                                      | If true, this `attack-pattern` is a sub-technique. See [sub-techniques](#sub-techniques).                                                                                         |
-| `x_mitre_system_requirements`   | string[] | Enterprise domain                                      | Additional information on requirements the adversary needs to meet or about the state of the system (software, patch level, etc.) that may be required for the technique to work. |
-| `x_mitre_tactic_type`           | string[] | Mobile domain                                          | "Post-Adversary Device Access", "Pre-Adversary Device Access", or "Without Adversary Device Access".                                                                              |
-| `x_mitre_permissions_required`  | string[] | Enterprise domain in the _Privilege Escalation_ tactic | The lowest level of permissions the adversary is required to be operating within to perform the technique on a system.                                                            |
-| `x_mitre_effective_permissions` | string[] | Enterprise domain in the _Privilege Escalation_ tactic | The level of permissions the adversary will attain by performing the technique.                                                                                                   |
-| `x_mitre_defense_bypassed`      | string[] | Enterprise domain in the _Defense Evasion_ tactic      | List of defensive tools, methodologies, or processes the technique can bypass.                                                                                                    |
-| `x_mitre_remote_support`        | boolean  | Enterprise domain in the _Execution_ tactic            | If true, the technique can be used to execute something on a remote system.                                                                                                       |
-| `x_mitre_impact_type`           | string[] | Enterprise domain in the _Impact_ tactic               | Denotes if the technique can be used for integrity or availability attacks.                                                                                                       |
-
-**Tactic Association:**
-Techniques are associated with tactics through their `kill_chain_phases` property. When the `kill_chain_name` matches the domain (`mitre-attack`, `mitre-mobile-attack`, or `mitre-ics-attack`), the `phase_name` corresponds to the `x_mitre_shortname` of the associated `x-mitre-tactic` object.
+Techniques describe specific methods adversaries use to achieve tactical objectives and are represented as
+[attack-pattern](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230921)
+objects following the STIX 2.1 specification.
 
 #### Sub-Techniques
 
-Sub-techniques are specialized implementations of parent techniques, providing more granular detail about adversary methods. They are represented as `attack-pattern` objects with the same structure as techniques but include additional constraints and relationships.
+Sub-techniques are specialized implementations of parent techniques, providing more granular detail about adversary methods.
+They are represented as `attack-pattern` objects with the same structure as techniques but include additional constraints and relationships.
 
 **Sub-technique characteristics:**
 
@@ -71,32 +55,32 @@ Sub-techniques are specialized implementations of parent techniques, providing m
 - **Tactic inheritance:** Sub-techniques inherit all tactics from their parent technique
 - **Platform constraints:** Sub-techniques must use a subset of their parent technique's platforms
 
-**Domain availability:** Sub-techniques are available only in the Enterprise and Mobile domains.
-
 ### Mitigations
 
-Mitigations represent defensive measures or controls that can reduce the effectiveness of adversary techniques. They are defined as [course-of-action](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230929) objects and strictly follow the STIX 2.1 specification without additional custom fields.
+Mitigations represent defensive measures or controls that can reduce the effectiveness of adversary techniques.
+They are defined as [course-of-action](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230929)
+objects and strictly follow the STIX 2.1 specification without additional custom fields.
 
 #### ATT&CK ID Collisions (Legacy)
 
-**Historical context:** In ATT&CK versions prior to v5 (July 2019), mitigations maintained 1:1 relationships with techniques and shared identical ATT&CK IDs. This design was deprecated to support more flexible mitigation-to-technique mappings.
+**Historical context:** In ATT&CK versions prior to v5 (July 2019), mitigations maintained 1:1 relationships with techniques and shared identical ATT&CK IDs.
+This design was deprecated to support more flexible mitigation-to-technique mappings.
 
-**Current impact:** Legacy 1:1 mitigations may cause ATT&CK ID collisions between mitigations and techniques. These deprecated objects can be filtered out during queries—see [Removing revoked and deprecated objects](#removing-revoked-and-deprecated-objects).
+**Current impact:** Legacy 1:1 mitigations may cause ATT&CK ID collisions between mitigations and techniques.
+These deprecated objects can be filtered out during queries—see [Removing revoked and deprecated objects](#removing-revoked-and-deprecated-objects).
 
 ### Groups
 
-Groups represent clusters of adversary activity with shared characteristics, tools, tactics, or infrastructure. They are defined as [intrusion-set](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230941) objects and strictly follow the STIX 2.1 specification without additional custom fields.
+Groups represent clusters of adversary activity with shared characteristics, tools, tactics, or infrastructure.
+They are defined as [intrusion-set](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230941)
+objects and strictly follow the STIX 2.1 specification without additional custom fields.
 
 ### Software
 
-Software represents tools and malicious code used by adversaries to accomplish their objectives. ATT&CK models software using two STIX object types: [malware](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230945) and [tool](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230961).
-
-**Software-specific fields (applies to both `malware` and `tool`):**
-
-| Field               | Type     | Description                                   |
-| :------------------ | :------- | --------------------------------------------- |
-| `x_mitre_platforms` | string[] | List of platforms that apply to the software. |
-| `x_mitre_aliases`   | string[] | List of aliases for the given software        |
+Software represents tools and malicious code used by adversaries to accomplish their objectives.
+ATT&CK models software using two STIX object types:
+[malware](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230945)
+and [tool](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230961).
 
 ### Data Sources and Data Components
 
@@ -330,3 +314,6 @@ The `mutable_element` object defines tunable parameters within analytics:
 ### Collections
 
 See our [collections document](https://github.com/center-for-threat-informed-defense/attack-workbench-frontend/blob/master/docs/collections.md) for more information about the design and intention of collection objects.
+
+
+---
