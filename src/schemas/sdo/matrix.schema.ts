@@ -50,6 +50,13 @@ export const matrixSchema = attackBaseDomainObjectSchema
     external_references: true, // Optional in STIX but required in ATT&CK
     object_marking_refs: true, // Optional in STIX but required in ATT&CK
   })
-  .strict();
+  .strict()
+  .meta({
+    description: `
+ATT&CK matrices define the structural layout and organization of tactics within each domain.
+Matrix data is stored in \`x-mitre-matrix\` objects, which are custom STIX types that extend the generic
+[STIX Domain Object pattern](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230920).
+    `.trim(),
+  });
 
 export type Matrix = z.infer<typeof matrixSchema>;

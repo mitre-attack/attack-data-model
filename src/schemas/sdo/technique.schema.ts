@@ -380,14 +380,35 @@ export const techniqueSchema = attackBaseDomainObjectSchema
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
   })
-  .meta({
-    description:
-      'Techniques describe specific methods adversaries use to achieve tactical objectives and are represented as [attack-pattern](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230921) objects following the STIX 2.1 specification.',
-  })
   .strict()
   .check((ctx) => {
     createAttackIdInExternalReferencesRefinement()(ctx);
     createEnterpriseOnlyPropertiesRefinement()(ctx);
     createMobileOnlyPropertiesRefinement()(ctx);
+  })
+  .meta({
+    description: `
+Techniques describe specific methods adversaries use to achieve tactical objectives and are represented as
+[attack-pattern](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230921)
+objects following the STIX 2.1 specification.
+
+### Sub-Techniques
+
+Sub-techniques are specialized implementations of parent techniques, providing more granular detail about adversary methods.
+They are represented as \`attack-pattern\` objects with the same structure as techniques but include additional constraints and relationships.
+
+**Sub-technique characteristics:**
+
+- **Identification:** Marked by \`x_mitre_is_subtechnique = true\`
+- **Parent relationship:** Connected via \`subtechnique-of\` relationship where \`source_ref\` is the sub-technique and \`target_ref\` is the parent technique
+- **Cardinality:** Each sub-technique has exactly one parent technique; parent techniques may have multiple sub-techniques
+
+**Inheritance rules:**
+
+- **ATT&CK ID format:** Sub-technique IDs follow the pattern \`Txxxx.yyy\`, where \`Txxxx\` is the parent technique ID and \`yyy\` is the unique sub-technique identifier
+- **STIX ID uniqueness:** Sub-techniques maintain globally unique STIX IDs despite sharing parent ID prefixes
+- **Tactic inheritance:** Sub-techniques inherit all tactics from their parent technique
+- **Platform constraints:** Sub-techniques must use a subset of their parent technique's platforms
+    `.trim(),
   });
 export type Technique = z.infer<typeof techniqueSchema>;

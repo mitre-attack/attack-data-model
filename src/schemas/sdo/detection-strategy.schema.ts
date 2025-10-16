@@ -27,7 +27,10 @@ export const detectionStrategySchema = attackBaseDomainObjectSchema
 
     x_mitre_contributors: xMitreContributorsSchema,
 
-    x_mitre_analytic_refs: z.array(createStixIdValidator('x-mitre-analytic')).nonempty(),
+    x_mitre_analytic_refs: z.array(createStixIdValidator('x-mitre-analytic')).nonempty().meta({
+      description:
+        'Array of STIX IDs referencing `x-mitre-analytic` objects that implement this detection strategy.',
+    }),
 
     x_mitre_domains: xMitreDomainsSchema,
   })
@@ -36,8 +39,12 @@ export const detectionStrategySchema = attackBaseDomainObjectSchema
     object_marking_refs: true,
   })
   .meta({
-    description:
-      'The detection logic and patterns used to identify malicious activities based on the collected data.',
+    description: `
+Detection strategies define high-level approaches for detecting specific adversary techniques.
+They serve as containers that organize multiple platform-specific analytics into cohesive detection methodologies.
+Detection strategies are defined as \`x-mitre-detection-strategy\` objects extending the generic
+[STIX Domain Object pattern](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230920).
+    `.trim(),
   });
 
 export type DetectionStrategy = z.infer<typeof detectionStrategySchema>;

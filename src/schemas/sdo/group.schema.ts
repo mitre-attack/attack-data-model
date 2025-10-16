@@ -72,6 +72,13 @@ export const groupSchema = attackBaseDomainObjectSchema
   .strict()
   .check((ctx) => {
     createFirstAliasRefinement()(ctx);
+  })
+  .meta({
+    description: `
+Groups represent clusters of adversary activity with shared characteristics, tools, tactics, or infrastructure.
+They are defined as [intrusion-set](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230941)
+objects and strictly follow the STIX 2.1 specification without additional custom fields.
+    `.trim(),
   });
 
 export type Group = z.infer<typeof groupSchema>;

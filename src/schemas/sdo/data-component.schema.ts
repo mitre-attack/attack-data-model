@@ -18,7 +18,8 @@ import { createStixTypeValidator } from '../common/stix-type.js';
 /////////////////////////////////////
 
 export const xMitreDataSourceRefSchema = createStixIdValidator('x-mitre-data-source').meta({
-  description: 'STIX ID of the data source this component is a part of.',
+  description:
+    '**DEPRECATED in v3.3.0. Will be removed in v4.0.0.** STIX ID of the data source this component is a part of.',
 });
 
 export type XMitreDataSourceRef = z.infer<typeof xMitreDataSourceRefSchema>;
@@ -34,8 +35,12 @@ export const xMitreLogSourcesSchema = z
   .array(
     z
       .object({
-        name: z.string().nonempty(),
-        channel: z.string().nonempty(),
+        name: z.string().nonempty().meta({
+          description: 'Log source identifier (e.g., "sysmon", "auditd")',
+        }),
+        channel: z.string().nonempty().meta({
+          description: 'Specific log channel or event type (e.g., "1" for Sysmon Process Creation)',
+        }),
       })
       .strict(),
   )
@@ -61,7 +66,23 @@ export const xMitreLogSourcesSchema = z
       message: 'Duplicate log source found: each (name, channel) pair must be unique',
       path: ['x_mitre_log_sources'],
     },
-  );
+  )
+  .meta({
+    description: `
+      The \`log_source\` object defines platform-specific collection configurations embedded within data components:
+
+      **Uniqueness constraints:**
+
+      - Each \`(name, channel)\` tuple must be unique within a data component's \`x_mitre_log_sources\` array
+      - Log sources are scoped to their containing data component
+
+      **Example:** A data component for 'Process Creation' might contain log sources for:
+
+      - Windows: (name: "sysmon", channel: "1")
+      - Linux: (name: "auditd", channel: "SYSCALL")
+      - macOS: (name: "unified_logs", channel: "process")
+    `.trim(),
+  });
 
 export type XMitreLogSources = z.infer<typeof xMitreLogSourcesSchema>;
 
@@ -89,17 +110,18 @@ export const dataComponentSchema = attackBaseDomainObjectSchema
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
-    /**
-     * DEPRECATION NOTICE:
-     * Data Sources are deprecated and will be removed in a future release
-     * Consequently, ``x_mitre_data_source_ref`` has been changed to optional
-     * TODO Remove ``x_mitre_data_source_ref`` in the next major release
-     */
-    x_mitre_data_source_ref: xMitreDataSourceRefSchema.optional(),
+    x_mitre_data_source_ref: xMitreDataSourceRefSchema.optional(), // TODO remove in attack spec 4.0.0 / adm release 5.x
 
     // TODO change to required in spec release 4.x
     x_mitre_log_sources: xMitreLogSourcesSchema.optional(),
   })
-  .strict();
+  .strict()
+  .meta({
+    description: `
+Data components represent specific types of information within a data source that can be used for detection.
+They are defined as \`x-mitre-data-component\` objects extending the generic
+[STIX Domain Object pattern](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230920).
+    `.trim(),
+  });
 
 export type DataComponent = z.infer<typeof dataComponentSchema>;
