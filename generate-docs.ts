@@ -232,7 +232,11 @@ async function main() {
   const schemaFiles = globbySync(['**/*.schema.ts'], { cwd: SCHEMA_DIR });
 
   for (const relativePath of schemaFiles) {
-    if (relativePath.endsWith('software.schema.ts')) continue;
+    if (
+      relativePath.endsWith('software.schema.ts') ||
+      relativePath.endsWith('stix-bundle.schema.ts')
+    )
+      continue;
 
     const outputFile = path.join(OUTPUT_DIR, relativePath.replace(/\.ts$/, '.mdx'));
     await fs.ensureDir(path.dirname(outputFile));
