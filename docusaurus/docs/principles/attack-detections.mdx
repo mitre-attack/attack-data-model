@@ -1,0 +1,161 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
+# Detections, Data Sources, and STIX
+
+This page lays out the interconnection of detections in the ATT&CK Data Model.
+Since the STIX bundles that ATT&CK distributes historically contain different approaches to representing detections,
+this section aims to clarify the evolution and current practices.
+
+## Oct 2025: Detection Strategies
+
+The blog post on July 15, 2025 by Lex Crumpton:
+[What Comes After Detection Rules? Smarter Detection Strategies in ATT&CK](https://medium.com/mitre-attack/smarter-detection-strategies-in-attack-7e6738fec31f)
+dives into the most recent flavor of detection strategies in ATT&CK.
+This architecture consists of three primary STIX objects and a STIX relationship as follows:
+
+- STIX Domain Objects
+  - [DETxxxx] Detection Strategy (`x-mitre-detection-strategy`)
+  - [ANxxxx] Analytic (`x-mitre-analytic`)
+  - [DCxxxx] Data Component (`x-mitre-data-component`)
+- STIX Relationship Object
+  - `x-mitre-detection-strategy` --[detects]--> `attack-pattern`
+
+### Relationship Architecture
+
+The following diagrams illustrate how Detection Strategies connect to other ATT&CK objects through both STIX Relationship Objects (SROs)
+and embedded relationships (STIX ID references):
+
+```text
+    ┌───────────────────────┐
+    │                       │
+    │        <<SDO>>        │             ┌─────────────┐
+    │       Detection       │             │             │
+    │       Strategy        │   <<SRO>>   │  <<SDO>>    │
+    │                       ├─────────────►  Technique  │
+    │┌─────────────────────┐│  "detects"  │             │
+    ││x_mitre_analytic_refs││             └─────────────┘
+    │└──────────┬──────────┘│
+    └───────────┼───────────┘
+                │
+                │ STIX Embedded Relationship
+                │
+                │
+┌───────────────▼────────────────────────┐
+│                                        │
+│              <<SDO>>                   │
+│             Analytic                   │
+│                                        │
+│┌──────────────────────────────────────┐│
+││    x_mitre_log_source_references:    ││
+││                                      ││
+││ [                                    ││
+││   {                                  ││
+││     x_mitre_data_component_ref,      ││
+││     name: "sysmon",                  ││
+││     channel: "1"                     ││
+││   },                                 ││
+││   {                                  ││
+││     x_mitre_data_component_ref,      ││
+││     name: "auditd",                  ││
+││     channel: "SYSCALL"               ││
+││   }                                  ││
+││ ]                                    ││
+│└──────────────┬───────────────────────┘│
+└───────────────┼────────────────────────┘
+                │
+                │ STIX Embedded Relationships
+                │ (x_mitre_data_component_ref points to
+                │  Data Component; name & channel index
+                │  into matching log source within that
+                │  Data Component)
+                │
+      ┌─────────▼───────────────┐
+      │                         │
+      │       <<SDO>>           │
+      │   Data Component        │
+      │                         │
+      │┌───────────────────────┐│
+      ││ x_mitre_log_sources:  ││
+      ││                       ││
+      ││ [                     ││
+      ││   {                   ││
+      ││     name: "sysmon",   ││
+      ││     channel: "1"      ││
+      ││   },                  ││
+      ││   {                   ││
+      ││     name: "auditd",   ││
+      ││     channel: "SYSCALL"││
+      ││   }                   ││
+      ││ ]                     ││
+      │└───────────────────────┘│
+      └─────────────────────────┘
+```
+
+### Detection Strategies
+
+**Key characteristics:**
+
+- Each detection strategy has a one-to-one relationship with a specific ATT&CK technique
+- Detection strategies typically reference 1-3 analytics (one for each supported platform)
+- Uses STIX Embedded Relationships to analytics for flexibility
+
+## Oct 2021: Data Sources and Data Components
+
+In ATT&CK v10, released in October 2021, we introduced the concept of Data Sources and Data Components
+to better organize and describe the data that is collected and used for detections.
+More information can be found about the decision making in the
+[ATT&CK v10 Release Notes](https://attack.mitre.org/resources/updates/updates-october-2021/) and
+the accompanying blog post: [Introducing ATT&CK v10: More Objects, Parity, and Features](https://medium.com/mitre-attack/introducing-attack-v10-7743870b37e3).
+
+### Legacy Details
+
+> **Deprecation Notice**: Data Source (`x-mitre-data-source`) objects are deprecated as of ATT&CK Specification 3.3.0
+> and superseded by the Detection Strategy framework introduced in October 2025.
+> They remain supported for backward compatibility but will be removed in ATT&CK Specification 4.0.0.
+> Data Components remain supported and are integrated into the new Detection Strategy framework through Log Sources.
+
+Data sources and data components define the telemetry and observational data that security teams can use to detect adversary techniques. This hierarchical model provides granular mapping between detection capabilities and techniques.
+
+**Structural relationships:**
+
+- Data components are nested within data sources but maintain separate STIX objects
+- Each data component has exactly one parent data source
+- Data sources can contain multiple data components
+- Data components can map to multiple techniques via `detects` relationships
+
+**Architecture overview:**
+
+```
+           "detects"        x_mitre_data_source_ref
+          relationship       embedded relationship
+          (deprecated)                │
+               │                      │
+┌───────────┐  ▼  ┌────────────────┐  │  ┌───────────┐
+│Technique 1│◄────┤                │  │  │           │
+└───────────┘     │                │  ▼  │           │
+                  │Data Component 1├────►│           │
+┌───────────┐     │                │     │           │
+│Technique 2│◄────┤                │     │Data Source│
+└───────────┘     └────────────────┘     │           │
+                                         │           │
+┌───────────┐     ┌────────────────┐     │           │
+│Technique 3│◄────┤Data Component 2├────►│           │
+└───────────┘     └────────────────┘     └───────────┘
+```
+
+## Oct 2018: `x_mitre_detection`
+
+> **Deprecation Notice**: The `x_mitre_detection` field on technique objects is deprecated as of ATT&CK Specification 3.3.0
+> and superseded by the Detection Strategy framework introduced in October 2025.
+
+ATT&CK v3 introduced the `x_mitre_detection` field to represent detection strategies for each technique.
+This field was a plain text field that was included on technique objects as a way to include information on how to detect the technique.
+It was introduced without fanfare - not even being called out in the [ATT&CK v3 Release Notes](https://attack.mitre.org/resources/updates/updates-october-2018/).
+
+## Jan 2018: `x_mitre_data_sources`
+
+> **Deprecation Notice**: The `x_mitre_data_sources` field on technique objects is deprecated as of ATT&CK Specification 3.3.0
+> and superseded by the Detection Strategy framework introduced in October 2025.
+
+Right from ATT&CK v1, data sources were stored in the `x_mitre_data_sources` field on techniques.
+This field remained available for backward compatibility and accurately reflected data sources through the April 2025 ATT&CK release.

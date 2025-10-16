@@ -43,6 +43,7 @@ const sidebars: SidebarsConfig = {
         'principles/extending-stix',
         'principles/attack-specification-overview',
         'principles/attack-versioning',
+        'principles/attack-detections',
         'principles/schema-design',
         'principles/trade-offs',
       ],
