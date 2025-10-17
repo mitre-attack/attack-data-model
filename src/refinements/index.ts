@@ -1,6 +1,8 @@
-import { attackIdExamples, attackIdPatterns } from '@/schemas/common/attack-id.js';
+import { z } from 'zod/v4';
 import {
   attackDomainSchema,
+  attackIdExamples,
+  attackIdPatterns,
   type Aliases,
   type AttackObject,
   type ExternalReferences,
@@ -19,8 +21,7 @@ import {
   type XMitreRemoteSupport,
   type XMitreSystemRequirements,
   type XMitreTacticType,
-} from '@/schemas/index.js';
-import { z } from 'zod/v4';
+} from '../schemas/index.js';
 
 /**
  * Creates a refinement for validating that the first alias matches the object's name

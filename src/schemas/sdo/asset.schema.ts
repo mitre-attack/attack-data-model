@@ -1,22 +1,23 @@
 import { z } from 'zod/v4';
+import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
-  attackBaseDomainObjectSchema,
   createAttackExternalReferencesSchema,
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
+  nameSchema,
   xMitreContributorsSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
-} from '../common/index.js';
+} from '../common/property-schemas/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Asset Sectors
 // (x_mitre_sectors)
 //
-/////////////////////////////////////
+//==============================================================================
 
 const supportedAssetSectors = [
   'Electric',
@@ -39,32 +40,27 @@ export const xMitreSectorsSchema = z
           : 'Invalid asset sectors array',
     },
   )
+  .min(1)
   .meta({
     description: 'List of industry sector(s) an asset may be commonly observed in',
   });
 
 export type XMitreSectors = z.infer<typeof xMitreSectorsSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Related Assets
 // (x_mitre_related_assets)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const relatedAssetSchema = z.object({
-  name: z.string({
-    error: (issue) =>
-      issue.input === undefined
-        ? 'Related asset name is required'
-        : 'Related asset name must be a string',
-  }),
-
+  name: nameSchema,
   related_asset_sectors: xMitreSectorsSchema.optional(),
   description: descriptionSchema.optional(),
 });
 
-export const relatedAssetsSchema = z.array(relatedAssetSchema).meta({
+export const relatedAssetsSchema = z.array(relatedAssetSchema).min(1).meta({
   description:
     'Related assets describe sector specific device names or alias that may be commonly associated with the primary asset page name or functional description. Related asset objects include a description of how the related asset is associated with the page definition',
 });
@@ -72,11 +68,11 @@ export const relatedAssetsSchema = z.array(relatedAssetSchema).meta({
 export type RelatedAsset = z.infer<typeof relatedAssetSchema>;
 export type RelatedAssets = z.infer<typeof relatedAssetsSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Asset
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const assetSchema = attackBaseDomainObjectSchema
   .extend({

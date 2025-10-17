@@ -1,20 +1,22 @@
 import { z } from 'zod/v4';
+import { attackBaseMetaObjectSchema } from '../common/index.js';
 import {
-  attackBaseMetaObjectSchema,
   createStixIdValidator,
   createStixTypeValidator,
-} from '../common/index.js';
+  nameSchema,
+  nonEmptyRequiredString,
+} from '../common/property-schemas/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // TLP Marking Object
 //
-/////////////////////////////////////
+//==============================================================================
 
 // TLP Marking Object type
 export const tlpMarkingObjectSchema = z
   .object({
-    tlp: z.string().meta({
+    tlp: nonEmptyRequiredString.meta({
       description:
         'The TLP level [TLP] of the content marked by this marking definition, as defined in this section.',
     }),
@@ -28,7 +30,7 @@ export const baseMarkingDefinitionSchema = z.object({
   id: z.uuid(),
   created: z.iso.datetime(),
   definition_type: z.literal('tlp'),
-  name: z.string(),
+  name: nameSchema,
   definition: tlpMarkingObjectSchema,
 });
 
@@ -91,26 +93,26 @@ export const tlpMarkingDefinitionSchema = z.union([
 export type TlpMarkingDefinition = z.infer<typeof tlpMarkingDefinitionSchema>;
 export type TlpMarkingObject = z.infer<typeof tlpMarkingObjectSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Statement Marking Object
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const statementMarkingObjectSchema = z
   .object({
-    statement: z.string().meta({
+    statement: nonEmptyRequiredString.meta({
       description:
         'A Statement (e.g., copyright, terms of use) applied to the content marked by this marking definition.',
     }),
   })
   .strict();
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Marking Definition
 //
-/////////////////////////////////////
+//==============================================================================
 
 // MarkingDefinition Schema
 export const markingDefinitionSchema = attackBaseMetaObjectSchema

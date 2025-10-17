@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
+import { attackBaseRelationshipObjectSchema } from '../common/index.js';
 import {
-  attackBaseRelationshipObjectSchema,
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
@@ -9,14 +9,14 @@ import {
   xMitreModifiedByRefSchema,
   type StixIdentifier,
   type StixType,
-} from '../common/index.js';
+} from '../common/property-schemas/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Relationship Types
 // (relationship_type)
 //
-/////////////////////////////////////
+//==============================================================================
 
 // Supported relationship types
 const supportedRelationshipTypes = [
@@ -273,11 +273,11 @@ export function createRelationshipValidationRefinement() {
   };
 }
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Relationship
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const relationshipSchema = attackBaseRelationshipObjectSchema
   .extend({
