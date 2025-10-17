@@ -9,7 +9,7 @@
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
-    "gendocs": "ts-node ../generate-docs.ts"
+    "gendocs": "tsx ../generate-docs.ts"
   },
   "dependencies": {
     "@docusaurus/core": "^3.9.1",
