@@ -1,17 +1,17 @@
+import { z } from 'zod/v4';
 import {
   createFirstAliasRefinement,
   createFirstXMitreAliasRefinement,
-} from '@/refinements/index.js';
-import { z } from 'zod/v4';
-import { nonEmptyRequiredString } from '../common/generic.js';
+} from '../../refinements/index.js';
 import {
   createAttackExternalReferencesSchema,
   createOldMitreAttackIdSchema,
   createStixIdValidator,
   createStixTypeValidator,
   killChainPhaseSchema,
-} from '../common/index.js';
-import { ToolTypeOV } from '../common/open-vocabulary.js';
+  nonEmptyRequiredString,
+  ToolTypeOV,
+} from '../common/property-schemas/index.js';
 import { softwareSchema } from './software.schema.js';
 
 //==============================================================================

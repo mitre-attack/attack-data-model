@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
+import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
-  attackBaseDomainObjectSchema,
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
@@ -9,7 +9,7 @@ import {
   stixIdentifierSchema,
   stixModifiedTimestampSchema,
   xMitreModifiedByRefSchema,
-} from '../common/index.js';
+} from '../common/property-schemas/index.js';
 
 //==============================================================================
 //

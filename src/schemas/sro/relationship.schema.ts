@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
+import { attackBaseRelationshipObjectSchema } from '../common/index.js';
 import {
-  attackBaseRelationshipObjectSchema,
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
@@ -9,7 +9,7 @@ import {
   xMitreModifiedByRefSchema,
   type StixIdentifier,
   type StixType,
-} from '../common/index.js';
+} from '../common/property-schemas/index.js';
 
 //==============================================================================
 //

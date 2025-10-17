@@ -1,10 +1,15 @@
-import { attackBaseDomainObjectSchema } from '@/schemas/common/attack-base-object.js';
-import { descriptionSchema, objectMarkingRefsSchema } from '@/schemas/common/common-properties.js';
-import { nonEmptyRequiredString, stixListOfString } from '@/schemas/common/generic.js';
-import { IdentityClassOV, IndustrySectorOV } from '@/schemas/common/open-vocabulary.js';
-import { createStixIdValidator } from '@/schemas/common/stix-identifier.js';
-import { createStixTypeValidator } from '@/schemas/common/stix-type.js';
 import { z } from 'zod/v4';
+import { attackBaseDomainObjectSchema } from '../common/index.js';
+import {
+  IdentityClassOV,
+  IndustrySectorOV,
+  createStixIdValidator,
+  createStixTypeValidator,
+  descriptionSchema,
+  nonEmptyRequiredString,
+  objectMarkingRefsSchema,
+  stixListOfString,
+} from '../common/property-schemas/index.js';
 
 //==============================================================================
 //

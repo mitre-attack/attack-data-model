@@ -1,11 +1,11 @@
 import { z } from 'zod/v4';
-import { nonEmptyRequiredString } from '../common/generic.js';
+import { attackBaseMetaObjectSchema } from '../common/index.js';
 import {
-  attackBaseMetaObjectSchema,
   createStixIdValidator,
   createStixTypeValidator,
   nameSchema,
-} from '../common/index.js';
+  nonEmptyRequiredString,
+} from '../common/property-schemas/index.js';
 
 //==============================================================================
 //

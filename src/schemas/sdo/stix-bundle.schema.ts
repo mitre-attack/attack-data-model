@@ -1,8 +1,10 @@
-import { createFirstBundleObjectRefinement } from '@/refinements/index.js';
 import { z } from 'zod/v4';
-import { nonEmptyRequiredString } from '../common/generic.js';
-import { createStixIdValidator } from '../common/stix-identifier.js';
-import { createStixTypeValidator } from '../common/stix-type.js';
+import { createFirstBundleObjectRefinement } from '../../refinements/index.js';
+import {
+  createStixIdValidator,
+  createStixTypeValidator,
+  nonEmptyRequiredString,
+} from '../common/property-schemas/index.js';
 import {
   type MarkingDefinition,
   markingDefinitionSchema,

@@ -1,6 +1,6 @@
-import { createCitationsRefinement, createFirstAliasRefinement } from '@/refinements/index.js';
 import { z } from 'zod/v4';
-import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
+import { createCitationsRefinement, createFirstAliasRefinement } from '../../refinements/index.js';
+import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
   aliasesSchema,
   createAttackExternalReferencesSchema,
@@ -11,7 +11,7 @@ import {
   xMitreContributorsSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
-} from '../common/index.js';
+} from '../common/property-schemas/index.js';
 
 //==============================================================================
 //

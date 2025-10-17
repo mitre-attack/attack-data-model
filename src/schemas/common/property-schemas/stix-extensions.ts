@@ -1,15 +1,12 @@
 import { z } from 'zod/v4';
-import {
-  externalReferencesSchema,
-  granularMarkingSchema,
-  nameSchema,
-  objectMarkingRefsSchema,
-  stixCreatedByRefSchema,
-} from './common-properties.js';
-import { nonEmptyRequiredString } from './generic.js';
-import { createStixIdValidator } from './stix-identifier.js';
-import { stixSpecVersionSchema } from './stix-spec-version.js';
+import { nonEmptyRequiredString, stixListOfString } from './generics.js';
+import { objectMarkingRefsSchema, stixCreatedByRefSchema } from './stix-attribution.js';
+import { nameSchema } from './stix-common-properties.js';
+import { externalReferencesSchema } from './stix-external-references.js';
+import { granularMarkingSchema } from './stix-granular-marking.js';
+import { createStixIdValidator } from './stix-id.js';
 import { createStixTypeValidator } from './stix-type.js';
+import { stixSpecVersionSchema } from './stix-versioning.js';
 
 //==============================================================================
 // Extension Type Enum
@@ -94,7 +91,7 @@ export const extensionDefinitionSchema = z
 
     // Optional common properties
     revoked: z.boolean().optional(),
-    labels: z.array(nonEmptyRequiredString).min(1).optional(),
+    labels: stixListOfString.optional(),
     external_references: externalReferencesSchema.optional(),
     object_marking_refs: objectMarkingRefsSchema.optional(),
     granular_markings: z.array(granularMarkingSchema).optional(),

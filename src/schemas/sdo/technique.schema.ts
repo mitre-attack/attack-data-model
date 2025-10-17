@@ -1,22 +1,23 @@
+import { z } from 'zod/v4';
 import {
   createAttackIdInExternalReferencesRefinement,
   createEnterpriseOnlyPropertiesRefinement,
   createMobileOnlyPropertiesRefinement,
-} from '@/refinements/index.js';
-import { z } from 'zod/v4';
-import { nonEmptyRequiredString, stixListOf, stixListOfString } from '../common/generic.js';
+} from '../../refinements/index.js';
+import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
-  attackBaseDomainObjectSchema,
   createAttackExternalReferencesSchema,
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
   killChainPhaseSchema,
+  nonEmptyRequiredString,
+  stixListOfString,
   xMitreContributorsSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
-} from '../common/index.js';
+} from '../common/property-schemas/index.js';
 
 //==============================================================================
 //
@@ -69,13 +70,16 @@ export type XMitreEffectivePermissions = z.infer<typeof xMitreEffectivePermissio
 
 const supportedMitreImpactTypes = ['Availability', 'Integrity'] as const;
 
-export const xMitreImpactTypeSchema = stixListOf(
-  z.enum(supportedMitreImpactTypes, {
-    error: () => `Impact type must be one of: ${supportedMitreImpactTypes.join(', ')}`,
-  }),
-).meta({
-  description: 'Denotes if the technique can be used for integrity or availability attacks',
-});
+export const xMitreImpactTypeSchema = z
+  .array(
+    z.enum(supportedMitreImpactTypes, {
+      error: () => `Impact type must be one of: ${supportedMitreImpactTypes.join(', ')}`,
+    }),
+  )
+  .min(1)
+  .meta({
+    description: 'Denotes if the technique can be used for integrity or availability attacks',
+  });
 
 export type XMitreImpactType = z.infer<typeof xMitreImpactTypeSchema>;
 

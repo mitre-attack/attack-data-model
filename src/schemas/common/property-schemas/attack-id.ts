@@ -1,4 +1,5 @@
 import { z } from 'zod/v4';
+import { nonEmptyRequiredString } from './generics.js';
 import type { StixType } from './stix-type.js';
 
 /**
@@ -254,5 +255,112 @@ export const createAttackIdSchema = (stixType: StixTypesWithAttackIds) => {
       );
   }
 
-  return z.string().regex(attackIdPatterns[attackIdType], attackIdMessages[attackIdType]);
+  return z.string().regex(attackIdPatterns[attackIdType], attackIdMessages[attackIdType]).meta({
+    description:
+      'ATT&CK IDs are human-readable identifiers commonly used for referencing objects in documentation and communication.\
+         Each ATT&CK object type follows a specific ID format, typically denoted by a type code prefix (e.g., `TA` for tactic) followed by a four-digit identifier (e.g., 0001)',
+  });
 };
+
+// ====================================================================================
+// LEGACY/DEPRECATED CONTENT BELOW:
+// ====================================================================================
+
+/**
+ * Type representing old mobile ATT&CK IDs.
+ *
+ * These IDs follow the format MOB-X#### where X is either 'M' (mitigation) or 'S' (software).
+ *
+ * @example "MOB-M1008", "MOB-S0012"
+ */
+type MitreOldAttackId = `MOB-${'M' | 'S'}${number}`;
+
+/**
+ * Regular expression for validating old mobile ATT&CK ID format.
+ */
+const oldAttackIdRegex = /^MOB-(M|S)\d{4}$/;
+
+/**
+ * Creates a type-specific schema for validating old mobile ATT&CK IDs (`x_mitre_old_attack_id`).
+ *
+ * This factory function generates schemas that validate old mobile ATT&CK IDs based on
+ * the STIX type. Software types (malware, tool) use MOB-S####, while mitigations
+ * (course-of-action) use MOB-M####.
+ *
+ * @param stixType - The STIX type to create the schema for (malware, tool, or course-of-action)
+ * @returns A Zod schema configured for the appropriate old ATT&CK ID format
+ *
+ * @example
+ * ```typescript
+ * const softwareOldIdSchema = createOldMitreAttackIdSchema('malware');
+ * softwareOldIdSchema.parse("MOB-S0012"); // Valid
+ * softwareOldIdSchema.parse("MOB-M1008"); // Invalid - wrong prefix for software
+ *
+ * const mitigationOldIdSchema = createOldMitreAttackIdSchema('course-of-action');
+ * mitigationOldIdSchema.parse("MOB-M1008"); // Valid
+ * ```
+ */
+export function createOldMitreAttackIdSchema(
+  stixType: Extract<StixType, 'malware' | 'tool' | 'course-of-action'>,
+) {
+  const baseSchema = nonEmptyRequiredString.meta({
+    description: 'Old ATT&CK IDs that may have been associated with this object',
+  });
+
+  switch (stixType) {
+    case 'malware':
+    case 'tool':
+      // Software types use MOB-S####
+      return baseSchema.refine(
+        (value): value is MitreOldAttackId => {
+          return /^MOB-S\d{4}$/.test(value);
+        },
+        {
+          message: `x_mitre_old_attack_id for ${stixType} need to be in the format MOB-S####`,
+        },
+      );
+    case 'course-of-action':
+      // Mitigations use MOB-M####
+      return baseSchema.refine(
+        (value): value is MitreOldAttackId => {
+          return /^MOB-M\d{4}$/.test(value);
+        },
+        {
+          message: `x_mitre_old_attack_id for ${stixType} need to be in the format MOB-M####`,
+        },
+      );
+    default:
+      // This should never be reached due to the type constraint, but TypeScript wants it
+      throw new Error(`Unsupported STIX type: ${stixType}`);
+  }
+}
+
+/**
+ * Generic schema for validating old mobile ATT&CK IDs (`x_mitre_old_attack_id`).
+ *
+ * Validates IDs in the format MOB-X#### where X is either 'M' or 'S', followed by
+ * exactly four digits. For type-specific validation, use `createOldMitreAttackIdSchema()`.
+ *
+ * @example
+ * ```typescript
+ * xMitreOldAttackIdSchema.parse("MOB-M1008"); // Valid
+ * xMitreOldAttackIdSchema.parse("MOB-S0012"); // Valid
+ * xMitreOldAttackIdSchema.parse("MOB-T1234"); // Invalid - wrong prefix
+ * ```
+ */
+export const xMitreOldAttackIdSchema = nonEmptyRequiredString
+  .refine(
+    (value): value is MitreOldAttackId => {
+      return oldAttackIdRegex.test(value);
+    },
+    {
+      message:
+        "Must be in the format 'MOB-X0000' where X is either 'M' or 'S', followed by exactly four digits",
+    },
+  )
+  .meta({ description: 'Old ATT&CK IDs that may have been associated with this object' });
+
+/**
+ * Type representing a validated old mobile ATT&CK ID.
+ */
+export type XMitreOldAttackId = z.infer<typeof xMitreOldAttackIdSchema>;

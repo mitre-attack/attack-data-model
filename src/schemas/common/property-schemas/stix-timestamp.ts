@@ -21,8 +21,8 @@ export type StixTimestamp = z.infer<typeof stixTimestampSchema>;
 //
 //==============================================================================
 
-export const stixCreatedTimestampSchema = stixTimestampSchema.brand<'StixCreatedTimestamp'>();
+export const stixCreatedTimestampSchema = stixTimestampSchema; //.brand<'StixCreatedTimestamp'>();
 export type StixCreatedTimestamp = z.infer<typeof stixCreatedTimestampSchema>;
 
-export const stixModifiedTimestampSchema = stixTimestampSchema.brand<'StixModifiedTimestamp'>();
+export const stixModifiedTimestampSchema = stixTimestampSchema; //.brand<'StixModifiedTimestamp'>();
 export type StixModifiedTimestamp = z.infer<typeof stixModifiedTimestampSchema>;

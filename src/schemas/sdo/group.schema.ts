@@ -1,18 +1,20 @@
-import { createFirstAliasRefinement } from '@/refinements/index.js';
-import { attackBaseDomainObjectSchema } from '@/schemas/common/attack-base-object.js';
-import { createStixTypeValidator } from '@/schemas/common/stix-type.js';
 import { z } from 'zod/v4';
-import { nonEmptyRequiredString, stixListOfString } from '../common/generic.js';
+import { createFirstAliasRefinement } from '../../refinements/index.js';
+import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
   aliasesSchema,
+  AttackMotivationOV,
+  AttackResourceLevelOV,
   createAttackExternalReferencesSchema,
   createStixIdValidator,
+  createStixTypeValidator,
+  nonEmptyRequiredString,
+  stixListOfString,
   stixTimestampSchema,
   xMitreContributorsSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
-} from '../common/index.js';
-import { AttackMotivationOV, AttackResourceLevelOV } from '../common/open-vocabulary.js';
+} from '../common/property-schemas/index.js';
 
 // Group Schema
 export const groupSchema = attackBaseDomainObjectSchema

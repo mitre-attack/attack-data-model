@@ -1,5 +1,5 @@
 import { z } from 'zod/v4';
-import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
+import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
   aliasesSchema,
   createMultiStixTypeValidator,
@@ -10,7 +10,7 @@ import {
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
-} from '../common/index.js';
+} from '../common/property-schemas/index.js';
 
 //==============================================================================
 //

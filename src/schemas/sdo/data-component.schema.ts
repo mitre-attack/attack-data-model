@@ -1,15 +1,15 @@
 import { z } from 'zod/v4';
-import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
-import { nonEmptyRequiredString } from '../common/generic.js';
+import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
   createStixIdValidator,
+  createStixTypeValidator,
   descriptionSchema,
+  nonEmptyRequiredString,
   objectMarkingRefsSchema,
   stixCreatedByRefSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
-} from '../common/index.js';
-import { createStixTypeValidator } from '../common/stix-type.js';
+} from '../common/property-schemas/index.js';
 
 //==============================================================================
 //

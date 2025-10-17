@@ -1,17 +1,19 @@
 import { z } from 'zod/v4';
 
 import {
+  extensionsSchema,
   externalReferencesSchema,
   granularMarkingSchema,
+  nonEmptyRequiredString,
   objectMarkingRefsSchema,
   stixCreatedByRefSchema,
-} from './common-properties.js';
-import { extensionsSchema } from './extensions.js';
-import { nonEmptyRequiredString, stixListOfString } from './generic.js';
-import { stixIdentifierSchema } from './stix-identifier.js';
-import { stixSpecVersionSchema } from './stix-spec-version.js';
-import { stixCreatedTimestampSchema, stixModifiedTimestampSchema } from './stix-timestamp.js';
-import { stixTypeSchema } from './stix-type.js';
+  stixCreatedTimestampSchema,
+  stixIdentifierSchema,
+  stixListOfString,
+  stixModifiedTimestampSchema,
+  stixSpecVersionSchema,
+  stixTypeSchema,
+} from './property-schemas/index.js';
 
 const stixBaseObjectSchema = z
   .object({
@@ -31,9 +33,9 @@ const stixBaseObjectSchema = z
         'The modified property represents the time that this particular version of the object was modified. The timstamp value MUST be precise to the nearest millisecond.',
     }),
     created_by_ref: stixCreatedByRefSchema.optional(),
-    labels: stixListOfString.optional().meta({
-      description: 'The labels property specifies a set of terms used to meta this object.',
-    }),
+    labels: stixListOfString
+      .optional()
+      .meta({ description: 'The labels property specifies a set of terms used to meta this object.' }),
     revoked: z
       .boolean()
       .optional()
