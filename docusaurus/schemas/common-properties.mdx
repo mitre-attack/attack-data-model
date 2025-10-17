@@ -1,0 +1,23 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
+# Common Properties
+
+<WorkInProgressNotice />
+
+## Domain Membership
+
+The `x_mitre_domains` (string array) field identifies the "domain" to which the object belongs. The values of `x_mitre_domains` are as follows:
+
+| identifier          | domain         |
+| :------------------ | :------------- |
+| `enterprise-attack` | Enterprise     |
+| `mobile-attack`     | Mobile         |
+| `ics-attack`        | ICS            |
+
+Most objects in ATT&CK belong in a single technology domain, but an object _may_ be included in multiple domains.
+
+`x_mitre_domains` is supported on all ATT&CK object types except the following:
+
+- Marking Definition
+- Identity
+- Relationship

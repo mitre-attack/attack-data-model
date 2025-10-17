@@ -1,0 +1,11 @@
+{
+  "apiSidebar": [
+    "index",
+    "data-sources",
+    "attack-data-model",
+    "utilities",
+    "errors",
+    "configuration",
+    "common-usage-patterns"
+  ]
+}

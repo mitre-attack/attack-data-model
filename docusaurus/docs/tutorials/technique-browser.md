@@ -445,6 +445,6 @@ You're now ready for more advanced topics:
 
 - **[Understanding ATT&CK Relationships](./relationships)** - Master complex relationship navigation
 - **[How-to Guides](../how-to-guides/)** - Solve specific problems like validation and schema extension
-- **[Reference Documentation](../reference/)** - Explore the complete API
+- **[Reference Documentation](../../api/)** - Explore the complete API
 
 ---

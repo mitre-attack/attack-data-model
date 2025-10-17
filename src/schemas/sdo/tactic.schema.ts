@@ -99,6 +99,13 @@ export const tacticSchema = attackBaseDomainObjectSchema
     created_by_ref: true, // Optional in STIX but required in ATT&CK
     object_marking_refs: true, // Optional in STIX but required in ATT&CK
   })
-  .strict();
+  .strict()
+  .meta({
+    description: `
+Tactics represent the adversary's tactical goals during an attack and are defined by \`x-mitre-tactic\` objects.
+As custom STIX types, they extend the generic
+[STIX Domain Object pattern](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230920).
+    `.trim(),
+  });
 
 export type Tactic = z.infer<typeof tacticSchema>;
