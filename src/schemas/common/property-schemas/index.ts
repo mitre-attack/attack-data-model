@@ -21,4 +21,3 @@ export * from './stix-open-vocabulary.js';
 export * from './stix-timestamp.js';
 export * from './stix-type.js';
 export * from './stix-versioning.js';
-

@@ -33,9 +33,9 @@ const stixBaseObjectSchema = z
         'The modified property represents the time that this particular version of the object was modified. The timstamp value MUST be precise to the nearest millisecond.',
     }),
     created_by_ref: stixCreatedByRefSchema.optional(),
-    labels: stixListOfString
-      .optional()
-      .meta({ description: 'The labels property specifies a set of terms used to meta this object.' }),
+    labels: stixListOfString.optional().meta({
+      description: 'The labels property specifies a set of terms used to meta this object.',
+    }),
     revoked: z
       .boolean()
       .optional()

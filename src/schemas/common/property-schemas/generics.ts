@@ -40,9 +40,7 @@ export const nonEmptyRequiredString = z
  * stixListOfString.parse(["foo", ""]); // throws error
  * ```
  */
-export const stixListOfString = z
-  .array(nonEmptyRequiredString)
-  .min(1, {
-    error:
+export const stixListOfString = z.array(nonEmptyRequiredString).min(1, {
+  error:
     'Empty lists are prohibited in STIX and MUST NOT be used as a substitute for omitting the property if it is optional. The list MUST be present and MUST have at least one value.',
-  });
+});
