@@ -8,12 +8,12 @@ import {
 } from '../common/index.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Tactic Refs
 // (tactic_refs)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreTacticRefsSchema = z
   .array(createStixIdValidator('x-mitre-tactic'))
@@ -25,11 +25,11 @@ export const xMitreTacticRefsSchema = z
 
 export type XMitreTacticRefs = z.infer<typeof xMitreTacticRefsSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Matrix
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const matrixSchema = attackBaseDomainObjectSchema
   .extend({

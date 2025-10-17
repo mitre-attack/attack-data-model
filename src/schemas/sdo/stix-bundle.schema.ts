@@ -154,11 +154,11 @@ export const attackObjectsSchema: z.ZodTypeAny = z
 
 export type AttackObjects = z.infer<typeof attackObjectsSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // STIX Bundle
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const stixBundleSchema = z
   .object({

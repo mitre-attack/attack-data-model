@@ -11,12 +11,12 @@ import {
 import { createStixIdValidator } from '../common/stix-identifier.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Collection Layers
 // (x_mitre_collection_layers)
 //
-/////////////////////////////////////
+//==============================================================================
 
 const supportedMitreCollectionLayers = [
   'Cloud Control Plane',
@@ -40,11 +40,11 @@ export const xMitreCollectionLayersSchema = z
 
 export type XMitreCollectionLayers = z.infer<typeof xMitreCollectionLayersSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Data Source
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const dataSourceSchema = attackBaseDomainObjectSchema
   .extend({

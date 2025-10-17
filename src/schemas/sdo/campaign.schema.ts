@@ -13,13 +13,13 @@ import {
   xMitreModifiedByRefSchema,
 } from '../common/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Mitre Citations
 // (x_mitre_first_seen_citation)
 // (x_mitre_last_seen_citation)
 //
-/////////////////////////////////////
+//==============================================================================
 
 type Citation = `(Citation: ${string})`;
 
@@ -77,11 +77,11 @@ export const xMitreLastSeenCitationSchema = multipleCitationsSchema.meta({
 export type XMitreFirstSeenCitation = z.infer<typeof xMitreFirstSeenCitationSchema>;
 export type XMitreLastSeenCitation = z.infer<typeof xMitreLastSeenCitationSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // ATT&CK Campaign
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const campaignSchema = attackBaseDomainObjectSchema
   .extend({

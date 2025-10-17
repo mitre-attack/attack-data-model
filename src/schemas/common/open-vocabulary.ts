@@ -239,14 +239,14 @@ export const MitreCollectionLayerOV = z.enum([
   'Network',
 ]);
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Pattern Type Vocabulary
 // https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_9lfdvxnyofxw
 //
 // At the time of adoption (May-2025), ATT&CK only uses 'spl' and 'stix'
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const PatternTypeOV = z
   .enum(['spl', 'stix', 'pcre', 'sigma', 'snort', 'suricata', 'yara'])
@@ -255,12 +255,12 @@ export const PatternTypeOV = z
       'This is a non-exhaustive, open vocabulary that covers common pattern languages and is intended to characterize the pattern language that the indicator pattern is expressed in.',
   });
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Indicator Type Vocabulary
 // https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_cvhfwe3t9vuo
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const IndicatorTypeOV = z
   .enum([

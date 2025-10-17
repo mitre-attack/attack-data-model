@@ -11,12 +11,12 @@ import {
 } from '../common/index.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Data Source Ref
 // (x_mitre_data_source_ref)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreDataSourceRefSchema = createStixIdValidator('x-mitre-data-source').meta({
   description: 'STIX ID of the data source this component is a part of.',
@@ -24,12 +24,12 @@ export const xMitreDataSourceRefSchema = createStixIdValidator('x-mitre-data-sou
 
 export type XMitreDataSourceRef = z.infer<typeof xMitreDataSourceRefSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Log Sources
 // (x_mitre_log_sources)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreLogSourcesSchema = z
   .array(
@@ -66,11 +66,11 @@ export const xMitreLogSourcesSchema = z
 
 export type XMitreLogSources = z.infer<typeof xMitreLogSourcesSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Data Component
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const dataComponentSchema = attackBaseDomainObjectSchema
   .extend({

@@ -11,11 +11,11 @@ import { nonEmptyRequiredString } from '../common/generic.js';
 import { createStixIdValidator } from '../common/stix-identifier.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Log Source
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreLogSourcePermutationName = nonEmptyRequiredString;
 
@@ -35,11 +35,11 @@ export const xMitreLogSourceReferenceSchema = z
 
 export type LogSourceReference = z.infer<typeof xMitreLogSourceReferenceSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Log Sources (plural)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreLogSourceReferencesSchema = z
   .array(xMitreLogSourceReferenceSchema)
@@ -73,11 +73,11 @@ export const xMitreLogSourceReferencesSchema = z
 
 export type LogSourceReferences = z.infer<typeof xMitreLogSourceReferencesSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Mutable Element
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreMutableElementSchema = z.object({
   field: nonEmptyRequiredString,
@@ -86,11 +86,11 @@ export const xMitreMutableElementSchema = z.object({
 
 export type MutableElement = z.infer<typeof xMitreMutableElementSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Mutable Elements (plural)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreMutableElementsSchema = z.array(xMitreMutableElementSchema).min(1).meta({
   description:
@@ -99,11 +99,11 @@ export const xMitreMutableElementsSchema = z.array(xMitreMutableElementSchema).m
 
 export type MutableElements = z.infer<typeof xMitreMutableElementsSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Analytic
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const analyticSchema = attackBaseDomainObjectSchema
   .extend({

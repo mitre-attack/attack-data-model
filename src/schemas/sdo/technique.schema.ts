@@ -18,11 +18,11 @@ import {
   xMitrePlatformsSchema,
 } from '../common/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Network Requirements (x_mitre_network_requirements)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreNetworkRequirementsSchema = z
   .boolean()
@@ -30,11 +30,11 @@ export const xMitreNetworkRequirementsSchema = z
 
 export type XMitreNetworkRequirements = z.infer<typeof xMitreNetworkRequirementsSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Effective Permissions (x_mitre_effective_permissions)
 //
-/////////////////////////////////////
+//==============================================================================
 
 const supportedMitreEffectivePermissions = ['Administrator', 'SYSTEM', 'User', 'root'] as const;
 
@@ -61,11 +61,11 @@ export const xMitreEffectivePermissionsSchema = z
 
 export type XMitreEffectivePermissions = z.infer<typeof xMitreEffectivePermissionsSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Impact type (x_mitre_impact_type)
 //
-/////////////////////////////////////
+//==============================================================================
 
 const supportedMitreImpactTypes = ['Availability', 'Integrity'] as const;
 
@@ -79,11 +79,11 @@ export const xMitreImpactTypeSchema = stixListOf(
 
 export type XMitreImpactType = z.infer<typeof xMitreImpactTypeSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE System Requirements (x_mitre_system_requirements)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreSystemRequirementsSchema = stixListOfString.meta({
   description:
@@ -92,11 +92,11 @@ export const xMitreSystemRequirementsSchema = stixListOfString.meta({
 
 export type XMitreSystemRequirements = z.infer<typeof xMitreSystemRequirementsSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Remote Support (x_mitre_remote_support)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreRemoteSupportSchema = z.boolean().meta({
   description: 'If true, the technique can be used to execute something on a remote system.',
@@ -104,11 +104,11 @@ export const xMitreRemoteSupportSchema = z.boolean().meta({
 
 export type XMitreRemoteSupport = z.infer<typeof xMitreRemoteSupportSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Permissions Required (x_mitre_permissions_required)
 //
-/////////////////////////////////////
+//==============================================================================
 
 const supportedMitrePermissionsRequired = [
   'Remote Desktop Users',
@@ -140,11 +140,11 @@ export const xMitrePermissionsRequiredSchema = z
 
 export type XMitrePermissionsRequired = z.infer<typeof xMitrePermissionsRequiredSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Data Sources (x_mitre_data_sources)
 //
-/////////////////////////////////////
+//==============================================================================
 
 // a singular data source
 type DataSourceString = `${string}: ${string}`;
@@ -181,11 +181,11 @@ export const xMitreDataSourcesSchema = z
 export type XMitreDataSource = z.infer<typeof xMitreDataSourceSchema>;
 export type XMitreDataSources = z.infer<typeof xMitreDataSourcesSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Is Subtechnique (x_mitre_is_subtechnique)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreIsSubtechniqueSchema = z
   .boolean({
@@ -197,11 +197,11 @@ export const xMitreIsSubtechniqueSchema = z
 
 export type XMitreIsSubtechnique = z.infer<typeof xMitreIsSubtechniqueSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Tactic Type (x_mitre_tactic_type)
 //
-/////////////////////////////////////
+//==============================================================================
 
 const supportedMitreTacticTypes = [
   'Post-Adversary Device Access',
@@ -229,11 +229,11 @@ export const xMitreTacticTypeSchema = z
 
 export type XMitreTacticType = z.infer<typeof xMitreTacticTypeSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Defense Bypassed (x_mitre_defense_bypassed)
 //
-/////////////////////////////////////
+//==============================================================================
 
 const supportedMitreDefenseBypasses = [
   'Signature-based detection',
@@ -300,11 +300,11 @@ export const xMitreDefenseBypassesSchema = z
 
 export type XMitreDefenseBypasses = z.infer<typeof xMitreDefenseBypassesSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Detection (x_mitre_detection)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreDetectionSchema = nonEmptyRequiredString.meta({
   description: 'Strategies for identifying if a technique has been used by an adversary.',
@@ -312,11 +312,11 @@ export const xMitreDetectionSchema = nonEmptyRequiredString.meta({
 
 export type XMitreDetection = z.infer<typeof xMitreDetectionSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Technique
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const techniqueSchema = attackBaseDomainObjectSchema
   .extend({

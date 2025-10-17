@@ -11,12 +11,12 @@ import {
   type StixType,
 } from '../common/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Relationship Types
 // (relationship_type)
 //
-/////////////////////////////////////
+//==============================================================================
 
 // Supported relationship types
 const supportedRelationshipTypes = [
@@ -273,11 +273,11 @@ export function createRelationshipValidationRefinement() {
   };
 }
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Relationship
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const relationshipSchema = attackBaseRelationshipObjectSchema
   .extend({

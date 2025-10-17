@@ -10,11 +10,11 @@ import {
   xMitreModifiedByRefSchema,
 } from '../common/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Shortname (x_mitre_shortname)
 //
-/////////////////////////////////////
+//==============================================================================
 
 const supportedMitreShortNames = [
   'credential-access',
@@ -66,11 +66,11 @@ export const xMitreShortNameSchema = z.enum(supportedMitreShortNames).meta({
 
 export type XMitreShortName = z.infer<typeof xMitreShortNameSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Tactic
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const tacticSchema = attackBaseDomainObjectSchema
   .extend({

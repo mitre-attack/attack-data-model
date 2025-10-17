@@ -14,11 +14,11 @@ import {
 import { ToolTypeOV } from '../common/open-vocabulary.js';
 import { softwareSchema } from './software.schema.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Tool Schema
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const toolSchema = softwareSchema
   .extend({

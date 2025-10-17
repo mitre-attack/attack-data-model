@@ -12,12 +12,12 @@ import {
   xMitrePlatformsSchema,
 } from '../common/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Asset Sectors
 // (x_mitre_sectors)
 //
-/////////////////////////////////////
+//==============================================================================
 
 const supportedAssetSectors = [
   'Electric',
@@ -47,12 +47,12 @@ export const xMitreSectorsSchema = z
 
 export type XMitreSectors = z.infer<typeof xMitreSectorsSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Related Assets
 // (x_mitre_related_assets)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const relatedAssetSchema = z.object({
   name: nameSchema,
@@ -68,11 +68,11 @@ export const relatedAssetsSchema = z.array(relatedAssetSchema).min(1).meta({
 export type RelatedAsset = z.infer<typeof relatedAssetSchema>;
 export type RelatedAssets = z.infer<typeof relatedAssetsSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Asset
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const assetSchema = attackBaseDomainObjectSchema
   .extend({

@@ -11,12 +11,12 @@ import {
   xMitreModifiedByRefSchema,
 } from '../common/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Object Version Reference
 // (x_mitre_contents)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const objectVersionReferenceSchema = z.object({
   object_ref: stixIdentifierSchema.meta({ description: 'The ID of the referenced object.' }),
@@ -34,11 +34,11 @@ export const xMitreContentsSchema = z
 
 export type ObjectVersionReference = z.infer<typeof objectVersionReferenceSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE STIX Collection
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const collectionSchema = attackBaseDomainObjectSchema
   .extend({

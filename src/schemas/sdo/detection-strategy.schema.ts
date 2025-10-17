@@ -9,11 +9,11 @@ import {
 import { createStixIdValidator } from '../common/stix-identifier.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Detection Strategy
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const detectionStrategySchema = attackBaseDomainObjectSchema
   .extend({

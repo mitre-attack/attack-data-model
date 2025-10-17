@@ -7,11 +7,11 @@ import {
   nameSchema,
 } from '../common/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // TLP Marking Object
 //
-/////////////////////////////////////
+//==============================================================================
 
 // TLP Marking Object type
 export const tlpMarkingObjectSchema = z
@@ -93,11 +93,11 @@ export const tlpMarkingDefinitionSchema = z.union([
 export type TlpMarkingDefinition = z.infer<typeof tlpMarkingDefinitionSchema>;
 export type TlpMarkingObject = z.infer<typeof tlpMarkingObjectSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Statement Marking Object
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const statementMarkingObjectSchema = z
   .object({
@@ -108,11 +108,11 @@ export const statementMarkingObjectSchema = z
   })
   .strict();
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Marking Definition
 //
-/////////////////////////////////////
+//==============================================================================
 
 // MarkingDefinition Schema
 export const markingDefinitionSchema = attackBaseMetaObjectSchema

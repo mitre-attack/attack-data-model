@@ -15,11 +15,11 @@ export const stixTimestampSchema = z.iso
 
 export type StixTimestamp = z.infer<typeof stixTimestampSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Branded Timestamps
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const stixCreatedTimestampSchema = stixTimestampSchema.brand<'StixCreatedTimestamp'>();
 export type StixCreatedTimestamp = z.infer<typeof stixCreatedTimestampSchema>;

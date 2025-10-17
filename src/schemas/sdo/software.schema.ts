@@ -12,11 +12,11 @@ import {
   xMitrePlatformsSchema,
 } from '../common/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Software Schema
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const softwareSchema = attackBaseDomainObjectSchema.extend({
   type: createMultiStixTypeValidator(['malware', 'tool']),

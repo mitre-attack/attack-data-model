@@ -13,11 +13,11 @@ import {
 } from '../common/index.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Mitigation (Course of Action) Schema
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const mitigationSchema = attackBaseDomainObjectSchema
   .extend({
