@@ -1,22 +1,23 @@
 import { z } from 'zod/v4';
+import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
-  attackBaseDomainObjectSchema,
   createAttackExternalReferencesSchema,
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
+  nameSchema,
   xMitreContributorsSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
-} from '../common/index.js';
+} from '../common/property-schemas/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Asset Sectors
 // (x_mitre_sectors)
 //
-/////////////////////////////////////
+//==============================================================================
 
 const supportedAssetSectors = [
   'Electric',
@@ -39,58 +40,51 @@ export const xMitreSectorsSchema = z
           : 'Invalid asset sectors array',
     },
   )
+  .min(1)
   .meta({
     description: 'List of industry sector(s) where this asset is commonly observed.',
   });
 
 export type XMitreSectors = z.infer<typeof xMitreSectorsSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Related Assets
 // (x_mitre_related_assets)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const relatedAssetSchema = z
   .object({
-    name: z
-      .string({
-        error: (issue) =>
-          issue.input === undefined
-            ? 'Related asset name is required'
-            : 'Related asset name must be a string',
-      })
+    name: nameSchema
       .meta({
         description: 'Sector-specific name or alias for the related asset',
       }),
 
     related_asset_sectors: xMitreSectorsSchema.optional(),
-    description: z
-      .string()
+    description: descriptionSchema
+      .optional()
       .meta({
         description: 'How the related asset connects to the primary asset definition',
-      })
-      .optional(),
+      }),
   })
   .meta({
     description: 'The `related_asset` object provides sector-specific asset variations and aliases',
   });
 
-export const relatedAssetsSchema = z.array(relatedAssetSchema).meta({
-  description: `
-Related assets describe sector specific device names or aliases that may be commonly associated with the primary asset page name or functional description.
-    `.trim(),
+export const relatedAssetsSchema = z.array(relatedAssetSchema).min(1).meta({
+  description:
+    'Related assets describe sector specific device names or alias that may be commonly associated with the primary asset page name or functional description. Related asset objects include a description of how the related asset is associated with the page definition',
 });
 
 export type RelatedAsset = z.infer<typeof relatedAssetSchema>;
 export type RelatedAssets = z.infer<typeof relatedAssetsSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Asset
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const assetSchema = attackBaseDomainObjectSchema
   .extend({

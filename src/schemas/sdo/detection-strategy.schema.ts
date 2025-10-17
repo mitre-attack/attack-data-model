@@ -1,19 +1,19 @@
 import { z } from 'zod/v4';
-import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
+import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
+  createAttackExternalReferencesSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
   xMitreContributorsSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
-} from '../common/common-properties.js';
-import { createAttackExternalReferencesSchema } from '../common/misc.js';
-import { createStixIdValidator } from '../common/stix-identifier.js';
-import { createStixTypeValidator } from '../common/stix-type.js';
+} from '../common/property-schemas/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Detection Strategy
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const detectionStrategySchema = attackBaseDomainObjectSchema
   .extend({
@@ -27,10 +27,13 @@ export const detectionStrategySchema = attackBaseDomainObjectSchema
 
     x_mitre_contributors: xMitreContributorsSchema,
 
-    x_mitre_analytic_refs: z.array(createStixIdValidator('x-mitre-analytic')).nonempty().meta({
-      description:
-        'Array of STIX IDs referencing `x-mitre-analytic` objects that implement this detection strategy.',
-    }),
+    x_mitre_analytic_refs: z
+      .array(createStixIdValidator('x-mitre-analytic'))
+      .nonempty({ error: 'At least one analytic ref is required' })
+      .meta({
+        description:
+          'Array of STIX IDs referencing `x-mitre-analytic` objects that implement this detection strategy.',
+      }),
 
     x_mitre_domains: xMitreDomainsSchema,
   })

@@ -66,24 +66,6 @@ const minimalAnalytic: MinimalAnalytic = {
   x_mitre_domains: ['enterprise-attack'],
   x_mitre_platforms: ['Windows'],
   description: 'Adversary execution of PowerShell commands with suspicious parameters',
-  x_mitre_log_source_references: [
-    {
-      x_mitre_data_component_ref: 'x-mitre-data-component--1a2b3c4d-5e6f-789a-bcde-123456789abc',
-      name: 'PowerShell',
-      channel: '1',
-    },
-    {
-      x_mitre_data_component_ref: 'x-mitre-data-component--1a2b3c4d-5e6f-789a-bcde-123456789abc',
-      name: 'PowerShell',
-      channel: '2',
-    },
-  ],
-  x_mitre_mutable_elements: [
-    {
-      field: 'TimeWindow',
-      description: 'Time window for correlation analysis',
-    },
-  ],
 };
 
 type MinimalCampaign = Omit<Campaign, MinimalSdoKeys>;

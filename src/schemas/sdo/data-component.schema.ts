@@ -1,21 +1,22 @@
 import { z } from 'zod/v4';
-import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
+import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
   createStixIdValidator,
+  createStixTypeValidator,
   descriptionSchema,
+  nonEmptyRequiredString,
   objectMarkingRefsSchema,
   stixCreatedByRefSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
-} from '../common/index.js';
-import { createStixTypeValidator } from '../common/stix-type.js';
+} from '../common/property-schemas/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Data Source Ref
 // (x_mitre_data_source_ref)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreDataSourceRefSchema = createStixIdValidator('x-mitre-data-source').meta({
   description:
@@ -24,27 +25,27 @@ export const xMitreDataSourceRefSchema = createStixIdValidator('x-mitre-data-sou
 
 export type XMitreDataSourceRef = z.infer<typeof xMitreDataSourceRefSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Log Sources
 // (x_mitre_log_sources)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreLogSourcesSchema = z
   .array(
     z
       .object({
-        name: z.string().nonempty().meta({
+        name: nonEmptyRequiredString.meta({
           description: 'Log source identifier (e.g., "sysmon", "auditd")',
         }),
-        channel: z.string().nonempty().meta({
+        channel: nonEmptyRequiredString.meta({
           description: 'Specific log channel or event type (e.g., "1" for Sysmon Process Creation)',
         }),
       })
       .strict(),
   )
-  .nonempty()
+  .min(1)
   .refine(
     // Reject duplicate (name, channel) pairs
     // Allow same name with different channels
@@ -86,11 +87,11 @@ export const xMitreLogSourcesSchema = z
 
 export type XMitreLogSources = z.infer<typeof xMitreLogSourcesSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Data Component
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const dataComponentSchema = attackBaseDomainObjectSchema
   .extend({
