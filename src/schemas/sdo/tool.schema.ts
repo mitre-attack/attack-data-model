@@ -11,7 +11,6 @@ import {
   createStixTypeValidator,
   killChainPhaseSchema,
 } from '../common/index.js';
-import { nonEmptyRequiredString } from '../common/meta.js';
 import { ToolTypeOV } from '../common/open-vocabulary.js';
 import { softwareSchema } from './software.schema.js';
 

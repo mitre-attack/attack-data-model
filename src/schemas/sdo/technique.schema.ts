@@ -17,7 +17,6 @@ import {
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
 } from '../common/index.js';
-import { nonEmptyRequiredString, nonEmptyRequiredStringArray } from '../common/meta.js';
 
 /////////////////////////////////////
 //

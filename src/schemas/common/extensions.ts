@@ -1,7 +1,12 @@
 import { z } from 'zod/v4';
-import { nameSchema, objectMarkingRefsSchema } from './common-properties.js';
-import { nonEmptyRequiredString } from './meta.js';
-import { externalReferencesSchema, granularMarkingSchema, stixCreatedByRefSchema } from './misc.js';
+import {
+  externalReferencesSchema,
+  granularMarkingSchema,
+  nameSchema,
+  objectMarkingRefsSchema,
+  stixCreatedByRefSchema,
+} from './common-properties.js';
+import { nonEmptyRequiredString } from './generic.js';
 import { createStixIdValidator } from './stix-identifier.js';
 import { stixSpecVersionSchema } from './stix-spec-version.js';
 import { createStixTypeValidator } from './stix-type.js';

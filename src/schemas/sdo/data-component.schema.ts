@@ -1,5 +1,6 @@
 import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
+import { nonEmptyRequiredString } from '../common/generic.js';
 import {
   createStixIdValidator,
   descriptionSchema,
@@ -8,7 +9,6 @@ import {
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
 } from '../common/index.js';
-import { nonEmptyRequiredString } from '../common/meta.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 
 /////////////////////////////////////

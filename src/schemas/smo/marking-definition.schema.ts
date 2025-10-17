@@ -6,7 +6,6 @@ import {
   createStixTypeValidator,
   nameSchema,
 } from '../common/index.js';
-import { nonEmptyRequiredString } from '../common/meta.js';
 
 /////////////////////////////////////
 //

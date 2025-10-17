@@ -1,11 +1,11 @@
 import { z } from 'zod/v4';
 import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
 import {
+  createAttackExternalReferencesSchema,
   xMitreContributorsSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
 } from '../common/common-properties.js';
-import { createAttackExternalReferencesSchema } from '../common/misc.js';
 import { createStixIdValidator } from '../common/stix-identifier.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 

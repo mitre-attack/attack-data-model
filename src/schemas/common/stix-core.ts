@@ -1,6 +1,11 @@
 import { z } from 'zod/v4';
 
-import { objectMarkingRefsSchema } from './common-properties.js';
+import {
+  externalReferencesSchema,
+  granularMarkingSchema,
+  objectMarkingRefsSchema,
+  stixCreatedByRefSchema,
+} from './common-properties.js';
 import { extensionsSchema } from './extensions.js';
 import { nonEmptyRequiredString, stixListOfString } from './generic.js';
 import { stixIdentifierSchema } from './stix-identifier.js';
