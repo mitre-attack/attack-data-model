@@ -56,17 +56,14 @@ export type XMitreSectors = z.infer<typeof xMitreSectorsSchema>;
 
 export const relatedAssetSchema = z
   .object({
-    name: nameSchema
-      .meta({
-        description: 'Sector-specific name or alias for the related asset',
-      }),
+    name: nameSchema.meta({
+      description: 'Sector-specific name or alias for the related asset',
+    }),
 
     related_asset_sectors: xMitreSectorsSchema.optional(),
-    description: descriptionSchema
-      .optional()
-      .meta({
-        description: 'How the related asset connects to the primary asset definition',
-      }),
+    description: descriptionSchema.optional().meta({
+      description: 'How the related asset connects to the primary asset definition',
+    }),
   })
   .meta({
     description: 'The `related_asset` object provides sector-specific asset variations and aliases',

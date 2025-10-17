@@ -22,10 +22,13 @@ export const xMitreLogSourcePermutationName = nonEmptyRequiredString;
 export const xMitreLogSourceReferenceSchema = z
   .object({
     x_mitre_data_component_ref: createStixIdValidator('x-mitre-data-component'),
-    name: nonEmptyRequiredString
-      .meta({ description: "Log source name from the associated data component's `x_mitre_log_sources` array" }),
-    channel: nonEmptyRequiredString
-      .meta({ description: "Log source channel from the data component's `x_mitre_log_sources` array" }),
+    name: nonEmptyRequiredString.meta({
+      description:
+        "Log source name from the associated data component's `x_mitre_log_sources` array",
+    }),
+    channel: nonEmptyRequiredString.meta({
+      description: "Log source channel from the data component's `x_mitre_log_sources` array",
+    }),
   })
   .meta({
     description:

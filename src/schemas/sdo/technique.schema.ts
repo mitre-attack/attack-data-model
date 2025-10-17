@@ -337,14 +337,10 @@ export const techniqueSchema = attackBaseDomainObjectSchema
     // Optional in STIX but required in ATT&CK
     external_references: createAttackExternalReferencesSchema('attack-pattern'),
 
-    kill_chain_phases: z
-      .array(killChainPhaseSchema)
-      .min(1)
-      .optional()
-      .meta({
-        description:
-          'Techniques are associated with Tactics through their `kill_chain_phases` property. When the `kill_chain_name` matches the domain (`mitre-attack`, `mitre-mobile-attack`, or `mitre-ics-attack`), the `phase_name` corresponds to the `x_mitre_shortname` of the associated `x-mitre-tactic` object.',
-      }),
+    kill_chain_phases: z.array(killChainPhaseSchema).min(1).optional().meta({
+      description:
+        'Techniques are associated with Tactics through their `kill_chain_phases` property. When the `kill_chain_name` matches the domain (`mitre-attack`, `mitre-mobile-attack`, or `mitre-ics-attack`), the `phase_name` corresponds to the `x_mitre_shortname` of the associated `x-mitre-tactic` object.',
+    }),
 
     description: descriptionSchema.optional(),
 
