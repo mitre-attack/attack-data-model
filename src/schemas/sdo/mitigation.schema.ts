@@ -4,6 +4,7 @@ import {
   createAttackExternalReferencesSchema,
   createOldMitreAttackIdSchema,
   createStixIdValidator,
+  descriptionSchema,
   objectMarkingRefsSchema,
   stixCreatedByRefSchema,
   xMitreContributorsSchema,
@@ -24,7 +25,7 @@ export const mitigationSchema = attackBaseDomainObjectSchema
 
     type: createStixTypeValidator('course-of-action'),
 
-    description: z.string().meta({
+    description: descriptionSchema.meta({
       description: 'A description that provides more details and context about the Mitigation.',
     }),
 

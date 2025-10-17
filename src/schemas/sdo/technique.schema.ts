@@ -4,6 +4,7 @@ import {
   createMobileOnlyPropertiesRefinement,
 } from '@/refinements/index.js';
 import { z } from 'zod/v4';
+import { nonEmptyRequiredString, stixListOf, stixListOfString } from '../common/generic.js';
 import {
   attackBaseDomainObjectSchema,
   createAttackExternalReferencesSchema,
@@ -16,6 +17,7 @@ import {
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
 } from '../common/index.js';
+import { nonEmptyRequiredString, nonEmptyRequiredStringArray } from '../common/meta.js';
 
 /////////////////////////////////////
 //
@@ -50,7 +52,7 @@ export const xMitreEffectivePermissionsSchema = z
           : 'Invalid effective permissions array',
     },
   )
-  .nonempty('At least one effective permission is required')
+  .min(1, { error: 'At least one effective permission is required' })
   .refine((items) => new Set(items).size === items.length, {
     message: 'Effective permissions must be unique (no duplicates allowed)',
   })
@@ -68,21 +70,13 @@ export type XMitreEffectivePermissions = z.infer<typeof xMitreEffectivePermissio
 
 const supportedMitreImpactTypes = ['Availability', 'Integrity'] as const;
 
-export const xMitreImpactTypeSchema = z
-  .array(
-    z.enum(supportedMitreImpactTypes, {
-      error: () => `Impact type must be one of: ${supportedMitreImpactTypes.join(', ')}`,
-    }),
-    {
-      error: (issue) =>
-        issue.code === 'invalid_type'
-          ? 'x_mitre_impact_type must be an array of strings'
-          : 'Invalid impact type array',
-    },
-  )
-  .meta({
-    description: 'Denotes if the technique can be used for integrity or availability attacks',
-  });
+export const xMitreImpactTypeSchema = stixListOf(
+  z.enum(supportedMitreImpactTypes, {
+    error: () => `Impact type must be one of: ${supportedMitreImpactTypes.join(', ')}`,
+  }),
+).meta({
+  description: 'Denotes if the technique can be used for integrity or availability attacks',
+});
 
 export type XMitreImpactType = z.infer<typeof xMitreImpactTypeSchema>;
 
@@ -92,17 +86,10 @@ export type XMitreImpactType = z.infer<typeof xMitreImpactTypeSchema>;
 //
 /////////////////////////////////////
 
-export const xMitreSystemRequirementsSchema = z
-  .array(z.string(), {
-    error: (issue) =>
-      issue.code === 'invalid_type'
-        ? 'x_mitre_system_requirements must be an array of strings'
-        : 'Invalid system requirements array',
-  })
-  .meta({
-    description:
-      'Additional information on requirements the adversary needs to meet or about the state of the system (software, patch level, etc.) that may be required for the technique to work',
-  });
+export const xMitreSystemRequirementsSchema = stixListOfString.meta({
+  description:
+    'Additional information on requirements the adversary needs to meet or about the state of the system (software, patch level, etc.) that may be required for the technique to work',
+});
 
 export type XMitreSystemRequirements = z.infer<typeof xMitreSystemRequirementsSchema>;
 
@@ -146,7 +133,7 @@ export const xMitrePermissionsRequiredSchema = z
           : 'Invalid x_mitre_permissions_required array',
     },
   )
-  .nonempty('At least one x_mitre_permissions_required value is required')
+  .min(1, { error: 'At least one permission level is required' })
   .meta({
     description:
       'The lowest level of permissions the adversary is required to be operating within to perform the technique on a system.',
@@ -186,7 +173,7 @@ export const xMitreDataSourcesSchema = z
         ? 'x_mitre_data_sources must be an array of strings'
         : 'Invalid data sources array',
   })
-  .nonempty()
+  .min(1, { error: 'At least one data source is required' })
   .meta({
     description:
       'Sources of information that may be used to identify the action or result of the action being performed',
@@ -235,6 +222,7 @@ export const xMitreTacticTypeSchema = z
           : 'Invalid tactic type array',
     },
   )
+  .min(1)
   .meta({
     description:
       '"Post-Adversary Device Access", "Pre-Adversary Device Access", or "Without Adversary Device Access"',
@@ -292,8 +280,18 @@ const supportedMitreDefenseBypasses = [
 ] as const;
 
 export const xMitreDefenseBypassesSchema = z
-  .array(z.enum(supportedMitreDefenseBypasses))
-  .min(1)
+  .array(
+    z.enum(supportedMitreDefenseBypasses, {
+      error: () => `Defense bypass must be one of: ${supportedMitreDefenseBypasses.join(', ')}`,
+    }),
+    {
+      error: (issue) =>
+        issue.code === 'invalid_type'
+          ? 'x_mitre_defense_bypasseed must be an array of strings'
+          : 'Invalid defense bypassed type array',
+    },
+  )
+  .min(1, { error: 'At least one defense bypass is required' })
   .refine((items) => new Set(items).size === items.length, {
     message: 'Mitre defense bypasses must be unique (no duplicates allowed).',
   })
@@ -309,13 +307,9 @@ export type XMitreDefenseBypasses = z.infer<typeof xMitreDefenseBypassesSchema>;
 //
 /////////////////////////////////////
 
-export const xMitreDetectionSchema = z
-  .string({
-    error: 'x_mitre_detection must be a string.',
-  })
-  .meta({
-    description: 'Strategies for identifying if a technique has been used by an adversary.',
-  });
+export const xMitreDetectionSchema = nonEmptyRequiredString.meta({
+  description: 'Strategies for identifying if a technique has been used by an adversary.',
+});
 
 export type XMitreDetection = z.infer<typeof xMitreDetectionSchema>;
 
@@ -334,7 +328,9 @@ export const techniqueSchema = attackBaseDomainObjectSchema
     // Optional in STIX but required in ATT&CK
     external_references: createAttackExternalReferencesSchema('attack-pattern'),
 
-    kill_chain_phases: z.array(killChainPhaseSchema).optional(),
+    kill_chain_phases: z.array(killChainPhaseSchema).min(1).optional().meta({
+      description: 'The list of Kill Chain Phases for which this Attack Pattern is used.',
+    }),
 
     description: descriptionSchema.optional(),
 

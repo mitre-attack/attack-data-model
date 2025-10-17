@@ -1,12 +1,13 @@
 import { createFirstBundleObjectRefinement } from '@/refinements/index.js';
 import { z } from 'zod/v4';
+import { nonEmptyRequiredString } from '../common/generic.js';
 import { createStixIdValidator } from '../common/stix-identifier.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 import {
-  markingDefinitionSchema,
   type MarkingDefinition,
+  markingDefinitionSchema,
 } from '../smo/marking-definition.schema.js';
-import { relationshipSchema, type Relationship } from '../sro/relationship.schema.js';
+import { type Relationship, relationshipSchema } from '../sro/relationship.schema.js';
 import { type Analytic, analyticSchema } from './analytic.schema.js';
 import { type Asset, assetSchema } from './asset.schema.js';
 import { type Campaign, campaignSchema } from './campaign.schema.js';
@@ -105,20 +106,8 @@ export const attackObjectsSchema: z.ZodTypeAny = z
     z
       .object({
         // Basic structure validation to ensure we have a type field
-        type: z.string({
-          error: (issue) => {
-            return issue.code === 'invalid_type'
-              ? "Object 'type' must be a string"
-              : "The 'type' property is invalid or missing";
-          },
-        }),
-        id: z.string({
-          error: (issue) => {
-            return issue.code === 'invalid_type'
-              ? "Object 'id' must be a string"
-              : "The 'id' property is invalid or missing";
-          },
-        }),
+        type: nonEmptyRequiredString,
+        id: nonEmptyRequiredString,
       })
       .loose()
       .check((ctx) => {

@@ -6,6 +6,7 @@ import {
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
 } from '../common/common-properties.js';
+import { nonEmptyRequiredString } from '../common/meta.js';
 import { createAttackExternalReferencesSchema } from '../common/misc.js';
 import { createStixIdValidator } from '../common/stix-identifier.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
@@ -16,19 +17,17 @@ import { createStixTypeValidator } from '../common/stix-type.js';
 //
 /////////////////////////////////////
 
-export const xMitreLogSourcePermutationName = z.string();
+export const xMitreLogSourcePermutationName = nonEmptyRequiredString;
 
 export const xMitreLogSourceReferenceSchema = z
   .object({
     x_mitre_data_component_ref: createStixIdValidator('x-mitre-data-component'),
-    name: z
-      .string()
-      .nonempty()
-      .meta({ description: 'The name of the log source that the analytic is referencing' }),
-    channel: z
-      .string()
-      .nonempty()
-      .meta({ description: 'The channel of the log source that the analytic is referencing' }),
+    name: nonEmptyRequiredString.meta({
+      description: 'The name of the log source that the analytic is referencing',
+    }),
+    channel: nonEmptyRequiredString.meta({
+      description: 'The channel of the log source that the analytic is referencing',
+    }),
   })
   .meta({
     description: 'A reference to a log source',
@@ -44,7 +43,7 @@ export type LogSourceReference = z.infer<typeof xMitreLogSourceReferenceSchema>;
 
 export const xMitreLogSourceReferencesSchema = z
   .array(xMitreLogSourceReferenceSchema)
-  .nonempty()
+  .min(1)
   .refine(
     // Reject duplicate log source references, delineated by (x_mitre_data_component_ref, name, channel)
     // An analytic cannot reference the same log source twice
@@ -81,8 +80,8 @@ export type LogSourceReferences = z.infer<typeof xMitreLogSourceReferencesSchema
 /////////////////////////////////////
 
 export const xMitreMutableElementSchema = z.object({
-  field: z.string().nonempty(),
-  description: z.string().nonempty(),
+  field: nonEmptyRequiredString,
+  description: nonEmptyRequiredString,
 });
 
 export type MutableElement = z.infer<typeof xMitreMutableElementSchema>;
@@ -93,7 +92,7 @@ export type MutableElement = z.infer<typeof xMitreMutableElementSchema>;
 //
 /////////////////////////////////////
 
-export const xMitreMutableElementsSchema = z.array(xMitreMutableElementSchema).nonempty().meta({
+export const xMitreMutableElementsSchema = z.array(xMitreMutableElementSchema).min(1).meta({
   description:
     'Environment-specific tuning knobs like TimeWindow, UserContext, or PortRange, so defenders can adapt without changing core behavior.',
 });
@@ -112,7 +111,7 @@ export const analyticSchema = attackBaseDomainObjectSchema
 
     type: createStixTypeValidator('x-mitre-analytic'),
 
-    description: descriptionSchema.nonempty(),
+    description: descriptionSchema,
 
     x_mitre_platforms: xMitrePlatformsSchema.max(1), // 0 or 1
 

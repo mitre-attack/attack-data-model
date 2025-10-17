@@ -1,24 +1,7 @@
 import { z } from 'zod/v4';
+import { nonEmptyRequiredString } from './meta.js';
 import { type StixIdentifier, stixIdentifierSchema } from './stix-identifier.js';
 import type { StixType } from './stix-type.js';
-
-/////////////////////////////////////
-//
-// Version
-// (version)
-//
-/////////////////////////////////////
-
-export const versionSchema = z
-  .string()
-  .regex(/^\d+\.\d+$/, "Version must be in the format 'major.minor'")
-  .default('2.1')
-  .meta({
-    description:
-      "Represents the version of the object in a 'major.minor' format, where both 'major' and 'minor' are integers. This versioning follows semantic versioning principles but excludes the patch number. The version number is incremented by ATT&CK when the content of the object is updated. This property does not apply to relationship objects.",
-  });
-
-export type Version = z.infer<typeof versionSchema>;
 
 /////////////////////////////////////
 //
@@ -27,10 +10,7 @@ export type Version = z.infer<typeof versionSchema>;
 //
 /////////////////////////////////////
 
-export const nameSchema = z
-  .string()
-  .min(1, 'Name must not be empty')
-  .meta({ description: 'The name of the object.' });
+export const nameSchema = nonEmptyRequiredString.meta({ description: 'The name of the object.' });
 
 export type Name = z.infer<typeof nameSchema>;
 
@@ -41,7 +21,9 @@ export type Name = z.infer<typeof nameSchema>;
 //
 /////////////////////////////////////
 
-export const descriptionSchema = z.string().meta({ description: 'A description of the object.' });
+export const descriptionSchema = nonEmptyRequiredString.meta({
+  description: 'A description of the object.',
+});
 
 export type Description = z.infer<typeof descriptionSchema>;
 
@@ -53,7 +35,7 @@ export type Description = z.infer<typeof descriptionSchema>;
 /////////////////////////////////////
 
 export const aliasesSchema = z
-  .array(z.string(), { error: 'Aliases must be an array of strings.' })
+  .array(nonEmptyRequiredString, { error: 'Aliases must be an array of strings.' })
   .meta({
     description:
       "Alternative names used to identify this object. The first alias must match the object's name.",
@@ -68,8 +50,7 @@ export type Aliases = z.infer<typeof aliasesSchema>;
 //
 /////////////////////////////////////
 
-export const xMitreVersionSchema = z
-  .string()
+export const xMitreVersionSchema = nonEmptyRequiredString
   .regex(/^(\d{1,2})\.(\d{1,2})$/, "Version must be in format 'M.N' where M and N are 0-99")
   .meta({
     description:
@@ -87,8 +68,7 @@ export type XMitreVersion = z.infer<typeof xMitreVersionSchema>;
 
 const semverRegex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 
-export const xMitreAttackSpecVersionSchema = z
-  .string()
+export const xMitreAttackSpecVersionSchema = nonEmptyRequiredString
   .regex(semverRegex, 'Must be valid semantic version (MAJOR.MINOR.PATCH)')
   .meta({
     description:
@@ -112,9 +92,9 @@ const oldAttackIdRegex = /^MOB-(M|S)\d{4}$/;
 export function createOldMitreAttackIdSchema(
   stixType: Extract<StixType, 'malware' | 'tool' | 'course-of-action'>,
 ) {
-  const baseSchema = z
-    .string()
-    .meta({ description: 'Old ATT&CK IDs that may have been associated with this object' });
+  const baseSchema = nonEmptyRequiredString.meta({
+    description: 'Old ATT&CK IDs that may have been associated with this object',
+  });
 
   switch (stixType) {
     case 'malware':
@@ -144,8 +124,7 @@ export function createOldMitreAttackIdSchema(
   }
 }
 
-export const xMitreOldAttackIdSchema = z
-  .string()
+export const xMitreOldAttackIdSchema = nonEmptyRequiredString
   .refine(
     (value): value is MitreOldAttackId => {
       return oldAttackIdRegex.test(value);
@@ -263,7 +242,7 @@ export const objectMarkingRefsSchema = z
       'Identifier must start with "marking-definition--"',
     ),
   )
-  .nonempty()
+  .min(1)
   .meta({
     description: 'The list of marking-definition objects to be applied to this object.',
   });
@@ -276,12 +255,12 @@ export const objectMarkingRefsSchema = z
 /////////////////////////////////////
 
 export const xMitreContributorsSchema = z
-  .array(z.string().nonempty())
+  .array(nonEmptyRequiredString)
   .meta({
     description:
       'People and organizations who have contributed to the object. Not found on objects of type `relationship`.',
   })
-  .nonempty();
+  .min(1);
 
 export type XMitreContributors = z.infer<typeof xMitreContributorsSchema>;
 
@@ -318,11 +297,7 @@ export const killChainNameSchema = z.enum([
 
 export const killChainPhaseSchema = z
   .object({
-    phase_name: z
-      .string({
-        error: (issue) =>
-          issue.input === undefined ? 'Phase name is required' : 'Phase name must be a string',
-      })
+    phase_name: nonEmptyRequiredString
       .refine(
         (value) => {
           // Check if the value is all lowercase

@@ -2,6 +2,7 @@ import { createFirstAliasRefinement } from '@/refinements/index.js';
 import { attackBaseDomainObjectSchema } from '@/schemas/common/attack-base-object.js';
 import { createStixTypeValidator } from '@/schemas/common/stix-type.js';
 import { z } from 'zod/v4';
+import { nonEmptyRequiredString, stixListOfString } from '../common/generic.js';
 import {
   aliasesSchema,
   createAttackExternalReferencesSchema,
@@ -21,7 +22,7 @@ export const groupSchema = attackBaseDomainObjectSchema
     type: createStixTypeValidator('intrusion-set'),
 
     // Not used in ATT&CK Group but defined in STIX
-    description: z.string().optional().meta({
+    description: nonEmptyRequiredString.optional().meta({
       description:
         'A description that provides more details and context about the Intrusion Set, potentially including its purpose and its key characteristics',
     }),
@@ -51,7 +52,7 @@ export const groupSchema = attackBaseDomainObjectSchema
     }),
 
     // Not used in ATT&CK Group but defined in STIX
-    goals: z.array(z.string()).optional().meta({
+    goals: stixListOfString.optional().meta({
       description: 'The high-level goals of this Intrusion Set, namely, what are they trying to do',
     }),
 
@@ -65,7 +66,7 @@ export const groupSchema = attackBaseDomainObjectSchema
       description: 'The primary reason, motivation, or purpose behind this Intrusion Set',
     }),
 
-    secondary_motivations: z.array(AttackMotivationOV).optional().meta({
+    secondary_motivations: z.array(AttackMotivationOV).min(1).optional().meta({
       description: 'The secondary reasons, motivations, or purposes behind this Intrusion Set',
     }),
   })

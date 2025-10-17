@@ -35,6 +35,7 @@ export const xMitreCollectionLayersSchema = z
         ? 'x_mitre_collection_layers must be an array of supported collection layers.'
         : 'x_mitre_collection_layers is invalid or missing',
   })
+  .min(1)
   .meta({ description: 'List of places the data can be collected from.' });
 
 export type XMitreCollectionLayers = z.infer<typeof xMitreCollectionLayersSchema>;

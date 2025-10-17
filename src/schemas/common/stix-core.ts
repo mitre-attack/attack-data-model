@@ -1,12 +1,12 @@
 import { z } from 'zod/v4';
 
-import { stixIdentifierSchema } from './stix-identifier.js';
-import { stixTypeSchema } from './stix-type.js';
-import { stixSpecVersionSchema } from './stix-spec-version.js';
-import { stixCreatedTimestampSchema, stixModifiedTimestampSchema } from './stix-timestamp.js';
-import { stixCreatedByRefSchema, granularMarkingSchema, externalReferencesSchema } from './misc.js';
 import { objectMarkingRefsSchema } from './common-properties.js';
 import { extensionsSchema } from './extensions.js';
+import { nonEmptyRequiredString, stixListOfString } from './generic.js';
+import { stixIdentifierSchema } from './stix-identifier.js';
+import { stixSpecVersionSchema } from './stix-spec-version.js';
+import { stixCreatedTimestampSchema, stixModifiedTimestampSchema } from './stix-timestamp.js';
+import { stixTypeSchema } from './stix-type.js';
 
 const stixBaseObjectSchema = z
   .object({
@@ -26,22 +26,15 @@ const stixBaseObjectSchema = z
         'The modified property represents the time that this particular version of the object was modified. The timstamp value MUST be precise to the nearest millisecond.',
     }),
     created_by_ref: stixCreatedByRefSchema.optional(),
-    labels: z
-      .array(z.string())
-      .meta({
-        description: 'The labels property specifies a set of terms used to meta this object.',
-      })
-      .optional(),
+    labels: stixListOfString.optional().meta({
+      description: 'The labels property specifies a set of terms used to meta this object.',
+    }),
     revoked: z
       .boolean()
-      .meta({ description: 'The revoked property indicates whether the object has been revoked.' })
-      .optional(),
+      .optional()
+      .meta({ description: 'The revoked property indicates whether the object has been revoked.' }),
     confidence: z
       .number()
-      .meta({
-        description:
-          'Identifies the confidence that the creator has in the correctness of their data.',
-      })
       .int()
       .min(1)
       .max(99)
@@ -49,17 +42,20 @@ const stixBaseObjectSchema = z
       .refine((val) => val === undefined || (val > 0 && val < 100), {
         message: 'Confidence must be between 1 and 99 inclusive.',
       })
-      .optional(),
-    lang: z
-      .string()
-      .meta({ description: 'Identifies the language of the text content in this object.' })
-      .optional(),
+      .optional()
+      .meta({
+        description:
+          'Identifies the confidence that the creator has in the correctness of their data.',
+      }),
+    lang: nonEmptyRequiredString
+      .optional()
+      .meta({ description: 'Identifies the language of the text content in this object.' }),
     external_references: externalReferencesSchema.optional(),
     object_marking_refs: objectMarkingRefsSchema.optional(),
     granular_markings: z
       .array(granularMarkingSchema)
-      .meta({ description: 'The set of granular markings that apply to this object.' })
-      .optional(),
+      .optional()
+      .meta({ description: 'The set of granular markings that apply to this object.' }),
     extensions: extensionsSchema.optional(),
   })
   // Disallow unknown keys. If there are any unknown keys in the input, Zod will throw an error.

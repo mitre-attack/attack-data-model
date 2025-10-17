@@ -84,15 +84,50 @@ const attackIdConfig = {
   },
 } as const;
 
-// Derived types and exports for backward compatibility and type safety
+/**
+ * Union type of all valid ATT&CK ID type keys.
+ *
+ * @example
+ * ```typescript
+ * const idType: AttackIdType = 'technique'; // Valid
+ * const idType: AttackIdType = 'tactic'; // Valid
+ * const idType: AttackIdType = 'invalid'; // Type error
+ * ```
+ */
 export type AttackIdType = keyof typeof attackIdConfig;
 
+/**
+ * Union type of all STIX types that have associated ATT&CK IDs.
+ *
+ * This extracts only the STIX types that appear in the attackIdConfig mapping,
+ * excluding STIX types that don't have ATT&CK IDs (e.g., marking-definition, identity, etc.).
+ *
+ * @example
+ * ```typescript
+ * const stixType: StixTypesWithAttackIds = 'attack-pattern'; // Valid
+ * const stixType: StixTypesWithAttackIds = 'x-mitre-tactic'; // Valid
+ * const stixType: StixTypesWithAttackIds = 'marking-definition'; // Type error - no ATT&CK ID
+ * ```
+ */
 export type StixTypesWithAttackIds = Extract<
   StixType,
   (typeof attackIdConfig)[AttackIdType]['stixTypes'][number]
 >;
 
-// Create reverse mapping from STIX type to attack ID type
+/**
+ * Reverse mapping from STIX type to ATT&CK ID type.
+ *
+ * This allows looking up which ATT&CK ID format corresponds to a given STIX type.
+ * Note that 'attack-pattern' defaults to 'technique', but subtechniques are handled
+ * contextually where needed.
+ *
+ * @example
+ * ```typescript
+ * stixTypeToAttackIdMapping['x-mitre-tactic']; // 'tactic'
+ * stixTypeToAttackIdMapping['malware']; // 'software'
+ * stixTypeToAttackIdMapping['attack-pattern']; // 'technique'
+ * ```
+ */
 export const stixTypeToAttackIdMapping: Record<StixTypesWithAttackIds, AttackIdType> = {
   'x-mitre-tactic': 'tactic',
   'attack-pattern': 'technique', // Default to technique; subtechnique handling is done contextually
@@ -108,25 +143,70 @@ export const stixTypeToAttackIdMapping: Record<StixTypesWithAttackIds, AttackIdT
   'x-mitre-analytic': 'analytic',
 };
 
-// Maps the ATT&CK type to its respective RegEx pattern
-// e.g., { "technique": /^T[0-9]{4}(\.[0-9]{3})?$/ }
-// We map ``AttackIdType`` instead of ``StixType`` because not all ``StixType`` values have ATT&CK ID patterns
-// For example, ``marking-definition``, ``identity``, ``relationship``, ``bundle``, ``collection`` do not have ATT&CK ID patterns
+/**
+ * Map of ATT&CK ID types to their respective RegEx patterns.
+ *
+ * Maps `AttackIdType` instead of `StixType` because not all STIX types have ATT&CK ID patterns.
+ * For example, `marking-definition`, `identity`, `relationship`, `bundle`, and `collection`
+ * do not have ATT&CK ID patterns.
+ *
+ * @example
+ * ```typescript
+ * attackIdPatterns.technique; // /^T\d{4}$/
+ * attackIdPatterns.tactic; // /^TA\d{4}$/
+ * attackIdPatterns.subtechnique; // /^T\d{4}\.\d{3}$/
+ * ```
+ */
 export const attackIdPatterns: Record<AttackIdType, RegExp> = Object.fromEntries(
   Object.entries(attackIdConfig).map(([key, config]) => [key, config.pattern]),
 ) as Record<AttackIdType, RegExp>;
 
+/**
+ * Map of ATT&CK ID types to their validation error messages.
+ *
+ * Used for providing helpful error messages when ATT&CK ID validation fails.
+ *
+ * @example
+ * ```typescript
+ * attackIdMessages.technique; // 'Must match ATT&CK Technique ID format (T####)'
+ * attackIdMessages.group; // 'Must match ATT&CK Group ID format (G####)'
+ * ```
+ */
 export const attackIdMessages: Record<AttackIdType, string> = Object.fromEntries(
   Object.entries(attackIdConfig).map(([key, config]) => [key, config.message]),
 ) as Record<AttackIdType, string>;
 
+/**
+ * Map of ATT&CK ID types to their format examples.
+ *
+ * Provides example formats for documentation and error messages.
+ *
+ * @example
+ * ```typescript
+ * attackIdExamples.technique; // 'T####'
+ * attackIdExamples.subtechnique; // 'T####.###'
+ * attackIdExamples['data-source']; // 'DS####'
+ * ```
+ */
 export const attackIdExamples: Record<AttackIdType, string> = Object.fromEntries(
   Object.entries(attackIdConfig).map(([key, config]) => [key, config.example]),
 ) as Record<AttackIdType, string>;
 
 /**
- * Gets the format example for a given STIX type
- * Special handling for attack-pattern which can be either technique or subtechnique
+ * Gets the ATT&CK ID format example for a given STIX type.
+ *
+ * Provides special handling for 'attack-pattern' which can be either a technique
+ * or a subtechnique, returning both possible formats.
+ *
+ * @param stixType - The STIX type to get the ATT&CK ID example for
+ * @returns The format example string (e.g., 'T####' or 'T#### or T####.###')
+ *
+ * @example
+ * ```typescript
+ * getAttackIdExample('x-mitre-tactic'); // 'TA####'
+ * getAttackIdExample('attack-pattern'); // 'T#### or T####.###'
+ * getAttackIdExample('malware'); // 'S####'
+ * ```
  */
 export function getAttackIdExample(stixType: StixTypesWithAttackIds): string {
   if (stixType === 'attack-pattern') {
@@ -138,7 +218,26 @@ export function getAttackIdExample(stixType: StixTypesWithAttackIds): string {
 }
 
 /**
- * Generic ATT&CK ID validator with configurable patterns for different object types
+ * Creates a Zod schema for validating ATT&CK IDs based on STIX type.
+ *
+ * This factory function generates a Zod string schema that validates ATT&CK IDs
+ * according to the format required for the given STIX type. Special handling is
+ * provided for 'attack-pattern' which accepts both technique and subtechnique formats.
+ *
+ * @param stixType - The STIX type that determines which ATT&CK ID format to validate
+ * @returns A Zod string schema configured for the appropriate ATT&CK ID format
+ *
+ * @example
+ * ```typescript
+ * const tacticIdSchema = createAttackIdSchema('x-mitre-tactic');
+ * tacticIdSchema.parse('TA0001'); // Valid - returns 'TA0001'
+ * tacticIdSchema.parse('T0001'); // Invalid - throws error
+ *
+ * const techniqueIdSchema = createAttackIdSchema('attack-pattern');
+ * techniqueIdSchema.parse('T1234'); // Valid - technique format
+ * techniqueIdSchema.parse('T1234.001'); // Valid - subtechnique format
+ * techniqueIdSchema.parse('TA0001'); // Invalid - wrong format
+ * ```
  */
 export const createAttackIdSchema = (stixType: StixTypesWithAttackIds) => {
   const attackIdType = stixTypeToAttackIdMapping[stixType];

@@ -1,9 +1,12 @@
 import { z } from 'zod/v4';
+import { nonEmptyRequiredString } from '../common/generic.js';
 import {
   attackBaseMetaObjectSchema,
   createStixIdValidator,
   createStixTypeValidator,
+  nameSchema,
 } from '../common/index.js';
+import { nonEmptyRequiredString } from '../common/meta.js';
 
 /////////////////////////////////////
 //
@@ -14,7 +17,7 @@ import {
 // TLP Marking Object type
 export const tlpMarkingObjectSchema = z
   .object({
-    tlp: z.string().meta({
+    tlp: nonEmptyRequiredString.meta({
       description:
         'The TLP level [TLP] of the content marked by this marking definition, as defined in this section.',
     }),
@@ -28,7 +31,7 @@ export const baseMarkingDefinitionSchema = z.object({
   id: z.uuid(),
   created: z.iso.datetime(),
   definition_type: z.literal('tlp'),
-  name: z.string(),
+  name: nameSchema,
   definition: tlpMarkingObjectSchema,
 });
 
@@ -99,7 +102,7 @@ export type TlpMarkingObject = z.infer<typeof tlpMarkingObjectSchema>;
 
 export const statementMarkingObjectSchema = z
   .object({
-    statement: z.string().meta({
+    statement: nonEmptyRequiredString.meta({
       description:
         'A Statement (e.g., copyright, terms of use) applied to the content marked by this marking definition.',
     }),

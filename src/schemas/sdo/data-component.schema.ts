@@ -8,6 +8,7 @@ import {
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
 } from '../common/index.js';
+import { nonEmptyRequiredString } from '../common/meta.js';
 import { createStixTypeValidator } from '../common/stix-type.js';
 
 /////////////////////////////////////
@@ -34,12 +35,12 @@ export const xMitreLogSourcesSchema = z
   .array(
     z
       .object({
-        name: z.string().nonempty(),
-        channel: z.string().nonempty(),
+        name: nonEmptyRequiredString,
+        channel: nonEmptyRequiredString,
       })
       .strict(),
   )
-  .nonempty()
+  .min(1)
   .refine(
     // Reject duplicate (name, channel) pairs
     // Allow same name with different channels
