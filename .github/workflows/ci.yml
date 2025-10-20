@@ -156,12 +156,12 @@ jobs:
         run: npm install
         working-directory: ./
 
+      - name: Generate schema documentation
+        run: npm run docs:schemamarkdown
+        working-directory: ./
+
       - name: Install docusaurus dependencies
         run: npm install
-        working-directory: ./docusaurus
-
-      - name: Generate schema documentation
-        run: npm run gendocs
         working-directory: ./docusaurus
 
       - name: Build Docusaurus site
