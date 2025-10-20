@@ -1,9 +1,6 @@
-import {
-  createCitationsRefinement,
-  createFirstAliasRefinement,
-} from '@/schemas/refinements/index.js';
 import { z } from 'zod/v4';
-import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
+import { createCitationsRefinement, createFirstAliasRefinement } from '../refinements/index.js';
+import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
   aliasesSchema,
   createAttackExternalReferencesSchema,
@@ -14,15 +11,15 @@ import {
   xMitreContributorsSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
-} from '../common/index.js';
+} from '../common/property-schemas/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Mitre Citations
 // (x_mitre_first_seen_citation)
 // (x_mitre_last_seen_citation)
 //
-/////////////////////////////////////
+//==============================================================================
 
 type Citation = `(Citation: ${string})`;
 
@@ -80,11 +77,11 @@ export const xMitreLastSeenCitationSchema = multipleCitationsSchema.meta({
 export type XMitreFirstSeenCitation = z.infer<typeof xMitreFirstSeenCitationSchema>;
 export type XMitreLastSeenCitation = z.infer<typeof xMitreLastSeenCitationSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // ATT&CK Campaign
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const campaignSchema = attackBaseDomainObjectSchema
   .extend({

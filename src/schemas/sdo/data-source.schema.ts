@@ -1,22 +1,22 @@
 import { z } from 'zod/v4';
-import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
+import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
   createAttackExternalReferencesSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
   descriptionSchema,
   xMitreContributorsSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
-} from '../common/index.js';
-import { createStixIdValidator } from '../common/stix-identifier.js';
-import { createStixTypeValidator } from '../common/stix-type.js';
+} from '../common/property-schemas/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Collection Layers
 // (x_mitre_collection_layers)
 //
-/////////////////////////////////////
+//==============================================================================
 
 const supportedMitreCollectionLayers = [
   'Cloud Control Plane',
@@ -35,15 +35,16 @@ export const xMitreCollectionLayersSchema = z
         ? 'x_mitre_collection_layers must be an array of supported collection layers.'
         : 'x_mitre_collection_layers is invalid or missing',
   })
+  .min(1)
   .meta({ description: 'List of places the data can be collected from.' });
 
 export type XMitreCollectionLayers = z.infer<typeof xMitreCollectionLayersSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Data Source
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const dataSourceSchema = attackBaseDomainObjectSchema
   .extend({

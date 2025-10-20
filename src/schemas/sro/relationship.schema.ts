@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
+import { attackBaseRelationshipObjectSchema } from '../common/index.js';
 import {
-  attackBaseRelationshipObjectSchema,
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
@@ -9,14 +9,14 @@ import {
   xMitreModifiedByRefSchema,
   type StixIdentifier,
   type StixType,
-} from '../common/index.js';
+} from '../common/property-schemas/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Relationship Types
 // (relationship_type)
 //
-/////////////////////////////////////
+//==============================================================================
 
 // Supported relationship types
 const supportedRelationshipTypes = [
@@ -273,11 +273,11 @@ export function createRelationshipValidationRefinement() {
   };
 }
 
-/////////////////////////////////////
+//==============================================================================
 //
 // Relationship
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const relationshipSchema = attackBaseRelationshipObjectSchema
   .extend({
@@ -303,19 +303,18 @@ export const relationshipSchema = attackBaseRelationshipObjectSchema
   .check((ctx) => {
     createRelationshipValidationRefinement()(ctx);
   })
-  .transform((data) => {
+  .check((ctx) => {
     // Check for deprecated pattern
-    const [sourceType] = data.source_ref.split('--') as [StixType];
+    const [sourceType] = ctx.value.source_ref.split('--') as [StixType];
     if (
       sourceType === 'x-mitre-data-component' &&
-      data.relationship_type === 'detects' &&
-      data.target_ref.startsWith('attack-pattern--')
+      ctx.value.relationship_type === 'detects' &&
+      ctx.value.target_ref.startsWith('attack-pattern--')
     ) {
       console.warn(
         'DEPRECATION WARNING: x-mitre-data-component -> detects -> attack-pattern relationships are deprecated',
       );
     }
-    return data;
   });
 
 export type Relationship = z.infer<typeof relationshipSchema>;

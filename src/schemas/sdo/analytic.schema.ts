@@ -1,34 +1,33 @@
 import { z } from 'zod/v4';
-import { attackBaseDomainObjectSchema } from '../common/attack-base-object.js';
+import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
+  createAttackExternalReferencesSchema,
+  createStixIdValidator,
+  createStixTypeValidator,
   descriptionSchema,
+  nonEmptyRequiredString,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
-} from '../common/common-properties.js';
-import { createAttackExternalReferencesSchema } from '../common/misc.js';
-import { createStixIdValidator } from '../common/stix-identifier.js';
-import { createStixTypeValidator } from '../common/stix-type.js';
+} from '../common/property-schemas/index.js';
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Log Source
 //
-/////////////////////////////////////
+//==============================================================================
 
-export const xMitreLogSourcePermutationName = z.string();
+export const xMitreLogSourcePermutationName = nonEmptyRequiredString;
 
 export const xMitreLogSourceReferenceSchema = z
   .object({
     x_mitre_data_component_ref: createStixIdValidator('x-mitre-data-component'),
-    name: z
-      .string()
-      .nonempty()
-      .meta({ description: 'The name of the log source that the analytic is referencing' }),
-    channel: z
-      .string()
-      .nonempty()
-      .meta({ description: 'The channel of the log source that the analytic is referencing' }),
+    name: nonEmptyRequiredString.meta({
+      description: 'The name of the log source that the analytic is referencing',
+    }),
+    channel: nonEmptyRequiredString.meta({
+      description: 'The channel of the log source that the analytic is referencing',
+    }),
   })
   .meta({
     description: 'A reference to a log source',
@@ -36,15 +35,15 @@ export const xMitreLogSourceReferenceSchema = z
 
 export type LogSourceReference = z.infer<typeof xMitreLogSourceReferenceSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Log Sources (plural)
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreLogSourceReferencesSchema = z
   .array(xMitreLogSourceReferenceSchema)
-  .nonempty()
+  .min(1)
   .refine(
     // Reject duplicate log source references, delineated by (x_mitre_data_component_ref, name, channel)
     // An analytic cannot reference the same log source twice
@@ -74,37 +73,37 @@ export const xMitreLogSourceReferencesSchema = z
 
 export type LogSourceReferences = z.infer<typeof xMitreLogSourceReferencesSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Mutable Element
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const xMitreMutableElementSchema = z.object({
-  field: z.string().nonempty(),
-  description: z.string().nonempty(),
+  field: nonEmptyRequiredString,
+  description: nonEmptyRequiredString,
 });
 
 export type MutableElement = z.infer<typeof xMitreMutableElementSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Mutable Elements (plural)
 //
-/////////////////////////////////////
+//==============================================================================
 
-export const xMitreMutableElementsSchema = z.array(xMitreMutableElementSchema).nonempty().meta({
+export const xMitreMutableElementsSchema = z.array(xMitreMutableElementSchema).min(1).meta({
   description:
     'Environment-specific tuning knobs like TimeWindow, UserContext, or PortRange, so defenders can adapt without changing core behavior.',
 });
 
 export type MutableElements = z.infer<typeof xMitreMutableElementsSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // MITRE Analytic
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const analyticSchema = attackBaseDomainObjectSchema
   .extend({
@@ -112,15 +111,15 @@ export const analyticSchema = attackBaseDomainObjectSchema
 
     type: createStixTypeValidator('x-mitre-analytic'),
 
-    description: descriptionSchema.nonempty(),
+    description: descriptionSchema,
 
     x_mitre_platforms: xMitrePlatformsSchema.max(1), // 0 or 1
 
     external_references: createAttackExternalReferencesSchema('x-mitre-analytic'),
 
-    x_mitre_log_source_references: xMitreLogSourceReferencesSchema,
+    x_mitre_log_source_references: xMitreLogSourceReferencesSchema.optional(),
 
-    x_mitre_mutable_elements: xMitreMutableElementsSchema,
+    x_mitre_mutable_elements: xMitreMutableElementsSchema.optional(),
 
     x_mitre_domains: xMitreDomainsSchema,
 

@@ -1,15 +1,16 @@
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
-import { promisify } from 'util';
 import { fileURLToPath } from 'url';
-import { type AttackObject, type StixBundle } from '../../src/schemas/sdo/stix-bundle.schema.js';
-import { type Relationship } from '../../src/schemas/sro/relationship.schema.js';
-import { type MarkingDefinition } from '../../src/schemas/smo/marking-definition.schema.js';
+import { promisify } from 'util';
 import {
   attackDomainSchema,
   type AttackDomain,
-} from '../../src/schemas/common/common-properties.js';
+  type AttackObject,
+  type MarkingDefinition,
+  type Relationship,
+  type StixBundle
+} from '../../src/schemas/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

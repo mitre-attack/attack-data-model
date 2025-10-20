@@ -1,9 +1,12 @@
 import { z } from 'zod/v4';
-import { nameSchema, objectMarkingRefsSchema } from './common-properties.js';
-import { externalReferencesSchema, granularMarkingSchema, stixCreatedByRefSchema } from './misc.js';
-import { createStixIdValidator } from './stix-identifier.js';
-import { stixSpecVersionSchema } from './stix-spec-version.js';
+import { nonEmptyRequiredString, stixListOfString } from './generics.js';
+import { objectMarkingRefsSchema, stixCreatedByRefSchema } from './stix-attribution.js';
+import { nameSchema } from './stix-common-properties.js';
+import { externalReferencesSchema } from './stix-external-references.js';
+import { granularMarkingSchema } from './stix-granular-marking.js';
+import { createStixIdValidator } from './stix-id.js';
 import { createStixTypeValidator } from './stix-type.js';
+import { stixSpecVersionSchema } from './stix-versioning.js';
 
 //==============================================================================
 // Extension Type Enum
@@ -35,7 +38,10 @@ export type Extension = z.infer<typeof extensionSchema>;
 //==============================================================================
 
 export const extensionsSchema = z
-  .record(z.string(), z.union([extensionSchema, z.record(z.string(), z.unknown())]))
+  .record(
+    nonEmptyRequiredString,
+    z.union([extensionSchema, z.record(nonEmptyRequiredString, z.unknown())]),
+  )
   .meta({
     description:
       'Specifies any extensions of the object, as a dictionary where keys are extension definition UUIDs',
@@ -50,6 +56,7 @@ export type Extensions = z.infer<typeof extensionsSchema>;
 // Property name validation for extension properties
 const extensionPropertyNameSchema = z
   .string()
+  .trim()
   .min(3, 'Extension property names must be at least 3 characters')
   .max(250, 'Extension property names must be no longer than 250 characters')
   .regex(
@@ -60,6 +67,7 @@ const extensionPropertyNameSchema = z
 // Extension object type validation
 export const extensionObjectTypeSchema = z
   .string()
+  .trim()
   .min(3, 'Extension object type must be at least 3 characters')
   .max(250, 'Extension object type must be no longer than 250 characters')
   .regex(
@@ -83,7 +91,7 @@ export const extensionDefinitionSchema = z
 
     // Optional common properties
     revoked: z.boolean().optional(),
-    labels: z.array(z.string()).optional(),
+    labels: stixListOfString.optional(),
     external_references: externalReferencesSchema.optional(),
     object_marking_refs: objectMarkingRefsSchema.optional(),
     granular_markings: z.array(granularMarkingSchema).optional(),
@@ -91,21 +99,14 @@ export const extensionDefinitionSchema = z
     // Extension definition specific properties
     name: nameSchema,
 
-    description: z
-      .string({
-        error: 'Description must be a string',
-      })
-      .optional(),
+    description: nonEmptyRequiredString.optional(),
 
-    schema: z.string({
-      error: 'Schema must be a string',
-    }),
+    schema: nonEmptyRequiredString,
 
-    version: z
-      .string({
-        error: 'Version must be a string',
-      })
-      .regex(/^\d+\.\d+\.\d+$/, 'Version must follow semantic versioning (MAJOR.MINOR.PATCH)'),
+    version: nonEmptyRequiredString.regex(
+      /^\d+\.\d+\.\d+$/,
+      'Version must follow semantic versioning (MAJOR.MINOR.PATCH)',
+    ),
 
     extension_types: z.array(extensionTypeSchema).min(1, 'At least one extension type is required'),
 

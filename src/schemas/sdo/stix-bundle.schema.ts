@@ -1,7 +1,10 @@
-import { createFirstBundleObjectRefinement } from '@/schemas/refinements/index.js';
 import { z } from 'zod/v4';
-import { createStixIdValidator } from '../common/stix-identifier.js';
-import { createStixTypeValidator } from '../common/stix-type.js';
+import { createFirstBundleObjectRefinement } from '../refinements/index.js';
+import {
+  createStixIdValidator,
+  createStixTypeValidator,
+  nonEmptyRequiredString,
+} from '../common/property-schemas/index.js';
 import {
   type MarkingDefinition,
   markingDefinitionSchema,
@@ -105,20 +108,8 @@ export const attackObjectsSchema: z.ZodTypeAny = z
     z
       .object({
         // Basic structure validation to ensure we have a type field
-        type: z.string({
-          error: (issue) => {
-            return issue.code === 'invalid_type'
-              ? "Object 'type' must be a string"
-              : "The 'type' property is invalid or missing";
-          },
-        }),
-        id: z.string({
-          error: (issue) => {
-            return issue.code === 'invalid_type'
-              ? "Object 'id' must be a string"
-              : "The 'id' property is invalid or missing";
-          },
-        }),
+        type: nonEmptyRequiredString,
+        id: nonEmptyRequiredString,
       })
       .loose()
       .check((ctx) => {
@@ -165,11 +156,11 @@ export const attackObjectsSchema: z.ZodTypeAny = z
 
 export type AttackObjects = z.infer<typeof attackObjectsSchema>;
 
-/////////////////////////////////////
+//==============================================================================
 //
 // STIX Bundle
 //
-/////////////////////////////////////
+//==============================================================================
 
 export const stixBundleSchema = z
   .object({
