@@ -8,8 +8,7 @@
     "build": "docusaurus build",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
-    "gendocs": "tsx ../generate-docs.ts"
+    "serve": "docusaurus serve"
   },
   "dependencies": {
     "@docusaurus/core": "^3.9.2",
