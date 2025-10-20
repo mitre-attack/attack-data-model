@@ -22,7 +22,8 @@
     "lucide-react": "^0.545.0",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "tsx": "^4.20.6"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.9.1",

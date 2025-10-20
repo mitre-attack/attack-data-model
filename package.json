@@ -78,6 +78,7 @@
     "eslint-plugin-mdx": "^3.6.2",
     "eslint-plugin-prettier": "^5.4.1",
     "globals": "^15.11.0",
+    "globby": "^15.0.0",
     "husky": "^9.1.7",
     "prettier": "3.5.3",
     "semantic-release": "^24.2.5",
