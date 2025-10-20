@@ -126,21 +126,21 @@ Data sources and data components define the telemetry and observational data tha
 **Architecture overview:**
 
 ```
-           "detects"        x_mitre_data_source_ref
+            "detects"        x_mitre_data_source_ref
           relationship       embedded relationship
           (deprecated)                │
-               │                      │
-┌───────────┐  ▼  ┌────────────────┐  │  ┌───────────┐
-│Technique 1│◄────┤                │  │  │           │
-└───────────┘     │                │  ▼  │           │
-                  │Data Component 1├────►│           │
-┌───────────┐     │                │     │           │
-│Technique 2│◄────┤                │     │Data Source│
-└───────────┘     └────────────────┘     │           │
-                                         │           │
-┌───────────┐     ┌────────────────┐     │           │
-│Technique 3│◄────┤Data Component 2├────►│           │
-└───────────┘     └────────────────┘     └───────────┘
+                │                     │
+┌───────────┐   ▼ ┌────────────────┐  │   ┌───────────┐
+│Technique 1│◄────┤                │  │   │           │
+└───────────┘     │                │  ▼   │           │
+                  │Data Component 1├─────►│           │
+┌───────────┐     │                │      │           │
+│Technique 2│◄────┤                │      │Data Source│
+└───────────┘     └────────────────┘      │           │
+                                          │           │
+┌───────────┐     ┌────────────────┐      │           │
+│Technique 3│◄────┤Data Component 2├─────►│           │
+└───────────┘     └────────────────┘      └───────────┘
 ```
 
 ## Oct 2018: `x_mitre_detection`
