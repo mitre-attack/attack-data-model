@@ -3,6 +3,7 @@ import { globbySync } from 'globby';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { zod2md } from 'zod2md';
+import { convertSchemas, formatModelsAsMarkdown } from 'zod2md';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -227,6 +228,24 @@ async function main() {
 
   await fs.writeFile(OUTPUT_FILE, out, 'utf8');
   console.log(`Wrote ${OUTPUT_FILE}`);
+
+  // Special case: Software Schema (malware + tool)
+  const sdoIndex = await import(path.join(SCHEMA_DIR, 'sdo/index.ts'));
+  const { malwareSchema, toolSchema } = sdoIndex;
+
+  // Compose models for both schemas
+  const models = convertSchemas([
+    { schema: malwareSchema, path: 'sdo/malware.schema.ts', name: 'Malware' },
+    { schema: toolSchema, path: 'sdo/tool.schema.ts', name: 'Tool' },
+  ]);
+  const softwareMarkdown = formatModelsAsMarkdown(models, {
+    title: 'Software Schema',
+  });
+
+  const softwareOutputFile = path.join(OUTPUT_DIR, 'sdo', 'software.schema.mdx');
+  await fs.ensureDir(path.dirname(softwareOutputFile));
+  await fs.writeFile(softwareOutputFile, softwareMarkdown, 'utf8');
+  console.log(`Wrote ${softwareOutputFile}`);
 
   // --- Schema file generation ---
   const schemaFiles = globbySync(['**/*.schema.ts'], { cwd: SCHEMA_DIR });
