@@ -461,8 +461,8 @@ const multiTacticSoftware = attackDataModel.tools.filter(tool =>
 You've completed all tutorials! Now you can:
 
 - **[Apply these skills in How-to Guides](../how-to-guides/)** - Solve specific problems
-- **[Explore the Reference Documentation](../reference/)** - Understand the complete API
-- **[Read Explanations](../explanation/)** - Learn about design decisions and architecture
+- **[Explore the Reference Documentation](../../api/)** - Understand the complete API
+- **[Read Explanations](../principles/)** - Learn about design decisions and architecture
 - **Build your own applications** using the patterns you've learned
 
 ## Troubleshooting
