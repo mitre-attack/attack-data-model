@@ -1,9 +1,4 @@
 import { z } from 'zod/v4';
-import {
-  createAttackIdInExternalReferencesRefinement,
-  createEnterpriseOnlyPropertiesRefinement,
-  createMobileOnlyPropertiesRefinement,
-} from '../refinements/index.js';
 import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
   createAttackExternalReferencesSchema,
@@ -11,13 +6,17 @@ import {
   createStixTypeValidator,
   descriptionSchema,
   killChainPhaseSchema,
-  nonEmptyRequiredString,
   stixListOfString,
   xMitreContributorsSchema,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
 } from '../common/property-schemas/index.js';
+import {
+  createAttackIdInExternalReferencesRefinement,
+  createEnterpriseOnlyPropertiesRefinement,
+  createMobileOnlyPropertiesRefinement,
+} from '../refinements/index.js';
 
 //==============================================================================
 //
@@ -310,7 +309,7 @@ export type XMitreDefenseBypasses = z.infer<typeof xMitreDefenseBypassesSchema>;
 //
 //==============================================================================
 
-export const xMitreDetectionSchema = nonEmptyRequiredString.meta({
+export const xMitreDetectionSchema = z.string().meta({
   description: 'Strategies for identifying if a technique has been used by an adversary.',
 });
 
