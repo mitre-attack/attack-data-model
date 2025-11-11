@@ -155,29 +155,36 @@ export class ContentOriginRegistration {
 }
 
 const readFile = async (path: string): Promise<string> => {
-  if (typeof window !== 'undefined') {
-    // Browser environment - treat path as URL
-    const response = await fetch(path);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.text();
-  } else {
-    // Node.js environment
-    const fs = await import('fs');
-    const { promisify } = await import('util');
-    const nodeReadFile = promisify(fs.readFile);
-    return nodeReadFile(path, 'utf8');
+  // Convert bare filesystem paths to file:// URLs for Node.js
+  const url = path.startsWith('http') || path.startsWith('file:') 
+    ? path 
+    : `file://${path.startsWith('/') ? '' : '/'}${path}`;
+  
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to read file: ${response.status} ${response.statusText}`);
   }
+  return response.text();
 };
 
-let GITHUB_BASE_URL = '';
-if (typeof window == 'undefined') {
-  // Node.js environment - check environment variables
-  GITHUB_BASE_URL =
-    process.env.GITHUB_BASE_URL ||
-    'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
+// Default GITHUB_BASE_URL
+// Note: This can be overridden via GITHUB_BASE_URL environment variable in Node.js
+const DEFAULT_GITHUB_URL = 'https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master';
+
+function getGitHubBaseUrl(): string {
+  // Check if we're in a Node.js environment with environment variables
+  try {
+    // This will be tree-shaken out in browser builds
+    if (typeof process !== 'undefined' && process?.env?.GITHUB_BASE_URL) {
+      return process.env.GITHUB_BASE_URL;
+    }
+  } catch {
+    // Ignore errors in browser environment
+  }
+  return DEFAULT_GITHUB_URL;
 }
+
+const GITHUB_BASE_URL = getGitHubBaseUrl();
 
 interface ContentOriginMap {
   [key: string]: {

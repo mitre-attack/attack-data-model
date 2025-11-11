@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod/v4';
 import {
   type StixTypesWithAttackIds,
   attackIdPatterns,
@@ -109,31 +109,63 @@ export const createAttackExternalReferencesSchema = (stixType: StixTypesWithAtta
       // First check: Verify external_id exists
       .refine((refs) => !!refs[0]?.external_id, {
         message: 'ATT&CK ID must be defined in the first external_references entry.',
-        path: [0, 'external_id'],
+        path: ['external_references', 0, 'external_id'],
       })
 
       // Second check: Verify format is correct (only runs if first check passes)
-      .refine(
-        (refs) => {
-          // Skip validation if external_id doesn't exist (caught by first refine)
-          if (!refs[0]?.external_id) return true;
+      //   .refine(
+      //     (refs) => {
+      //       // Skip validation if external_id doesn't exist (caught by first refine)
+      //       if (!refs[0]?.external_id) return true;
 
-          // Get expected format and validate
-          const attackIdType = stixTypeToAttackIdMapping[stixType];
-          if (attackIdType === 'technique') {
-            // Fallback to subtechnique if technique fails
-            return (
-              attackIdPatterns['technique'].test(refs[0].external_id) ||
-              attackIdPatterns['subtechnique'].test(refs[0].external_id)
-            );
-          }
-          return attackIdPatterns[attackIdType].test(refs[0].external_id);
-        },
-        {
-          message: `The first external_reference must match the ATT&CK ID format ${getAttackIdExample(stixType)}.`,
-          path: [0, 'external_id'],
-        },
-      )
+      //       // Get expected format and validate
+      //       const attackIdType = stixTypeToAttackIdMapping[stixType];
+      //       if (attackIdType === 'technique') {
+      //         // Fallback to subtechnique if technique fails
+      //         return (
+      //           attackIdPatterns['technique'].test(refs[0].external_id) ||
+      //           attackIdPatterns['subtechnique'].test(refs[0].external_id)
+      //         );
+      //       }
+      //       return attackIdPatterns[attackIdType].test(refs[0].external_id);
+      //     },
+      //     {
+      //       message: `The first external_reference must match the ATT&CK ID format ${getAttackIdExample(stixType)}.`,
+      //       path: [0, 'external_id'],
+      //     },
+      // )
+      .check((ctx) => {
+        const externalReferences = ctx.value;
+
+        if (!externalReferences[0].external_id) {
+          ctx.issues.push({
+            code: 'custom',
+            input: externalReferences,
+            message: 'external_id is missing from external_references',
+            path: ['external_references', 0, 'external_id'],
+          });
+          return;
+        }
+        let regExParseResult: boolean = false;
+        const attackIdType = stixTypeToAttackIdMapping[stixType];
+        if (attackIdType === 'technique') {
+          regExParseResult =
+            attackIdPatterns['technique'].test(externalReferences[0].external_id) ||
+            attackIdPatterns['subtechnique'].test(externalReferences[0].external_id);
+        } else {
+          regExParseResult = attackIdPatterns[attackIdType].test(externalReferences[0].external_id);
+        }
+
+        if (regExParseResult === false) {
+          ctx.issues.push({
+            code: 'custom',
+            input: externalReferences,
+            message: `The first external_reference must match the ATT&CK ID format ${getAttackIdExample(stixType)}.`,
+            path: ['external_references', 0, 'external_id'],
+          });
+          return;
+        }
+      })
       .meta({
         description: 'A list of external references with the first containing a valid ATT&CK ID',
       })
