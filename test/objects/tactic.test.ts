@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { createSyntheticStixObject } from '../../src/generator';
 import { type Tactic, tacticSchema } from '../../src/schemas/sdo/tactic.schema';
+import { createSyntheticStixObject } from '../../src/utils/index';
 
 /**
  * Test suite for validating the Tactic schema.

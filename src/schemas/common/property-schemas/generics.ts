@@ -3,7 +3,7 @@
  * These are generalized, common schemas, meant to promote composability through schema re-use
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 /**
  * A Zod schema for validating non-empty, trimmed strings.

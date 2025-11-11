@@ -1,12 +1,12 @@
 import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
 
-# How to Manage Data Sources
+# How to Manage Content Origins
 
 <WorkInProgressNotice />
 
-**Switch between different ATT&CK data sources efficiently**
+**Switch between different ATT&CK content origins efficiently**
 
-This guide shows you how to manage multiple ATT&CK data sources, switch between different versions, and work with local files, URLs, and the official repository.
+This guide shows you how to manage multiple ATT&CK content origins, switch between different versions, and work with local files, URLs, and the official repository.
 
 ## Problem Scenarios
 
@@ -15,15 +15,15 @@ Use this guide when you need to:
 - Switch between different ATT&CK versions for compatibility testing
 - Load ATT&CK data from local files instead of the internet
 - Fetch data from custom URLs or mirrors
-- Manage multiple data sources in a production application
-- Cache and reuse data sources efficiently
+- Manage multiple content origins in a production application
+- Cache and reuse content origins efficiently
 
 ## Switch Between ATT&CK Versions
 
 ### Compare Multiple Versions
 
 ```typescript
-import { registerDataSource, loadDataModel, DataSource } from '@mitre-attack/attack-data-model';
+import { registerContentOrigin, loadDataModel, ContentOriginRegistration } from '@mitre-attack/attack-data-model';
 
 async function compareVersions() {
     const versions = ['15.0', '15.1'];
@@ -31,14 +31,14 @@ async function compareVersions() {
 
     // Load multiple versions
     for (const version of versions) {
-        const dataSource = new DataSource({
-            source: 'attack',
+        const contentOrigin = new ContentOriginRegistration({
+            source: 'mitre',
             domain: 'enterprise-attack',
             version: version,
             parsingMode: 'relaxed'
         });
 
-        const uuid = await registerDataSource(dataSource);
+        const uuid = await registerContentOrigin(contentOrigin);
         models[version] = loadDataModel(uuid);
     }
 
@@ -55,7 +55,7 @@ async function compareVersions() {
 ```typescript
 // Omit version to get the latest available
 const latestDataSource = new DataSource({
-    source: 'attack',
+    source: 'mitre',
     domain: 'enterprise-attack',
     // No version specified = latest
     parsingMode: 'relaxed'
@@ -130,7 +130,7 @@ async function loadFromUrl() {
 
 ```typescript
 async function loadWithAuth() {
-    const dataSource = new DataSource({
+    const contentOrigin = new ContentOriginRegistration({
         source: 'url',
         url: 'https://private-server.com/attack-data.json',
         requestOptions: {
@@ -142,7 +142,7 @@ async function loadWithAuth() {
         parsingMode: 'strict'
     });
 
-    const uuid = await registerDataSource(dataSource);
+    const uuid = await registerContentOrigin(contentOrigin);
     return loadDataModel(uuid);
 }
 ```
@@ -157,7 +157,7 @@ class AttackDataManager {
 
     async registerSource(name: string, config: any): Promise<string> {
         const dataSource = new DataSource(config);
-        const uuid = await registerDataSource(dataSource);
+        const uuid = await registerContentOrigin(contentOrigin);
         this.dataSources.set(name, uuid);
         return uuid;
     }
@@ -173,14 +173,14 @@ class AttackDataManager {
     async setupCommonSources() {
         // Enterprise latest
         await this.registerSource('enterprise-latest', {
-            source: 'attack',
+            source: 'mitre',
             domain: 'enterprise-attack',
             parsingMode: 'relaxed'
         });
 
         // Enterprise v15.0
         await this.registerSource('enterprise-v15', {
-            source: 'attack',
+            source: 'mitre',
             domain: 'enterprise-attack',
             version: '15.0',
             parsingMode: 'relaxed'
@@ -188,7 +188,7 @@ class AttackDataManager {
 
         // Mobile latest
         await this.registerSource('mobile-latest', {
-            source: 'attack',
+            source: 'mitre',
             domain: 'mobile-attack',
             parsingMode: 'relaxed'
         });
@@ -212,13 +212,13 @@ async function loadWithFallback() {
     const fallbackSources = [
         // Try latest first
         {
-            source: 'attack',
+            source: 'mitre',
             domain: 'enterprise-attack',
             parsingMode: 'relaxed'
         },
         // Fallback to specific version
         {
-            source: 'attack',
+            source: 'mitre',
             domain: 'enterprise-attack',
             version: '15.1',
             parsingMode: 'relaxed'
@@ -234,7 +234,7 @@ async function loadWithFallback() {
     for (const config of fallbackSources) {
         try {
             const dataSource = new DataSource(config);
-            const uuid = await registerDataSource(dataSource);
+            const uuid = await registerContentOrigin(contentOrigin);
             const model = loadDataModel(uuid);
 
             console.log(`Successfully loaded from source: ${config.source}`);
@@ -256,7 +256,7 @@ async function loadWithFallback() {
 async function validateDataSource(config: any): Promise<boolean> {
     try {
         const dataSource = new DataSource(config);
-        const uuid = await registerDataSource(dataSource);
+        const uuid = await registerContentOrigin(contentOrigin);
         const model = loadDataModel(uuid);
 
         // Basic validation checks
@@ -303,7 +303,7 @@ class CachedDataManager {
         // Load fresh data
         console.log('🌐 Loading fresh data');
         const dataSource = new DataSource(config);
-        const uuid = await registerDataSource(dataSource);
+        const uuid = await registerContentOrigin(contentOrigin);
         const model = loadDataModel(uuid);
 
         // Cache the result
@@ -330,7 +330,7 @@ function getDataSourceConfig(): any {
     switch (environment) {
         case 'production':
             return {
-                source: 'attack',
+                source: 'mitre',
                 domain: 'enterprise-attack',
                 version: '15.1', // Pin version in production
                 parsingMode: 'strict' // Strict validation in production
@@ -370,7 +370,7 @@ async function loadWithMonitoring(config: any) {
         console.log('📡 Starting data source load:', config.source);
 
         const dataSource = new DataSource(config);
-        const uuid = await registerDataSource(dataSource);
+        const uuid = await registerContentOrigin(contentOrigin);
         const model = loadDataModel(uuid);
 
         const loadTime = Date.now() - startTime;

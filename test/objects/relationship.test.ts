@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { createSyntheticStixObject } from '../../src/generator';
 import {
   type Description,
   type ExternalReferences,
@@ -19,6 +18,7 @@ import {
   type RelationshipType,
   validRelationshipObjectTypes,
 } from '../../src/schemas/sro/relationship.schema';
+import { createSyntheticStixObject } from '../../src/utils/index';
 import { logger } from '../utils/logger';
 
 describe('RelationshipSchema', () => {

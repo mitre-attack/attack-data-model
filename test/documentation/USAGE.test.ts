@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { z } from 'zod';
-import { createSyntheticStixObject } from '../../src/generator/index.js';
+import { createSyntheticStixObject } from '../../src/utils/generator.js';
 import { tacticSchema, campaignSchema, techniqueSchema } from '../../src/schemas/index.js';
-import { DataSourceRegistration } from '../../src/data-sources/data-source-registration.js';
-import { AttackDataModel } from '../../src/classes/attack-data-model.js';
+import { ContentOriginRegistration } from '../../src/main.js';
+import { AttackDataModel } from '../../src/api/attack-data-model.js';
 
 describe('docs/USAGE.md Code Examples', () => {
   describe('Module Format Support Examples', () => {
@@ -36,7 +36,7 @@ describe('docs/USAGE.md Code Examples', () => {
       expect(campaignSchema).toBeDefined();
       expect(techniqueSchema).toBeDefined();
       expect(AttackDataModel).toBeDefined();
-      expect(DataSourceRegistration).toBeDefined();
+      expect(ContentOriginRegistration).toBeDefined();
     });
   });
 
@@ -140,21 +140,20 @@ describe('docs/USAGE.md Code Examples', () => {
   });
 
   describe('Initializing with Data Examples', () => {
-    it('should support DataSource configuration patterns', () => {
+    it('should support ContentOriginRegistration configuration patterns', () => {
       // Maps to: docs/USAGE.md - "Initializing with Data" section
-      // Code block: ```typescript const dataSource = new DataSource({ source: 'attack', ... });
-      // Note: Using DataSourceRegistration instead of DataSource as shown in examples
-      const dataSource = new DataSourceRegistration({
-        source: 'attack',
+      // Code block: ```typescript const contentOrigin = new ContentOriginRegistration({ source: 'mitre', ... });
+      const contentOrigin = new ContentOriginRegistration({
+        source: 'mitre',
         domain: 'enterprise-attack',
         version: '15.1',
         parsingMode: 'relaxed',
       });
 
-      expect(dataSource.options.source).toBe('attack');
-      expect(dataSource.options.domain).toBe('enterprise-attack');
-      expect(dataSource.options.version).toBe('15.1');
-      expect(dataSource.options.parsingMode).toBe('relaxed');
+      expect(contentOrigin.options.source).toBe('mitre');
+      expect((contentOrigin.options as any).domain).toBe('enterprise-attack');
+      expect((contentOrigin.options as any).version).toBe('15.1');
+      expect(contentOrigin.options.parsingMode).toBe('relaxed');
     });
   });
 
@@ -227,19 +226,19 @@ describe('docs/USAGE.md Code Examples', () => {
     });
   });
 
-  describe('Data Sources Examples', () => {
-    it('should support data source patterns mentioned in USAGE', () => {
-      // Maps to: docs/USAGE.md - "Data Sources" section
+  describe('Content Origins Examples', () => {
+    it('should support content origin patterns mentioned in USAGE', () => {
+      // Maps to: docs/USAGE.md - "Content Origins" section
       // Text: "Loading Data from the ATT&CK GitHub Repository"
-      const dataSource = new DataSourceRegistration({
-        source: 'attack',
+      const contentOrigin = new ContentOriginRegistration({
+        source: 'mitre',
         domain: 'enterprise-attack',
         version: '15.1',
         parsingMode: 'relaxed',
       });
 
-      expect(dataSource.options.source).toBe('attack');
-      expect(dataSource.options.parsingMode).toBe('relaxed');
+      expect(contentOrigin.options.source).toBe('mitre');
+      expect(contentOrigin.options.parsingMode).toBe('relaxed');
     });
   });
 });

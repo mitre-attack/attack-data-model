@@ -42,7 +42,7 @@ export const mitigationSchema = attackBaseDomainObjectSchema
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema,
 
-    x_mitre_contributors: xMitreContributorsSchema.min(1).optional(),
+    x_mitre_contributors: xMitreContributorsSchema.optional(),
 
     x_mitre_old_attack_id: createOldMitreAttackIdSchema('course-of-action').optional(),
   })

@@ -1,10 +1,10 @@
 import { z } from 'zod/v4';
-import { createFirstBundleObjectRefinement } from '../../refinements/index.js';
 import {
   createStixIdValidator,
   createStixTypeValidator,
   nonEmptyRequiredString,
 } from '../common/property-schemas/index.js';
+import { createFirstBundleObjectRefinement } from '../refinements/index.js';
 import {
   type MarkingDefinition,
   markingDefinitionSchema,
@@ -184,6 +184,8 @@ export const stixBundleSchema = z
           tacticSchema,
           techniqueSchema,
           toolSchema,
+          relationshipSchema,
+          markingDefinitionSchema,
         ]),
       )
       .min(1),

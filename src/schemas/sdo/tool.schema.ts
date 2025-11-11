@@ -2,7 +2,7 @@ import { z } from 'zod/v4';
 import {
   createFirstAliasRefinement,
   createFirstXMitreAliasRefinement,
-} from '../../refinements/index.js';
+} from '../refinements/index.js';
 import {
   createAttackExternalReferencesSchema,
   createOldMitreAttackIdSchema,

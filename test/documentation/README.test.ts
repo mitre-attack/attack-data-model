@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { z } from 'zod';
-import { createSyntheticStixObject } from '../../src/generator/index.js';
+import { createSyntheticStixObject } from '../../src/utils/generator.js';
 import { tacticSchema } from '../../src/schemas/index.js';
-import { DataSourceRegistration } from '../../src/data-sources/data-source-registration.js';
-import { AttackDataModel } from '../../src/classes/attack-data-model.js';
+import { ContentOriginRegistration } from '../../src/main.js';
+import { AttackDataModel } from '../../src/api/attack-data-model.js';
 
 describe('README.md Code Examples', () => {
   describe('Installation Examples', () => {
@@ -39,36 +39,36 @@ describe('README.md Code Examples', () => {
   describe('Recommended Approach Example', () => {
     it('should work with the loading example from README', () => {
       // Maps to: README.md - "Recommended Approach" section
-      // Code block: ```javascript const dataSource = new DataSourceRegistration({ source: 'attack', ... });
-      const dataSource = new DataSourceRegistration({
-        source: 'attack',
+      // Code block: ```javascript const contentOrigin = new ContentOriginRegistration({ source: 'mitre', ... });
+      const contentOrigin = new ContentOriginRegistration({
+        source: 'mitre',
         domain: 'enterprise-attack',
         version: '17.1',
         parsingMode: 'strict',
       });
 
-      expect(dataSource.options.source).toBe('attack');
-      expect(dataSource.options.domain).toBe('enterprise-attack');
-      expect(dataSource.options.version).toBe('17.1');
-      expect(dataSource.options.parsingMode).toBe('strict');
+      expect(contentOrigin.options.source).toBe('mitre');
+      expect((contentOrigin.options as any).domain).toBe('enterprise-attack');
+      expect((contentOrigin.options as any).version).toBe('17.1');
+      expect(contentOrigin.options.parsingMode).toBe('strict');
     });
   });
 
   describe('Basic Usage Examples', () => {
     it('should work with the async function example', () => {
       // Maps to: README.md - "Basic Usage" section
-      // Code block: ```typescript const dataSource = new DataSourceRegistration({ ..., parsingMode: 'relaxed' });
-      const dataSource = new DataSourceRegistration({
-        source: 'attack',
+      // Code block: ```typescript const contentOrigin = new ContentOriginRegistration({ ..., parsingMode: 'relaxed' });
+      const contentOrigin = new ContentOriginRegistration({
+        source: 'mitre',
         domain: 'enterprise-attack',
         version: '15.1',
         parsingMode: 'relaxed',
       });
 
-      expect(dataSource.options.source).toBe('attack');
-      expect(dataSource.options.domain).toBe('enterprise-attack');
-      expect(dataSource.options.version).toBe('15.1');
-      expect(dataSource.options.parsingMode).toBe('relaxed');
+      expect(contentOrigin.options.source).toBe('mitre');
+      expect((contentOrigin.options as any).domain).toBe('enterprise-attack');
+      expect((contentOrigin.options as any).version).toBe('15.1');
+      expect(contentOrigin.options.parsingMode).toBe('relaxed');
     });
 
     it('should validate that real ATT&CK objects have documented structure', () => {

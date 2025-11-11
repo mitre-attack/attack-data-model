@@ -30,8 +30,8 @@
     "email": "attack@mitre.org"
   },
   "scripts": {
-    "build": "npx tsup --dts --format esm,cjs src",
-    "prepublishOnly": "rm -rf dist && npm run build",
+    "build": "rm -rf dist && npx tsup",
+    "prepublishOnly": "npm run build",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage",
     "test:interactive": "vitest",
@@ -56,10 +56,32 @@
     "README.md",
     "LCENSE"
   ],
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/node/cjs/index.js",
+  "module": "./dist/node/esm/index.js",
+  "types": "./dist/node/esm/index.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "browser": {
+        "types": "./dist/browser/index.d.ts",
+        "default": "./dist/browser/index.js"
+      },
+      "node": {
+        "import": {
+          "types": "./dist/node/esm/index.d.ts",
+          "default": "./dist/node/esm/index.js"
+        },
+        "require": {
+          "types": "./dist/node/cjs/index.d.cts",
+          "default": "./dist/node/cjs/index.js"
+        }
+      },
+      "default": {
+        "types": "./dist/browser/index.d.ts",
+        "default": "./dist/browser/index.js"
+      }
+    }
+  },
   "dependencies": {
     "axios": "^1.9.0",
     "uuid": "^10.0.0",
