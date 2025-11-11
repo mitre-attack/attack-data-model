@@ -156,10 +156,11 @@ export class ContentOriginRegistration {
 
 const readFile = async (path: string): Promise<string> => {
   // Convert bare filesystem paths to file:// URLs for Node.js
-  const url = path.startsWith('http') || path.startsWith('file:') 
-    ? path 
-    : `file://${path.startsWith('/') ? '' : '/'}${path}`;
-  
+  const url =
+    path.startsWith('http') || path.startsWith('file:')
+      ? path
+      : `file://${path.startsWith('/') ? '' : '/'}${path}`;
+
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`Failed to read file: ${response.status} ${response.statusText}`);
