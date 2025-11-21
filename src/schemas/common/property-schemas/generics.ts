@@ -44,3 +44,48 @@ export const stixListOfString = z.array(nonEmptyRequiredString).min(1, {
   error:
     'Empty lists are prohibited in STIX and MUST NOT be used as a substitute for omitting the property if it is optional. The list MUST be present and MUST have at least one value.',
 });
+
+/**
+ * A utility function that creates a Zod array schema with a uniqueness constraint.
+ *
+ * This function wraps any Zod schema in an array validator that ensures all items
+ * are unique (no duplicate values). Uniqueness is determined by JavaScript's Set
+ * equality, which uses SameValueZero comparison.
+ *
+ * @param schema - The Zod schema type for individual array elements
+ * @returns A Zod array schema that validates element uniqueness
+ *
+ * @example
+ * ```typescript
+ * const uniqueStrings = uniqueArray(z.string());
+ * uniqueStrings.parse(["a", "b", "c"]); // ["a", "b", "c"]
+ * uniqueStrings.parse(["a", "b", "a"]); // throws error
+ *
+ * const uniqueNumbers = uniqueArray(z.number());
+ * uniqueNumbers.parse([1, 2, 3]); // [1, 2, 3]
+ * uniqueNumbers.parse([1, 2, 2]); // throws error
+ * ```
+ */
+export function uniqueArray<T extends z.ZodType>(schema: T) {
+  return z.array(schema).check((ctx) => {
+    const seen = new Map<z.infer<T>, number>();
+    const duplicates: z.infer<T>[] = [];
+
+    ctx.value.forEach((item, index) => {
+      if (seen.has(item)) {
+        duplicates.push(item);
+      } else {
+        seen.set(item, index);
+      }
+    });
+
+    if (duplicates.length > 0) {
+      ctx.issues.push({
+        code: 'custom',
+        message: `Duplicate values found: ${duplicates.map((d) => JSON.stringify(d)).join(', ')}`,
+        // path: [], // not sure how to dynamically determine key name
+        input: ctx.value,
+      });
+    }
+  });
+}

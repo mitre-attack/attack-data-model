@@ -1,4 +1,5 @@
 import { z } from 'zod/v4';
+import { uniqueArray } from './generics.js';
 import { createStixIdValidator, stixIdentifierSchema } from './stix-id.js';
 
 /**
@@ -15,14 +16,12 @@ import { createStixIdValidator, stixIdentifierSchema } from './stix-id.js';
  * objectMarkingRefsSchema.parse(['identity--12345']); // Invalid - must be marking-definition
  * ```
  */
-export const objectMarkingRefsSchema = z
-  .array(
-    stixIdentifierSchema.startsWith(
-      'marking-definition--',
-      'Identifier must start with "marking-definition--"',
-    ),
-  )
-  .meta({ description: 'The list of marking-definition objects to be applied to this object.' });
+export const objectMarkingRefsSchema = uniqueArray(
+  stixIdentifierSchema.startsWith(
+    'marking-definition--',
+    'Identifier must start with "marking-definition--"',
+  ),
+).meta({ description: 'The list of marking-definition objects to be applied to this object.' });
 
 // TODO add JSDoc
 export type ObjectMarkingRefs = z.infer<typeof objectMarkingRefsSchema>;

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 describe('Global Tests', () => {
   describe('ATT&CK Testing Data', () => {
@@ -43,6 +43,8 @@ describe('Global Tests', () => {
         'x-mitre-matrix',
         'x-mitre-tactic',
         'x-mitre-asset',
+        'x-mitre-analytic',
+        'x-mitre-detection-strategy'
       ];
 
       const presentTypes = Object.keys(globalThis.attackData.objectsByType);
@@ -129,6 +131,8 @@ describe('Global Tests', () => {
         'x-mitre-data-source',
         'x-mitre-data-component',
         'x-mitre-asset',
+        'x-mitre-analytic',
+        'x-mitre-detection-strategy'
       ];
       const sdoCount = sdoTypes.reduce(
         (sum, type) => sum + (globalThis.attackData.objectsByType[type]?.length || 0),
