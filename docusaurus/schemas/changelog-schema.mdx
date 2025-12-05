@@ -1,19 +1,21 @@
 # STIX Schema Changelog
 
-## v3.3.0 (Coming soon!)
+## v3.3.0 (28 October 2025)
 
 - **New SDOs**:
   - Detection Strategies (`x-mitre-detection-strategy`) <sup>[[schema](./sdo/detection-strategy.schema)]</sup>
   - Analytics (`x-mitre-analytic`) <sup>[[schema](./sdo/analytic.schema)]</sup>
 - **Schema Changes**:
-  - Added field to Data Component (`x-mitre-data-component`): `x_mitre_log_sources` for tracking security telemetry across platforms
+  - Data Components <sup>[[schema](./sdo/data-component.schema)]</sup>
+    - Added `x_mitre_log_sources` field: Tracks security telemetry across platforms
+    - Data Component objects now have ATT&CK IDs with the schema `DCxxxx`
 - **Deprecations**:
   - Objects
     - Data Sources (`x-mitre-data-sources`) <sup>[[schema](./sdo/data-source.schema)]</sup> (removal in v4.0.0)
   - Relationships
     - `x-mitre-data-component` --[detects]--> `attack-pattern` SROs (replaced by Detection Strategy framework)
   - Metadata
-    - Dropped support for the following fields in Technique objects (removal in v4.0.0)
+    - Dropped support for the following fields in **Technique** objects (removal in v4.0.0)
       - `x_mitre_detection`
       - `x_mitre_system_requirements`
       - `x_mitre_permissions_required`
@@ -21,7 +23,7 @@
       - `x_mitre_data_sources`
       - `x_mitre_defense_bypassed`
       - `x_mitre_remote_support`
-    - Dropped support for the following fields in Data Component objects (removal in v4.0.0)
+    - Dropped support for the following fields in **Data Component** objects (removal in v4.0.0)
       - `x_mitre_data_source_ref`
 
 ## v3.2.0 (31 October 2023)
