@@ -2,8 +2,7 @@ import fs from 'fs-extra';
 import { globbySync } from 'globby';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { zod2md } from 'zod2md';
-import { convertSchemas, formatModelsAsMarkdown } from 'zod2md';
+import { convertSchemas, formatModelsAsMarkdown, zod2md } from 'zod2md';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -191,49 +190,40 @@ function stixObjectCell(meta: ConceptMeta): string {
   return `\`${meta.stixType}\``;
 }
 
-// ---- MAIN ----
-async function main() {
-  await fs.ensureDir(OUTPUT_DIR);
-
-  // --- Table generation ---
-  // Read spec version
-  const specVersion = await fs.readFile(SPEC_VERSION_FILE, 'utf8');
-
-  // Prepare output
-  let out = '';
-  out += '## Schema Reference\n\n';
-  out += `Current ATT&CK Spec Version: [${specVersion.trim()}](https://github.com/mitre-attack/attack-stix-data/blob/master/CHANGELOG.md)\n\n`;
-
-  // Group and sort concepts by table type
+function groupConceptsByTable(): Record<TableType, ConceptMeta[]> {
   const grouped: Record<TableType, ConceptMeta[]> = { SDO: [], SRO: [], SMO: [] };
-
   for (const meta of conceptMetas) {
     grouped[meta.table].push(meta);
   }
+  return grouped;
+}
+
+function generateConceptTableMarkdown(specVersion: string): string {
+  let out = '';
+  out += '## Schema Reference\n\n';
+  out += `Current ATT&CK Spec Version: [${specVersion}](https://github.com/mitre-attack/attack-stix-data/blob/master/CHANGELOG.md)\n\n`;
+
+  const grouped = groupConceptsByTable();
 
   for (const type of ['SDO', 'SRO', 'SMO'] as TableType[]) {
     out += `### ${tableTypeHeaders[type]}\n\n`;
     out += '| ATT&CK Concept | STIX Object | Notes |\n';
     out += '|:-------------- |:----------- |:------|\n';
 
-    // Alphabetize by concept
     const sorted = grouped[type].sort((a, b) => a.concept.localeCompare(b.concept));
     for (const meta of sorted) {
-      const conceptLink = conceptCell(meta);
-      const stixCell = stixObjectCell(meta);
-      out += `| ${conceptLink} | ${stixCell} | ${meta.notes ?? ''} |\n`;
+      out += `| ${conceptCell(meta)} | ${stixObjectCell(meta)} | ${meta.notes ?? ''} |\n`;
     }
     out += '\n';
   }
 
-  await fs.writeFile(OUTPUT_FILE, out, 'utf8');
-  console.log(`Wrote ${OUTPUT_FILE}`);
+  return out;
+}
 
-  // Special case: Software Schema (malware + tool)
+async function writeSoftwareSchema(): Promise<void> {
   const sdoIndex = await import(path.join(SCHEMA_DIR, 'sdo/index.ts'));
   const { malwareSchema, toolSchema } = sdoIndex;
 
-  // Compose models for both schemas
   const models = convertSchemas([
     { schema: malwareSchema, path: 'sdo/malware.schema.ts', name: 'Malware' },
     { schema: toolSchema, path: 'sdo/tool.schema.ts', name: 'Tool' },
@@ -246,16 +236,18 @@ async function main() {
   await fs.ensureDir(path.dirname(softwareOutputFile));
   await fs.writeFile(softwareOutputFile, softwareMarkdown, 'utf8');
   console.log(`Wrote ${softwareOutputFile}`);
+}
 
-  // --- Schema file generation ---
+async function generateSchemaFiles(): Promise<void> {
   const schemaFiles = globbySync(['**/*.schema.ts'], { cwd: SCHEMA_DIR });
 
   for (const relativePath of schemaFiles) {
     if (
       relativePath.endsWith('software.schema.ts') ||
       relativePath.endsWith('stix-bundle.schema.ts')
-    )
+    ) {
       continue;
+    }
 
     const outputFile = path.join(OUTPUT_DIR, relativePath.replace(/\.ts$/, '.mdx'));
     await fs.ensureDir(path.dirname(outputFile));
@@ -273,6 +265,19 @@ async function main() {
     await fs.writeFile(outputFile, markdown, 'utf8');
     console.log(`Wrote ${outputFile}`);
   }
+}
+
+async function main() {
+  fs.ensureDir(OUTPUT_DIR);
+  const specVersion = (await fs.readFile(SPEC_VERSION_FILE, 'utf8')).trim();
+
+  const conceptTable = generateConceptTableMarkdown(specVersion);
+
+  await fs.writeFile(OUTPUT_FILE, conceptTable, 'utf8');
+  console.log(`Wrote ${OUTPUT_FILE}`);
+
+  await writeSoftwareSchema();
+  await generateSchemaFiles();
 }
 
 main().catch((e) => {
