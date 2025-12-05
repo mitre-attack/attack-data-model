@@ -204,7 +204,7 @@ Now that you understand the basics, you're ready for the next tutorial:
 Or explore other documentation:
 
 - **[How-to Guides](../how-to-guides/)** - Solve specific problems
-- **[Reference](../reference/)** - Detailed API documentation
+- **[Reference](../../api/)** - Detailed API documentation
 - **[Examples](https://github.com/mitre-attack/attack-data-model/tree/main/examples)** - More code samples
 
 ## Common Issues

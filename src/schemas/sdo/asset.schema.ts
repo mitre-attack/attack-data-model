@@ -42,7 +42,7 @@ export const xMitreSectorsSchema = z
   )
   .min(1)
   .meta({
-    description: 'List of industry sector(s) an asset may be commonly observed in',
+    description: 'List of industry sector(s) where this asset is commonly observed.',
   });
 
 export type XMitreSectors = z.infer<typeof xMitreSectorsSchema>;
@@ -54,11 +54,20 @@ export type XMitreSectors = z.infer<typeof xMitreSectorsSchema>;
 //
 //==============================================================================
 
-export const relatedAssetSchema = z.object({
-  name: nameSchema,
-  related_asset_sectors: xMitreSectorsSchema.optional(),
-  description: descriptionSchema.optional(),
-});
+export const relatedAssetSchema = z
+  .object({
+    name: nameSchema.meta({
+      description: 'Sector-specific name or alias for the related asset',
+    }),
+
+    related_asset_sectors: xMitreSectorsSchema.optional(),
+    description: descriptionSchema.optional().meta({
+      description: 'How the related asset connects to the primary asset definition',
+    }),
+  })
+  .meta({
+    description: 'The `related_asset` object provides sector-specific asset variations and aliases',
+  });
 
 export const relatedAssetsSchema = z.array(relatedAssetSchema).min(1).meta({
   description:
@@ -101,6 +110,13 @@ export const assetSchema = attackBaseDomainObjectSchema
     object_marking_refs: true, // Optional in STIX but required in ATT&CK
     created_by_ref: true, // Optional in STIX but required in ATT&CK
   })
-  .strict();
+  .strict()
+  .meta({
+    description: `
+Assets represent systems, devices, or technologies that adversaries may target within organizational environments.
+They are defined as \`x-mitre-asset\` objects extending the generic
+[STIX Domain Object pattern](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230920).
+    `.trim(),
+  });
 
 export type Asset = z.infer<typeof assetSchema>;

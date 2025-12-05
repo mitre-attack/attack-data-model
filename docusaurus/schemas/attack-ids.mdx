@@ -1,0 +1,43 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
+# ATT&CK IDs
+
+<WorkInProgressNotice />
+
+ATT&CK objects use multiple identifier systems to support different use cases and ensure compatibility with external frameworks.
+
+## STIX IDs
+
+Every ATT&CK object (including relationships) contains a STIX ID in its `id` field.
+STIX IDs are guaranteed to be globally unique and follow the STIX 2.1 specification format.
+
+**STIX IDs are the recommended method for programmatic object retrieval and referencing.**
+
+## ATT&CK IDs
+
+ATT&CK IDs are human-readable identifiers commonly used for referencing objects in documentation and communication. Each ATT&CK object type follows a specific ID format:
+
+| ATT&CK concept                              | ID format                               |
+| :------------------------------------------ | :-------------------------------------- |
+| [Matrix](#matrices)                         | [domain identifier](#domain-membership) |
+| [Tactic](#tactics)                          | `TAxxxx`                                |
+| [Technique](#techniques)                    | `Txxxx`                                 |
+| [Sub-Technique](#sub-techniques)            | `Txxxx.yyy`                             |
+| [Mitigation](#mitigations)                  | `Mxxxx`                                 |
+| [Group](#groups)                            | `Gxxxx`                                 |
+| [Software](#software)                       | `Sxxxx`                                 |
+| [Data Source](#data-sources)                | `DSxxxx`                                |
+| [Data Component](#data-components)          | `DCxxxx`                                |
+| [Campaign](#campaigns)                      | `Cxxxx`                                 |
+| [Asset](#assets)                            | `Axxxx`                                 |
+| [Detection Strategy](#detection-strategies) | `DETxxxx`                               |
+| [Analytic](#analytics)                      | `ANxxxx`                                |
+| [Log Source](#log-sources)                  | `LSxxxx`                                |
+
+**Important limitations:**
+
+- ATT&CK IDs are not guaranteed to be unique (see [Collisions with Technique ATT&CK IDs](#collisions-with-technique-attck-ids))
+- Matrices within the same domain share identical ATT&CK IDs
+- Relationship objects do not have ATT&CK IDs
+
+ATT&CK IDs are stored in the first external reference of applicable objects, which also includes a `url` field linking to the object's page on the [ATT&CK Website](https://attack.mitre.org/).
