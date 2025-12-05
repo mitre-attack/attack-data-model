@@ -4,6 +4,7 @@ import {
   createStixIdValidator,
   createStixTypeValidator,
   descriptionSchema,
+  uniqueArray,
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
 } from '../common/property-schemas/index.js';
@@ -15,8 +16,7 @@ import {
 //
 //==============================================================================
 
-export const xMitreTacticRefsSchema = z
-  .array(createStixIdValidator('x-mitre-tactic'))
+export const xMitreTacticRefsSchema = uniqueArray(createStixIdValidator('x-mitre-tactic'))
   .min(1, { error: 'At least one tactic ref is required' })
   .meta({
     description:
