@@ -132,23 +132,17 @@ export const attackObjectsSchema: z.ZodTypeAny = z
         }
 
         // Validate the object against the appropriate schema
-        // TODO can the following code be cleaned up?
-        try {
-          schema.parse(ctx.value);
-        } catch (error) {
-          if (error instanceof z.ZodError) {
-            // Forward all validation issues from the schema
-            error.issues.forEach((issue) => {
-              ctx.issues.push(issue);
-            });
-          } else {
-            // Handle unexpected errors
+        const result = z.safeParse(schema, ctx.value);
+        if (!result.success) {
+          // Forward all validation issues from the schema
+          result.error.issues.forEach((issue) => {
             ctx.issues.push({
               code: 'custom',
-              message: `Validation error: ${error instanceof Error ? error.message : String(error)}`,
-              input: ctx.value, // TODO this might be too much information: how can we filter down to just the relevant part?
+              message: issue.message,
+              path: issue.path,
+              input: issue.input ?? ctx.value,
             });
-          }
+          });
         }
       }),
   )
