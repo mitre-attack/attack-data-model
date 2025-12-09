@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 describe('Global Tests', () => {
   describe('ATT&CK Testing Data', () => {
@@ -46,18 +47,18 @@ describe('Global Tests', () => {
         'x-mitre-analytic',
         'x-mitre-detection-strategy',
       ];
-
+      
       const presentTypes = Object.keys(globalThis.attackData.objectsByType);
       const missingTypes = expectedSDOs.filter((type) => !presentTypes.includes(type));
       const unexpectedTypes = presentTypes.filter((type) => !expectedSDOs.includes(type));
-
+      
       if (missingTypes.length > 0) {
         console.warn('Missing SDO types:', missingTypes);
       }
       if (unexpectedTypes.length > 0) {
         console.warn('Unexpected SDO types:', unexpectedTypes);
       }
-
+      
       expectedSDOs.forEach((type) => {
         if (globalThis.attackData.objectsByType[type]) {
           expect(globalThis.attackData.objectsByType[type].length).toBeGreaterThan(0);
@@ -65,30 +66,30 @@ describe('Global Tests', () => {
           console.warn(`Missing SDO type: ${type}`);
         }
       });
-
+      
       expect(missingTypes).toHaveLength(0);
       expect(unexpectedTypes).toHaveLength(0);
     });
-
+    
     it('should have STIX Relationship Objects (SROs)', () => {
       expect(globalThis.attackData.sros).toBeDefined();
       expect(globalThis.attackData.sros.length).toBeGreaterThan(0);
     });
-
+    
     it('should have marking definitions (SMOs)', () => {
       expect(globalThis.attackData.smos).toBeDefined();
       expect(globalThis.attackData.smos.length).toBeGreaterThan(0);
     });
-
+    
     it('should have software objects (combination of malware and tools)', () => {
       expect(globalThis.attackData.objectsByType['software']).toBeDefined();
       expect(globalThis.attackData.objectsByType['software'].length).toBeGreaterThan(0);
       expect(globalThis.attackData.objectsByType['software'].length).toEqual(
         globalThis.attackData.objectsByType['malware'].length +
-          globalThis.attackData.objectsByType['tool'].length,
+        globalThis.attackData.objectsByType['tool'].length,
       );
     });
-
+    
     it('should have data sources and data components', () => {
       expect(globalThis.attackData.objectsByType['x-mitre-data-source']).toBeDefined();
       expect(globalThis.attackData.objectsByType['x-mitre-data-source'].length).toBeGreaterThan(0);
@@ -97,12 +98,12 @@ describe('Global Tests', () => {
         0,
       );
     });
-
+    
     it('should have assets for ICS', () => {
       expect(globalThis.attackData.objectsByType['x-mitre-asset']).toBeDefined();
       expect(globalThis.attackData.objectsByType['x-mitre-asset'].length).toBeGreaterThan(0);
     });
-
+    
     it('should have correct number of objects in allObjects', () => {
       const totalObjectCount = Object.values(globalThis.attackData.objectsByType).reduce(
         (sum, arr) => sum + arr.length,
@@ -110,10 +111,10 @@ describe('Global Tests', () => {
       );
       // Subtract software count as it's a duplicate of malware and tool
       const adjustedCount =
-        totalObjectCount - globalThis.attackData.objectsByType['software'].length;
+      totalObjectCount - globalThis.attackData.objectsByType['software'].length;
       expect(globalThis.attackData.allObjects.length).toEqual(adjustedCount);
     });
-
+    
     it('should have correct number of SDOs', () => {
       const sdoTypes = [
         'attack-pattern',
