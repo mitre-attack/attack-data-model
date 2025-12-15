@@ -152,9 +152,9 @@ const conceptMetas: ConceptMeta[] = [
 
 // ---- UTILS ----
 function conceptCell(meta: ConceptMeta): string {
-  if (meta.concept === 'Software') {
-    return 'Software ([Malware](./sdo/malware.schema.mdx) or [Tool](./sdo/tool.schema.mdx))';
-  }
+  // if (meta.concept === 'Software') {
+  //   return 'Software ([Malware](./sdo/malware.schema.mdx) or [Tool](./sdo/tool.schema.mdx))';
+  // }
   return `[${meta.concept}](${getSchemaLink(meta.concept)})`;
 }
 
@@ -244,7 +244,9 @@ async function generateSchemaFiles(): Promise<void> {
   for (const relativePath of schemaFiles) {
     if (
       relativePath.endsWith('software.schema.ts') ||
-      relativePath.endsWith('stix-bundle.schema.ts')
+      relativePath.endsWith('stix-bundle.schema.ts') ||
+      relativePath.endsWith('malware.schema.ts') ||
+      relativePath.endsWith('tool.schema.ts')
     ) {
       continue;
     }
