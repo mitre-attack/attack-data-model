@@ -33,13 +33,13 @@ The following extended fields are common across ATT&CK types except where otherw
 | `x_mitre_version`<sup>1</sup>             | string   | The version of the object in format `major.minor` where `major` and `minor` are integers. ATT&CK increments this version number when the object content is updated. This is not included on `relationship` objects.                                                                                         |
 | `x_mitre_contributors`                    | string[] | People and organizations who have contributed to the object.<br />Not found on objects of type `relationship`.                                                                                                                                                                                              |
 | `x_mitre_modified_by_ref`                 | string   | The STIX ID of an `identity` object. Used to track the identity of the individual or organization which created the current _version_ of the object. Previous versions of the object may have been created by other individuals or organizations.                                                           |
-| `x_mitre_domains`                         | string[] | Identifies the domains the object is found in. See [domains](#domains) for more information.<br />Not found on objects of type `relationship`, `identity`, or `marking-definition`.                                                                                                                                                                           |
+| `x_mitre_domains`                         | string[] | Identifies the domains the object is found in. See [domains](../../schemas/common-properties#domain-membership) for more information.<br />Not found on objects of type `relationship`, `identity`, or `marking-definition`.                                                                                                                                                                           |
 | `x_mitre_attack_spec_version`<sup>1</sup> | string   | The version of the ATT&CK specification used by the object. Consuming software can use this field to determine if the data format is supported. Current version is 3.3.0. |
 
 **1:** For more information about specific version fields, head over to [ATT&CK Versioning](./attack-versioning).
 
 ## New relationship types
 
-Unlike custom object types and extended fields, custom relationship types are **not** prefixed with `x_mitre_`. You can find a full list of relationship types in the [Relationships](#relationships) section, which also mentions whether the type is a default STIX type.
+Unlike custom object types and extended fields, custom relationship types are **not** prefixed with `x_mitre_`. You can find a full list of relationship types in the [Relationships](../../schemas/relationship-types) section, which also mentions whether the type is a default STIX type.
 
 ---
