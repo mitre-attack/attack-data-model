@@ -222,9 +222,10 @@ function generateConceptTableMarkdown(specVersion: string): string {
 
 async function writeSoftwareSchema(): Promise<void> {
   const sdoIndex = await import(path.join(SCHEMA_DIR, 'sdo/index.ts'));
-  const { malwareSchema, stixArtifactType, stixFileType, toolSchema } = sdoIndex;
+  const { softwareType, malwareSchema, stixArtifactType, stixFileType, toolSchema } = sdoIndex;
 
   const models = convertSchemas([
+    { schema: softwareType, path: 'sdo/software.schema.ts', name: 'Software' },
     { schema: malwareSchema, path: 'sdo/malware.schema.ts', name: 'Malware' },
     { schema: stixArtifactType, path: 'sdo/malware.schema.ts', name: 'StixArtifactType' },
     { schema: stixFileType, path: 'sdo/malware.schema.ts', name: 'StixFileType' },
