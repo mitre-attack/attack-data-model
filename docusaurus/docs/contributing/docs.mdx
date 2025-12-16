@@ -2,32 +2,34 @@
 
 This covers how we generate the documentation for the ATT&CK Data Model.
 
-All of these commands are run from the `docusaurus/` directory, so be sure to run this first.
+Unless otherwise noted, all of these commands are run from the `docusaurus/` directory, so be sure to change into this directory first.
 Otherwise you may be very confused as to why these commands don't exist in the top-level `package.json`!
 
-### Requirements
+## Requirements
+
 - [Node.js](https://nodejs.org/) v18.20
 - [Docusaurus](https://docusaurus.io/) v3.5
 
-### Install dependences
+## Install dependences
 
 ```bash
 cd docusaurus/
 
 # don't forget to install the dependencies that are specific to building the documentation
-$ npm install
+npm install
 ```
 
 ## Auto-generating schema reference files
 
 The `generate-docs.sh` script is used to automate the process of converting Zod schemas into Markdown. 
 
-The script introspects **all** `*.schema.ts` files and emits Markdown to `docusaurus/docs/reference/schemas/*` which is git ignored.
+The script introspects **all** `*.schema.ts` files and emits Markdown to `docusaurus/schemas/*` which is git ignored.
 
 This is the only commamd that should be run from the repository root directory.
 
 ```bash
 cd ..
+
 npm run docs:schemamarkdown
 ```
 
@@ -37,7 +39,11 @@ The following command will start a local development server and open a browser w
 be reflected live without needing to restart the server.
 
 ```bash
-$ npm run start
+# Build static files, run the development server, and open the browser
+npm run start
+
+# Build static files and run the development server without opening the browser
+npm run start -- --no-open
 ```
 
 ## Deployment
@@ -45,36 +51,46 @@ $ npm run start
 1. Build the static files
 
     ```bash
-    $ npm run build
+    npm run build
     ```
 
 2. Serve contents
 
     ```bash
-    $ npm run serve
+    npm run serve
     ```
 
-## Taging a new version
+## Troubleshooting
+
+To clear the site's generated assets, caches, and build artifacts:
+
+```bash
+npm run clear
+```
+
+## Tagging a new version
 
 The following command will create a new version of the specified set of documentation (e.g. `schemas` or `api`) from its respective "current version" files. 
 
 ```bash
-$ npm run docusaurus docs:version:<pluginId> <new_version>
+npm run docusaurus docs:version:<pluginId> <new_version>
 ```
 
 For example, to tag a new version of the `schemas` or `api` docs:
 
 ```bash
-# Tag schemas doc version 4.4.1
-$ npm run docusaurus docs:version:api 4.4.1
+# Tag api doc version 4.4.1
+npm run docusaurus docs:version:api 4.4.1
 
 # Tag schemas doc version 3.3.0
-$ npm run docusaurus docs:version:schemas: 3.3.0
+npm run docusaurus docs:version:schemas: 3.3.0
 ```
 
 ### Versioned Docs Multi-Instance File Structure
 
-The default plugin instance, `docs`, contains our global docs content and is unversioned uses these paths:
+The documentation is structured as a [Docs Multi-Instance](https://docusaurus.io/docs/docs-multi-instance) site with [versioning](https://docusaurus.io/docs/versioning).
+
+The default plugin instance, `docs`, contains our global documentation content and is unversioned.
 
 The `schemas` and `api` plugin instances use these paths:
 - `docusaurus/[pluginId]/` - Current Version docs folder
@@ -83,28 +99,11 @@ The `schemas` and `api` plugin instances use these paths:
 - `docusaurus/[pluginId]_versioned_docs/` - Contains other versions docs folders
 - `docusaurus/[pluginId]_versioned_sidebars/` - Contains other versions sidebars
 
-## Troubleshooting
-
-To clear the site's generated assets, caches, and build artifacts:
-```bash
-$ npm run clear
-```
-
-Deployment using SSH:
-```bash
-$ USE_SSH=true yarn deploy
-```
-
-Deployment without SSH:
-```bash
-$ GIT_USER=<Your GitHub username> yarn deploy
-```
-
 ## Adding new how-to guides
 
 Its pretty easy to add a new guide. Basically just do the following:
 
-1. Create your Markdown file inside `docusaurus/docs/<topic>/my-guide.md`
+1. Create your Markdown file inside `docusaurus/docs/how-to-guides/<my-guide>.md`
 2. Update `sidebars.ts` to include it
 
 ---
