@@ -7,8 +7,7 @@ Otherwise you may be very confused as to why these commands don't exist in the t
 
 ## Requirements
 
-- [Node.js](https://nodejs.org/) v18.20
-- [Docusaurus](https://docusaurus.io/) v3.5
+- [Node.js](https://nodejs.org/) >= v18.20
 
 ## Install dependences
 
@@ -21,7 +20,7 @@ npm install
 
 ## Auto-generating schema reference files
 
-The `generate-docs.sh` script is used to automate the process of converting Zod schemas into Markdown. 
+The top-level package script `docs:schemamarkdown` is used to automate the process of converting Zod schemas into Markdown. 
 
 The script introspects **all** `*.schema.ts` files and emits Markdown to `docusaurus/schemas/*` which is git ignored.
 
@@ -39,10 +38,12 @@ The following command will start a local development server and open a browser w
 be reflected live without needing to restart the server.
 
 ```bash
-# Build static files, run the development server, and open the browser
 npm run start
+```
 
-# Build static files and run the development server without opening the browser
+To start the local development server without opening a browser window use the following command.
+
+```bash
 npm run start -- --no-open
 ```
 

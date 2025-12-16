@@ -60,7 +60,7 @@ export {
 
 export { mitigationSchema, type Mitigation } from './mitigation.schema.js';
 
-export { softwareType, softwareSchema, type Software } from './software.schema.js';
+export { softwareSchema, type Software } from './software.schema.js';
 
 export {
   tacticSchema,
