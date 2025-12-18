@@ -124,11 +124,13 @@ const config: Config = {
           position: 'right',
           docsPluginId: 'schemas',
         },
-        {
-          type: 'docsVersionDropdown',
-          position: 'right',
-          docsPluginId: 'api',
-        },
+        // TODO: When we create versions of the API docs this version picker should be
+        // uncommented so it appears on the top right when viewing the API docs.
+        // {
+        //   type: 'docsVersionDropdown',
+        //   position: 'right',
+        //   docsPluginId: 'api',
+        // },
         {
           href: 'https://github.com/mitre-attack/attack-data-model',
           label: 'GitHub',
