@@ -5,7 +5,7 @@
 The ATT&CK Data Model (ADM) provides a type-safe, object-oriented interface for working with MITRE ATT&CK datasets.
 Built on STIX 2.1 compliance, it uses Zod schemas and TypeScript types to ensure data integrity while providing intuitive relationship navigation between ATT&CK objects.
 
-**[CLICK HERE](https://mitre-attack.github.io/attack-data-model) <sup>[1](#footnotes)</sup>** to browse the ATT&CK schemas in a user-friendly interface. 
+**[CLICK HERE](https://mitre-attack.github.io/attack-data-model) <sup>[1](#footnotes)</sup>** to browse the ATT&CK schemas in a user-friendly interface.
 
 ## Key Features
 
@@ -51,10 +51,10 @@ If you're unsure which version of ATT&CK data you have:
 1. **From a STIX bundle file**: Look for the `x_mitre_attack_spec_version` field in the collection object
    ```json
    {
-      "type": "x-mitre-collection",
-      "id": "x-mitre-collection--1f5f1533-f617-4ca8-9ab4-6a02367fa019",
-      "name": "Enterprise ATT&CK",
-      "x_mitre_attack_spec_version": "3.2.0",
+     "type": "x-mitre-collection",
+     "id": "x-mitre-collection--1f5f1533-f617-4ca8-9ab4-6a02367fa019",
+     "name": "Enterprise ATT&CK",
+     "x_mitre_attack_spec_version": "3.2.0"
    }
    ```
 1. **Check the compatibility matrix**: Check which spec version your STIX bundle or object is supported by in the [Compatibility Guide](./COMPATIBILITY.md)
@@ -77,6 +77,7 @@ npm install @mitre-attack/attack-data-model@~4.0.0
 ### Version Mismatch Warnings
 
 The ADM will validate that your data matches the expected ATT&CK Specification version. If there's a mismatch, you may encounter:
+
 - **Validation errors**: When the data structure doesn't match what the ADM expects
 - **Missing properties**: When using older data with a newer ADM version
 - **Unrecognized fields**: When using newer data with an older ADM version
@@ -84,30 +85,36 @@ The ADM will validate that your data matches the expected ATT&CK Specification v
 ### Recommended Approach
 
 For most users, we recommend:
+
 1. **Use the latest ADM version** (`npm install @mitre-attack/attack-data-model`)
 2. **Load current ATT&CK data** directly from the official repository (the ADM can do this automatically)
 3. **Keep both updated** regularly to access new techniques, updates, and features
 
 Example of loading the latest ATT&CK data:
+
 ```javascript
-import { registerDataSource, loadDataModel, DataSourceRegistration } from '@mitre-attack/attack-data-model';
+import {
+  registerDataSource,
+  loadDataModel,
+  DataSourceRegistration,
+} from '@mitre-attack/attack-data-model';
 
 const dataSource = new DataSourceRegistration({
-    source: 'attack',
-    domain: 'enterprise-attack',
-    version: '17.1',
-    parsingMode: 'strict'
+  source: 'attack',
+  domain: 'enterprise-attack',
+  version: '17.1',
+  parsingMode: 'strict',
 });
 
 const dataSource = await registerDataSource(dataSource);
 const attackEnterpriseLatest = loadDataModel(dataSource);
 ```
 
-For more details on version compatibility, see the [Compatibility Guide](./COMPATIBILITY.md).
+For more details on version compatibility, see the [Compatibility Guide](https://mitre-attack.github.io/attack-data-model/docs/principles/attack-versioning).
 
 ## ATT&CK Specification
 
-The ADM is built upon the [MITRE ATT&CK® Specification](./docs/SPEC.md), which formally defines the structure, properties, and relationships of ATT&CK objects. The ATT&CK Specification serves as the authoritative source for how ATT&CK data should be represented and interacted with.
+The ADM is built upon the [MITRE ATT&CK® Specification](https://mitre-attack.github.io/attack-data-model/schemas/), which formally defines the structure, properties, and relationships of ATT&CK objects. The ATT&CK Specification serves as the authoritative source for how ATT&CK data should be represented and interacted with.
 
 The ADM provides a codified expression of the ATT&CK Specification using Zod schemas and TypeScript types. By implementing the specification in code, the ADM ensures that all data parsed and manipulated through the library adheres to the defined standards of the ATT&CK data model. This includes strict validation of object structures, types, and required properties, providing developers with confidence in the integrity and consistency of the data they work with.
 
@@ -121,9 +128,9 @@ By maintaining separate versioning, the ADM can evolve as a software library whi
 
 ## Documentation
 
-For detailed API documentation and usage examples, please refer to the [ATT&CK Data Model TypeScript API Documentation](docs/USAGE.md).
+For detailed API documentation and usage examples, please refer to the [ATT&CK Data Model TypeScript API Documentation](USAGE.md).
 
-For additional context about the ATT&CK specification, please refer to the [ATT&CK Specification Guide](./docs/SPEC.md).
+For additional context about the ATT&CK specification, please refer to the [ATT&CK Specification Guide](https://mitre-attack.github.io/attack-data-model/schemas/).
 
 ## Basic Usage
 
@@ -132,83 +139,85 @@ For additional context about the ATT&CK specification, please refer to the [ATT&
 Here's an example script that demonstrates how to use the ADM library to load ATT&CK data from the official MITRE ATT&CK GitHub repository:
 
 ```typescript
-import { registerDataSource, loadDataModel, DataSourceRegistration } from '@mitre-attack/attack-data-model';
+import {
+  registerDataSource,
+  loadDataModel,
+  DataSourceRegistration,
+} from '@mitre-attack/attack-data-model';
 
 (async () => {
+  // Instantiating a DataSourceRegistration object will validate that the data source is accessible and readable
+  const dataSource = new DataSourceRegistration({
+    source: 'attack', // Built-in index to retrieve ATT&CK content from the official MITRE ATT&CK STIX 2.1 GitHub repository
+    domain: 'enterprise-attack',
+    version: '15.1', // Omitting 'version' will default to the latest version available in the repository
+    parsingMode: 'relaxed', // 'strict' or 'relaxed' - 'relaxed' mode will attempt to parse and serialize data even if it contains errors or warnings
+  });
 
-    // Instantiating a DataSourceRegistration object will validate that the data source is accessible and readable
-    const dataSource = new DataSourceRegistration({
-        source: 'attack', // Built-in index to retrieve ATT&CK content from the official MITRE ATT&CK STIX 2.1 GitHub repository
-        domain: 'enterprise-attack',
-        version: '15.1', // Omitting 'version' will default to the latest version available in the repository
-        parsingMode: 'relaxed' // 'strict' or 'relaxed' - 'relaxed' mode will attempt to parse and serialize data even if it contains errors or warnings
-    });
+  try {
+    // Register the data source and retrieve the unique ID
+    const uuid = await registerDataSource(dataSource);
+    if (uuid) {
+      // Load the dataset using the unique ID
+      const attackEnterpriseLatest = loadDataModel(uuid);
 
-    try {
-        // Register the data source and retrieve the unique ID
-        const uuid = await registerDataSource(dataSource);
-        if (uuid) {
-            // Load the dataset using the unique ID
-            const attackEnterpriseLatest = loadDataModel(uuid);
+      // Access ATT&CK objects by type using object properties
+      const techniques = attackEnterpriseLatest.techniques;
+      const tactics = attackEnterpriseLatest.tactics;
 
-            // Access ATT&CK objects by type using object properties
-            const techniques = attackEnterpriseLatest.techniques;
-            const tactics = attackEnterpriseLatest.tactics;
+      const technique = techniques[0];
 
-            const technique = techniques[0];
-
-            // Type hinting is supported for all object properties
-            if (technique.x_mitre_is_subtechnique) {
-
-                // Access related objects with helpful getter methods
-                console.log(technique.getParentTechnique());
-            }
-        }
-    } catch (error) {
-        console.error(error);
+      // Type hinting is supported for all object properties
+      if (technique.x_mitre_is_subtechnique) {
+        // Access related objects with helpful getter methods
+        console.log(technique.getParentTechnique());
+      }
     }
+  } catch (error) {
+    console.error(error);
+  }
 })();
 ```
 
 ### Parsing and Validating a Tactic
 
 ```typescript
-import { tacticSchema } from "@mitre-attack/attack-data-model";
+import { tacticSchema } from '@mitre-attack/attack-data-model';
 
 const validTactic = {
-  id: "x-mitre-tactic--4ca45d45-df4d-4613-8980-bac22d278fa5",
-  type: "x-mitre-tactic",
-  name: "Execution",
-  description: "The adversary is trying to run malicious code.",
-  x_mitre_shortname: "execution",
+  id: 'x-mitre-tactic--4ca45d45-df4d-4613-8980-bac22d278fa5',
+  type: 'x-mitre-tactic',
+  name: 'Execution',
+  description: 'The adversary is trying to run malicious code.',
+  x_mitre_shortname: 'execution',
   // ... other required fields
 };
 
 try {
   const parsedTactic = tacticSchema.parse(validTactic);
-  console.log("Tactic parsed successfully:", parsedTactic.name);
+  console.log('Tactic parsed successfully:', parsedTactic.name);
 } catch (error) {
-  console.error("Validation error:", error);
+  console.error('Validation error:', error);
 }
 ```
 
 ### Handling Invalid Data
 
 ```typescript
-import { tacticSchema } from "@mitre-attack/attack-data-model";
-import { z } from "zod";
+import { tacticSchema } from '@mitre-attack/attack-data-model';
+import { z } from 'zod';
 
 const invalidTactic = {
   // Missing required fields
-  id: "x-mitre-tactic--4ca45d45-df4d-4613-8980-bac22d278fa5",
-  type: "x-mitre-tactic",
+  id: 'x-mitre-tactic--4ca45d45-df4d-4613-8980-bac22d278fa5',
+  type: 'x-mitre-tactic',
 };
 
 try {
   tacticSchema.parse(invalidTactic);
 } catch (error) {
   if (error instanceof z.ZodError) {
-    console.log("Validation errors:", error.errors);
+    console.log('Validation errors:', error.errors);
   }
 }
 ```
@@ -234,7 +243,7 @@ Our [Compatibility documentation](https://mitre-attack.github.io/attack-data-mod
 
 ## Contributing
 
-We welcome contributions! Please see our [CONTRIBUTING.md](./docs/CONTRIBUTING.md) file for details on how to contribute to this project.
+We welcome contributions! Please see our contributor guide for more information: <https://mitre-attack.github.io/attack-data-model/docs/contributing/>
 
 ## Footnotes
 
