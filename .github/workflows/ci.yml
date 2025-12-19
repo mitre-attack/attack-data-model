@@ -38,7 +38,7 @@ jobs:
           node-version: '22.x'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Determine commit range
         id: commit_range
@@ -70,7 +70,7 @@ jobs:
           node-version: '22.x'
 
       - name: Install
-        run: npm install --include=dev
+        run: npm ci
 
       - name: Build
         run: npm run build
@@ -153,7 +153,7 @@ jobs:
           node-version: '22.x'
 
       - name: Install schema dependencies
-        run: npm install
+        run: npm ci
         working-directory: ./
 
       - name: Generate schema documentation
@@ -161,7 +161,7 @@ jobs:
         working-directory: ./
 
       - name: Install docusaurus dependencies
-        run: npm install
+        run: npm ci
         working-directory: ./docusaurus
 
       - name: Build Docusaurus site
