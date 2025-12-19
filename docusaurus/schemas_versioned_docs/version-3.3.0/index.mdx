@@ -1,24 +1,20 @@
-# Schema Reference
+import OverviewTable from './attack-concept-table.mdx'
 
-Current ATT&CK Spec Version: [3.3.0](https://github.com/mitre-attack/attack-stix-data/blob/master/CHANGELOG.md)
+# The ATT&CK Specification
 
-| ATT&CK Concept | STIX Object Type | Link |
-|----------------|------------------|------|
-| Identity | SDO | [Schema](./sdo/identity.schema.mdx) |
-| STIX Bundle | SDO | [Schema](./stix-bundle.schema) |
-| Tool | SDO | [Schema](./sdo/tool.schema.mdx) |
-| Detection Strategy | SDO | [Schema](./sdo/detection-strategy.schema.mdx) |
-| Matrix | SDO | [Schema](./sdo/matrix.schema.mdx) |
-| Asset | SDO | [Schema](./sdo/asset.schema.mdx) |
-| Collection | SDO | [Schema](./sdo/collection.schema.mdx) |
-| Analytic | SDO | [Schema](./sdo/analytic.schema.mdx) |
-| Data Component | SDO | [Schema](./sdo/data-component.schema.mdx) |
-| Group | SDO | [Schema](./sdo/group.schema.mdx) |
-| Data Source | SDO | [Schema](./sdo/data-source.schema.mdx) |
-| Tactic | SDO | [Schema](./sdo/tactic.schema.mdx) |
-| Malware | SDO | [Schema](./sdo/malware.schema.mdx) |
-| Mitigation | SDO | [Schema](./sdo/mitigation.schema.mdx) |
-| Campaign | SDO | [Schema](./sdo/campaign.schema.mdx) |
-| Technique | SDO | [Schema](./sdo/technique.schema.mdx) |
-| Marking Definition | SMO | [Schema](./smo/marking-definition.schema.mdx) |
-| Relationship | SRO | [Schema](./sro/relationship.schema.mdx) |
+The ATT&CK specification is built atop the [STIX 2.1 specification](https://oasis-open.github.io/cti-documentation/resources#stix-21-specification). It is a codified expression of the concepts outlined in the [MITRE ATT&CK Philosophy Paper](https://attack.mitre.org/docs/ATTACK_Design_and_Philosophy_March_2020.pdf), expressed in the ATT&CK Data Model (ADM).
+
+ATT&CK uses a mix of predefined and custom STIX objects to implement ATT&CK concepts. The following table is a mapping of ATT&CK concepts to STIX 2.1 objects:
+
+## STIX Bundle Object
+
+A STIX Bundle Object is not a STIX Object, rather it is a collection of arbitrary STIX Objects grouped together in a single container.
+ATT&CK distributes a STIX bundle for each ATT&CK domain.
+
+| ATT&CK Concept | STIX Object |
+|:-------------- |:----------- |
+| [STIX Bundle](./stix-bundle.schema) | `bundle` ([STIX 2.0](https://docs.oasis-open.org/cti/stix/v2.0/cs01/part1-stix-core/stix-v2.0-cs01-part1-stix-core.html#_Toc496709292), [STIX 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_gms872kuzdmg)) |
+
+<OverviewTable />
+
+---
