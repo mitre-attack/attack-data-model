@@ -32,7 +32,7 @@ const documentationTypes = [
     type: 'reference' as const,
     title: 'API Reference',
     description: 'Complete API documentation, configuration options, and technical specifications for when you need precise information.',
-    href: 'schemas/',
+    href: 'api/',
   },
 ];
 
