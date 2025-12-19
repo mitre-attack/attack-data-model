@@ -1,6 +1,3 @@
-# Project maintenance is performed using a private registry, therefore package-lock.json will contain erroneous artifacts that should not be committed
-package-lock.json
-
 # auto-generated schema documentation
 schemas/sdo/
 schemas/sro/
