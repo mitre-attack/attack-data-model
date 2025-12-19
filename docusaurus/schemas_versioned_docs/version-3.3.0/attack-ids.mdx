@@ -1,0 +1,43 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
+# ATT&CK IDs
+
+<WorkInProgressNotice />
+
+ATT&CK objects use multiple identifier systems to support different use cases and ensure compatibility with external frameworks.
+
+## STIX IDs
+
+Every ATT&CK object (including relationships) contains a STIX ID in its `id` field.
+STIX IDs are guaranteed to be globally unique and follow the STIX 2.1 specification format.
+
+**STIX IDs are the recommended method for programmatic object retrieval and referencing.**
+
+## ATT&CK IDs
+
+ATT&CK IDs are human-readable identifiers commonly used for referencing objects in documentation and communication. Each ATT&CK object type follows a specific ID format:
+
+| ATT&CK concept                                                 | ID format                                                      |
+| :------------------------------------------------------------- | :------------------------------------------------------------- |
+| [Matrix](./sdo/matrix.schema.mdx)                              | [domain identifier](./common-properties.mdx#domain-membership) |
+| [Tactic](./sdo/tactic.schema.mdx)                              | `TAxxxx`                                                       |
+| [Technique](./sdo/technique.schema.mdx)                        | `Txxxx`                                                        |
+| [Sub-Technique](./sdo/technique.schema.mdx#sub-techniques)     | `Txxxx.yyy`                                                    |
+| [Mitigation](./sdo/mitigation.schema.mdx)                      | `Mxxxx`                                                        |
+| [Group](./sdo/group.schema.mdx)                                | `Gxxxx`                                                        |
+| [Software](./sdo/software.schema.mdx)                          | `Sxxxx`                                                        |
+| [Data Source](./sdo/data-source.schema.mdx)                    | `DSxxxx`                                                       |
+| [Data Component](./sdo/data-component.schema.mdx)              | `DCxxxx`                                                       |
+| [Campaign](./sdo/campaign.schema.mdx)                          | `Cxxxx`                                                        |
+| [Asset](./sdo/asset.schema.mdx)                                | `Axxxx`                                                        |
+| [Detection Strategy](./sdo/detection-strategy.schema.mdx)      | `DETxxxx`                                                      |
+| [Analytic](./sdo/analytic.schema.mdx)                          | `ANxxxx`                                                       |
+| [Log Source](./sdo/data-component.schema.mdx#xmitrelogsources) | `LSxxxx`                                                       |
+
+**Important limitations:**
+
+- ATT&CK IDs are not guaranteed to be unique
+- Matrices within the same domain share identical ATT&CK IDs
+- Relationship objects do not have ATT&CK IDs
+
+ATT&CK IDs are stored in the first external reference of applicable objects, which also includes a `url` field linking to the object's page on the [ATT&CK Website](https://attack.mitre.org/).
