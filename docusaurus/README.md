@@ -10,7 +10,3 @@ files are stored in the `docs/` directory.
 
 The Docusaurus site is configured and structured for ["Docs Multi-Instance"](https://docusaurus.io/docs/docs-multi-instance) to host the global docs content, schemas reference, and API reference as distinct sets of documentation (each set is its own plugin). The Schemas reference and API reference are each [versioned](https://docusaurus.io/docs/versioning) independently, while the main docs content is un-versioned. Be sure to adhere to Docusaurus's [recommended practices](https://docusaurus.io/docs/versioning#recommended-practices) for versioning.
 
-
-## Contributing
-
-We welcome contributions! Please see our [documentation site](http://mitre-attack.github.io/attack-data-model/docs/contributing/docs) for details on how to contribute to this project.
