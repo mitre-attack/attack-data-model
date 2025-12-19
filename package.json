@@ -32,8 +32,10 @@
   "scripts": {
     "build": "npx tsup --dts --format esm,cjs src",
     "prepublishOnly": "rm -rf dist && npm run build",
+    "clear:stix": "rm -rf .cached_stix_data",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage",
+    "test:nocache": "npm run clear:stix && vitest --run",
     "test:interactive": "vitest",
     "export": "npm pack",
     "clean": "rm -rf test/**/*.js test/**/*.js.map test/**/*.d.ts test/**/*.ts.map src/**/*.js src/**/*.js.map src/**/*.d.ts examples/**/*.js examples/**/*.js.map dist",
