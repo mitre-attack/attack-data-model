@@ -59,7 +59,7 @@ objects and strictly follow the STIX 2.1 specification without additional custom
 This design was deprecated to support more flexible mitigation-to-technique mappings.
 
 **Current impact:** Legacy 1:1 mitigations may cause ATT&CK ID collisions between mitigations and techniques.
-These deprecated objects can be filtered out during queries—see [Removing revoked and deprecated objects](#removing-revoked-and-deprecated-objects).
+These deprecated objects can be filtered out during queries.
   `.trim(),
   });
 

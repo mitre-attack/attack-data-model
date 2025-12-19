@@ -1,6 +1,9 @@
 {
   "schemasSidebar": [
     "index",
+    "attack-ids",
+    "common-properties",
+    "relationship-types",
     "stix-bundle.schema",
     {
       "type": "category",
@@ -31,6 +34,7 @@
           "dirName": "smo"
         }
       ]
-    }
+    },
+    "changelog-schema"
   ]
 }
