@@ -57,7 +57,8 @@ export const xMitreEffectivePermissionsSchema = z
     message: 'Effective permissions must be unique (no duplicates allowed)',
   })
   .meta({
-    description: 'The level of permissions the adversary will attain by performing the technique',
+    description:
+      '**DEPRECATED in v3.3.0. Will be removed in v4.0.0.** The level of permissions the adversary will attain by performing the technique',
   });
 
 export type XMitreEffectivePermissions = z.infer<typeof xMitreEffectivePermissionsSchema>;
@@ -78,7 +79,8 @@ export const xMitreImpactTypeSchema = z
   )
   .min(1)
   .meta({
-    description: 'Denotes if the technique can be used for integrity or availability attacks',
+    description:
+      'Denotes if the technique can be used for integrity or availability attacks. **Only used in Enterprise domain in the _Impact_ tactic.**',
   });
 
 export type XMitreImpactType = z.infer<typeof xMitreImpactTypeSchema>;
@@ -91,7 +93,7 @@ export type XMitreImpactType = z.infer<typeof xMitreImpactTypeSchema>;
 
 export const xMitreSystemRequirementsSchema = stixListOfString.meta({
   description:
-    'Additional information on requirements the adversary needs to meet or about the state of the system (software, patch level, etc.) that may be required for the technique to work',
+    '**DEPRECATED in v3.3.0. Will be removed in v4.0.0.** Additional information on requirements the adversary needs to meet or about the state of the system (software, patch level, etc.) that may be required for the technique to work',
 });
 
 export type XMitreSystemRequirements = z.infer<typeof xMitreSystemRequirementsSchema>;
@@ -103,7 +105,8 @@ export type XMitreSystemRequirements = z.infer<typeof xMitreSystemRequirementsSc
 //==============================================================================
 
 export const xMitreRemoteSupportSchema = z.boolean().meta({
-  description: 'If true, the technique can be used to execute something on a remote system.',
+  description:
+    '**DEPRECATED in v3.3.0. Will be removed in v4.0.0.** If true, the technique can be used to execute something on a remote system.',
 });
 
 export type XMitreRemoteSupport = z.infer<typeof xMitreRemoteSupportSchema>;
@@ -139,7 +142,7 @@ export const xMitrePermissionsRequiredSchema = z
   .min(1, { error: 'At least one permission level is required' })
   .meta({
     description:
-      'The lowest level of permissions the adversary is required to be operating within to perform the technique on a system.',
+      '**DEPRECATED in v3.3.0. Will be removed in v4.0.0.** The lowest level of permissions the adversary is required to be operating within to perform the technique on a system.',
   });
 
 export type XMitrePermissionsRequired = z.infer<typeof xMitrePermissionsRequiredSchema>;
@@ -165,7 +168,8 @@ export const xMitreDataSourceSchema = z
     },
   )
   .meta({
-    description: "A single data source in the format 'Data Source Name: Data Component Name'",
+    description:
+      "**DEPRECATED in v3.3.0. Will be removed in v4.0.0.** A single data source in the format 'Data Source Name: Data Component Name'",
   });
 
 // list of data sources
@@ -179,7 +183,7 @@ export const xMitreDataSourcesSchema = z
   .min(1, { error: 'At least one data source is required' })
   .meta({
     description:
-      'Sources of information that may be used to identify the action or result of the action being performed',
+      '**DEPRECATED in v3.3.0. Will be removed in v4.0.0.** Sources of information that may be used to identify the action or result of the action being performed',
   });
 
 export type XMitreDataSource = z.infer<typeof xMitreDataSourceSchema>;
@@ -228,7 +232,7 @@ export const xMitreTacticTypeSchema = z
   .min(1)
   .meta({
     description:
-      '"Post-Adversary Device Access", "Pre-Adversary Device Access", or "Without Adversary Device Access"',
+      '"Post-Adversary Device Access", "Pre-Adversary Device Access", or "Without Adversary Device Access". **Only used in Mobile domain.**',
   });
 
 export type XMitreTacticType = z.infer<typeof xMitreTacticTypeSchema>;
@@ -299,7 +303,8 @@ export const xMitreDefenseBypassesSchema = z
     message: 'Mitre defense bypasses must be unique (no duplicates allowed).',
   })
   .meta({
-    description: 'List of defensive tools, methodologies, or processes the technique can bypass.',
+    description:
+      '**DEPRECATED in v3.3.0. Will be removed in v4.0.0.** List of defensive tools, methodologies, or processes the technique can bypass.',
   });
 
 export type XMitreDefenseBypasses = z.infer<typeof xMitreDefenseBypassesSchema>;
@@ -311,7 +316,8 @@ export type XMitreDefenseBypasses = z.infer<typeof xMitreDefenseBypassesSchema>;
 //==============================================================================
 
 export const xMitreDetectionSchema = nonEmptyRequiredString.meta({
-  description: 'Strategies for identifying if a technique has been used by an adversary.',
+  description:
+    '**DEPRECATED in v3.3.0. Will be removed in v4.0.0.** Strategies for identifying if a technique has been used by an adversary.',
 });
 
 export type XMitreDetection = z.infer<typeof xMitreDetectionSchema>;
@@ -332,7 +338,8 @@ export const techniqueSchema = attackBaseDomainObjectSchema
     external_references: createAttackExternalReferencesSchema('attack-pattern'),
 
     kill_chain_phases: z.array(killChainPhaseSchema).min(1).optional().meta({
-      description: 'The list of Kill Chain Phases for which this Attack Pattern is used.',
+      description:
+        'Techniques are associated with Tactics through their `kill_chain_phases` property. When the `kill_chain_name` matches the domain (`mitre-attack`, `mitre-mobile-attack`, or `mitre-ics-attack`), the `phase_name` corresponds to the `x_mitre_shortname` of the associated `x-mitre-tactic` object.',
     }),
 
     description: descriptionSchema.optional(),
@@ -345,19 +352,19 @@ export const techniqueSchema = attackBaseDomainObjectSchema
 
     x_mitre_data_sources: xMitreDataSourcesSchema.optional(), // TODO remove in attack spec 4.0.0 / adm release 5.x
 
-    x_mitre_defense_bypassed: xMitreDefenseBypassesSchema.optional(),
+    x_mitre_defense_bypassed: xMitreDefenseBypassesSchema.optional(), // TODO remove in attack spec 4.0.0 / adm release 5.x
 
     x_mitre_contributors: xMitreContributorsSchema.optional(),
 
-    x_mitre_permissions_required: xMitrePermissionsRequiredSchema.optional(),
+    x_mitre_permissions_required: xMitrePermissionsRequiredSchema.optional(), // TODO remove in attack spec 4.0.0 / adm release 5.x
 
-    x_mitre_remote_support: xMitreRemoteSupportSchema.optional(),
+    x_mitre_remote_support: xMitreRemoteSupportSchema.optional(), // TODO remove in attack spec 4.0.0 / adm release 5.x
 
-    x_mitre_system_requirements: xMitreSystemRequirementsSchema.optional(),
+    x_mitre_system_requirements: xMitreSystemRequirementsSchema.optional(), // TODO remove in attack spec 4.0.0 / adm release 5.x
 
     x_mitre_impact_type: xMitreImpactTypeSchema.optional(),
 
-    x_mitre_effective_permissions: xMitreEffectivePermissionsSchema.optional(),
+    x_mitre_effective_permissions: xMitreEffectivePermissionsSchema.optional(), // TODO remove in attack spec 4.0.0 / adm release 5.x
 
     x_mitre_network_requirements: xMitreNetworkRequirementsSchema.optional(),
 
@@ -367,14 +374,35 @@ export const techniqueSchema = attackBaseDomainObjectSchema
 
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
   })
-  .meta({
-    description:
-      'Techniques describe specific methods adversaries use to achieve tactical objectives and are represented as [attack-pattern](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230921) objects following the STIX 2.1 specification.',
-  })
   .strict()
   .check((ctx) => {
     createAttackIdInExternalReferencesRefinement()(ctx);
     createEnterpriseOnlyPropertiesRefinement()(ctx);
     createMobileOnlyPropertiesRefinement()(ctx);
+  })
+  .meta({
+    description: `
+Techniques describe specific methods adversaries use to achieve tactical objectives and are represented as
+[attack-pattern](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230921)
+objects following the STIX 2.1 specification.
+
+### Sub-Techniques
+
+Sub-techniques are specialized implementations of parent techniques, providing more granular detail about adversary methods.
+They are represented as \`attack-pattern\` objects with the same structure as techniques but include additional constraints and relationships.
+
+**Sub-technique characteristics:**
+
+- **Identification:** Marked by \`x_mitre_is_subtechnique = true\`
+- **Parent relationship:** Connected via \`subtechnique-of\` relationship where \`source_ref\` is the sub-technique and \`target_ref\` is the parent technique
+- **Cardinality:** Each sub-technique has exactly one parent technique; parent techniques may have multiple sub-techniques
+
+**Inheritance rules:**
+
+- **ATT&CK ID format:** Sub-technique IDs follow the pattern \`Txxxx.yyy\`, where \`Txxxx\` is the parent technique ID and \`yyy\` is the unique sub-technique identifier
+- **STIX ID uniqueness:** Sub-techniques maintain globally unique STIX IDs despite sharing parent ID prefixes
+- **Tactic inheritance:** Sub-techniques inherit all tactics from their parent technique
+- **Platform constraints:** Sub-techniques must use a subset of their parent technique's platforms
+    `.trim(),
   });
 export type Technique = z.infer<typeof techniqueSchema>;

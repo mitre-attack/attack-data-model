@@ -17,16 +17,22 @@ const documentationTypes = [
     href: 'docs/how-to-guides/',
   },
   {
-    type: 'reference' as const,
-    title: 'Reference',
-    description: 'Complete API documentation, configuration options, and technical specifications for when you need precise information.',
-    href: 'docs/reference/',
-  },
-  {
     type: 'principles' as const,
     title: 'Principles',
     description: 'Deep dives into the architecture, design philosophy, and trade-offs that shape the library.',
     href: 'docs/principles/',
+  },
+  {
+    type: 'reference' as const,
+    title: 'Schema Reference',
+    description: 'Complete STIX Schema documentation, configuration options, and technical specifications for when you need precise information.',
+    href: 'schemas/',
+  },
+  {
+    type: 'reference' as const,
+    title: 'API Reference',
+    description: 'Complete API documentation, configuration options, and technical specifications for when you need precise information.',
+    href: 'api/',
   },
 ];
 
@@ -89,6 +95,11 @@ export default function HomepageFeatures(): JSX.Element {
               </div>
               <div className="col col--6">
                 <DocTypeCard {...documentationTypes[3]} className={styles.docTypeCard} />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col col--6">
+                <DocTypeCard {...documentationTypes[4]} className={styles.docTypeCard} />
               </div>
             </div>
           </div>

@@ -1,0 +1,70 @@
+# STIX Schema Changelog
+
+## v3.3.0 (28 October 2025)
+
+- **New SDOs**:
+  - Detection Strategies (`x-mitre-detection-strategy`) <sup>[[schema](./sdo/detection-strategy.schema)]</sup>
+  - Analytics (`x-mitre-analytic`) <sup>[[schema](./sdo/analytic.schema)]</sup>
+- **Schema Changes**:
+  - Data Components <sup>[[schema](./sdo/data-component.schema)]</sup>
+    - Added `x_mitre_log_sources` field: Tracks security telemetry across platforms
+    - Data Component objects now have ATT&CK IDs with the schema `DCxxxx`
+- **Deprecations**:
+  - Objects
+    - Data Sources (`x-mitre-data-sources`) <sup>[[schema](./sdo/data-source.schema)]</sup> (removal in v4.0.0)
+  - Relationships
+    - `x-mitre-data-component` --[detects]--> `attack-pattern` SROs (replaced by Detection Strategy framework)
+  - Metadata
+    - Dropped support for the following fields in **Technique** objects (removal in v4.0.0)
+      - `x_mitre_detection`
+      - `x_mitre_system_requirements`
+      - `x_mitre_permissions_required`
+      - `x_mitre_effective_permissions`
+      - `x_mitre_data_sources`
+      - `x_mitre_defense_bypassed`
+      - `x_mitre_remote_support`
+    - Dropped support for the following fields in **Data Component** objects (removal in v4.0.0)
+      - `x_mitre_data_source_ref`
+
+## v3.2.0 (31 October 2023)
+
+- **New SDOs**:
+  - Asset (`x-mitre-asset`) <sup>[[schema](./sdo/asset.schema)]</sup>
+
+## v3.1.0 (25 April 2023)
+
+- **Schema Changes**:
+  - Restored the `labels` property for ICS mitigation objects. This property documents security controls for ICS mitigations.
+
+## v3.0.0 (25 October 2022)
+
+- **New SDOs**:
+  - Campaign (`x-mitre-campaign`) <sup>[[schema](./sdo/campaign.schema)]</sup>
+
+## v2.1.0 (21 October 2021)
+
+- **New SDOs**:
+  - Data Source (`x-mitre-data-source`) <sup>[[schema](./sdo/data-source.schema)]</sup>
+  - Data Component (`x-mitre-data-component`) <sup>[[schema](./sdo/data-component.schema)]</sup>
+- **New Relationship Types**:
+  - `x-mitre-data-component` --[detects]--> `attack-pattern` SROs
+- **Schema Changes**:
+  - Added `x_mitre_attack_spec_version` field to all object types.
+    This field tracks the version of the ATT&CK Spec used by the object.
+    Consuming software can use this field to determine if the data format is supported;
+    if the field is absent the object will be assumed to use ATT&CK Spec version `2.0.0`.
+
+## v2.0.0 (21 June 2021)
+
+- **New SDOs**:
+  - Collection (`x-mitre-collection`) <sup>[[schema](./sdo/collection.schema)]</sup>
+- **Schema Changes**:
+  - Added `x_mitre_modified_by_ref` field to all object types.
+    This field tracks the identity of the individual or organization which created the current version of the object.
+  - Added `x_mitre_domains` field to all non-relationship objects. This field tracks the domains the object is found in.
+
+## Older Versions
+
+Details about previous versions can be found in [Archived Changelog](./archived-changelog)
+
+---

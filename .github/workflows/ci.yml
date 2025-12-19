@@ -70,7 +70,7 @@ jobs:
           node-version: '22.x'
 
       - name: Install
-        run: npm ci --include=dev
+        run: npm ci
 
       - name: Build
         run: npm run build
@@ -153,15 +153,15 @@ jobs:
           node-version: '22.x'
 
       - name: Install schema dependencies
-        run: npm install
+        run: npm ci
+        working-directory: ./
+
+      - name: Generate schema documentation
+        run: npm run docs:schemamarkdown
         working-directory: ./
 
       - name: Install docusaurus dependencies
-        run: npm install
-        working-directory: ./docusaurus
-
-      - name: Generate schema documentation
-        run: npm run gendocs
+        run: npm ci
         working-directory: ./docusaurus
 
       - name: Build Docusaurus site
