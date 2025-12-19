@@ -268,7 +268,12 @@ export function createRelationshipValidationRefinement() {
     const [targetType] = ctx.value.target_ref.split('--') as [StixType];
 
     isValidRelationship(sourceType, ctx.value.relationship_type, targetType, (issue) => {
-      ctx.issues.push(issue);
+      ctx.issues.push({
+        code: 'custom',
+        message: issue.message,
+        path: issue.path,
+        input: issue.input,
+      });
     });
   };
 }

@@ -43,7 +43,8 @@
     "prettier": "npx prettier src --check",
     "prettier:fix": "npm run prettier -- --write",
     "format": "npm run prettier:fix && npm run lint:fix",
-    "docs:schemamarkdown": "tsx ./generate-docs.ts"
+    "docs:schemamarkdown": "tsx ./generate-docs.ts",
+    "check:lockfile": "bash scripts/check-package-lock.sh"
   },
   "contributors": [
     {
