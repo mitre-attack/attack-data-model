@@ -43,6 +43,8 @@ describe('Global Tests', () => {
         'x-mitre-matrix',
         'x-mitre-tactic',
         'x-mitre-asset',
+        'x-mitre-detection-strategy',
+        'x-mitre-analytic',
       ];
 
       const presentTypes = Object.keys(globalThis.attackData.objectsByType);
@@ -129,6 +131,8 @@ describe('Global Tests', () => {
         'x-mitre-data-source',
         'x-mitre-data-component',
         'x-mitre-asset',
+        'x-mitre-detection-strategy',
+        'x-mitre-analytic',
       ];
       const sdoCount = sdoTypes.reduce(
         (sum, type) => sum + (globalThis.attackData.objectsByType[type]?.length || 0),
