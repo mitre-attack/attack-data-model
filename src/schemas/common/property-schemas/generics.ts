@@ -26,6 +26,9 @@ export const nonEmptyRequiredString = z
   .trim()
   .min(1, { error: 'At least one character is required. Whitespace is not permissible.' });
 
+export const emptyStixListErrorMessage =
+  'Empty lists are prohibited in STIX and MUST NOT be used as a substitute for omitting the property if it is optional. The list MUST be present and MUST have at least one value.';
+
 /**
  * A STIX-compliant list schema for non-empty strings.
  *
@@ -40,7 +43,6 @@ export const nonEmptyRequiredString = z
  * stixListOfString.parse(["foo", ""]); // throws error
  * ```
  */
-export const stixListOfString = z.array(nonEmptyRequiredString).min(1, {
-  error:
-    'Empty lists are prohibited in STIX and MUST NOT be used as a substitute for omitting the property if it is optional. The list MUST be present and MUST have at least one value.',
-});
+export const stixListOfString = z
+  .array(nonEmptyRequiredString)
+  .min(1, { error: emptyStixListErrorMessage });
