@@ -6,11 +6,12 @@ import {
 import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
   aliasesSchema,
-  descriptionSchema,
   createAttackExternalReferencesSchema,
   createOldMitreAttackIdSchema,
   createStixIdValidator,
   createStixTypeValidator,
+  descriptionSchema,
+  emptyStixListErrorMessage,
   killChainPhaseSchema,
   nonEmptyRequiredString,
   stixCreatedByRefSchema,
@@ -29,9 +30,13 @@ import {
 
 export const toolSchema = attackBaseDomainObjectSchema
   .extend({
-    id: createStixIdValidator('tool'),
+    id: createStixIdValidator('tool').meta({
+      description: 'The unique identifier for this Tool object.',
+    }),
 
-    type: createStixTypeValidator('tool'),
+    type: createStixTypeValidator('tool').meta({
+      description: 'The STIX object type for this object, which is always "tool".',
+    }),
 
     created_by_ref: stixCreatedByRefSchema.meta({
       description: 'The ID of the Source object that describes who created this object.',
@@ -64,14 +69,14 @@ export const toolSchema = attackBaseDomainObjectSchema
     // Not used in ATT&CK Tool but defined in STIX
     tool_types: z
       .array(ToolTypeOV)
-      .min(1, { error: 'At least one tool type is required' })
+      .min(1, { error: emptyStixListErrorMessage })
       .optional()
       .meta({ description: 'The kind(s) of tool(s) being described.' }),
 
     // Not used in ATT&CK Tool but defined in STIX
     kill_chain_phases: z
       .array(killChainPhaseSchema)
-      .min(1, { error: 'At least one kill chain is required' })
+      .min(1, { error: emptyStixListErrorMessage })
       .optional()
       .meta({ description: 'The list of kill chain phases for which this Tool can be used.' }),
 
