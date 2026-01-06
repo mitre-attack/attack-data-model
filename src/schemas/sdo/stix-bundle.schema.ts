@@ -1,5 +1,8 @@
 import { z } from 'zod/v4';
-import { createFirstBundleObjectRefinement } from '../../refinements/index.js';
+import {
+  createFirstBundleObjectRefinement,
+  createUniqueObjectsOnlyRefinement,
+} from '../../refinements/index.js';
 import {
   createStixIdValidator,
   createStixTypeValidator,
@@ -189,6 +192,7 @@ export const stixBundleSchema = z
   .strict()
   .check((ctx) => {
     createFirstBundleObjectRefinement()(ctx);
+    createUniqueObjectsOnlyRefinement()(ctx);
   });
 
 export type StixBundle = z.infer<typeof stixBundleSchema>;

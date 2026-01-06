@@ -191,6 +191,40 @@ export function createFirstBundleObjectRefinement() {
 }
 
 /**
+ * Creates a refinement function for validating that all objects in a STIX bundle have unique IDs
+ *
+ * @returns A refinement function for unique object ID validation
+ *
+ * @remarks
+ * This function validates that each object in the bundle's 'objects' array has a unique 'id' property.
+ * Duplicate IDs violate STIX specifications and can cause data integrity issues.
+ *
+ * @example
+ * ```typescript
+ * const validateUniqueObjects = createUniqueObjectsOnlyRefinement();
+ * const schema = stixBundleSchema.check(validateUniqueObjects);
+ * ```
+ */
+export function createUniqueObjectsOnlyRefinement() {
+  return (ctx: z.core.ParsePayload<StixBundle>): void => {
+    const seen = new Set<string>();
+    ctx.value.objects.forEach((item, index) => {
+      const id = (item as AttackObject).id;
+      if (seen.has(id)) {
+        ctx.issues.push({
+          code: 'custom',
+          message: `Duplicate object with id "${id}" found. Each object in the bundle must have a unique id.`,
+          path: ['objects', index, 'id'],
+          input: id,
+        });
+      } else {
+        seen.add(id);
+      }
+    });
+  };
+}
+
+/**
  * Creates a refinement function for validating ATT&CK ID in external references
  *
  * @returns A refinement function for ATT&CK ID validation
