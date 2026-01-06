@@ -171,6 +171,263 @@ describe('StixBundleSchema', () => {
 
       expect(() => stixBundleSchema.parse(invalidFirstObjectBundle)).toThrow();
     });
+
+    describe('Uniqueness Constraint', () => {
+      it('should accept bundle with unique object IDs (true positive)', () => {
+        const technique1: Technique = {
+          id: `attack-pattern--${uuidv4()}`,
+          type: 'attack-pattern',
+          spec_version: '2.1',
+          created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+          modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+          name: 'Test Technique 1',
+          x_mitre_attack_spec_version: '2.1.0',
+          x_mitre_version: '1.0',
+          x_mitre_domains: ['enterprise-attack'],
+          x_mitre_is_subtechnique: false,
+          external_references: [
+            {
+              source_name: 'mitre-attack',
+              external_id: 'T1001',
+            },
+          ],
+        };
+
+        const technique2: Technique = {
+          id: `attack-pattern--${uuidv4()}`,
+          type: 'attack-pattern',
+          spec_version: '2.1',
+          created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+          modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+          name: 'Test Technique 2',
+          x_mitre_attack_spec_version: '2.1.0',
+          x_mitre_version: '1.0',
+          x_mitre_domains: ['enterprise-attack'],
+          x_mitre_is_subtechnique: false,
+          external_references: [
+            {
+              source_name: 'mitre-attack',
+              external_id: 'T1002',
+            },
+          ],
+        };
+
+        const bundleWithUniqueObjects = {
+          ...minimalBundle,
+          objects: [minimalCollection, technique1, technique2],
+        };
+
+        expect(() => stixBundleSchema.parse(bundleWithUniqueObjects)).not.toThrow();
+      });
+
+      it('should reject bundle with duplicate object IDs (true negative)', () => {
+        const duplicateId = `attack-pattern--${uuidv4()}`;
+
+        const technique1: Technique = {
+          id: duplicateId,
+          type: 'attack-pattern',
+          spec_version: '2.1',
+          created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+          modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+          name: 'Test Technique 1',
+          x_mitre_attack_spec_version: '2.1.0',
+          x_mitre_version: '1.0',
+          x_mitre_domains: ['enterprise-attack'],
+          x_mitre_is_subtechnique: false,
+          external_references: [
+            {
+              source_name: 'mitre-attack',
+              external_id: 'T1001',
+            },
+          ],
+        };
+
+        const technique2: Technique = {
+          id: duplicateId, // Same ID as technique1
+          type: 'attack-pattern',
+          spec_version: '2.1',
+          created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+          modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+          name: 'Test Technique 2',
+          x_mitre_attack_spec_version: '2.1.0',
+          x_mitre_version: '1.0',
+          x_mitre_domains: ['enterprise-attack'],
+          x_mitre_is_subtechnique: false,
+          external_references: [
+            {
+              source_name: 'mitre-attack',
+              external_id: 'T1002',
+            },
+          ],
+        };
+
+        const bundleWithDuplicateObjects = {
+          ...minimalBundle,
+          objects: [minimalCollection, technique1, technique2],
+        };
+
+        expect(() => stixBundleSchema.parse(bundleWithDuplicateObjects)).toThrow(
+          /Duplicate object with id/,
+        );
+      });
+
+      it('should report the duplicate ID in error message', () => {
+        const duplicateId = `attack-pattern--${uuidv4()}`;
+
+        const technique1: Technique = {
+          id: duplicateId,
+          type: 'attack-pattern',
+          spec_version: '2.1',
+          created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+          modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+          name: 'Test Technique 1',
+          x_mitre_attack_spec_version: '2.1.0',
+          x_mitre_version: '1.0',
+          x_mitre_domains: ['enterprise-attack'],
+          x_mitre_is_subtechnique: false,
+          external_references: [
+            {
+              source_name: 'mitre-attack',
+              external_id: 'T1001',
+            },
+          ],
+        };
+
+        const technique2: Technique = {
+          id: duplicateId,
+          type: 'attack-pattern',
+          spec_version: '2.1',
+          created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+          modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+          name: 'Test Technique 2',
+          x_mitre_attack_spec_version: '2.1.0',
+          x_mitre_version: '1.0',
+          x_mitre_domains: ['enterprise-attack'],
+          x_mitre_is_subtechnique: false,
+          external_references: [
+            {
+              source_name: 'mitre-attack',
+              external_id: 'T1002',
+            },
+          ],
+        };
+
+        const bundleWithDuplicateObjects = {
+          ...minimalBundle,
+          objects: [minimalCollection, technique1, technique2],
+        };
+
+        try {
+          stixBundleSchema.parse(bundleWithDuplicateObjects);
+          expect.fail('Expected schema to throw for duplicate IDs');
+        } catch (error) {
+          if (error instanceof z.ZodError) {
+            const errorMessage = error.issues[0].message;
+            expect(errorMessage).toContain(duplicateId);
+          } else {
+            throw error;
+          }
+        }
+      });
+
+      it('should handle multiple duplicates in a single bundle', () => {
+        const duplicateId1 = `attack-pattern--${uuidv4()}`;
+        const duplicateId2 = `attack-pattern--${uuidv4()}`;
+
+        const technique1: Technique = {
+          id: duplicateId1,
+          type: 'attack-pattern',
+          spec_version: '2.1',
+          created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+          modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+          name: 'Test Technique 1',
+          x_mitre_attack_spec_version: '2.1.0',
+          x_mitre_version: '1.0',
+          x_mitre_domains: ['enterprise-attack'],
+          x_mitre_is_subtechnique: false,
+          external_references: [
+            {
+              source_name: 'mitre-attack',
+              external_id: 'T1001',
+            },
+          ],
+        };
+
+        const technique2: Technique = {
+          id: duplicateId1, // Duplicate of technique1
+          type: 'attack-pattern',
+          spec_version: '2.1',
+          created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+          modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+          name: 'Test Technique 2',
+          x_mitre_attack_spec_version: '2.1.0',
+          x_mitre_version: '1.0',
+          x_mitre_domains: ['enterprise-attack'],
+          x_mitre_is_subtechnique: false,
+          external_references: [
+            {
+              source_name: 'mitre-attack',
+              external_id: 'T1002',
+            },
+          ],
+        };
+
+        const technique3: Technique = {
+          id: duplicateId2,
+          type: 'attack-pattern',
+          spec_version: '2.1',
+          created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+          modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+          name: 'Test Technique 3',
+          x_mitre_attack_spec_version: '2.1.0',
+          x_mitre_version: '1.0',
+          x_mitre_domains: ['enterprise-attack'],
+          x_mitre_is_subtechnique: false,
+          external_references: [
+            {
+              source_name: 'mitre-attack',
+              external_id: 'T1003',
+            },
+          ],
+        };
+
+        const technique4: Technique = {
+          id: duplicateId2, // Duplicate of technique3
+          type: 'attack-pattern',
+          spec_version: '2.1',
+          created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+          modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+          name: 'Test Technique 4',
+          x_mitre_attack_spec_version: '2.1.0',
+          x_mitre_version: '1.0',
+          x_mitre_domains: ['enterprise-attack'],
+          x_mitre_is_subtechnique: false,
+          external_references: [
+            {
+              source_name: 'mitre-attack',
+              external_id: 'T1004',
+            },
+          ],
+        };
+
+        const bundleWithMultipleDuplicates = {
+          ...minimalBundle,
+          objects: [minimalCollection, technique1, technique2, technique3, technique4],
+        };
+
+        try {
+          stixBundleSchema.parse(bundleWithMultipleDuplicates);
+          expect.fail('Expected schema to throw for multiple duplicate IDs');
+        } catch (error) {
+          if (error instanceof z.ZodError) {
+            // Should have at least 2 errors (one for each duplicate pair)
+            expect(error.issues.length).toBeGreaterThanOrEqual(2);
+          } else {
+            throw error;
+          }
+        }
+      });
+    });
   });
 
   // GitHub Actions often fails without an increased timeout for this test
