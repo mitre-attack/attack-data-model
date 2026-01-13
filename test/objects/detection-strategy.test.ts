@@ -226,14 +226,14 @@ describe('detectionStrategySchema', () => {
   });
 
   describe('Edge Cases and Special Scenarios', () => {
-    it('should handle duplicate analytic IDs', () => {
+    it('should reject duplicate analytic IDs', () => {
       const analyticId = `x-mitre-analytic--${uuidv4()}`;
       const detectionStrategyWithDuplicates: DetectionStrategy = {
         ...minimalDetectionStrategy,
         x_mitre_analytic_refs: [analyticId, analyticId, analyticId],
       };
-      // Schema doesn't prevent duplicates, so this should pass
-      expect(() => detectionStrategySchema.parse(detectionStrategyWithDuplicates)).not.toThrow();
+      // Schema prevents duplicates, so this should fail
+      expect(() => detectionStrategySchema.parse(detectionStrategyWithDuplicates)).toThrow();
     });
 
     it('should handle large number of analytics', () => {
