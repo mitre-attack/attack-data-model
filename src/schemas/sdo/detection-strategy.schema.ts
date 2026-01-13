@@ -30,6 +30,21 @@ export const detectionStrategySchema = attackBaseDomainObjectSchema
     x_mitre_analytic_refs: z
       .array(createStixIdValidator('x-mitre-analytic'))
       .nonempty({ error: 'At least one analytic ref is required' })
+      .check((ctx) => {
+        const seen = new Set<string>();
+        ctx.value.forEach((analyticId, index) => {
+          if (seen.has(analyticId)) {
+            ctx.issues.push({
+              code: 'custom',
+              message: `Duplicate reference "${analyticId}" found. Each embedded relationship referenced in x_mitre_analytic_refs must be unique.`,
+              path: ['x_mitre_analytic_refs', index],
+              input: analyticId,
+            });
+          } else {
+            seen.add(analyticId);
+          }
+        });
+      })
       .meta({
         description:
           'Array of STIX IDs referencing `x-mitre-analytic` objects that implement this detection strategy.',
