@@ -5,6 +5,7 @@ import {
   attackIdPatterns,
   type Aliases,
   type AttackObject,
+  type Collection,
   type ExternalReferences,
   type KillChainPhase,
   type StixBundle,
@@ -299,6 +300,53 @@ export function validateNoDuplicates(arrayPath: string[], keys: string[], errorM
         });
       } else {
         seen.set(compositeKey, index);
+      }
+    });
+  };
+}
+
+/**
+ * Creates a refinement function for validating that all STIX IDs referenced in x_mitre_contents
+ * exist in the bundle's objects array
+ *
+ * @returns A refinement function for x_mitre_contents reference validation
+ *
+ * @remarks
+ * This function validates that every STIX ID referenced in the collection's x_mitre_contents
+ * property (which acts as a table of contents for the bundle) has a corresponding object
+ * in the bundle's objects array. This ensures referential integrity within the bundle.
+ *
+ * The function expects:
+ * - The first object in the bundle to be a Collection (x-mitre-collection type)
+ * - Each object_ref in x_mitre_contents to match an id in the objects array
+ *
+ * @example
+ * ```typescript
+ * const schema = stixBundleSchema.check(validateXMitreContentsReferences());
+ * ```
+ */
+export function validateXMitreContentsReferences() {
+  return (ctx: z.core.ParsePayload<StixBundle>): void => {
+    // Get the collection object (first object in bundle)
+    const collectionObject = ctx.value.objects[0];
+    const collectionContents = (collectionObject as Collection).x_mitre_contents;
+
+    if (!collectionContents) {
+      return;
+    }
+
+    // Create a set of all object IDs in the bundle for efficient lookup
+    const objectIds = new Set(ctx.value.objects.map((obj) => (obj as AttackObject).id));
+
+    // Validate each reference in x_mitre_contents
+    collectionContents.forEach((contentRef: { object_ref: string }, index: number) => {
+      if (!objectIds.has(contentRef.object_ref)) {
+        ctx.issues.push({
+          code: 'custom',
+          message: `STIX ID "${contentRef.object_ref}" referenced in x_mitre_contents is not present in the bundle's objects array`,
+          path: ['objects', 0, 'x_mitre_contents', index, 'object_ref'],
+          input: contentRef.object_ref,
+        });
       }
     });
   };
