@@ -1,5 +1,9 @@
 import { z } from 'zod/v4';
-import { createFirstBundleObjectRefinement } from '../../refinements/index.js';
+import {
+  createFirstBundleObjectRefinement,
+  validateNoDuplicates,
+  validateXMitreContentsReferences,
+} from '../../refinements/index.js';
 import {
   createStixIdValidator,
   createStixTypeValidator,
@@ -188,7 +192,18 @@ export const stixBundleSchema = z
   })
   .strict()
   .check((ctx) => {
+    // Validate that the first object in the 'objects' array is of type 'x-mitre-collection'
     createFirstBundleObjectRefinement()(ctx);
+
+    // Validate that all IDs referenced in 'x_mitre_contents' are present in 'objects' array
+    validateXMitreContentsReferences()(ctx);
+
+    // Validate that no duplicate objects are present in 'objects' array
+    validateNoDuplicates(
+      ['objects'],
+      ['id'],
+      'Duplicate object with id "{id}" found. Each object in the bundle must have a unique id.',
+    )(ctx);
   });
 
 export type StixBundle = z.infer<typeof stixBundleSchema>;

@@ -8,6 +8,7 @@ import {
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
 } from '../common/property-schemas/index.js';
+import { validateNoDuplicates } from '../../refinements/index.js';
 
 //==============================================================================
 //
@@ -30,6 +31,14 @@ export const detectionStrategySchema = attackBaseDomainObjectSchema
     x_mitre_analytic_refs: z
       .array(createStixIdValidator('x-mitre-analytic'))
       .nonempty({ error: 'At least one analytic ref is required' })
+      .check((ctx) => {
+        // Validate no duplicate analytic references using primitive array validation
+        validateNoDuplicates(
+          [],
+          [],
+          'Duplicate reference "{value}" found. Each embedded relationship referenced in x_mitre_analytic_refs must be unique.',
+        )(ctx);
+      })
       .meta({
         description:
           'Array of STIX IDs referencing `x-mitre-analytic` objects that implement this detection strategy.',
