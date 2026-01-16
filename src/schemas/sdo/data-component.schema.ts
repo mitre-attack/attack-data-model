@@ -10,6 +10,7 @@ import {
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
 } from '../common/property-schemas/index.js';
+import { validateNoDuplicates } from '../../refinements/index.js';
 
 //==============================================================================
 //
@@ -46,28 +47,15 @@ export const xMitreLogSourcesSchema = z
       .strict(),
   )
   .min(1)
-  .refine(
-    // Reject duplicate (name, channel) pairs
-    // Allow same name with different channels
-    // Allow same channel with different names
-    (permutations) => {
-      const seen = new Set<string>();
-
-      for (const perm of permutations) {
-        const key = `${perm.name}|${perm.channel}`;
-        if (seen.has(key)) {
-          return false;
-        }
-        seen.add(key);
-      }
-
-      return true;
-    },
-    {
-      message: 'Duplicate log source found: each (name, channel) pair must be unique',
-      path: ['x_mitre_log_sources'],
-    },
-  )
+  .check((ctx) => {
+    // Validate no duplicate (name, channel) pairs using composite key validation
+    // Allow same name with different channels, and same channel with different names
+    validateNoDuplicates(
+      [],
+      ['name', 'channel'],
+      'Duplicate log source found: each (name, channel) pair must be unique',
+    )(ctx);
+  })
   .meta({
     description: `
       The \`log_source\` object defines platform-specific collection configurations embedded within data components:

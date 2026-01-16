@@ -191,18 +191,140 @@ export function createFirstBundleObjectRefinement() {
 }
 
 /**
+ * Creates a refinement function for validating that objects in an array have no duplicates
+ * based on specified keys
+ *
+ * @param arrayPath - The path to the array property in the context value (e.g., ['objects']). Use [] for direct array validation.
+ * @param keys - The keys to use for duplicate detection (e.g., ['id'] or ['source_name', 'external_id']). Use [] for primitive arrays.
+ * @param errorMessage - Optional custom error message template. Use {keys} for key values, {value} for primitives, and {index} for position
+ * @returns A refinement function for duplicate validation
+ *
+ * @remarks
+ * This function validates that objects in an array are unique based on one or more key fields.
+ * It creates a composite key from the specified fields and checks for duplicates.
+ *
+ * **Supports three validation modes:**
+ * 1. Object arrays with single key: `keys = ['id']`
+ * 2. Object arrays with composite keys: `keys = ['source_name', 'external_id']`
+ * 3. Primitive arrays: `keys = []` (validates the values themselves)
+ *
+ * @example
+ * ```typescript
+ * // Single key validation
+ * const validateUniqueIds = validateNoDuplicates(['objects'], ['id']);
+ * const schema = baseSchema.check(validateUniqueIds);
+ *
+ * // Composite key validation
+ * const validateUniqueRefs = validateNoDuplicates(
+ *   ['external_references'],
+ *   ['source_name', 'external_id'],
+ *   'Duplicate reference found with source_name="{source_name}" and external_id="{external_id}"'
+ * );
+ *
+ * // Primitive array validation (e.g., array of strings)
+ * const validateUniqueStrings = validateNoDuplicates(
+ *   [],
+ *   [],
+ *   'Duplicate value "{value}" found'
+ * );
+ * ```
+ */
+export function validateNoDuplicates(arrayPath: string[], keys: string[], errorMessage?: string) {
+  return (ctx: z.core.ParsePayload<unknown>): void => {
+    // Navigate to the array using the path
+    let arr: unknown = ctx.value;
+    for (const pathSegment of arrayPath) {
+      if (arr && typeof arr === 'object') {
+        arr = (arr as Record<string, unknown>)[pathSegment];
+      } else {
+        return;
+      }
+    }
+
+    // If array doesn't exist or is not an array, skip validation
+    if (!Array.isArray(arr)) {
+      return;
+    }
+
+    const seen = new Map<string, number>();
+
+    arr.forEach((item, index) => {
+      // Create composite key from specified keys
+      // If keys array is empty, treat each item as a primitive value
+      const keyValues =
+        keys.length === 0
+          ? [String(item)]
+          : keys.map((key) => {
+              const value = item?.[key];
+              return value !== undefined ? String(value) : '';
+            });
+      const compositeKey = keyValues.join('||');
+
+      if (seen.has(compositeKey)) {
+        // Build key-value pairs for error message
+        const keyValuePairs = keys.reduce(
+          (acc, key, i) => {
+            acc[key] = keyValues[i];
+            return acc;
+          },
+          {} as Record<string, string>,
+        );
+
+        // Generate error message
+        let message = errorMessage;
+        if (!message) {
+          if (keys.length === 0) {
+            // Primitive array (no keys)
+            message = `Duplicate value "${keyValues[0]}" found at index ${index}. Previously seen at index ${seen.get(compositeKey)}.`;
+          } else if (keys.length === 1) {
+            message = `Duplicate object with ${keys[0]}="${keyValues[0]}" found at index ${index}. Previously seen at index ${seen.get(compositeKey)}.`;
+          } else {
+            const keyPairs = keys.map((key, i) => `${key}="${keyValues[i]}"`).join(', ');
+            message = `Duplicate object with ${keyPairs} found at index ${index}. Previously seen at index ${seen.get(compositeKey)}.`;
+          }
+        } else {
+          // Replace placeholders in custom message
+          message = message.replace(/\{(\w+)\}/g, (match, key) => {
+            if (key === 'index') return String(index);
+            if (key === 'value' && keys.length === 0) return keyValues[0];
+            return keyValuePairs[key] ?? match;
+          });
+        }
+
+        ctx.issues.push({
+          code: 'custom',
+          message,
+          path: keys.length === 0 ? [...arrayPath, index] : [...arrayPath, index, ...keys],
+          input: keys.length === 0 ? item : keys.length === 1 ? item?.[keys[0]] : keyValuePairs,
+        });
+      } else {
+        seen.set(compositeKey, index);
+      }
+    });
+  };
+}
+
+/**
  * Creates a refinement function for validating that all objects in a STIX bundle have unique IDs
  *
+ * @deprecated Use `validateNoDuplicates(['objects'], ['id'])` instead for more flexibility
  * @returns A refinement function for unique object ID validation
  *
  * @remarks
  * This function validates that each object in the bundle's 'objects' array has a unique 'id' property.
  * Duplicate IDs violate STIX specifications and can cause data integrity issues.
  *
+ * **Note:** This function is deprecated in favor of the more generic `validateNoDuplicates` function,
+ * which can validate uniqueness on any combination of keys, not just 'id'.
+ *
  * @example
  * ```typescript
+ * // Old way (deprecated)
  * const validateUniqueObjects = createUniqueObjectsOnlyRefinement();
  * const schema = stixBundleSchema.check(validateUniqueObjects);
+ *
+ * // New way (recommended)
+ * const schema = stixBundleSchema.check(validateNoDuplicates(['objects'], ['id']));
  * ```
  */
 export function createUniqueObjectsOnlyRefinement() {

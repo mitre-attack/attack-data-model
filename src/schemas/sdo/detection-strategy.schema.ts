@@ -8,6 +8,7 @@ import {
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
 } from '../common/property-schemas/index.js';
+import { validateNoDuplicates } from '../../refinements/index.js';
 
 //==============================================================================
 //
@@ -31,19 +32,12 @@ export const detectionStrategySchema = attackBaseDomainObjectSchema
       .array(createStixIdValidator('x-mitre-analytic'))
       .nonempty({ error: 'At least one analytic ref is required' })
       .check((ctx) => {
-        const seen = new Set<string>();
-        ctx.value.forEach((analyticId, index) => {
-          if (seen.has(analyticId)) {
-            ctx.issues.push({
-              code: 'custom',
-              message: `Duplicate reference "${analyticId}" found. Each embedded relationship referenced in x_mitre_analytic_refs must be unique.`,
-              path: ['x_mitre_analytic_refs', index],
-              input: analyticId,
-            });
-          } else {
-            seen.add(analyticId);
-          }
-        });
+        // Validate no duplicate analytic references using primitive array validation
+        validateNoDuplicates(
+          [],
+          [],
+          'Duplicate reference "{value}" found. Each embedded relationship referenced in x_mitre_analytic_refs must be unique.',
+        )(ctx);
       })
       .meta({
         description:

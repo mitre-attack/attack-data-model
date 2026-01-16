@@ -10,6 +10,7 @@ import {
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
 } from '../common/property-schemas/index.js';
+import { validateNoDuplicates } from '../../refinements/index.js';
 
 //==============================================================================
 //
@@ -46,28 +47,15 @@ export type LogSourceReference = z.infer<typeof xMitreLogSourceReferenceSchema>;
 export const xMitreLogSourceReferencesSchema = z
   .array(xMitreLogSourceReferenceSchema)
   .min(1)
-  .refine(
-    // Reject duplicate log source references, delineated by (x_mitre_data_component_ref, name, channel)
-    // An analytic cannot reference the same log source twice
-    (logSourceReferences) => {
-      const seenRefs = new Set<string>();
-
-      for (const logSourceRef of logSourceReferences) {
-        const key = `${logSourceRef.x_mitre_data_component_ref}|${logSourceRef.name}|${logSourceRef.channel}`;
-        if (seenRefs.has(key)) {
-          return false;
-        }
-        seenRefs.add(key);
-      }
-
-      return true;
-    },
-    {
-      message:
-        'Duplicate log source reference found: each (x_mitre_data_component_ref, name, channel) tuple must be unique',
-      path: ['x_mitre_log_source_references'],
-    },
-  )
+  .check((ctx) => {
+    // Validate no duplicate log source references using composite key validation
+    // Each (x_mitre_data_component_ref, name, channel) tuple must be unique
+    validateNoDuplicates(
+      [],
+      ['x_mitre_data_component_ref', 'name', 'channel'],
+      'Duplicate log source reference found: each (x_mitre_data_component_ref, name, channel) tuple must be unique',
+    )(ctx);
+  })
   .meta({
     description:
       'A list of log source references, which are delineated by a Data Component STIX ID and the (`name`, `channel`) that is being targeted.',
