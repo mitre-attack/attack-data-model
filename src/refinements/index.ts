@@ -158,35 +158,57 @@ export function createCitationsRefinement() {
 }
 
 /**
- * Creates a refinement function for validating that the first object in a STIX bundle
- * is of type 'x-mitre-collection'
+ * Creates a refinement function for validating x-mitre-collection requirements in a STIX bundle
  *
- * @returns A refinement function for STIX bundle validation
+ * @returns A refinement function for x-mitre-collection validation
  *
  * @remarks
- * This function validates that the first object in the 'objects' array of a STIX bundle
- * is of type 'x-mitre-collection', which is required for ATT&CK bundles.
+ * This function validates that:
+ * 1. The first object in the 'objects' array is of type 'x-mitre-collection'
+ * 2. Only one 'x-mitre-collection' object exists in the entire bundle
+ *
+ * These constraints ensure ATT&CK bundles follow the proper structure with a single collection
+ * object serving as the table of contents.
  *
  * @example
  * ```typescript
- * const validateFirstBundleObject = createFirstBundleObjectRefinement();
- * const schema = stixBundleSchema.superRefine(validateFirstBundleObject);
+ * const schema = stixBundleSchema.check(validateXMitreCollection());
  * ```
  */
-export function createFirstBundleObjectRefinement() {
+export function validateXMitreCollection() {
   return (ctx: z.core.ParsePayload<StixBundle>): void => {
-    // Verify that the first object in the bundle is the 'x-mitre-collection' object
-    if ((ctx.value.objects as AttackObject[]).length > 0) {
-      const firstObject = (ctx.value.objects as AttackObject[])[0];
+    const objects = ctx.value.objects as AttackObject[];
 
-      if (firstObject.type !== 'x-mitre-collection') {
-        ctx.issues.push({
-          code: 'custom',
-          message: "The first object in the 'objects' array must be of type 'x-mitre-collection'",
-          path: ['objects', 0, 'type'],
-          input: firstObject.type,
-        });
-      }
+    if (objects.length === 0) {
+      return;
+    }
+
+    // Validate that the first object is of type 'x-mitre-collection'
+    const firstObject = objects[0];
+    if (firstObject.type !== 'x-mitre-collection') {
+      ctx.issues.push({
+        code: 'custom',
+        message: "The first object in the 'objects' array must be of type 'x-mitre-collection'",
+        path: ['objects', 0, 'type'],
+        input: firstObject.type,
+      });
+    }
+
+    // Validate that only one 'x-mitre-collection' object exists in the bundle
+    const collectionObjects = objects.filter((obj) => obj.type === 'x-mitre-collection');
+    if (collectionObjects.length > 1) {
+      // Find all indices of collection objects beyond the first one
+      objects.forEach((obj, index) => {
+        if (index > 0 && obj.type === 'x-mitre-collection') {
+          ctx.issues.push({
+            code: 'custom',
+            message:
+              "Only one 'x-mitre-collection' object is allowed in the bundle. Found multiple collection objects.",
+            path: ['objects', index, 'type'],
+            input: obj.type,
+          });
+        }
+      });
     }
   };
 }

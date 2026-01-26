@@ -173,6 +173,127 @@ describe('StixBundleSchema', () => {
       expect(() => stixBundleSchema.parse(invalidFirstObjectBundle)).toThrow();
     });
 
+    it('should accept bundle with exactly one x-mitre-collection object (true positive)', () => {
+      const technique: Technique = {
+        id: `attack-pattern--${uuidv4()}`,
+        type: 'attack-pattern',
+        spec_version: '2.1',
+        created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+        modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+        name: 'Test Technique',
+        x_mitre_attack_spec_version: '2.1.0',
+        x_mitre_version: '1.0',
+        x_mitre_domains: ['enterprise-attack'],
+        x_mitre_is_subtechnique: false,
+        external_references: [
+          {
+            source_name: 'mitre-attack',
+            external_id: 'T1234',
+          },
+        ],
+      };
+
+      const bundleWithOneCollection = {
+        ...minimalBundle,
+        objects: [minimalCollection, technique],
+      };
+
+      expect(() => stixBundleSchema.parse(bundleWithOneCollection)).not.toThrow();
+    });
+
+    it('should reject bundle with multiple x-mitre-collection objects (true negative)', () => {
+      const secondCollection: Collection = {
+        id: `x-mitre-collection--${uuidv4()}`,
+        type: 'x-mitre-collection',
+        spec_version: '2.1',
+        created_by_ref: 'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5',
+        created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+        modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+        object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
+        name: 'Second Test Collection',
+        description: 'This is another test collection.',
+        x_mitre_attack_spec_version: '2.1.0',
+        x_mitre_version: '1.0',
+        x_mitre_contents: [
+          {
+            object_ref: `x-mitre-collection--${uuidv4()}`,
+            object_modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+          },
+        ],
+      };
+
+      const bundleWithMultipleCollections = {
+        ...minimalBundle,
+        objects: [minimalCollection, secondCollection],
+      };
+
+      expect(() => stixBundleSchema.parse(bundleWithMultipleCollections)).toThrow(
+        /Only one 'x-mitre-collection' object is allowed in the bundle/,
+      );
+    });
+
+    it('should report error for each duplicate collection object beyond the first', () => {
+      const secondCollection: Collection = {
+        id: `x-mitre-collection--${uuidv4()}`,
+        type: 'x-mitre-collection',
+        spec_version: '2.1',
+        created_by_ref: 'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5',
+        created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+        modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+        object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
+        name: 'Second Test Collection',
+        description: 'This is another test collection.',
+        x_mitre_attack_spec_version: '2.1.0',
+        x_mitre_version: '1.0',
+        x_mitre_contents: [
+          {
+            object_ref: `x-mitre-collection--${uuidv4()}`,
+            object_modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+          },
+        ],
+      };
+
+      const thirdCollection: Collection = {
+        id: `x-mitre-collection--${uuidv4()}`,
+        type: 'x-mitre-collection',
+        spec_version: '2.1',
+        created_by_ref: 'identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5',
+        created: '2021-01-01T00:00:00.000Z' as StixCreatedTimestamp,
+        modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+        object_marking_refs: ['marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168'],
+        name: 'Third Test Collection',
+        description: 'This is yet another test collection.',
+        x_mitre_attack_spec_version: '2.1.0',
+        x_mitre_version: '1.0',
+        x_mitre_contents: [
+          {
+            object_ref: `x-mitre-collection--${uuidv4()}`,
+            object_modified: '2021-01-01T00:00:00.000Z' as StixModifiedTimestamp,
+          },
+        ],
+      };
+
+      const bundleWithThreeCollections = {
+        ...minimalBundle,
+        objects: [minimalCollection, secondCollection, thirdCollection],
+      };
+
+      try {
+        stixBundleSchema.parse(bundleWithThreeCollections);
+        expect.fail('Expected schema to throw for multiple collection objects');
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          // Should have 2 errors (one for each duplicate collection beyond the first)
+          const collectionErrors = error.issues.filter((issue) =>
+            issue.message.includes("Only one 'x-mitre-collection' object is allowed"),
+          );
+          expect(collectionErrors.length).toBe(2);
+        } else {
+          throw error;
+        }
+      }
+    });
+
     describe('Uniqueness Constraint', () => {
       it('should accept bundle with unique object IDs (true positive)', () => {
         const technique1: Technique = {

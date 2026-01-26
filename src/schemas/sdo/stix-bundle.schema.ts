@@ -1,7 +1,7 @@
 import { z } from 'zod/v4';
 import {
-  createFirstBundleObjectRefinement,
   validateNoDuplicates,
+  validateXMitreCollection,
   validateXMitreContentsReferences,
 } from '../../refinements/index.js';
 import {
@@ -192,8 +192,8 @@ export const stixBundleSchema = z
   })
   .strict()
   .check((ctx) => {
-    // Validate that the first object in the 'objects' array is of type 'x-mitre-collection'
-    createFirstBundleObjectRefinement()(ctx);
+    // Validate that the first object is 'x-mitre-collection' and only one collection exists
+    validateXMitreCollection()(ctx);
 
     // Validate that all IDs referenced in 'x_mitre_contents' are present in 'objects' array
     validateXMitreContentsReferences()(ctx);
