@@ -328,7 +328,7 @@ export type XMitreDetection = z.infer<typeof xMitreDetectionSchema>;
 //
 //==============================================================================
 
-export const techniqueSchema = attackBaseDomainObjectSchema
+export const extensibleTechniqueSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('attack-pattern'),
 
@@ -375,11 +375,6 @@ export const techniqueSchema = attackBaseDomainObjectSchema
     x_mitre_modified_by_ref: xMitreModifiedByRefSchema.optional(),
   })
   .strict()
-  .check((ctx) => {
-    createAttackIdInExternalReferencesRefinement()(ctx);
-    createEnterpriseOnlyPropertiesRefinement()(ctx);
-    createMobileOnlyPropertiesRefinement()(ctx);
-  })
   .meta({
     description: `
 Techniques describe specific methods adversaries use to achieve tactical objectives and are represented as
@@ -405,4 +400,23 @@ They are represented as \`attack-pattern\` objects with the same structure as te
 - **Platform constraints:** Sub-techniques must use a subset of their parent technique's platforms
     `.trim(),
   });
+
+export const techniqueSchema = extensibleTechniqueSchema
+  .check((ctx) => {
+    createAttackIdInExternalReferencesRefinement()(ctx);
+    createEnterpriseOnlyPropertiesRefinement()(ctx);
+    createMobileOnlyPropertiesRefinement()(ctx);
+  });
+
+export const techniquePartialSchema = extensibleTechniqueSchema
+  .partial()
+  .check((ctx) => {
+    // refinements must tolerate missing fields
+    createAttackIdInExternalReferencesRefinement()(ctx);
+    createEnterpriseOnlyPropertiesRefinement()(ctx);
+    createMobileOnlyPropertiesRefinement()(ctx);
+  });
+
 export type Technique = z.infer<typeof techniqueSchema>;
+export type TechniquePartial = z.infer<typeof techniquePartialSchema>;
+

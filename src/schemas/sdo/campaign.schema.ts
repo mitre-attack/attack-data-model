@@ -83,7 +83,7 @@ export type XMitreLastSeenCitation = z.infer<typeof xMitreLastSeenCitationSchema
 //
 //==============================================================================
 
-export const campaignSchema = attackBaseDomainObjectSchema
+export const extensibleCampaignSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('campaign'),
 
@@ -121,10 +121,6 @@ export const campaignSchema = attackBaseDomainObjectSchema
     revoked: true, // Optional in STIX but required in ATT&CK
   })
   .strict()
-  .check((ctx) => {
-    createFirstAliasRefinement()(ctx);
-    createCitationsRefinement()(ctx);
-  })
   .meta({
     description: `
 Campaigns represent sets of adversary activities occurring over a specific time period with shared characteristics and objectives.
@@ -133,4 +129,18 @@ objects with additional temporal tracking fields.
     `.trim(),
   });
 
+export const campaignSchema = extensibleCampaignSchema
+  .check((ctx) => {
+    createFirstAliasRefinement()(ctx);
+    createCitationsRefinement()(ctx);
+  })
+
+export const campaignPartialSchema = extensibleCampaignSchema
+  .partial()
+  .check((ctx) => {
+    createFirstAliasRefinement()(ctx);
+    createCitationsRefinement()(ctx);
+  })
+
 export type Campaign = z.infer<typeof campaignSchema>;
+export type CampaignPartial = z.infer<typeof campaignPartialSchema>;

@@ -13,9 +13,11 @@ export {
 
 export {
   campaignSchema,
+  campaignPartialSchema,
   xMitreFirstSeenCitationSchema,
   xMitreLastSeenCitationSchema,
   type Campaign,
+  type CampaignPartial,
   type XMitreFirstSeenCitation,
   type XMitreLastSeenCitation,
 } from './campaign.schema.js';
@@ -38,7 +40,7 @@ export {
 
 export { detectionStrategySchema, type DetectionStrategy } from './detection-strategy.schema.js';
 
-export { groupSchema, type Group } from './group.schema.js';
+export { groupSchema, groupPartialSchema, type Group, type GroupPartial } from './group.schema.js';
 
 export { identitySchema, type Identity } from './identity.schema.js';
 
@@ -49,7 +51,7 @@ export {
   type XMitreCollectionLayers,
 } from './data-source.schema.js';
 
-export { stixArtifactType, stixFileType, malwareSchema, type Malware } from './malware.schema.js';
+export { stixArtifactType, stixFileType, malwareSchema, malwarePartialSchema, type Malware, type MalwarePartial } from './malware.schema.js';
 
 export {
   matrixSchema,
@@ -71,6 +73,7 @@ export {
 
 export {
   techniqueSchema,
+  techniquePartialSchema,
   xMitreDataSourceSchema,
   xMitreDataSourcesSchema,
   xMitreDefenseBypassesSchema,
@@ -98,7 +101,7 @@ export {
   type XMitreTacticType,
 } from './technique.schema.js';
 
-export { toolSchema, type Tool } from './tool.schema.js';
+export { toolSchema, toolPartialSchema, type Tool, type ToolPartial } from './tool.schema.js';
 
 export {
   attackObjectsSchema,

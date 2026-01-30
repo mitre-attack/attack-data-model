@@ -40,8 +40,8 @@ import {
  * ```
  */
 export function createFirstAliasRefinement() {
-  return (ctx: z.core.ParsePayload<{ aliases?: Aliases; name: string }>): void => {
-    if (ctx.value.aliases && ctx.value.aliases.length > 0) {
+  return (ctx: z.core.ParsePayload<{ aliases?: Aliases; name?: string }>): void => {
+    if (ctx.value.aliases && ctx.value.aliases.length > 0 && ctx.value.name) {
       if (ctx.value.aliases[0] !== ctx.value.name) {
         ctx.issues.push({
           code: 'custom',
@@ -70,8 +70,8 @@ export function createFirstAliasRefinement() {
  * ```
  */
 export function createFirstXMitreAliasRefinement() {
-  return (ctx: z.core.ParsePayload<{ x_mitre_aliases?: string[]; name: string }>): void => {
-    if (ctx.value.x_mitre_aliases && ctx.value.x_mitre_aliases.length > 0) {
+  return (ctx: z.core.ParsePayload<{ x_mitre_aliases?: string[]; name?: string }>): void => {
+    if (ctx.value.x_mitre_aliases && ctx.value.x_mitre_aliases.length > 0 && ctx.value.name) {
       if (ctx.value.x_mitre_aliases[0] !== ctx.value.name) {
         ctx.issues.push({
           code: 'custom',
@@ -102,13 +102,17 @@ export function createFirstXMitreAliasRefinement() {
 export function createCitationsRefinement() {
   return (
     ctx: z.core.ParsePayload<{
-      external_references: ExternalReferences;
+      external_references?: ExternalReferences;
       x_mitre_first_seen_citation?: XMitreFirstSeenCitation;
       x_mitre_last_seen_citation?: XMitreLastSeenCitation;
     }>,
   ): void => {
     const { external_references, x_mitre_first_seen_citation, x_mitre_last_seen_citation } =
       ctx.value;
+
+    if (!Array.isArray(external_references)) {
+      return;
+    }
 
     // Helper function to extract citation names from a citation string
     const extractCitationNames = (citations: string): string[] => {
@@ -340,12 +344,13 @@ export function validateXMitreContentsReferences() {
 
     // Validate each reference in x_mitre_contents
     collectionContents.forEach((contentRef: { object_ref: string }, index: number) => {
-      if (!objectIds.has(contentRef.object_ref)) {
+      const ref = contentRef.object_ref as AttackObject['id']; // assert type
+      if (!objectIds.has(ref)) {
         ctx.issues.push({
           code: 'custom',
-          message: `STIX ID "${contentRef.object_ref}" referenced in x_mitre_contents is not present in the bundle's objects array`,
+          message: `STIX ID "${ref}" referenced in x_mitre_contents is not present in the bundle's objects array`,
           path: ['objects', 0, 'x_mitre_contents', index, 'object_ref'],
-          input: contentRef.object_ref,
+          input: ref,
         });
       }
     });
@@ -359,17 +364,21 @@ export function validateXMitreContentsReferences() {
  */
 export function createAttackIdInExternalReferencesRefinement() {
   return (
-    ctx: z.core.ParsePayload<
-      | Technique
+    ctx: z.core.ParsePayload<Technique
       | {
-          external_references: ExternalReferences;
-          x_mitre_is_subtechnique: XMitreIsSubtechnique;
+          external_references?: ExternalReferences;
+          x_mitre_is_subtechnique?: XMitreIsSubtechnique;
         }
     >,
   ): void => {
+    if (ctx.value.external_references === undefined) {
+      return;
+    }
+    if (ctx.value.x_mitre_is_subtechnique === undefined) {
+      return;
+    }
     // Check if external_references exists and has at least one entry
     if (
-      !ctx.value.external_references ||
       !Array.isArray(ctx.value.external_references) ||
       ctx.value.external_references.length === 0
     ) {
@@ -443,10 +452,9 @@ export function createAttackIdInExternalReferencesRefinement() {
  */
 export function createEnterpriseOnlyPropertiesRefinement() {
   return (
-    ctx: z.core.ParsePayload<
-      | Technique
+    ctx: z.core.ParsePayload<Technique
       | {
-          x_mitre_domains: XMitreDomains;
+          x_mitre_domains?: XMitreDomains;
           kill_chain_phases?: KillChainPhase[];
           x_mitre_permissions_required?: XMitrePermissionsRequired;
           x_mitre_effective_permissions?: XMitreEffectivePermissions;
@@ -458,6 +466,9 @@ export function createEnterpriseOnlyPropertiesRefinement() {
         }
     >,
   ): void => {
+    if (!Array.isArray(ctx.value.x_mitre_domains)) {
+      return;
+    }
     // Helper variables for domain checks
     const inEnterpriseDomain = ctx.value.x_mitre_domains.includes(
       attackDomainSchema.enum['enterprise-attack'],
@@ -553,15 +564,18 @@ export function createEnterpriseOnlyPropertiesRefinement() {
  */
 export function createMobileOnlyPropertiesRefinement() {
   return (
-    ctx: z.core.ParsePayload<
-      | Technique
+    ctx: z.core.ParsePayload<Technique
       | {
-          x_mitre_domains: XMitreDomains;
+          x_mitre_domains?: XMitreDomains;
           x_mitre_tactic_type?: XMitreTacticType;
           x_mitre_data_sources?: XMitreDataSources;
         }
     >,
   ): void => {
+    
+    if (!Array.isArray(ctx.value.x_mitre_domains)) {
+      return;
+    }
     // Helper variables for domain checks
     const inMobileDomain = ctx.value.x_mitre_domains.includes(
       attackDomainSchema.enum['mobile-attack'],

@@ -255,8 +255,8 @@ export const invalidRelationships: RelationshipCombination[] = allRelationships.
  */
 export function createRelationshipValidationRefinement() {
   return (
-    ctx: z.core.ParsePayload<
-      | Relationship
+    ctx: z.core.ParsePayload<Partial<
+      | Relationship>
       | {
           relationship_type: RelationshipType;
           source_ref: StixIdentifier;
@@ -264,6 +264,10 @@ export function createRelationshipValidationRefinement() {
         }
     >,
   ): void => {
+    // Partial-safe: cannot validate without all required fields
+    if (!ctx.value.relationship_type || !ctx.value.source_ref || !ctx.value.target_ref) {
+      return;
+    }
     const [sourceType] = ctx.value.source_ref.split('--') as [StixType];
     const [targetType] = ctx.value.target_ref.split('--') as [StixType];
 
@@ -284,7 +288,7 @@ export function createRelationshipValidationRefinement() {
 //
 //==============================================================================
 
-export const relationshipSchema = attackBaseRelationshipObjectSchema
+export const extensibleRelationshipSchema = attackBaseRelationshipObjectSchema
   .extend({
     id: createStixIdValidator('relationship'),
 
@@ -304,7 +308,9 @@ export const relationshipSchema = attackBaseRelationshipObjectSchema
     name: true,
     x_mitre_version: true,
   })
-  .strict()
+  .strict();
+
+export const relationshipSchema = extensibleRelationshipSchema
   .check((ctx) => {
     createRelationshipValidationRefinement()(ctx);
   })
@@ -322,4 +328,25 @@ export const relationshipSchema = attackBaseRelationshipObjectSchema
     }
   });
 
+export const relationshipPartialSchema = extensibleRelationshipSchema
+  .partial()
+  .check((ctx) => {
+    createRelationshipValidationRefinement()(ctx);
+  })
+  .check((ctx) => {
+    if (!ctx.value.source_ref || !ctx.value.target_ref || !ctx.value.relationship_type) return;
+    // Check for deprecated pattern
+    const [sourceType] = ctx.value.source_ref.split('--') as [StixType];
+    if (
+      sourceType === 'x-mitre-data-component' &&
+      ctx.value.relationship_type === 'detects' &&
+      ctx.value.target_ref.startsWith('attack-pattern--')
+    ) {
+      console.warn(
+        'DEPRECATION WARNING: x-mitre-data-component -> detects -> attack-pattern relationships are deprecated',
+      );
+    }
+  });
+
 export type Relationship = z.infer<typeof relationshipSchema>;
+export type RelationshipPartial = z.infer<typeof relationshipPartialSchema>;

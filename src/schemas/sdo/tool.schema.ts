@@ -28,7 +28,7 @@ import {
 //
 //==============================================================================
 
-export const toolSchema = attackBaseDomainObjectSchema
+export const extensibleToolSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('tool').meta({
       description: 'The unique identifier for this Tool object.',
@@ -87,10 +87,21 @@ export const toolSchema = attackBaseDomainObjectSchema
 
     x_mitre_old_attack_id: createOldMitreAttackIdSchema('tool').optional(),
   })
-  .strict()
+  .strict();
+
+export const toolSchema = extensibleToolSchema
+  .check((ctx) => {
+    createFirstXMitreAliasRefinement()(ctx);
+    createFirstAliasRefinement()(ctx);
+  });
+
+export const toolPartialSchema = extensibleToolSchema
+  .partial()
   .check((ctx) => {
     createFirstXMitreAliasRefinement()(ctx);
     createFirstAliasRefinement()(ctx);
   });
 
 export type Tool = z.infer<typeof toolSchema>;
+export type ToolPartial = z.infer<typeof toolPartialSchema>;
+
