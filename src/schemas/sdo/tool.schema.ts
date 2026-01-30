@@ -89,19 +89,15 @@ export const extensibleToolSchema = attackBaseDomainObjectSchema
   })
   .strict();
 
-export const toolSchema = extensibleToolSchema
-  .check((ctx) => {
-    createFirstXMitreAliasRefinement()(ctx);
-    createFirstAliasRefinement()(ctx);
-  });
+export const toolSchema = extensibleToolSchema.check((ctx) => {
+  createFirstXMitreAliasRefinement()(ctx);
+  createFirstAliasRefinement()(ctx);
+});
 
-export const toolPartialSchema = extensibleToolSchema
-  .partial()
-  .check((ctx) => {
-    createFirstXMitreAliasRefinement()(ctx);
-    createFirstAliasRefinement()(ctx);
-  });
+export const toolPartialSchema = extensibleToolSchema.partial().check((ctx) => {
+  createFirstXMitreAliasRefinement()(ctx);
+  createFirstAliasRefinement()(ctx);
+});
 
 export type Tool = z.infer<typeof toolSchema>;
 export type ToolPartial = z.infer<typeof toolPartialSchema>;
-

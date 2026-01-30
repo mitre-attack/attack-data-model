@@ -81,17 +81,13 @@ objects and strictly follow the STIX 2.1 specification without additional custom
     `.trim(),
   });
 
-export const groupSchema = extensibleGroupSchema
-  .check((ctx) => {
-    createFirstAliasRefinement()(ctx);
-  });
+export const groupSchema = extensibleGroupSchema.check((ctx) => {
+  createFirstAliasRefinement()(ctx);
+});
 
-export const groupPartialSchema = extensibleGroupSchema
-  .partial()
-  .check((ctx) => {
-    createFirstAliasRefinement()(ctx);
-  });
+export const groupPartialSchema = extensibleGroupSchema.partial().check((ctx) => {
+  createFirstAliasRefinement()(ctx);
+});
 
 export type Group = z.infer<typeof groupSchema>;
 export type GroupPartial = z.infer<typeof groupPartialSchema>;
-

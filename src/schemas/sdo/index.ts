@@ -51,7 +51,14 @@ export {
   type XMitreCollectionLayers,
 } from './data-source.schema.js';
 
-export { stixArtifactType, stixFileType, malwareSchema, malwarePartialSchema, type Malware, type MalwarePartial } from './malware.schema.js';
+export {
+  stixArtifactType,
+  stixFileType,
+  malwareSchema,
+  malwarePartialSchema,
+  type Malware,
+  type MalwarePartial,
+} from './malware.schema.js';
 
 export {
   matrixSchema,

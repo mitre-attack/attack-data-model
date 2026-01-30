@@ -255,8 +255,8 @@ export const invalidRelationships: RelationshipCombination[] = allRelationships.
  */
 export function createRelationshipValidationRefinement() {
   return (
-    ctx: z.core.ParsePayload<Partial<
-      | Relationship>
+    ctx: z.core.ParsePayload<
+      | Partial<Relationship>
       | {
           relationship_type: RelationshipType;
           source_ref: StixIdentifier;

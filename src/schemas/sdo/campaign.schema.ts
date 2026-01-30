@@ -129,18 +129,15 @@ objects with additional temporal tracking fields.
     `.trim(),
   });
 
-export const campaignSchema = extensibleCampaignSchema
-  .check((ctx) => {
-    createFirstAliasRefinement()(ctx);
-    createCitationsRefinement()(ctx);
-  })
+export const campaignSchema = extensibleCampaignSchema.check((ctx) => {
+  createFirstAliasRefinement()(ctx);
+  createCitationsRefinement()(ctx);
+});
 
-export const campaignPartialSchema = extensibleCampaignSchema
-  .partial()
-  .check((ctx) => {
-    createFirstAliasRefinement()(ctx);
-    createCitationsRefinement()(ctx);
-  })
+export const campaignPartialSchema = extensibleCampaignSchema.partial().check((ctx) => {
+  createFirstAliasRefinement()(ctx);
+  createCitationsRefinement()(ctx);
+});
 
 export type Campaign = z.infer<typeof campaignSchema>;
 export type CampaignPartial = z.infer<typeof campaignPartialSchema>;

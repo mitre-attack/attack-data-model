@@ -364,7 +364,8 @@ export function validateXMitreContentsReferences() {
  */
 export function createAttackIdInExternalReferencesRefinement() {
   return (
-    ctx: z.core.ParsePayload<Technique
+    ctx: z.core.ParsePayload<
+      | Technique
       | {
           external_references?: ExternalReferences;
           x_mitre_is_subtechnique?: XMitreIsSubtechnique;
@@ -452,7 +453,8 @@ export function createAttackIdInExternalReferencesRefinement() {
  */
 export function createEnterpriseOnlyPropertiesRefinement() {
   return (
-    ctx: z.core.ParsePayload<Technique
+    ctx: z.core.ParsePayload<
+      | Technique
       | {
           x_mitre_domains?: XMitreDomains;
           kill_chain_phases?: KillChainPhase[];
@@ -564,7 +566,8 @@ export function createEnterpriseOnlyPropertiesRefinement() {
  */
 export function createMobileOnlyPropertiesRefinement() {
   return (
-    ctx: z.core.ParsePayload<Technique
+    ctx: z.core.ParsePayload<
+      | Technique
       | {
           x_mitre_domains?: XMitreDomains;
           x_mitre_tactic_type?: XMitreTacticType;
@@ -572,7 +575,6 @@ export function createMobileOnlyPropertiesRefinement() {
         }
     >,
   ): void => {
-    
     if (!Array.isArray(ctx.value.x_mitre_domains)) {
       return;
     }
