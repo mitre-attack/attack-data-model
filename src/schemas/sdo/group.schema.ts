@@ -17,7 +17,7 @@ import {
 } from '../common/property-schemas/index.js';
 
 // Group Schema
-export const groupSchema = attackBaseDomainObjectSchema
+export const groupBaseSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('intrusion-set'),
 
@@ -73,9 +73,6 @@ export const groupSchema = attackBaseDomainObjectSchema
     }),
   })
   .strict()
-  .check((ctx) => {
-    createFirstAliasRefinement()(ctx);
-  })
   .meta({
     description: `
 Groups represent clusters of adversary activity with shared characteristics, tools, tactics, or infrastructure.
@@ -84,4 +81,13 @@ objects and strictly follow the STIX 2.1 specification without additional custom
     `.trim(),
   });
 
-export type Group = z.infer<typeof groupSchema>;
+export type Group = z.infer<typeof groupBaseSchema>;
+export type GroupPartial = Partial<Group>;
+
+const groupChecks = (ctx: z.core.ParsePayload<GroupPartial>): void => {
+  createFirstAliasRefinement()(ctx);
+};
+
+export const groupSchema = groupBaseSchema.check(groupChecks);
+
+export const groupPartialSchema = groupBaseSchema.partial().check(groupChecks);

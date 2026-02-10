@@ -62,3 +62,43 @@ which itself composes ATT&CK-specific rules on top of the STIX core.
 The following interactive diagram shows how different ATT&CK STIX object types relate to each other. Hover over or click any node to explore its connections.
 
 <AttackStixArchitecture />
+
+---
+
+## Schema Tiers
+
+Each ATT&CK object type that supports [refinements](https://zod.dev/refinements) exports up to three schema tiers,
+each serving a different purpose:
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│  campaignSchema              (full validation)              │
+│  ├── Object shape            (fields, types, strictness)    │
+│  └── Refinements             (cross-field business rules)   │
+└─────────────────────────────────────────────────────────────┘
+                          ▲
+┌─────────────────────────────────────────────────────────────┐
+│  campaignBaseSchema          (shape only, no refinements)   │
+│  └── Supports .partial(), .pick(), .omit()                  │
+└─────────────────────────────────────────────────────────────┘
+                          ▲
+┌─────────────────────────────────────────────────────────────┐
+│  campaignPartialSchema       (all fields optional)          │
+│  ├── Derived from base via .partial()                       │
+│  └── Refinements re-applied (partial-safe)                  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+| Tier | Example | Refinements | Use case |
+|------|---------|-------------|----------|
+| **Full** | `campaignSchema` | Yes | Validating complete ATT&CK objects |
+| **Base** | `campaignBaseSchema` | No | Deriving custom schemas via `.partial()`, `.pick()`, `.omit()` |
+| **Partial** | `campaignPartialSchema` | Yes (partial-safe) | Validating incomplete or draft objects |
+
+### Why base schemas exist
+
+Zod [does not allow](https://github.com/colinhacks/zod/releases/tag/v4.3.0) `.partial()`, `.pick()`, or `.omit()` on schemas that contain refinements,
+because these operations change the input type and the original refinement may no longer be valid.
+Base schemas provide the object shape without refinements, so you can safely derive custom schemas from them.
+
+See the [Schema Variants](/docs/how-to-guides/schema-variants) how-to guide for practical usage examples.
