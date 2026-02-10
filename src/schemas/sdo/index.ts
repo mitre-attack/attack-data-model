@@ -12,6 +12,7 @@ export {
 } from './asset.schema.js';
 
 export {
+  campaignBaseSchema,
   campaignSchema,
   campaignPartialSchema,
   xMitreFirstSeenCitationSchema,

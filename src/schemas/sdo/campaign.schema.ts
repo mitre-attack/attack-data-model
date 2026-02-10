@@ -83,7 +83,7 @@ export type XMitreLastSeenCitation = z.infer<typeof xMitreLastSeenCitationSchema
 //
 //==============================================================================
 
-export const extensibleCampaignSchema = attackBaseDomainObjectSchema
+export const campaignBaseSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('campaign'),
 
@@ -129,15 +129,14 @@ objects with additional temporal tracking fields.
     `.trim(),
   });
 
-export const campaignSchema = extensibleCampaignSchema.check((ctx) => {
+export type Campaign = z.infer<typeof campaignBaseSchema>;
+export type CampaignPartial = Partial<Campaign>;
+
+const campaignChecks = (ctx: z.core.ParsePayload<CampaignPartial>): void => {
   createFirstAliasRefinement()(ctx);
   createCitationsRefinement()(ctx);
-});
+};
 
-export const campaignPartialSchema = extensibleCampaignSchema.partial().check((ctx) => {
-  createFirstAliasRefinement()(ctx);
-  createCitationsRefinement()(ctx);
-});
+export const campaignSchema = campaignBaseSchema.check(campaignChecks);
 
-export type Campaign = z.infer<typeof campaignSchema>;
-export type CampaignPartial = z.infer<typeof campaignPartialSchema>;
+export const campaignPartialSchema = campaignBaseSchema.partial().check(campaignChecks);
