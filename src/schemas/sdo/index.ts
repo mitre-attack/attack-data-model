@@ -41,7 +41,13 @@ export {
 
 export { detectionStrategySchema, type DetectionStrategy } from './detection-strategy.schema.js';
 
-export { groupSchema, groupPartialSchema, type Group, type GroupPartial } from './group.schema.js';
+export {
+  groupBaseSchema,
+  groupSchema,
+  groupPartialSchema,
+  type Group,
+  type GroupPartial,
+} from './group.schema.js';
 
 export { identitySchema, type Identity } from './identity.schema.js';
 
@@ -55,6 +61,7 @@ export {
 export {
   stixArtifactType,
   stixFileType,
+  malwareBaseSchema,
   malwareSchema,
   malwarePartialSchema,
   type Malware,
@@ -80,6 +87,7 @@ export {
 } from './tactic.schema.js';
 
 export {
+  techniqueBaseSchema,
   techniqueSchema,
   techniquePartialSchema,
   xMitreDataSourceSchema,
@@ -109,7 +117,13 @@ export {
   type XMitreTacticType,
 } from './technique.schema.js';
 
-export { toolSchema, toolPartialSchema, type Tool, type ToolPartial } from './tool.schema.js';
+export {
+  toolBaseSchema,
+  toolSchema,
+  toolPartialSchema,
+  type Tool,
+  type ToolPartial,
+} from './tool.schema.js';
 
 export {
   attackObjectsSchema,

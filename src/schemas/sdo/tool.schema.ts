@@ -28,7 +28,7 @@ import {
 //
 //==============================================================================
 
-export const extensibleToolSchema = attackBaseDomainObjectSchema
+export const toolBaseSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('tool').meta({
       description: 'The unique identifier for this Tool object.',
@@ -89,15 +89,14 @@ export const extensibleToolSchema = attackBaseDomainObjectSchema
   })
   .strict();
 
-export const toolSchema = extensibleToolSchema.check((ctx) => {
+export type Tool = z.infer<typeof toolBaseSchema>;
+export type ToolPartial = Partial<Tool>;
+
+const toolChecks = (ctx: z.core.ParsePayload<ToolPartial>): void => {
   createFirstXMitreAliasRefinement()(ctx);
   createFirstAliasRefinement()(ctx);
-});
+};
 
-export const toolPartialSchema = extensibleToolSchema.partial().check((ctx) => {
-  createFirstXMitreAliasRefinement()(ctx);
-  createFirstAliasRefinement()(ctx);
-});
+export const toolSchema = toolBaseSchema.check(toolChecks);
 
-export type Tool = z.infer<typeof toolSchema>;
-export type ToolPartial = z.infer<typeof toolPartialSchema>;
+export const toolPartialSchema = toolBaseSchema.partial().check(toolChecks);

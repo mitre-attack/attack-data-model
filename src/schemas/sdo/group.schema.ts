@@ -17,7 +17,7 @@ import {
 } from '../common/property-schemas/index.js';
 
 // Group Schema
-export const extensibleGroupSchema = attackBaseDomainObjectSchema
+export const groupBaseSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('intrusion-set'),
 
@@ -81,13 +81,13 @@ objects and strictly follow the STIX 2.1 specification without additional custom
     `.trim(),
   });
 
-export const groupSchema = extensibleGroupSchema.check((ctx) => {
-  createFirstAliasRefinement()(ctx);
-});
+export type Group = z.infer<typeof groupBaseSchema>;
+export type GroupPartial = Partial<Group>;
 
-export const groupPartialSchema = extensibleGroupSchema.partial().check((ctx) => {
+const groupChecks = (ctx: z.core.ParsePayload<GroupPartial>): void => {
   createFirstAliasRefinement()(ctx);
-});
+};
 
-export type Group = z.infer<typeof groupSchema>;
-export type GroupPartial = z.infer<typeof groupPartialSchema>;
+export const groupSchema = groupBaseSchema.check(groupChecks);
+
+export const groupPartialSchema = groupBaseSchema.partial().check(groupChecks);

@@ -288,7 +288,7 @@ export function createRelationshipValidationRefinement() {
 //
 //==============================================================================
 
-export const extensibleRelationshipSchema = attackBaseRelationshipObjectSchema
+export const relationshipBaseSchema = attackBaseRelationshipObjectSchema
   .extend({
     id: createStixIdValidator('relationship'),
 
@@ -310,43 +310,26 @@ export const extensibleRelationshipSchema = attackBaseRelationshipObjectSchema
   })
   .strict();
 
-export const relationshipSchema = extensibleRelationshipSchema
-  .check((ctx) => {
-    createRelationshipValidationRefinement()(ctx);
-  })
-  .check((ctx) => {
-    // Check for deprecated pattern
-    const [sourceType] = ctx.value.source_ref.split('--') as [StixType];
-    if (
-      sourceType === 'x-mitre-data-component' &&
-      ctx.value.relationship_type === 'detects' &&
-      ctx.value.target_ref.startsWith('attack-pattern--')
-    ) {
-      console.warn(
-        'DEPRECATION WARNING: x-mitre-data-component -> detects -> attack-pattern relationships are deprecated',
-      );
-    }
-  });
+export type Relationship = z.infer<typeof relationshipBaseSchema>;
+export type RelationshipPartial = Partial<Relationship>;
 
-export const relationshipPartialSchema = extensibleRelationshipSchema
-  .partial()
-  .check((ctx) => {
-    createRelationshipValidationRefinement()(ctx);
-  })
-  .check((ctx) => {
-    if (!ctx.value.source_ref || !ctx.value.target_ref || !ctx.value.relationship_type) return;
-    // Check for deprecated pattern
-    const [sourceType] = ctx.value.source_ref.split('--') as [StixType];
-    if (
-      sourceType === 'x-mitre-data-component' &&
-      ctx.value.relationship_type === 'detects' &&
-      ctx.value.target_ref.startsWith('attack-pattern--')
-    ) {
-      console.warn(
-        'DEPRECATION WARNING: x-mitre-data-component -> detects -> attack-pattern relationships are deprecated',
-      );
-    }
-  });
+const relationshipChecks = (ctx: z.core.ParsePayload<RelationshipPartial>): void => {
+  createRelationshipValidationRefinement()(ctx);
 
-export type Relationship = z.infer<typeof relationshipSchema>;
-export type RelationshipPartial = z.infer<typeof relationshipPartialSchema>;
+  // Check for deprecated pattern (partial-safe: skip if required fields are missing)
+  if (!ctx.value.source_ref || !ctx.value.target_ref || !ctx.value.relationship_type) return;
+  const [sourceType] = ctx.value.source_ref.split('--') as [StixType];
+  if (
+    sourceType === 'x-mitre-data-component' &&
+    ctx.value.relationship_type === 'detects' &&
+    ctx.value.target_ref.startsWith('attack-pattern--')
+  ) {
+    console.warn(
+      'DEPRECATION WARNING: x-mitre-data-component -> detects -> attack-pattern relationships are deprecated',
+    );
+  }
+};
+
+export const relationshipSchema = relationshipBaseSchema.check(relationshipChecks);
+
+export const relationshipPartialSchema = relationshipBaseSchema.partial().check(relationshipChecks);

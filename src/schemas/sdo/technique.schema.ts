@@ -328,7 +328,7 @@ export type XMitreDetection = z.infer<typeof xMitreDetectionSchema>;
 //
 //==============================================================================
 
-export const extensibleTechniqueSchema = attackBaseDomainObjectSchema
+export const techniqueBaseSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('attack-pattern'),
 
@@ -401,18 +401,15 @@ They are represented as \`attack-pattern\` objects with the same structure as te
     `.trim(),
   });
 
-export const techniqueSchema = extensibleTechniqueSchema.check((ctx) => {
+export type Technique = z.infer<typeof techniqueBaseSchema>;
+export type TechniquePartial = Partial<Technique>;
+
+const techniqueChecks = (ctx: z.core.ParsePayload<TechniquePartial>): void => {
   createAttackIdInExternalReferencesRefinement()(ctx);
   createEnterpriseOnlyPropertiesRefinement()(ctx);
   createMobileOnlyPropertiesRefinement()(ctx);
-});
+};
 
-export const techniquePartialSchema = extensibleTechniqueSchema.partial().check((ctx) => {
-  // refinements must tolerate missing fields
-  createAttackIdInExternalReferencesRefinement()(ctx);
-  createEnterpriseOnlyPropertiesRefinement()(ctx);
-  createMobileOnlyPropertiesRefinement()(ctx);
-});
+export const techniqueSchema = techniqueBaseSchema.check(techniqueChecks);
 
-export type Technique = z.infer<typeof techniqueSchema>;
-export type TechniquePartial = z.infer<typeof techniquePartialSchema>;
+export const techniquePartialSchema = techniqueBaseSchema.partial().check(techniqueChecks);
