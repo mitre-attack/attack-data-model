@@ -404,7 +404,7 @@ They are represented as \`attack-pattern\` objects with the same structure as te
 export type Technique = z.infer<typeof techniqueBaseSchema>;
 export type TechniquePartial = Partial<Technique>;
 
-const techniqueChecks = (ctx: z.core.ParsePayload<TechniquePartial>): void => {
+export const techniqueChecks = (ctx: z.core.ParsePayload<TechniquePartial>): void => {
   createAttackIdInExternalReferencesRefinement()(ctx);
   createEnterpriseOnlyPropertiesRefinement()(ctx);
   createMobileOnlyPropertiesRefinement()(ctx);

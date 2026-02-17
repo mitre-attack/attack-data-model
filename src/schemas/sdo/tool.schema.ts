@@ -92,7 +92,7 @@ export const toolBaseSchema = attackBaseDomainObjectSchema
 export type Tool = z.infer<typeof toolBaseSchema>;
 export type ToolPartial = Partial<Tool>;
 
-const toolChecks = (ctx: z.core.ParsePayload<ToolPartial>): void => {
+export const toolChecks = (ctx: z.core.ParsePayload<ToolPartial>): void => {
   createFirstXMitreAliasRefinement()(ctx);
   createFirstAliasRefinement()(ctx);
 };
