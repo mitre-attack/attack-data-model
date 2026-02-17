@@ -313,7 +313,7 @@ export const relationshipBaseSchema = attackBaseRelationshipObjectSchema
 export type Relationship = z.infer<typeof relationshipBaseSchema>;
 export type RelationshipPartial = Partial<Relationship>;
 
-const relationshipChecks = (ctx: z.core.ParsePayload<RelationshipPartial>): void => {
+export const relationshipChecks = (ctx: z.core.ParsePayload<RelationshipPartial>): void => {
   createRelationshipValidationRefinement()(ctx);
 
   // Check for deprecated pattern (partial-safe: skip if required fields are missing)

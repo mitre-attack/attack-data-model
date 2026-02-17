@@ -132,7 +132,7 @@ objects with additional temporal tracking fields.
 export type Campaign = z.infer<typeof campaignBaseSchema>;
 export type CampaignPartial = Partial<Campaign>;
 
-const campaignChecks = (ctx: z.core.ParsePayload<CampaignPartial>): void => {
+export const campaignChecks = (ctx: z.core.ParsePayload<CampaignPartial>): void => {
   createFirstAliasRefinement()(ctx);
   createCitationsRefinement()(ctx);
 };

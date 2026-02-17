@@ -84,7 +84,7 @@ objects and strictly follow the STIX 2.1 specification without additional custom
 export type Group = z.infer<typeof groupBaseSchema>;
 export type GroupPartial = Partial<Group>;
 
-const groupChecks = (ctx: z.core.ParsePayload<GroupPartial>): void => {
+export const groupChecks = (ctx: z.core.ParsePayload<GroupPartial>): void => {
   createFirstAliasRefinement()(ctx);
 };
 
