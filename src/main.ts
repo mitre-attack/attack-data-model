@@ -1,11 +1,13 @@
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import { z } from 'zod/v4';
+
+import { type AttackObject, type StixBundle } from './schemas/sdo/stix-bundle.schema.js';
 
 import {
-  stixBundleSchema,
-  type AttackObject,
-  type StixBundle,
-} from './schemas/sdo/stix-bundle.schema.js';
+  createStixIdValidator,
+  createStixTypeValidator,
+} from './schemas/common/property-schemas/index.js';
 
 import {
   analyticSchema,
@@ -200,13 +202,16 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
   const errors: string[] = [];
   const validObjects: AttackObject[] = [];
 
-  // Validate the bundle's top-level properties
-  const baseBundleValidationResults = stixBundleSchema
-    .pick({
-      id: true,
-      type: true,
+  // Validate the bundle's top-level properties (id and type only).
+  // NOTE: We use an inline z.object() instead of stixBundleSchema.pick() because
+  // Zod v4 does not support .pick() on schemas that have .check() refinements.
+  // See: https://github.com/mitre-attack/attack-data-model/issues/67
+  const baseBundleValidationResults = z
+    .object({
+      id: createStixIdValidator('bundle'),
+      type: createStixTypeValidator('bundle'),
     })
-    .loose() // <--- required to let `objects` pass-through without validation (otherwise it gets dropped and the ADM loads an empty list)
+    .loose()
     .safeParse(rawData);
 
   if (!baseBundleValidationResults.success) {
