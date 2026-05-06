@@ -28,6 +28,7 @@ const sidebars: SidebarsConfig = {
         'how-to-guides/manage-data-sources',
         'how-to-guides/validate-bundles',
         'how-to-guides/schema-variants',
+        'how-to-guides/configure-logging',
         'how-to-guides/error-handling',
         'how-to-guides/performance',
       ],

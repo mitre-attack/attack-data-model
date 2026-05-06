@@ -326,6 +326,61 @@ import { registerDataSource, loadDataModel, DataSource } from '@mitre-attack/att
 - **Strict Mode**: Data must pass all validation checks to be ingested. If any objects fail validation, the registration is aborted.
 - **Relaxed Mode**: Invalid objects are logged, but the library attempts to load the dataset anyway. Use with caution, as this may cause unexpected errors during usage.
 
+## Logging
+
+The library emits log output during data source registration, bundle parsing, and refinement checks. By default, only `warn` and `error` messages are written to the console — informational status messages (e.g. "Retrieved data", "Parsed data") are suppressed.
+
+### Log Levels
+
+| Level    | Description                                                        |
+|----------|--------------------------------------------------------------------|
+| `debug`  | Verbose diagnostic output.                                         |
+| `info`   | Informational status messages (data retrieval, parse counts, etc). |
+| `warn`   | Validation issues in `relaxed` mode and deprecation warnings.      |
+| `error`  | Errors only.                                                       |
+| `silent` | Disables all output.                                               |
+
+Levels are inclusive: setting `info` enables `info`, `warn`, and `error`. The default is `warn`.
+
+### Configuring the Logger
+
+Use `configureLogger` to set the level or replace the output handler:
+
+```typescript
+import { configureLogger } from '@mitre-attack/attack-data-model';
+
+// Silence all library output (useful when parsing many bundles in a row)
+configureLogger({ level: 'silent' });
+
+// Or surface informational messages
+configureLogger({ level: 'info' });
+```
+
+You can also set the level via the `ADM_LOG_LEVEL` environment variable:
+
+```bash
+ADM_LOG_LEVEL=silent node ./my-script.js
+```
+
+An explicit `configureLogger({ level })` call always takes precedence over the environment variable.
+
+### Custom Log Handlers
+
+Provide your own handler to route log output to a logging library or external system instead of the console:
+
+```typescript
+import { configureLogger } from '@mitre-attack/attack-data-model';
+import type { LogHandler } from '@mitre-attack/attack-data-model';
+
+const handler: LogHandler = (level, message) => {
+  myLogger.log({ level, message, source: 'attack-data-model' });
+};
+
+configureLogger({ level: 'info', handler });
+```
+
+Call `resetLogger()` to restore the default level and handler.
+
 ## Examples
 
 ### Accessing Techniques and Related Tactics

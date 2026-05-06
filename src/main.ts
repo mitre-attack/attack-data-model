@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import { logger } from '@/logger.js';
 
 import {
   stixBundleSchema,
@@ -103,14 +104,14 @@ export async function registerDataSource(registration: DataSourceRegistration): 
       throw new Error(`Unsupported source type: ${source}`);
   }
 
-  console.log('Retrieved data');
+  logger.info('Retrieved data');
 
   const parsedAttackObjects = parseStixBundle(rawData, parsingMode);
-  console.log('Parsed data.');
-  console.log(parsedAttackObjects.length);
+  logger.info('Parsed data.');
+  logger.info(`${parsedAttackObjects.length}`);
 
   const model = new AttackDataModel(uniqueId, parsedAttackObjects);
-  console.log('Initialized data model.');
+  logger.info('Initialized data model.');
 
   // Store the model and its unique ID in the dataSources map
   dataSources[uniqueId] = { id: uniqueId, model };
@@ -217,7 +218,7 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
     if (parsingMode === 'strict') {
       throw new Error(`Bundle validation failed:\n${errors.join('\n')}`);
     } else {
-      console.warn(`Bundle validation errors:\n${errors.join('\n')}`);
+      logger.warn(`Bundle validation errors:\n${errors.join('\n')}`);
     }
     return []; // Return empty array if bundle itself is invalid
   }
@@ -310,7 +311,7 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
     if (parsingMode === 'strict') {
       throw new Error(`Validation errors:\n${errors.join('\n')}`);
     } else {
-      console.warn(`Validation errors:\n${errors.join('\n')}`);
+      logger.warn(`Validation errors:\n${errors.join('\n')}`);
     }
   }
 
