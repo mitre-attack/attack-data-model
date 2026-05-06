@@ -1,0 +1,121 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
+# How to Configure Logging
+
+<WorkInProgressNotice />
+
+**Control console output from the ATT&CK Data Model**
+
+The library emits log output during data source registration, bundle parsing, and refinement checks. This guide shows you how to silence that output, surface more diagnostic detail, or route messages to your own logger.
+
+## Problem
+
+Use this guide when you need to:
+
+- Silence library output entirely (e.g. when parsing many bundles in a loop and the noise becomes overwhelming)
+- See additional informational messages while debugging a data load
+- Forward log messages to a structured logger like `pino`, `winston`, or `bunyan`
+- Configure log behavior via an environment variable for different deployment environments
+
+## Default Behavior
+
+By default, the library logs at the `warn` level. This means:
+
+- `warn` and `error` messages are printed to the console
+- `info` messages (e.g. "Retrieved data", "Parsed data") are suppressed
+- `debug` messages are suppressed
+
+The default handler routes output to `console.log` (`debug`/`info`), `console.warn`, and `console.error`.
+
+## Log Levels
+
+| Level    | Description                                                        |
+|----------|--------------------------------------------------------------------|
+| `debug`  | Verbose diagnostic output.                                         |
+| `info`   | Informational status messages (data retrieval, parse counts, etc). |
+| `warn`   | Validation issues in `relaxed` mode and deprecation warnings.      |
+| `error`  | Errors only.                                                       |
+| `silent` | Disables all output.                                               |
+
+Levels are inclusive: setting the level to `info` enables `info`, `warn`, and `error` messages.
+
+## Solution 1: Silence All Output
+
+When parsing large bundles or iterating over relationships in a tight loop, the deprecation warnings and validation messages can dominate stdout. Silence them with `configureLogger`:
+
+```typescript
+import { configureLogger } from '@mitre-attack/attack-data-model';
+
+configureLogger({ level: 'silent' });
+```
+
+## Solution 2: Surface Informational Output
+
+To see status messages emitted during data source registration:
+
+```typescript
+import { configureLogger } from '@mitre-attack/attack-data-model';
+
+configureLogger({ level: 'info' });
+```
+
+## Solution 3: Configure via Environment Variable
+
+Set `ADM_LOG_LEVEL` to any valid level (`debug`, `info`, `warn`, `error`, `silent`):
+
+```bash
+ADM_LOG_LEVEL=silent node ./my-script.js
+```
+
+This is useful when you want different log behavior in CI versus local development without changing code. An explicit `configureLogger({ level })` call always wins over the environment variable.
+
+## Solution 4: Provide a Custom Handler
+
+To integrate with a structured logger, supply a `LogHandler`:
+
+```typescript
+import { configureLogger } from '@mitre-attack/attack-data-model';
+import type { LogHandler } from '@mitre-attack/attack-data-model';
+import pino from 'pino';
+
+const log = pino();
+
+const handler: LogHandler = (level, message) => {
+  log[level]({ source: 'attack-data-model' }, message);
+};
+
+configureLogger({ level: 'info', handler });
+```
+
+The handler receives the level (`debug`, `info`, `warn`, or `error` — never `silent`) and the message string. Configure the level and handler independently, or together in a single call.
+
+## Solution 5: Reset to Defaults
+
+To restore the default level and handler — useful in test suites that mutate logger state:
+
+```typescript
+import { resetLogger } from '@mitre-attack/attack-data-model';
+
+afterEach(() => {
+  resetLogger();
+});
+```
+
+## Reference
+
+```typescript
+import {
+  configureLogger,
+  resetLogger,
+} from '@mitre-attack/attack-data-model';
+import type {
+  LogLevel,
+  LogHandler,
+  LoggerConfig,
+} from '@mitre-attack/attack-data-model';
+```
+
+- `configureLogger(config: LoggerConfig)`: Apply the supplied `level` and/or `handler`. Either field is optional — provide only what you want to change.
+- `resetLogger()`: Clear any overrides; subsequent calls fall back to the `ADM_LOG_LEVEL` environment variable, or to `warn` if it is unset.
+
+---

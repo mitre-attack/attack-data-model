@@ -1,4 +1,5 @@
 import { z } from 'zod/v4';
+import { logger } from '@/logger.js';
 import { attackBaseRelationshipObjectSchema } from '../common/index.js';
 import {
   createStixIdValidator,
@@ -324,7 +325,7 @@ export const relationshipChecks = (ctx: z.core.ParsePayload<RelationshipPartial>
     ctx.value.relationship_type === 'detects' &&
     ctx.value.target_ref.startsWith('attack-pattern--')
   ) {
-    console.warn(
+    logger.warn(
       'DEPRECATION WARNING: x-mitre-data-component -> detects -> attack-pattern relationships are deprecated',
     );
   }
