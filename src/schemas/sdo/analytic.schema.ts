@@ -90,10 +90,22 @@ export type MutableElement = z.infer<typeof xMitreMutableElementSchema>;
 //
 //==============================================================================
 
-export const xMitreMutableElementsSchema = z.array(xMitreMutableElementSchema).min(1).meta({
-  description:
-    'Environment-specific tuning knobs like TimeWindow, UserContext, or PortRange, so defenders can adapt without changing core behavior.',
-});
+export const xMitreMutableElementsSchema = z
+  .array(xMitreMutableElementSchema)
+  .min(1)
+  .check((ctx) => {
+    // Validate no duplicate mutable elements using composite key validation
+    // Each (field, description) tuple must be unique
+    validateNoDuplicates(
+      [],
+      ['field', 'description'],
+      'Duplicate mutable element found: each (field, description) tuple must be unique',
+    )(ctx);
+  })
+  .meta({
+    description:
+      'Environment-specific tuning knobs like TimeWindow, UserContext, or PortRange, so defenders can adapt without changing core behavior.',
+  });
 
 export type MutableElements = z.infer<typeof xMitreMutableElementsSchema>;
 
