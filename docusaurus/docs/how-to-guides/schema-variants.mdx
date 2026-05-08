@@ -1,0 +1,123 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
+# How to Use Schema Variants
+
+<WorkInProgressNotice />
+
+**Validate partial objects or derive custom schemas from ATT&CK object types**
+
+When working with ATT&CK data, you don't always have complete objects. You may be validating draft content, processing incremental updates, or building a UI that only needs a subset of fields. This guide shows you how to use the different schema tiers to handle these scenarios.
+
+## Problem
+
+You need to:
+
+- Validate ATT&CK objects that are missing some required fields (e.g., drafts or patches)
+- Create a custom schema using only a subset of an object's fields
+- Call `.partial()`, `.pick()`, or `.omit()` on an ATT&CK schema without getting a runtime error
+
+## Background
+
+ATT&CK schemas include **refinements** — cross-field business rules like _"the first alias must match the object's name"_ — that run after the basic shape validation. Zod [does not allow](https://github.com/colinhacks/zod/releases/tag/v4.3.0) `.partial()`, `.pick()`, or `.omit()` on schemas containing refinements because these operations change the input type, potentially invalidating the original refinement logic.
+
+To support these operations, each ATT&CK object type exports up to three schema tiers:
+
+| Tier | Example | Description |
+|------|---------|-------------|
+| **Full** | `campaignSchema` | Complete validation with refinements. Use for validating final, complete objects. |
+| **Base** | `campaignBaseSchema` | Shape-only, no refinements. Supports `.partial()`, `.pick()`, `.omit()`. |
+| **Partial** | `campaignPartialSchema` | Pre-built partial schema with partial-safe refinements. |
+
+For more on why this design exists, see [Schema Design Principles](/docs/principles/schema-design#schema-tiers).
+
+## Solution 1: Validate Partial Objects
+
+Use the pre-built partial schema to validate incomplete ATT&CK objects:
+
+```typescript
+import { campaignPartialSchema } from '@mitre-attack/attack-data-model';
+
+// Validate a draft campaign with only some fields populated
+const draft = {
+    type: 'campaign',
+    id: 'campaign--d0c9aeb2-4aa4-4860-85e4-3348a37b03c7',
+    name: 'Operation Dream Job',
+    spec_version: '2.1',
+    created: '2024-01-15T00:00:00.000Z',
+    modified: '2024-01-15T00:00:00.000Z',
+};
+
+const result = campaignPartialSchema.safeParse(draft);
+
+if (result.success) {
+    console.log('Draft is valid so far');
+} else {
+    console.error('Validation issues:', result.error.issues);
+}
+```
+
+The partial schema makes all fields optional but still applies refinements where possible. For example, if `aliases` is present, the first alias must still match the object's `name`.
+
+## Solution 2: Derive a Custom Schema
+
+Use the base schema to create your own derived schemas with `.partial()`, `.pick()`, or `.omit()`:
+
+```typescript
+import { campaignBaseSchema } from '@mitre-attack/attack-data-model';
+
+// Pick only the fields you need
+const campaignSummarySchema = campaignBaseSchema.pick({
+    id: true,
+    name: true,
+    description: true,
+    aliases: true,
+    first_seen: true,
+    last_seen: true,
+});
+
+// Omit specific fields
+const campaignWithoutCitationsSchema = campaignBaseSchema.omit({
+    x_mitre_first_seen_citation: true,
+    x_mitre_last_seen_citation: true,
+});
+
+// Create your own partial variant
+const myPartialCampaign = campaignBaseSchema.partial();
+```
+
+:::caution
+Schemas derived from `campaignBaseSchema` do **not** include refinements (cross-field validation rules). If you need refinements on your custom schema, you must re-apply them with `.check()`.
+:::
+
+## Solution 3: Validate a Batch with Mixed Completeness
+
+When processing data that may include both complete and incomplete objects, choose the appropriate schema dynamically:
+
+```typescript
+import {
+    campaignSchema,
+    campaignPartialSchema,
+} from '@mitre-attack/attack-data-model';
+
+function validateCampaign(data: unknown, strict: boolean) {
+    const schema = strict ? campaignSchema : campaignPartialSchema;
+    return schema.safeParse(data);
+}
+```
+
+## Available Schema Tiers by Object Type
+
+Not all object types export all three tiers. The following object types support base and partial schemas:
+
+| Object Type | Full Schema | Base Schema | Partial Schema |
+|-------------|-----------|-------------|----------------|
+| Campaign | `campaignSchema` | `campaignBaseSchema` | `campaignPartialSchema` |
+| Group | `groupSchema` | `groupBaseSchema` | `groupPartialSchema` |
+| Malware | `malwareSchema` | `malwareBaseSchema` | `malwarePartialSchema` |
+| Tool | `toolSchema` | `toolBaseSchema` | `toolPartialSchema` |
+| Technique | `techniqueSchema` | `techniqueBaseSchema` | `techniquePartialSchema` |
+| Relationship | `relationshipSchema` | `relationshipBaseSchema` | `relationshipPartialSchema` |
+
+Object types that don't have refinements (e.g., `tacticSchema`, `identitySchema`) only export a single full schema. Since they have no refinements, you can call `.partial()`, `.pick()`, and `.omit()` directly on them.
+
+---

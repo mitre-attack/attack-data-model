@@ -66,12 +66,12 @@ const multipleCitationsSchema = z.custom<string>(
 
 export const xMitreFirstSeenCitationSchema = multipleCitationsSchema.meta({
   description:
-    "One or more citations for when the object was first seen, in the form '(Citation: [citation name])(Citation: [citation name])...', where each [citation name] can be found as one of the source_name values in the external_references.",
+    "One or more citations for when the object was first seen, in the form '(Citation: [citation name])(Citation: [citation name])...', where each `[citation name]` can be found as one of the `source_name` values in the `external_references`.",
 });
 
 export const xMitreLastSeenCitationSchema = multipleCitationsSchema.meta({
   description:
-    "One or more citations for when the object was last seen, in the form '(Citation: [citation name])(Citation: [citation name])...', where each [citation name] can be found as one of the source_name values in the external_references.",
+    "One or more citations for when the object was last seen, in the form '(Citation: [citation name])(Citation: [citation name])...', where each `[citation name]` can be found as one of the `source_name` values in the `external_references`.",
 });
 
 export type XMitreFirstSeenCitation = z.infer<typeof xMitreFirstSeenCitationSchema>;
@@ -83,7 +83,7 @@ export type XMitreLastSeenCitation = z.infer<typeof xMitreLastSeenCitationSchema
 //
 //==============================================================================
 
-export const campaignSchema = attackBaseDomainObjectSchema
+export const campaignBaseSchema = attackBaseDomainObjectSchema
   .extend({
     id: createStixIdValidator('campaign'),
 
@@ -121,9 +121,22 @@ export const campaignSchema = attackBaseDomainObjectSchema
     revoked: true, // Optional in STIX but required in ATT&CK
   })
   .strict()
-  .check((ctx) => {
-    createFirstAliasRefinement()(ctx);
-    createCitationsRefinement()(ctx);
+  .meta({
+    description: `
+Campaigns represent sets of adversary activities occurring over a specific time period with shared characteristics and objectives.
+They are defined as [campaign](http://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230925)
+objects with additional temporal tracking fields.
+    `.trim(),
   });
 
-export type Campaign = z.infer<typeof campaignSchema>;
+export type Campaign = z.infer<typeof campaignBaseSchema>;
+export type CampaignPartial = Partial<Campaign>;
+
+export const campaignChecks = (ctx: z.core.ParsePayload<CampaignPartial>): void => {
+  createFirstAliasRefinement()(ctx);
+  createCitationsRefinement()(ctx);
+};
+
+export const campaignSchema = campaignBaseSchema.check(campaignChecks);
+
+export const campaignPartialSchema = campaignBaseSchema.partial().check(campaignChecks);

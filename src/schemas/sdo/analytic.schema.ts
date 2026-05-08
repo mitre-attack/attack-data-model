@@ -10,6 +10,7 @@ import {
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
 } from '../common/property-schemas/index.js';
+import { validateNoDuplicates } from '../../refinements/index.js';
 
 //==============================================================================
 //
@@ -23,14 +24,16 @@ export const xMitreLogSourceReferenceSchema = z
   .object({
     x_mitre_data_component_ref: createStixIdValidator('x-mitre-data-component'),
     name: nonEmptyRequiredString.meta({
-      description: 'The name of the log source that the analytic is referencing',
+      description:
+        "Log source name from the associated data component's `x_mitre_log_sources` array",
     }),
     channel: nonEmptyRequiredString.meta({
-      description: 'The channel of the log source that the analytic is referencing',
+      description: "Log source channel from the data component's `x_mitre_log_sources` array",
     }),
   })
   .meta({
-    description: 'A reference to a log source',
+    description:
+      'The `log_source_reference` object links analytics to specific data components with log source details',
   });
 
 export type LogSourceReference = z.infer<typeof xMitreLogSourceReferenceSchema>;
@@ -44,31 +47,18 @@ export type LogSourceReference = z.infer<typeof xMitreLogSourceReferenceSchema>;
 export const xMitreLogSourceReferencesSchema = z
   .array(xMitreLogSourceReferenceSchema)
   .min(1)
-  .refine(
-    // Reject duplicate log source references, delineated by (x_mitre_data_component_ref, name, channel)
-    // An analytic cannot reference the same log source twice
-    (logSourceReferences) => {
-      const seenRefs = new Set<string>();
-
-      for (const logSourceRef of logSourceReferences) {
-        const key = `${logSourceRef.x_mitre_data_component_ref}|${logSourceRef.name}|${logSourceRef.channel}`;
-        if (seenRefs.has(key)) {
-          return false;
-        }
-        seenRefs.add(key);
-      }
-
-      return true;
-    },
-    {
-      message:
-        'Duplicate log source reference found: each (x_mitre_data_component_ref, name, channel) tuple must be unique',
-      path: ['x_mitre_log_source_references'],
-    },
-  )
+  .check((ctx) => {
+    // Validate no duplicate log source references using composite key validation
+    // Each (x_mitre_data_component_ref, name, channel) tuple must be unique
+    validateNoDuplicates(
+      [],
+      ['x_mitre_data_component_ref', 'name', 'channel'],
+      'Duplicate log source reference found: each (x_mitre_data_component_ref, name, channel) tuple must be unique',
+    )(ctx);
+  })
   .meta({
     description:
-      "A list of log source references, delineated by the proprietor's STIX ID and the (name, channel) that is being targeted",
+      'A list of log source references, which are delineated by a Data Component STIX ID and the (`name`, `channel`) that is being targeted.',
   });
 
 export type LogSourceReferences = z.infer<typeof xMitreLogSourceReferencesSchema>;
@@ -79,10 +69,18 @@ export type LogSourceReferences = z.infer<typeof xMitreLogSourceReferencesSchema
 //
 //==============================================================================
 
-export const xMitreMutableElementSchema = z.object({
-  field: nonEmptyRequiredString,
-  description: nonEmptyRequiredString,
-});
+export const xMitreMutableElementSchema = z
+  .object({
+    field: nonEmptyRequiredString.meta({
+      description: 'Name of the detection field that can be tuned',
+    }),
+    description: nonEmptyRequiredString.meta({
+      description: 'Rationale for tunability and environment-specific considerations',
+    }),
+  })
+  .meta({
+    description: 'The `mutable_element` object defines tunable parameters within analytics',
+  });
 
 export type MutableElement = z.infer<typeof xMitreMutableElementSchema>;
 
@@ -92,10 +90,22 @@ export type MutableElement = z.infer<typeof xMitreMutableElementSchema>;
 //
 //==============================================================================
 
-export const xMitreMutableElementsSchema = z.array(xMitreMutableElementSchema).min(1).meta({
-  description:
-    'Environment-specific tuning knobs like TimeWindow, UserContext, or PortRange, so defenders can adapt without changing core behavior.',
-});
+export const xMitreMutableElementsSchema = z
+  .array(xMitreMutableElementSchema)
+  .min(1)
+  .check((ctx) => {
+    // Validate no duplicate mutable elements using composite key validation
+    // Each (field, description) tuple must be unique
+    validateNoDuplicates(
+      [],
+      ['field', 'description'],
+      'Duplicate mutable element found: each (field, description) tuple must be unique',
+    )(ctx);
+  })
+  .meta({
+    description:
+      'Environment-specific tuning knobs like TimeWindow, UserContext, or PortRange, so defenders can adapt without changing core behavior.',
+  });
 
 export type MutableElements = z.infer<typeof xMitreMutableElementsSchema>;
 
@@ -113,7 +123,9 @@ export const analyticSchema = attackBaseDomainObjectSchema
 
     description: descriptionSchema,
 
-    x_mitre_platforms: xMitrePlatformsSchema.max(1), // 0 or 1
+    x_mitre_platforms: xMitrePlatformsSchema
+      .max(1)
+      .meta({ description: 'Target platform for this Analytic.' }), // 0 or 1
 
     external_references: createAttackExternalReferencesSchema('x-mitre-analytic'),
 
@@ -129,6 +141,13 @@ export const analyticSchema = attackBaseDomainObjectSchema
     created_by_ref: true,
     object_marking_refs: true,
   })
-  .strict();
+  .strict()
+  .meta({
+    description: `
+Analytics contain platform-specific detection logic and represent the implementation details of a detection strategy.
+They are defined as \`x-mitre-analytic\` objects extending the generic
+[STIX Domain Object pattern](https://docs.oasis-open.org/cti/stix/v2.0/csprd01/part2-stix-objects/stix-v2.0-csprd01-part2-stix-objects.html#_Toc476230920).
+    `.trim(),
+  });
 
 export type Analytic = z.infer<typeof analyticSchema>;

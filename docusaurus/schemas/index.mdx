@@ -1,0 +1,20 @@
+import OverviewTable from './attack-concept-table.mdx'
+
+# The ATT&CK Specification
+
+The ATT&CK specification is built atop the [STIX 2.1 specification](https://oasis-open.github.io/cti-documentation/resources#stix-21-specification). It is a codified expression of the concepts outlined in the [MITRE ATT&CK Philosophy Paper](https://attack.mitre.org/docs/ATTACK_Design_and_Philosophy_March_2020.pdf), expressed in the ATT&CK Data Model (ADM).
+
+ATT&CK uses a mix of predefined and custom STIX objects to implement ATT&CK concepts. The following table is a mapping of ATT&CK concepts to STIX 2.1 objects:
+
+## STIX Bundle Object
+
+A STIX Bundle Object is not a STIX Object, rather it is a collection of arbitrary STIX Objects grouped together in a single container.
+ATT&CK distributes a STIX bundle for each ATT&CK domain.
+
+| ATT&CK Concept | STIX Object |
+|:-------------- |:----------- |
+| [STIX Bundle](./stix-bundle.schema) | `bundle` ([STIX 2.0](https://docs.oasis-open.org/cti/stix/v2.0/cs01/part1-stix-core/stix-v2.0-cs01-part1-stix-core.html#_Toc496709292), [STIX 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_gms872kuzdmg)) |
+
+<OverviewTable />
+
+---

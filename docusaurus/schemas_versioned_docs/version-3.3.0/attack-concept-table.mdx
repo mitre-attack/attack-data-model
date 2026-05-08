@@ -1,0 +1,35 @@
+## Schema Reference
+
+Current ATT&CK Spec Version: [3.3.0](https://github.com/mitre-attack/attack-stix-data/blob/master/CHANGELOG.md)
+
+### STIX Domain Objects
+
+| ATT&CK Concept | STIX Object | Notes |
+|:-------------- |:----------- |:------|
+| [Analytic](./sdo/analytic.schema.mdx) | `x-mitre-analytic` |  |
+| [Asset](./sdo/asset.schema.mdx) | `x-mitre-asset` |  |
+| [Campaign](./sdo/campaign.schema.mdx) | `campaign` ([STIX 2.0](https://docs.oasis-open.org/cti/stix/v2.0/cs01/part2-stix-objects/stix-v2.0-cs01-part2-stix-objects.html#_Toc496714304), [STIX 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_pcpvfz4ik6d6)) |  |
+| [Collection](./sdo/collection.schema.mdx) | `x-mitre-collection` | This type was added in the upgrade to STIX 2.1 and is not available in the [STIX 2.0 dataset](https://github.com/mitre/cti). |
+| [Data Component](./sdo/data-component.schema.mdx) | `x-mitre-data-component` |  |
+| [Data Source](./sdo/data-source.schema.mdx) | `x-mitre-data-source` |  |
+| [Detection Strategy](./sdo/detection-strategy.schema.mdx) | `x-mitre-detection-strategy` |  |
+| [Group](./sdo/group.schema.mdx) | `intrusion-set` ([STIX 2.0](https://docs.oasis-open.org/cti/stix/v2.0/cs01/part2-stix-objects/stix-v2.0-cs01-part2-stix-objects.html#_Toc496714316), [STIX 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_5ol9xlbbnrdn)) |  |
+| [Identity](./sdo/identity.schema.mdx) | `identity` ([STIX 2.0](https://docs.oasis-open.org/cti/stix/v2.0/cs01/part2-stix-objects/stix-v2.0-cs01-part2-stix-objects.html#_Toc496714310), [STIX 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_wh296fiwpklp)) | Referenced by `created_by_ref` and `x_mitre_modified_by_ref` to convey the creator and most recent modifier of each object |
+| [Matrix](./sdo/matrix.schema.mdx) | `x-mitre-matrix` |  |
+| [Mitigation](./sdo/mitigation.schema.mdx) | `course-of-action` ([STIX 2.0](https://docs.oasis-open.org/cti/stix/v2.0/cs01/part2-stix-objects/stix-v2.0-cs01-part2-stix-objects.html#_Toc496714307), [STIX 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_a925mpw39txn)) |  |
+| [Software](./sdo/software.schema.mdx) | `malware` ([STIX 2.0](https://docs.oasis-open.org/cti/stix/v2.0/cs01/part2-stix-objects/stix-v2.0-cs01-part2-stix-objects.html#_Toc496714319), [STIX 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_s5l7katgbp09)) or `tool` ([STIX 2.0](https://docs.oasis-open.org/cti/stix/v2.0/cs01/part2-stix-objects/stix-v2.0-cs01-part2-stix-objects.html#_Toc496714331), [STIX 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_z4voa9ndw8v)) |  |
+| [Tactic](./sdo/tactic.schema.mdx) | `x-mitre-tactic` |  |
+| [Technique](./sdo/technique.schema.mdx) | `attack-pattern` ([STIX 2.0](https://docs.oasis-open.org/cti/stix/v2.0/cs01/part2-stix-objects/stix-v2.0-cs01-part2-stix-objects.html#_Toc496714301), [STIX 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_axjijf603msy)) |  |
+
+### STIX Relationship Objects
+
+| ATT&CK Concept | STIX Object | Notes |
+|:-------------- |:----------- |:------|
+| [Relationship](./sro/relationship.schema.mdx) | `relationship` ([STIX 2.0](https://docs.oasis-open.org/cti/stix/v2.0/cs01/part2-stix-objects/stix-v2.0-cs01-part2-stix-objects.html#_Toc496714337), [STIX 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_cqhkqvhnlgfh)) | ATT&CK uses many relationship types. Refer to them [here](./relationship-types). |
+
+### STIX Meta Objects
+
+| ATT&CK Concept | STIX Object | Notes |
+|:-------------- |:----------- |:------|
+| [Marking Definition](./smo/marking-definition.schema.mdx) | `marking-definition` ([STIX 2.0](https://docs.oasis-open.org/cti/stix/v2.0/cs01/part1-stix-core/stix-v2.0-cs01-part1-stix-core.html#_Toc496709283), [STIX 2.1](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html#_k5fndj2c7c1k)) | Referenced in the `object_marking_refs` of all objects to express the MITRE Corporation copyright |
+

@@ -2,8 +2,10 @@
 
 This covers how we generate the documentation for the ATT&CK Data Model.
 
-All of these commands are run from the `docusaurus/` directory, so be sure to run this first.
+Unless otherwise noted, all of these commands are run from the `docusaurus/` directory, so be sure to change into this directory first.
 Otherwise you may be very confused as to why these commands don't exist in the top-level `package.json`!
+
+## Install dependences
 
 ```bash
 cd docusaurus/
@@ -14,30 +16,91 @@ npm install
 
 ## Auto-generating schema reference files
 
-The script `generate-docs.sh` introspects **all** `*.schema.ts` files and
-emits Markdown to `docusaurus/docs/reference/schemas/*` which is git ignored.
+The top-level package script `docs:schemamarkdown` is used to automate the process of converting Zod schemas into Markdown. 
+
+The script introspects **all** `*.schema.ts` files and emits Markdown to `docusaurus/schemas/*` which is git ignored.
+
+This is the only commamd that should be run from the repository root directory.
 
 ```bash
-npm run gendocs
+cd ..
+
+npm run docs:schemamarkdown
 ```
 
-## Run the documentation site locally
+## Local Development
 
-Running one of the following commands will enable you to open the site locally at [http://localhost:3000](http://localhost:3000).
+The following command will start a local development server and open a browser window. Most changes will
+be reflected live without needing to restart the server.
 
 ```bash
-# opens your default browser automatically
-npm start
-
-# doesn't open your browser
-npm run -- --no-open
+npm run start
 ```
+
+To start the local development server without opening a browser window use the following command.
+
+```bash
+npm run start -- --no-open
+```
+
+## Deployment
+
+1. Build the static files
+
+    ```bash
+    npm run build
+    ```
+
+2. Serve contents
+
+    ```bash
+    npm run serve
+    ```
+
+## Troubleshooting
+
+To clear the site's generated assets, caches, and build artifacts:
+
+```bash
+npm run clear
+```
+
+## Tagging a new version
+
+The following command will create a new version of the specified set of documentation (e.g. `schemas` or `api`) from its respective "current version" files. 
+
+```bash
+npm run docusaurus docs:version:<pluginId> <new_version>
+```
+
+For example, to tag a new version of the `schemas` or `api` docs:
+
+```bash
+# Tag api doc version 4.4.1
+npm run docusaurus docs:version:api 4.4.1
+
+# Tag schemas doc version 3.3.0
+npm run docusaurus docs:version:schemas 3.3.0
+```
+
+### Versioned Docs Multi-Instance File Structure
+
+The documentation is structured as a [Docs Multi-Instance](https://docusaurus.io/docs/docs-multi-instance) site with [versioning](https://docusaurus.io/docs/versioning).
+
+The default plugin instance, `docs`, contains our global documentation content and is unversioned.
+
+The `schemas` and `api` plugin instances use these paths:
+- `docusaurus/[pluginId]/` - Current Version docs folder
+- `docusaurus/sidebars[pluginId].ts` - Current Version sidebar
+- `docusaurus/[pluginId]_versions.json` - Lists other versions
+- `docusaurus/[pluginId]_versioned_docs/` - Contains other versions docs folders
+- `docusaurus/[pluginId]_versioned_sidebars/` - Contains other versions sidebars
 
 ## Adding new how-to guides
 
 Its pretty easy to add a new guide. Basically just do the following:
 
-1. Create your Markdown file inside `docusaurus/docs/<topic>/my-guide.md`
+1. Create your Markdown file inside `docusaurus/docs/how-to-guides/<my-guide>.md`
 2. Update `sidebars.ts` to include it
 
 ---

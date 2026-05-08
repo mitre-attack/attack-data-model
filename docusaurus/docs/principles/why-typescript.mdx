@@ -1,0 +1,34 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
+# Why TypeScript Instead of X
+
+<WorkInProgressNotice />
+
+Q: Many of our users primarily use Python, so why did we choose to create a TypeScript-based data model?
+
+A: We chose TypeScript because it filled a need we had to manage multiple websites such as the
+[ATT&CK Navigator](https://github.com/mitre-attack/attack-navigator),
+[ATT&CK Workbench](https://github.com/center-for-threat-informed-defense/attack-workbench-frontend),
+and a future redesigned ATT&CK website.
+These websites all parse the ATT&CK STIX bundles with the same logic spread out across different codebases.
+By consolidating the logic into a single TypeScript-based data model, we can ensure consistency and reduce the risk of errors.
+
+---
+
+Q: Are you going to create a Python-based data model as well?
+
+A: While we have a TypeScript-based data model, we are also working on a Python-based data model to better serve our users who primarily use Python.
+This will allow for seamless integration and usage within the Python ecosystem.
+[Zod](./why-zod.mdx) has the functionality to export as a JSON Schema ([link](https://zod.dev/json-schema)),
+which we hope to use to create a Python-based data model,
+likely using Pydantic with its [datamodel-code-generator](https://docs.pydantic.dev/latest/integrations/datamodel_code_generator/).
+
+---
+
+Q: When will the Python-based data model be available?
+
+A: We are working on it and hope to have it available in the near future!
+However, our priority at the moment is to get all the rough edges smoothed out with the website components mentioned above first
+so we can ensure a stable and reliable foundation for the Python-based data model.
+
+---

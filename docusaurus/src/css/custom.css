@@ -265,6 +265,14 @@ blockquote p:last-child {
   color: var(--doc-explanation-color);
 }
 
+/* if the browser supports the :has() CSS selector. */
+@supports selector(:has(*)) {
+  /* hide doc-version dropdowns for doc instances not currently being viewed */
+  body .navbar__item.dropdown:not(:has(.navbar__link.active)) {
+    display: none;
+  }
+}
+
 /* Responsive improvements */
 @media (max-width: 768px) {
   :root {

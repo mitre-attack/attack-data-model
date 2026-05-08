@@ -1,0 +1,56 @@
+import WorkInProgressNotice from '@site/src/components/WorkInProgressNotice';
+
+# ATT&CK Versioning
+
+<WorkInProgressNotice />
+
+This page tracks the compatibility between versions of the ATT&CK® Data Model (ADM) TypeScript API (`@mitre-attack/attack-data-model`),
+the ATT&CK® Specification, and versions of the MITRE ATT&CK® dataset (`mitre-attack/attack-stix-data`).
+
+## Supported Versions Compatibility Matrix<sup>1</sup>
+
+| ADM Version ([`@mitre-attack/attack-data-model`](https://www.npmjs.com/package/@mitre-attack/attack-data-model)) | ATT&CK Specification Version ([`ATTACK_SPEC_VERSION`](https://github.com/mitre-attack/attack-data-model/blob/main/ATTACK_SPEC_VERSION)) | STIX Version ([`spec_version`](https://oasis-open.github.io/cti-documentation/resources#stix-21-specification)) | Supported ATT&CK Releases ([`mitre-attack/attack-stix-data`](https://github.com/mitre-attack/attack-stix-data/)) |
+|-------------------------------------------------|------------------------------------------------------|-------------------------------|-------------------------------------------------------------|
+| `1.x`, `2.x`, `3.x`                             | `3.2.0`                                              | `2.1`                         | `>=15.x`, `<=17.x`                                          |
+| `4.x`                                           | `3.3.0`                                              | `2.1`                         | `>=15.x`, `<=18.x`                                          |
+| `5.x` (Future Release)                          | `4.0.0`                                              | `2.1`                         | `>=18.x`                                                    |
+
+<sup>1</sup>Other versions of ATT&CK or the ATT&CK Specification may work with the specified ADM release, but are not officially supported.
+
+## The Three Version Fields
+
+### STIX Version
+
+The `spec_version` field on STIX objects is defined in the STIX specification, not by MITRE ATT&CK.
+
+- **Format**: `"2.1"`
+- **Scope**: STIX specification compliance
+- **Managed by**: OASIS standards organization
+
+### ATT&CK Specification Version
+
+The `x_mitre_attack_spec_version` field on ATT&CK objects by the MITRE ATT&CK team.
+It refers to the STIX schema version used for ATT&CK content in a STIX bundle.
+
+- **Format**: `"3.3.0"` (semantic versioning)
+- **Scope**: ATT&CK specification extensions and structure
+- **Managed by**: MITRE ATT&CK team
+
+### ATT&CK Object Version
+
+The `x_mitre_version` field on ATT&CK objects tracks when object content is meaningfully updated.
+For example an ATT&CK Technique object may have a version of `"1.2"`.
+
+- **Format**: `"1.2"` (major.minor)
+- **Scope**: Individual object content and metadata
+- **Managed by**: MITRE ATT&CK team
+
+## Using Old Versions
+
+While the ADM may function with other versions of the ATT&CK dataset or ATT&CK Specification, the following considerations apply:
+
+- **Older ATT&CK Releases**: May lack properties or objects that the ADM expects based on the latest ATT&CK Specification, potentially causing validation errors or missing data when parsing.
+- **Newer ATT&CK Releases**: May introduce new objects or properties not recognized by the current ADM version, leading to incomplete data mapping or parsing failures.
+- **Different ATT&CK Specification Versions**: Using a different specification version may result in discrepancies between the expected and actual data model, affecting validation and data integrity.
+
+---

@@ -19,7 +19,6 @@ const config: Config = {
   projectName: 'attack-data-model', // Usually your repo name.
 
   onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -31,7 +30,7 @@ const config: Config = {
 
   presets: [
     [
-      'classic',
+      '@docusaurus/preset-classic',
       {
         docs: {
           sidebarPath: './sidebars.ts',
@@ -42,7 +41,42 @@ const config: Config = {
         theme: {
           customCss: './src/css/custom.css',
         },
-      } satisfies Preset.Options,
+      },
+    ],
+  ],
+
+  plugins: [
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'schemas',
+        path: 'schemas',
+        routeBasePath: 'schemas',
+        sidebarPath: './sidebarsSchemas.ts',
+        /* pretend current doc version is a cut-version */
+        lastVersion: 'current',
+        versions: {
+          current: {
+            label: 'latest',
+          },
+        },
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'api',
+        path: 'api',
+        routeBasePath: 'api',
+        sidebarPath: './sidebarsAPI.ts',
+        /* pretend current doc version is a cut-version */
+        lastVersion: 'current',
+        versions: {
+          current: {
+            label: 'latest',
+          },
+        },
+      },
     ],
   ],
 
@@ -72,6 +106,32 @@ const config: Config = {
           label: 'Documentation',
         },
         {
+          type: 'docSidebar',
+          sidebarId: 'schemasSidebar',
+          position: 'left',
+          label: 'STIX Schemas',
+          docsPluginId: 'schemas',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'apiSidebar',
+          position: 'left',
+          label: 'API',
+          docsPluginId: 'api',
+        },
+        {
+          type: 'docsVersionDropdown',
+          position: 'right',
+          docsPluginId: 'schemas',
+        },
+        // TODO: When we create versions of the API docs this version picker should be
+        // uncommented so it appears on the top right when viewing the API docs.
+        // {
+        //   type: 'docsVersionDropdown',
+        //   position: 'right',
+        //   docsPluginId: 'api',
+        // },
+        {
           href: 'https://github.com/mitre-attack/attack-data-model',
           label: 'GitHub',
           position: 'right',
@@ -100,8 +160,12 @@ const config: Config = {
               to: '/docs/how-to-guides/',
             },
             {
-              label: 'Reference',
-              to: '/docs/reference/',
+              label: 'Schema Reference',
+              to: '/schemas/',
+            },
+            {
+              label: 'API Reference',
+              to: '/api/',
             },
             {
               label: 'Principles',

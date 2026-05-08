@@ -4,12 +4,13 @@ import {
   attackIdExamples,
   attackIdPatterns,
   type Aliases,
+  type AttackObject,
+  type Collection,
   type ExternalReferences,
   type KillChainPhase,
   type XMitreDomains,
-} from '../common/index.js';
+} from '../index.js';
 import {
-  type AttackObject,
   type StixBundle,
   type Technique,
   type XMitreDataSources,
@@ -22,7 +23,7 @@ import {
   type XMitrePermissionsRequired,
   type XMitreRemoteSupport,
   type XMitreSystemRequirements,
-  type XMitreTacticType,
+  type XMitreTacticType
 } from '../sdo/index.js';
 
 /**
@@ -41,8 +42,8 @@ import {
  * ```
  */
 export function createFirstAliasRefinement() {
-  return (ctx: z.core.ParsePayload<{ aliases?: Aliases; name: string }>): void => {
-    if (ctx.value.aliases && ctx.value.aliases.length > 0) {
+  return (ctx: z.core.ParsePayload<{ aliases?: Aliases; name?: string }>): void => {
+    if (ctx.value.aliases && ctx.value.aliases.length > 0 && ctx.value.name) {
       if (ctx.value.aliases[0] !== ctx.value.name) {
         ctx.issues.push({
           code: 'custom',
@@ -71,8 +72,8 @@ export function createFirstAliasRefinement() {
  * ```
  */
 export function createFirstXMitreAliasRefinement() {
-  return (ctx: z.core.ParsePayload<{ x_mitre_aliases?: string[]; name: string }>): void => {
-    if (ctx.value.x_mitre_aliases && ctx.value.x_mitre_aliases.length > 0) {
+  return (ctx: z.core.ParsePayload<{ x_mitre_aliases?: string[]; name?: string }>): void => {
+    if (ctx.value.x_mitre_aliases && ctx.value.x_mitre_aliases.length > 0 && ctx.value.name) {
       if (ctx.value.x_mitre_aliases[0] !== ctx.value.name) {
         ctx.issues.push({
           code: 'custom',
@@ -103,13 +104,17 @@ export function createFirstXMitreAliasRefinement() {
 export function createCitationsRefinement() {
   return (
     ctx: z.core.ParsePayload<{
-      external_references: ExternalReferences;
+      external_references?: ExternalReferences;
       x_mitre_first_seen_citation?: XMitreFirstSeenCitation;
       x_mitre_last_seen_citation?: XMitreLastSeenCitation;
     }>,
   ): void => {
     const { external_references, x_mitre_first_seen_citation, x_mitre_last_seen_citation } =
       ctx.value;
+
+    if (!Array.isArray(external_references)) {
+      return;
+    }
 
     // Helper function to extract citation names from a citation string
     const extractCitationNames = (citations: string): string[] => {
@@ -159,36 +164,220 @@ export function createCitationsRefinement() {
 }
 
 /**
- * Creates a refinement function for validating that the first object in a STIX bundle
- * is of type 'x-mitre-collection'
+ * Creates a refinement function for validating x-mitre-collection requirements in a STIX bundle
  *
- * @returns A refinement function for STIX bundle validation
+ * @returns A refinement function for x-mitre-collection validation
  *
  * @remarks
- * This function validates that the first object in the 'objects' array of a STIX bundle
- * is of type 'x-mitre-collection', which is required for ATT&CK bundles.
+ * This function validates that:
+ * 1. The first object in the 'objects' array is of type 'x-mitre-collection'
+ * 2. Only one 'x-mitre-collection' object exists in the entire bundle
+ *
+ * These constraints ensure ATT&CK bundles follow the proper structure with a single collection
+ * object serving as the table of contents.
  *
  * @example
  * ```typescript
- * const validateFirstBundleObject = createFirstBundleObjectRefinement();
- * const schema = stixBundleSchema.superRefine(validateFirstBundleObject);
+ * const schema = stixBundleSchema.check(validateXMitreCollection());
  * ```
  */
-export function createFirstBundleObjectRefinement() {
+export function validateXMitreCollection() {
   return (ctx: z.core.ParsePayload<StixBundle>): void => {
-    // Verify that the first object in the bundle is the 'x-mitre-collection' object
-    if ((ctx.value.objects as AttackObject[]).length > 0) {
-      const firstObject = (ctx.value.objects as AttackObject[])[0];
+    const objects = ctx.value.objects as AttackObject[];
 
-      if (firstObject.type !== 'x-mitre-collection') {
-        ctx.issues.push({
-          code: 'custom',
-          message: "The first object in the 'objects' array must be of type 'x-mitre-collection'",
-          path: ['objects', 0, 'type'],
-          input: firstObject.type,
-        });
+    if (objects.length === 0) {
+      return;
+    }
+
+    // Validate that the first object is of type 'x-mitre-collection'
+    const firstObject = objects[0];
+    if (firstObject.type !== 'x-mitre-collection') {
+      ctx.issues.push({
+        code: 'custom',
+        message: "The first object in the 'objects' array must be of type 'x-mitre-collection'",
+        path: ['objects', 0, 'type'],
+        input: firstObject.type,
+      });
+    }
+
+    // Validate that only one 'x-mitre-collection' object exists in the bundle
+    const collectionObjects = objects.filter((obj) => obj.type === 'x-mitre-collection');
+    if (collectionObjects.length > 1) {
+      // Find all indices of collection objects beyond the first one
+      objects.forEach((obj, index) => {
+        if (index > 0 && obj.type === 'x-mitre-collection') {
+          ctx.issues.push({
+            code: 'custom',
+            message:
+              "Only one 'x-mitre-collection' object is allowed in the bundle. Found multiple collection objects.",
+            path: ['objects', index, 'type'],
+            input: obj.type,
+          });
+        }
+      });
+    }
+  };
+}
+
+/**
+ * Creates a refinement function for validating that objects in an array have no duplicates
+ * based on specified keys
+ *
+ * @param arrayPath - The path to the array property in the context value (e.g., ['objects']). Use [] for direct array validation.
+ * @param keys - The keys to use for duplicate detection (e.g., ['id'] or ['source_name', 'external_id']). Use [] for primitive arrays.
+ * @param errorMessage - Optional custom error message template. Use {keys} for key values, {value} for primitives, and {index} for position
+ * @returns A refinement function for duplicate validation
+ *
+ * @remarks
+ * This function validates that objects in an array are unique based on one or more key fields.
+ * It creates a composite key from the specified fields and checks for duplicates.
+ *
+ * **Supports three validation modes:**
+ * 1. Object arrays with single key: `keys = ['id']`
+ * 2. Object arrays with composite keys: `keys = ['source_name', 'external_id']`
+ * 3. Primitive arrays: `keys = []` (validates the values themselves)
+ *
+ * @example
+ * ```typescript
+ * // Single key validation
+ * const validateUniqueIds = validateNoDuplicates(['objects'], ['id']);
+ * const schema = baseSchema.check(validateUniqueIds);
+ *
+ * // Composite key validation
+ * const validateUniqueRefs = validateNoDuplicates(
+ *   ['external_references'],
+ *   ['source_name', 'external_id'],
+ *   'Duplicate reference found with source_name="{source_name}" and external_id="{external_id}"'
+ * );
+ *
+ * // Primitive array validation (e.g., array of strings)
+ * const validateUniqueStrings = validateNoDuplicates(
+ *   [],
+ *   [],
+ *   'Duplicate value "{value}" found'
+ * );
+ * ```
+ */
+export function validateNoDuplicates(arrayPath: string[], keys: string[], errorMessage?: string) {
+  return (ctx: z.core.ParsePayload<unknown>): void => {
+    // Navigate to the array using the path
+    let arr: unknown = ctx.value;
+    for (const pathSegment of arrayPath) {
+      if (arr && typeof arr === 'object') {
+        arr = (arr as Record<string, unknown>)[pathSegment];
+      } else {
+        return;
       }
     }
+
+    // If array doesn't exist or is not an array, skip validation
+    if (!Array.isArray(arr)) {
+      return;
+    }
+
+    const seen = new Map<string, number>();
+
+    arr.forEach((item, index) => {
+      // Create composite key from specified keys
+      // If keys array is empty, treat each item as a primitive value
+      const keyValues =
+        keys.length === 0
+          ? [String(item)]
+          : keys.map((key) => {
+              const value = item?.[key];
+              return value !== undefined ? String(value) : '';
+            });
+      const compositeKey = keyValues.join('||');
+
+      if (seen.has(compositeKey)) {
+        // Build key-value pairs for error message
+        const keyValuePairs = keys.reduce(
+          (acc, key, i) => {
+            acc[key] = keyValues[i];
+            return acc;
+          },
+          {} as Record<string, string>,
+        );
+
+        // Generate error message
+        let message = errorMessage;
+        if (!message) {
+          if (keys.length === 0) {
+            // Primitive array (no keys)
+            message = `Duplicate value "${keyValues[0]}" found at index ${index}. Previously seen at index ${seen.get(compositeKey)}.`;
+          } else if (keys.length === 1) {
+            message = `Duplicate object with ${keys[0]}="${keyValues[0]}" found at index ${index}. Previously seen at index ${seen.get(compositeKey)}.`;
+          } else {
+            const keyPairs = keys.map((key, i) => `${key}="${keyValues[i]}"`).join(', ');
+            message = `Duplicate object with ${keyPairs} found at index ${index}. Previously seen at index ${seen.get(compositeKey)}.`;
+          }
+        } else {
+          // Replace placeholders in custom message
+          message = message.replace(/\{(\w+)\}/g, (match, key) => {
+            if (key === 'index') return String(index);
+            if (key === 'value' && keys.length === 0) return keyValues[0];
+            return keyValuePairs[key] ?? match;
+          });
+        }
+
+        ctx.issues.push({
+          code: 'custom',
+          message,
+          path: keys.length === 0 ? [...arrayPath, index] : [...arrayPath, index, ...keys],
+          input: keys.length === 0 ? item : keys.length === 1 ? item?.[keys[0]] : keyValuePairs,
+        });
+      } else {
+        seen.set(compositeKey, index);
+      }
+    });
+  };
+}
+
+/**
+ * Creates a refinement function for validating that all STIX IDs referenced in x_mitre_contents
+ * exist in the bundle's objects array
+ *
+ * @returns A refinement function for x_mitre_contents reference validation
+ *
+ * @remarks
+ * This function validates that every STIX ID referenced in the collection's x_mitre_contents
+ * property (which acts as a table of contents for the bundle) has a corresponding object
+ * in the bundle's objects array. This ensures referential integrity within the bundle.
+ *
+ * The function expects:
+ * - The first object in the bundle to be a Collection (x-mitre-collection type)
+ * - Each object_ref in x_mitre_contents to match an id in the objects array
+ *
+ * @example
+ * ```typescript
+ * const schema = stixBundleSchema.check(validateXMitreContentsReferences());
+ * ```
+ */
+export function validateXMitreContentsReferences() {
+  return (ctx: z.core.ParsePayload<StixBundle>): void => {
+    // Get the collection object (first object in bundle)
+    const collectionObject = ctx.value.objects[0];
+    const collectionContents = (collectionObject as Collection).x_mitre_contents;
+
+    if (!collectionContents) {
+      return;
+    }
+
+    // Create a set of all object IDs in the bundle for efficient lookup
+    const objectIds = new Set(ctx.value.objects.map((obj) => (obj as AttackObject).id));
+
+    // Validate each reference in x_mitre_contents
+    collectionContents.forEach((contentRef: { object_ref: string }, index: number) => {
+      const ref = contentRef.object_ref as AttackObject['id']; // assert type
+      if (!objectIds.has(ref)) {
+        ctx.issues.push({
+          code: 'custom',
+          message: `STIX ID "${ref}" referenced in x_mitre_contents is not present in the bundle's objects array`,
+          path: ['objects', 0, 'x_mitre_contents', index, 'object_ref'],
+          input: ref,
+        });
+      }
+    });
   };
 }
 
@@ -202,14 +391,19 @@ export function createAttackIdInExternalReferencesRefinement() {
     ctx: z.core.ParsePayload<
       | Technique
       | {
-          external_references: ExternalReferences;
-          x_mitre_is_subtechnique: XMitreIsSubtechnique;
+          external_references?: ExternalReferences;
+          x_mitre_is_subtechnique?: XMitreIsSubtechnique;
         }
     >,
   ): void => {
+    if (ctx.value.external_references === undefined) {
+      return;
+    }
+    if (ctx.value.x_mitre_is_subtechnique === undefined) {
+      return;
+    }
     // Check if external_references exists and has at least one entry
     if (
-      !ctx.value.external_references ||
       !Array.isArray(ctx.value.external_references) ||
       ctx.value.external_references.length === 0
     ) {
@@ -286,7 +480,7 @@ export function createEnterpriseOnlyPropertiesRefinement() {
     ctx: z.core.ParsePayload<
       | Technique
       | {
-          x_mitre_domains: XMitreDomains;
+          x_mitre_domains?: XMitreDomains;
           kill_chain_phases?: KillChainPhase[];
           x_mitre_permissions_required?: XMitrePermissionsRequired;
           x_mitre_effective_permissions?: XMitreEffectivePermissions;
@@ -298,6 +492,9 @@ export function createEnterpriseOnlyPropertiesRefinement() {
         }
     >,
   ): void => {
+    if (!Array.isArray(ctx.value.x_mitre_domains)) {
+      return;
+    }
     // Helper variables for domain checks
     const inEnterpriseDomain = ctx.value.x_mitre_domains.includes(
       attackDomainSchema.enum['enterprise-attack'],
@@ -396,12 +593,15 @@ export function createMobileOnlyPropertiesRefinement() {
     ctx: z.core.ParsePayload<
       | Technique
       | {
-          x_mitre_domains: XMitreDomains;
+          x_mitre_domains?: XMitreDomains;
           x_mitre_tactic_type?: XMitreTacticType;
           x_mitre_data_sources?: XMitreDataSources;
         }
     >,
   ): void => {
+    if (!Array.isArray(ctx.value.x_mitre_domains)) {
+      return;
+    }
     // Helper variables for domain checks
     const inMobileDomain = ctx.value.x_mitre_domains.includes(
       attackDomainSchema.enum['mobile-attack'],

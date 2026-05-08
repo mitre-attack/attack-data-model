@@ -272,7 +272,7 @@ Now that you understand cross-domain analysis, explore:
 
 - **[Understanding Relationships](./relationships)** - Master ATT&CK object connections
 - **[How-to: Handle Performance at Scale](../how-to-guides/performance)** - Optimize for large datasets
-- **[Explanation: Why ADM Exists](../explanation/why-adm-exists)** - Understand the project's design rationale
+- **[Explanation: Why ADM Exists](../principles/why-adm-exists)** - Understand the project's design rationale
 
 ## Common Issues
 

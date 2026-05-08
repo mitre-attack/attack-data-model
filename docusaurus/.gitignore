@@ -1,3 +1,9 @@
+# auto-generated schema documentation
+schemas/sdo/
+schemas/sro/
+schemas/smo/
+schemas/attack-concept-table.mdx
+
 # Dependencies
 /node_modules
 
