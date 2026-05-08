@@ -160,7 +160,10 @@ export type AttackObjects = z.infer<typeof attackObjectsSchema>;
 //
 //==============================================================================
 
-export const stixBundleSchema = z
+// Base schema without refinements so it can be composed with `.pick()`, `.extend()`, etc.
+// Zod v4 forbids `.pick()` on schemas containing refinements (`.check()`), so the
+// refinements below are attached to `stixBundleSchema` rather than this base.
+export const stixBundleBaseSchema = z
   .object({
     id: createStixIdValidator('bundle'),
     type: createStixTypeValidator('bundle'),
@@ -190,20 +193,21 @@ export const stixBundleSchema = z
     description:
       'A Bundle is a collection of arbitrary STIX Objects grouped together in a single container. A Bundle does not have any semantic meaning and the objects contained within the Bundle are not considered related by virtue of being in the same Bundle. A STIX Bundle Object is not a STIX Object but makes use of the type and id Common Properties.',
   })
-  .strict()
-  .check((ctx) => {
-    // Validate that the first object is 'x-mitre-collection' and only one collection exists
-    validateXMitreCollection()(ctx);
+  .strict();
 
-    // Validate that all IDs referenced in 'x_mitre_contents' are present in 'objects' array
-    validateXMitreContentsReferences()(ctx);
+export const stixBundleSchema = stixBundleBaseSchema.check((ctx) => {
+  // Validate that the first object is 'x-mitre-collection' and only one collection exists
+  validateXMitreCollection()(ctx);
 
-    // Validate that no duplicate objects are present in 'objects' array
-    validateNoDuplicates(
-      ['objects'],
-      ['id'],
-      'Duplicate object with id "{id}" found. Each object in the bundle must have a unique id.',
-    )(ctx);
-  });
+  // Validate that all IDs referenced in 'x_mitre_contents' are present in 'objects' array
+  validateXMitreContentsReferences()(ctx);
+
+  // Validate that no duplicate objects are present in 'objects' array
+  validateNoDuplicates(
+    ['objects'],
+    ['id'],
+    'Duplicate object with id "{id}" found. Each object in the bundle must have a unique id.',
+  )(ctx);
+});
 
 export type StixBundle = z.infer<typeof stixBundleSchema>;

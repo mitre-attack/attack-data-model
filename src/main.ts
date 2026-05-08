@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { logger } from '@/logger.js';
 
 import {
-  stixBundleSchema,
+  stixBundleBaseSchema,
   type AttackObject,
   type StixBundle,
 } from './schemas/sdo/stix-bundle.schema.js';
@@ -202,7 +202,7 @@ function parseStixBundle(rawData: StixBundle, parsingMode: ParsingMode): AttackO
   const validObjects: AttackObject[] = [];
 
   // Validate the bundle's top-level properties
-  const baseBundleValidationResults = stixBundleSchema
+  const baseBundleValidationResults = stixBundleBaseSchema
     .pick({
       id: true,
       type: true,
