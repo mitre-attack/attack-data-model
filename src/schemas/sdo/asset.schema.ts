@@ -60,8 +60,8 @@ export const relatedAssetSchema = z
       description: 'Sector-specific name or alias for the related asset',
     }),
 
-    related_asset_sectors: xMitreSectorsSchema.optional(),
-    description: descriptionSchema.optional().meta({
+    related_asset_sectors: xMitreSectorsSchema,
+    description: descriptionSchema.meta({
       description: 'How the related asset connects to the primary asset definition',
     }),
   })
