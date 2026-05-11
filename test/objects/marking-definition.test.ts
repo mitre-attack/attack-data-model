@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { createSyntheticStixObject } from '../../src/generator';
 import { markingDefinitionSchema } from '../../src/schemas/smo/marking-definition.schema';
+import { createSyntheticStixObject } from '../../src/utils/index';
 
 /**
  * Test suite for validating MarkingDefinition schema with "statement" type.

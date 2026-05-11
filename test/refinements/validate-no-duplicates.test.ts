@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { validateNoDuplicates } from '../../src/refinements/index.js';
+import { validateNoDuplicates } from '../../src/schemas/refinements/index.js';
 
 /**
  * Test suite for validateNoDuplicates refinement function

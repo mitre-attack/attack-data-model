@@ -14,7 +14,7 @@ export class AttackBaseImpl {
   /**
    * Returns the object that revoked this object.
    */
-  getRevokedBy(): AnyAttackObject | undefined {
+  getRevokedBy() {
     return this.revokedBy;
   }
 }

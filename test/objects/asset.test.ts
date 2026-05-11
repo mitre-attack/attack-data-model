@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { createSyntheticStixObject } from '../../src/generator';
 import { xMitreIdentity } from '../../src/schemas/common/index';
 import { type Asset, assetSchema } from '../../src/schemas/sdo/asset.schema';
+import { createSyntheticStixObject } from '../../src/utils/generator';
 
 /**
  * Test suite for validating the Asset schema.

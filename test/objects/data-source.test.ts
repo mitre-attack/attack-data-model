@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { createSyntheticStixObject } from '../../src/generator';
 import { type ExternalReferences } from '../../src/schemas/common/index';
 import { type DataSource, dataSourceSchema } from '../../src/schemas/sdo/data-source.schema';
+import { createSyntheticStixObject } from '../../src/utils/index';
 
 describe('dataSourceSchema', () => {
   const minimalDataSource = createSyntheticStixObject('x-mitre-data-source');

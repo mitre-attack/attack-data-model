@@ -1,8 +1,4 @@
 import { z } from 'zod/v4';
-import {
-  createFirstAliasRefinement,
-  createFirstXMitreAliasRefinement,
-} from '../../refinements/index.js';
 import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
   aliasesSchema,
@@ -21,6 +17,10 @@ import {
   xMitreModifiedByRefSchema,
   xMitrePlatformsSchema,
 } from '../common/property-schemas/index.js';
+import {
+  createFirstAliasRefinement,
+  createFirstXMitreAliasRefinement,
+} from '../refinements/index.js';
 
 //==============================================================================
 //

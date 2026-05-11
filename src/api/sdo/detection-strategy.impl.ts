@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 
+import { AttackBaseImpl } from '@/api/common/attack-object.impl.js';
 import type { DetectionStrategy } from '@/schemas/index.js';
-import { AttackBaseImpl } from '@/classes/common/attack-object.impl.js';
 import { TechniqueImpl } from './technique.impl.js';
 
 export class DetectionStrategyImpl extends AttackBaseImpl implements DetectionStrategy {

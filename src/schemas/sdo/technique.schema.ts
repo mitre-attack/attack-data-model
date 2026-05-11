@@ -3,7 +3,7 @@ import {
   createAttackIdInExternalReferencesRefinement,
   createEnterpriseOnlyPropertiesRefinement,
   createMobileOnlyPropertiesRefinement,
-} from '../../refinements/index.js';
+} from '../refinements/index.js';
 import { attackBaseDomainObjectSchema } from '../common/index.js';
 import {
   createAttackExternalReferencesSchema,

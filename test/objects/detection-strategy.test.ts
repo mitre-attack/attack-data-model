@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { describe, expect, it } from 'vitest';
-import { createSyntheticStixObject } from '../../src/generator';
 import { type ExternalReferences } from '../../src/schemas/common/index';
 import {
-  type DetectionStrategy,
-  detectionStrategySchema,
+    type DetectionStrategy,
+    detectionStrategySchema,
 } from '../../src/schemas/sdo/detection-strategy.schema';
+import { createSyntheticStixObject } from '../../src/utils/generator';
 
 describe('detectionStrategySchema', () => {
   const minimalDetectionStrategy = createSyntheticStixObject('x-mitre-detection-strategy');

@@ -8,11 +8,13 @@ import {
   type Collection,
   type ExternalReferences,
   type KillChainPhase,
+  type XMitreDomains,
+} from '../index.js';
+import {
   type StixBundle,
   type Technique,
   type XMitreDataSources,
   type XMitreDefenseBypasses,
-  type XMitreDomains,
   type XMitreEffectivePermissions,
   type XMitreFirstSeenCitation,
   type XMitreImpactType,
@@ -22,7 +24,7 @@ import {
   type XMitreRemoteSupport,
   type XMitreSystemRequirements,
   type XMitreTacticType,
-} from '../schemas/index.js';
+} from '../sdo/index.js';
 
 /**
  * Creates a refinement for validating that the first alias matches the object's name

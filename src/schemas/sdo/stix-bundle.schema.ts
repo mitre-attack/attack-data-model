@@ -1,14 +1,14 @@
 import { z } from 'zod/v4';
 import {
-  validateNoDuplicates,
-  validateXMitreCollection,
-  validateXMitreContentsReferences,
-} from '../../refinements/index.js';
-import {
   createStixIdValidator,
   createStixTypeValidator,
   nonEmptyRequiredString,
 } from '../common/property-schemas/index.js';
+import {
+  validateNoDuplicates,
+  validateXMitreCollection,
+  validateXMitreContentsReferences,
+} from '../refinements/index.js';
 import {
   type MarkingDefinition,
   markingDefinitionSchema,

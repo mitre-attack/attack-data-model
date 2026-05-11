@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 
+import { AttackBaseImpl } from '@/api/common/attack-object.impl.js';
 import type { Analytic } from '@/schemas/index.js';
-import { AttackBaseImpl } from '@/classes/common/attack-object.impl.js';
 
 export class AnalyticImpl extends AttackBaseImpl implements Analytic {
   constructor(readonly analytic: Analytic) {

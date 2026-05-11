@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { createSyntheticStixObject } from '../../src/generator';
+import { createSyntheticStixObject } from '../../src/utils/index';
 import { type Tool, toolSchema } from '../../src/schemas/sdo/tool.schema';
 
 /**
