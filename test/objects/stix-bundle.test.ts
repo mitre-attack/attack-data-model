@@ -67,6 +67,7 @@ describe('StixBundleSchema', () => {
         x_mitre_version: '1.0',
         x_mitre_domains: ['enterprise-attack'],
         x_mitre_is_subtechnique: false,
+        kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'execution' }],
         external_references: [
           {
             source_name: 'mitre-attack',
@@ -185,6 +186,7 @@ describe('StixBundleSchema', () => {
         x_mitre_version: '1.0',
         x_mitre_domains: ['enterprise-attack'],
         x_mitre_is_subtechnique: false,
+        kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'execution' }],
         external_references: [
           {
             source_name: 'mitre-attack',
@@ -307,6 +309,7 @@ describe('StixBundleSchema', () => {
           x_mitre_version: '1.0',
           x_mitre_domains: ['enterprise-attack'],
           x_mitre_is_subtechnique: false,
+          kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'execution' }],
           external_references: [
             {
               source_name: 'mitre-attack',
@@ -326,6 +329,7 @@ describe('StixBundleSchema', () => {
           x_mitre_version: '1.0',
           x_mitre_domains: ['enterprise-attack'],
           x_mitre_is_subtechnique: false,
+          kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'execution' }],
           external_references: [
             {
               source_name: 'mitre-attack',
@@ -356,6 +360,7 @@ describe('StixBundleSchema', () => {
           x_mitre_version: '1.0',
           x_mitre_domains: ['enterprise-attack'],
           x_mitre_is_subtechnique: false,
+          kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'execution' }],
           external_references: [
             {
               source_name: 'mitre-attack',
@@ -375,6 +380,7 @@ describe('StixBundleSchema', () => {
           x_mitre_version: '1.0',
           x_mitre_domains: ['enterprise-attack'],
           x_mitre_is_subtechnique: false,
+          kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'execution' }],
           external_references: [
             {
               source_name: 'mitre-attack',
@@ -407,6 +413,7 @@ describe('StixBundleSchema', () => {
           x_mitre_version: '1.0',
           x_mitre_domains: ['enterprise-attack'],
           x_mitre_is_subtechnique: false,
+          kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'execution' }],
           external_references: [
             {
               source_name: 'mitre-attack',
@@ -426,6 +433,7 @@ describe('StixBundleSchema', () => {
           x_mitre_version: '1.0',
           x_mitre_domains: ['enterprise-attack'],
           x_mitre_is_subtechnique: false,
+          kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'execution' }],
           external_references: [
             {
               source_name: 'mitre-attack',
@@ -467,6 +475,7 @@ describe('StixBundleSchema', () => {
           x_mitre_version: '1.0',
           x_mitre_domains: ['enterprise-attack'],
           x_mitre_is_subtechnique: false,
+          kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'execution' }],
           external_references: [
             {
               source_name: 'mitre-attack',
@@ -486,6 +495,7 @@ describe('StixBundleSchema', () => {
           x_mitre_version: '1.0',
           x_mitre_domains: ['enterprise-attack'],
           x_mitre_is_subtechnique: false,
+          kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'execution' }],
           external_references: [
             {
               source_name: 'mitre-attack',
@@ -505,6 +515,7 @@ describe('StixBundleSchema', () => {
           x_mitre_version: '1.0',
           x_mitre_domains: ['enterprise-attack'],
           x_mitre_is_subtechnique: false,
+          kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'execution' }],
           external_references: [
             {
               source_name: 'mitre-attack',
@@ -524,6 +535,7 @@ describe('StixBundleSchema', () => {
           x_mitre_version: '1.0',
           x_mitre_domains: ['enterprise-attack'],
           x_mitre_is_subtechnique: false,
+          kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'execution' }],
           external_references: [
             {
               source_name: 'mitre-attack',
@@ -565,6 +577,7 @@ describe('StixBundleSchema', () => {
           x_mitre_version: '1.0',
           x_mitre_domains: ['enterprise-attack'],
           x_mitre_is_subtechnique: false,
+          kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'execution' }],
           external_references: [
             {
               source_name: 'mitre-attack',
@@ -696,6 +709,7 @@ describe('StixBundleSchema', () => {
           x_mitre_version: '1.0',
           x_mitre_domains: ['enterprise-attack'],
           x_mitre_is_subtechnique: false,
+          kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'execution' }],
           external_references: [
             {
               source_name: 'mitre-attack',
@@ -715,6 +729,7 @@ describe('StixBundleSchema', () => {
           x_mitre_version: '1.0',
           x_mitre_domains: ['enterprise-attack'],
           x_mitre_is_subtechnique: false,
+          kill_chain_phases: [{ kill_chain_name: 'mitre-attack', phase_name: 'execution' }],
           external_references: [
             {
               source_name: 'mitre-attack',
