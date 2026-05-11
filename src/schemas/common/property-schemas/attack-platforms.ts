@@ -9,6 +9,7 @@ import { z } from 'zod';
 const supportedMitrePlatforms = [
   'Field Controller/RTU/PLC/IED',
   'Network Devices',
+  'Network',
   'Data Historian',
   'Office Suite',
   'ESXi',
