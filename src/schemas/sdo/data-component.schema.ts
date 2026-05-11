@@ -10,7 +10,7 @@ import {
   xMitreDomainsSchema,
   xMitreModifiedByRefSchema,
 } from '../common/property-schemas/index.js';
-import { validateNoDuplicates } from '../../refinements/index.js';
+import { validateNoDuplicates } from '../refinements/index.js';
 
 //==============================================================================
 //

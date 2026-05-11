@@ -23,7 +23,7 @@ import {
   type XMitrePermissionsRequired,
   type XMitreRemoteSupport,
   type XMitreSystemRequirements,
-  type XMitreTacticType
+  type XMitreTacticType,
 } from '../sdo/index.js';
 
 /**
