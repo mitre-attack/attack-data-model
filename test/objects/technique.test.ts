@@ -76,13 +76,13 @@ describe('TechniqueSchema', () => {
       testField('x_mitre_domains', 'invalid-domains');
     });
 
+    describe('kill_chain_phases', () => {
+      testField('kill_chain_phases', [{ invalid: 'object' }]);
+    });
+
     // Testing optional fields
     describe('description', () => {
       testField('description', 123, false);
-    });
-
-    describe('kill_chain_phases', () => {
-      testField('kill_chain_phases', [{ invalid: 'object' }], false);
     });
 
     describe('x_mitre_platforms', () => {

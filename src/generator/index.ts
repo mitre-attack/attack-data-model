@@ -336,6 +336,12 @@ const minimalTechnique: MinimalTechnique = {
       external_id: 'T1234',
     },
   ],
+  kill_chain_phases: [
+    {
+      kill_chain_name: 'mitre-attack',
+      phase_name: 'execution',
+    },
+  ],
 };
 
 /**
