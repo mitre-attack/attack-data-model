@@ -49,7 +49,7 @@ export const Validated = <
       } catch (error) {
         if (error instanceof z.ZodError) {
           for (const issue of error.issues) {
-            ctx.addIssue(issue);
+            ctx.addIssue(issue as z.core.$ZodRawIssue);
           }
           return z.NEVER;
         }
@@ -121,7 +121,7 @@ export const ValidatedMutable = <
       } catch (error) {
         if (error instanceof z.ZodError) {
           for (const issue of error.issues) {
-            ctx.addIssue(issue);
+            ctx.addIssue(issue as z.core.$ZodRawIssue);
           }
           return z.NEVER;
         }
