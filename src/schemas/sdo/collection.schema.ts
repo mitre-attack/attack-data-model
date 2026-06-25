@@ -64,7 +64,7 @@ export const collectionSchema = attackBaseDomainObjectSchema
   .strict()
   .meta({
     description: `
-See our [collections document](https://github.com/center-for-threat-informed-defense/attack-workbench-frontend/blob/main/docs/collections.md) for more information about the design and intention of collection objects.
+See our [collections document](https://github.com/mitre-attack/attack-workbench-frontend/blob/main/docs/collections.md) for more information about the design and intention of collection objects.
     `.trim(),
   });
 
