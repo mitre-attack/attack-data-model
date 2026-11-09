@@ -31,6 +31,7 @@ const supportedMitrePlatforms = [
   'Android',
   'Safety Instrumented System/Protection Relay',
   'Embedded',
+  'AI',
 ] as const;
 
 /**
